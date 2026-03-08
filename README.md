@@ -22,11 +22,15 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - 公開トップページです。
 - 全資料への入口になっています。
 
-### 2. `media.html`
+### 2. `general-audience.html`
+- 非エンジニア向けの入口ページです。
+- 専門用語を減らして、今回の調査の結論を先につかめるようにしています。
+
+### 3. `media.html`
 - NotebookLM による解説音声と、ポスター PDF を見られるページです。
 - 最初に雰囲気をつかみたい人向けです。
 
-### 3. `experiment-history.html`
+### 4. `experiment-history.html`
 - 調査がどう進んだかを時系列で追えるページです。
 - 非専門向けの説明や凡例も入っています。
 
@@ -48,6 +52,9 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 
 - `index.html`
   - Landing page for the published materials.
+- `general-audience.html`
+  - A non-technical overview page.
+  - Explains the main finding in plain language with presentation-style visuals.
 - `media.html`
   - Media viewer page for bundled assets under `media/`.
   - Includes the NotebookLM commentary audio and embedded poster PDF.
@@ -75,6 +82,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 ## Quick English guide
 
 - Start with `index.html` for navigation.
+- Open `general-audience.html` for a plain-language overview first.
 - Use `media.html` for the audio commentary and poster PDF.
 - Read `experiment-history.html` for the investigation timeline.
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.

@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Everyone | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --bg: #090b10;
+      --panel: rgba(18, 22, 30, 0.82);
+      --panel-strong: rgba(23, 28, 39, 0.95);
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #f3f6fb;
+      --muted: #b2bccd;
+      --amd-red: #e53935;
+      --amd-orange: #ff7043;
+      --amd-blue: #4fc3f7;
+      --amd-green: #66bb6a;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --hero-glow-x: 50%;
+      --hero-glow-y: 25%;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', 'Calibri', 'Arial', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(229,57,53,0.24), transparent 22%),
+        radial-gradient(circle at 80% 20%, rgba(79,195,247,0.16), transparent 20%),
+        radial-gradient(circle at 50% 85%, rgba(255,112,67,0.14), transparent 25%),
+        linear-gradient(180deg, #07090d 0%, #0b0f15 45%, #090b10 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at var(--hero-glow-x) var(--hero-glow-y), rgba(255,255,255,0.10), transparent 16%),
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: auto, 36px 36px, 36px 36px;
+      mix-blend-mode: screen;
+      opacity: 0.55;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 22px 20px 72px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      backdrop-filter: blur(16px);
+      background: rgba(8, 10, 14, 0.7);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+
+    .brand,
+    .top-links a,
+    .lang-btn,
+    .cta,
+    .mini-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .brand-mark {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--amd-red), var(--amd-orange));
+      box-shadow: 0 0 18px rgba(229,57,53,0.65);
+    }
+
+    .top-links {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .mini-link {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+      transition: 0.18s ease;
+    }
+
+    .mini-link:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, #1565c0, #42a5f5);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      align-items: stretch;
+      margin-top: 10px;
+    }
+
+    .hero-panel,
+    .section,
+    .stat-card,
+    .story-card,
+    .compare-card,
+    .link-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero-panel {
+      padding: 32px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-panel::after {
+      content: '';
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(79,195,247,0.22), transparent 68%);
+      filter: blur(8px);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #ffd6d6;
+      background: rgba(229,57,53,0.12);
+      border: 1px solid rgba(229,57,53,0.22);
+      margin-bottom: 14px;
+    }
+
+    .hero h1 {
+      margin: 0 0 14px;
+      font-size: clamp(34px, 6vw, 62px);
+      line-height: 1.03;
+      font-family: 'Arial Black', 'Segoe UI', sans-serif;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-lead {
+      margin: 0 0 18px;
+      font-size: 20px;
+      line-height: 1.6;
+      color: var(--muted);
+      max-width: 40rem;
+    }
+
+    .hero-points {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .hero-point {
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      font-size: 16px;
+      line-height: 1.45;
+      color: #dce4f1;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.22);
+    }
+
+    .cta-primary {
+      color: #fff;
+      background: linear-gradient(135deg, var(--amd-red), var(--amd-orange));
+    }
+
+    .cta-secondary {
+      color: #e5eefc;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .hero-visual {
+      position: relative;
+      overflow: hidden;
+      min-height: 420px;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(79,195,247,0.12), transparent 34%),
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    }
+
+    .chip-stack {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ring,
+    .core,
+    .node {
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .ring {
+      border: 1px solid rgba(255,255,255,0.14);
+      animation: rotate 18s linear infinite;
+    }
+
+    .ring.one { width: 280px; height: 280px; }
+    .ring.two { width: 360px; height: 360px; animation-direction: reverse; animation-duration: 24s; }
+    .ring.three { width: 430px; height: 430px; animation-duration: 30s; }
+
+    .core {
+      width: 170px;
+      height: 170px;
+      background:
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.32), transparent 22%),
+        linear-gradient(135deg, rgba(229,57,53,0.85), rgba(13,71,161,0.75));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(229,57,53,0.30);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 10px;
+    }
+
+    .core strong {
+      font-size: 24px;
+      letter-spacing: 0.02em;
+    }
+
+    .core span {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #f6fbff;
+    }
+
+    .node {
+      width: 82px;
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      font-size: 12px;
+      line-height: 1.3;
+      color: #e8eef8;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+    }
+
+    .n1 { top: 54px; left: 50%; transform: translateX(-50%); }
+    .n2 { right: 58px; top: 50%; transform: translateY(-50%); }
+    .n3 { left: 58px; top: 50%; transform: translateY(-50%); }
+    .n4 { bottom: 58px; left: 50%; transform: translateX(-50%); }
+
+    .section {
+      margin-top: 22px;
+      padding: 26px 24px;
+    }
+
+    .section h2 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.1;
+      font-family: 'Arial Black', sans-serif;
+    }
+
+    .section-lead {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 52rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat-card {
+      padding: 18px 16px;
+      text-align: left;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .stat-value {
+      margin-top: 8px;
+      font-size: clamp(30px, 5vw, 44px);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .stat-sub {
+      margin-top: 8px;
+      color: #d0d8e6;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .story-grid,
+    .compare-grid,
+    .link-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .story-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .compare-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .link-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    .story-card,
+    .compare-card,
+    .link-card {
+      padding: 20px 18px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .story-card:hover,
+    .compare-card:hover,
+    .link-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(255,255,255,0.16);
+    }
+
+    .story-num {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--amd-red), var(--amd-orange));
+      color: #fff;
+    }
+
+    .story-card h3,
+    .compare-card h3,
+    .link-card h3 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .story-card p,
+    .compare-card p,
+    .link-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.55;
+    }
+
+    .bar-stack {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 110px 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .bar-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #e0e7f5;
+    }
+
+    .bar-track {
+      height: 12px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .bar-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0;
+      border-radius: 999px;
+      transition: width 1.2s cubic-bezier(.2,.8,.2,1);
+      box-shadow: 0 0 16px rgba(255,255,255,0.16);
+    }
+
+    .bar-fill.red { background: linear-gradient(90deg, var(--amd-red), var(--amd-orange)); }
+    .bar-fill.green { background: linear-gradient(90deg, #43a047, #81c784); }
+    .bar-fill.blue { background: linear-gradient(90deg, #1565c0, #4fc3f7); }
+
+    .bar-note {
+      font-size: 13px;
+      color: #c6d0df;
+      white-space: nowrap;
+    }
+
+    .truth-box {
+      margin-top: 18px;
+      padding: 18px 20px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(229,57,53,0.13), rgba(79,195,247,0.10));
+      border: 1px solid rgba(255,255,255,0.10);
+      font-size: 18px;
+      line-height: 1.65;
+      color: #eaf1fb;
+    }
+
+    .link-card .mini-link {
+      margin-top: 16px;
+      display: inline-flex;
+      align-self: flex-start;
+      color: #eef4ff;
+      border-color: rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .footer {
+      margin-top: 28px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] h1[data-lang="en"],
+    html[data-language="ja"] h1[data-lang="ja"],
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"],
+    html[data-language="en"] h3[data-lang="en"],
+    html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 1100px) {
+      .hero,
+      .compare-grid,
+      .story-grid,
+      .link-grid,
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-visual {
+        min-height: 360px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        padding: 14px 12px 48px;
+      }
+
+      .topbar {
+        position: static;
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: 22px;
+      }
+
+      .top-links {
+        justify-content: flex-start;
+      }
+
+      .hero-panel,
+      .section {
+        padding: 20px 16px;
+        border-radius: 20px;
+      }
+
+      .hero-visual {
+        min-height: 310px;
+      }
+
+      .ring.one { width: 210px; height: 210px; }
+      .ring.two { width: 270px; height: 270px; }
+      .ring.three { width: 320px; height: 320px; }
+      .core { width: 130px; height: 130px; }
+      .core strong { font-size: 20px; }
+      .node { width: 68px; height: 68px; font-size: 11px; }
+      .n2 { right: 24px; }
+      .n3 { left: 24px; }
+      .n4 { bottom: 24px; }
+      .n1 { top: 24px; }
+
+      .stats,
+      .story-grid,
+      .compare-grid,
+      .link-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bar-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .hero-actions {
+        flex-direction: column;
+      }
+
+      .cta,
+      .mini-link {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"></span>
+        <span>vega-hbmx-pages</span>
+      </a>
+      <div class="top-links">
+        <a class="mini-link" href="#story"><span data-lang="ja">まず何が分かった？</span><span data-lang="en">What did we learn?</span></a>
+        <a class="mini-link" href="#result"><span data-lang="ja">結果</span><span data-lang="en">Results</span></a>
+        <a class="mini-link" href="#next"><span data-lang="ja">次に読む</span><span data-lang="en">Read next</span></a>
+      </div>
+      <div class="lang-toggle" aria-label="Language switch">
+        <button class="lang-btn active" id="btn-ja" type="button">JP</button>
+        <button class="lang-btn" id="btn-en" type="button">EN</button>
+      </div>
+    </div>
+
+    <section class="hero reveal visible">
+      <div class="hero-panel">
+        <div class="eyebrow">
+          <span data-lang="ja">非エンジニア向けガイド</span>
+          <span data-lang="en">For non-engineers</span>
+        </div>
+        <h1 data-lang="ja">古い AMD GPU は、まだ使えるのか？</h1>
+        <h1 data-lang="en">Can an older AMD GPU still be useful today?</h1>
+        <p class="hero-lead" data-lang="ja">このページは、専門用語をなるべく減らして、今回の調査で何を調べ、何が分かったのかを短くつかめるようにした入口ページです。</p>
+        <p class="hero-lead" data-lang="en">This page is a plain-language entry point. It explains what was tested and what was learned, without requiring deep engineering knowledge.</p>
+        <div class="hero-points">
+          <div class="hero-point" data-lang="ja">同じ GPU を使って、<strong>ROCm/HIP</strong> と <strong>Vulkan</strong> という2つの動かし方を比べました。</div>
+          <div class="hero-point" data-lang="en">The same GPU was tested with two different software paths: <strong>ROCm/HIP</strong> and <strong>Vulkan</strong>.</div>
+          <div class="hero-point" data-lang="ja">結果は単純な「動く / 動かない」ではなく、<strong>バックエンド依存</strong>かつ<strong>モデル依存</strong>でした。</div>
+          <div class="hero-point" data-lang="en">The outcome was not just “works / does not work.” It depended on the <strong>backend</strong> and also on the <strong>model</strong>.</div>
+          <div class="hero-point" data-lang="ja">つまり「古いGPUだから全部だめ」ではなく、<strong>どの経路で使うか</strong>が重要でした。</div>
+          <div class="hero-point" data-lang="en">So the answer was not “the GPU is simply too old.” What mattered was <strong>which software path was used</strong>.</div>
+        </div>
+        <div class="hero-actions">
+          <a class="cta cta-primary" href="#result"><span data-lang="ja">結果だけ先に見る</span><span data-lang="en">Jump to results</span></a>
+          <a class="cta cta-secondary" href="media.html"><span data-lang="ja">音声とポスターを見る</span><span data-lang="en">Open audio and poster</span></a>
+        </div>
+      </div>
+      <div class="hero-panel hero-visual">
+        <div class="chip-stack">
+          <div class="ring one"></div>
+          <div class="ring two"></div>
+          <div class="ring three"></div>
+          <div class="core">
+            <strong>Vega</strong>
+            <span>gfx900 / HBM2</span>
+          </div>
+          <div class="node n1"><span data-lang="ja">同じGPU</span><span data-lang="en">Same GPU</span></div>
+          <div class="node n2"><span data-lang="ja">2つの経路</span><span data-lang="en">2 paths</span></div>
+          <div class="node n3"><span data-lang="ja">再現実験</span><span data-lang="en">Repeated runs</span></div>
+          <div class="node n4"><span data-lang="ja">証拠重視</span><span data-lang="en">Evidence first</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="overview">
+      <h2 data-lang="ja">数字でざっくり</h2>
+      <h2 data-lang="en">Quick view in numbers</h2>
+      <p class="section-lead" data-lang="ja">まずは細かいコードの前に、今回の調査の規模感とポイントだけを見ます。</p>
+      <p class="section-lead" data-lang="en">Before the code details, here is the scale and the headline of the investigation.</p>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-label"><span data-lang="ja">比較した経路</span><span data-lang="en">Backends compared</span></div>
+          <div class="stat-value" data-target="2">0</div>
+          <div class="stat-sub" data-lang="ja">ROCm/HIP と Vulkan</div>
+          <div class="stat-sub" data-lang="en">ROCm/HIP and Vulkan</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-lang="ja">再現確認日数</span><span data-lang="en">Days reproduced</span></div>
+          <div class="stat-value" data-target="2">0</div>
+          <div class="stat-sub" data-lang="ja">2日連続で同じ傾向を確認</div>
+          <div class="stat-sub" data-lang="en">Same trend reproduced across two days</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-lang="ja">安定確認</span><span data-lang="en">Stability check</span></div>
+          <div class="stat-value" data-target="5">0</div>
+          <div class="stat-sub" data-lang="ja">Vulkan `num_gpu=0` は 5/5 成功</div>
+          <div class="stat-sub" data-lang="en">Vulkan `num_gpu=0` succeeded 5/5 times</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label"><span data-lang="ja">補助資料</span><span data-lang="en">Trace pages</span></div>
+          <div class="stat-value" data-target="11">0</div>
+          <div class="stat-sub" data-lang="ja">`num_gpu` を追う単体資料</div>
+          <div class="stat-sub" data-lang="en">Standalone `num_gpu` tracing deck</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="story">
+      <h2 data-lang="ja">何を調べたの？</h2>
+      <h2 data-lang="en">What was actually tested?</h2>
+      <p class="section-lead" data-lang="ja">今回の調査は「古い GPU が全面的にだめか」を決めつけるためではなく、どこで問題が起きるのかを切り分けるために行いました。</p>
+      <p class="section-lead" data-lang="en">The goal was not to label the GPU as simply “bad,” but to isolate where the problem appears.</p>
+      <div class="story-grid">
+        <article class="story-card">
+          <div class="story-num">1</div>
+          <h3 data-lang="ja">同じ条件で比べた</h3>
+          <h3 data-lang="en">Matched conditions</h3>
+          <p data-lang="ja">同じ GPU、同じモデル、同じプロンプト条件で、バックエンドだけを変えて比べました。</p>
+          <p data-lang="en">The same GPU, model, and prompt conditions were used, while only the backend was changed.</p>
+        </article>
+        <article class="story-card">
+          <div class="story-num">2</div>
+          <h3 data-lang="ja">言葉の意味も確認した</h3>
+          <h3 data-lang="en">We checked the parameter meanings</h3>
+          <p data-lang="ja">`num_gpu` が「GPU枚数」ではなく「GPUに移す層数」だと、コードを追って確定しました。</p>
+          <p data-lang="en">The code trace confirmed that `num_gpu` means “layers moved to GPU,” not “number of GPUs.”</p>
+        </article>
+        <article class="story-card">
+          <div class="story-num">3</div>
+          <h3 data-lang="ja">結果を何度も確かめた</h3>
+          <h3 data-lang="en">We repeated the runs</h3>
+          <p data-lang="ja">1回だけの偶然で終わらないように、2日間にわたって再現確認を行いました。</p>
+          <p data-lang="en">The experiments were repeated across two days so the result would not depend on a single lucky or unlucky run.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="result">
+      <h2 data-lang="ja">一番大事な結果</h2>
+      <h2 data-lang="en">The most important result</h2>
+      <p class="section-lead" data-lang="ja">同じ Vega / gfx900 を使っても、どのソフトウェア経路を通るかで結果が変わりました。</p>
+      <p class="section-lead" data-lang="en">Even with the same Vega / gfx900 GPU, the outcome changed depending on which software path was used.</p>
+      <div class="compare-grid">
+        <article class="compare-card">
+          <h3 data-lang="ja">ROCm/HIP 側</h3>
+          <h3 data-lang="en">ROCm/HIP side</h3>
+          <p data-lang="ja">今回の tested setup では、確認した条件の範囲で完走できました。</p>
+          <p data-lang="en">In this tested setup, ROCm/HIP completed the checked conditions successfully.</p>
+          <div class="bar-stack">
+            <div class="bar-row">
+              <div class="bar-label">num_gpu=0</div>
+              <div class="bar-track"><div class="bar-fill green" data-width="100"></div></div>
+              <div class="bar-note">OK</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">num_gpu=1</div>
+              <div class="bar-track"><div class="bar-fill green" data-width="100"></div></div>
+              <div class="bar-note">OK</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">num_gpu=2/-1</div>
+              <div class="bar-track"><div class="bar-fill green" data-width="100"></div></div>
+              <div class="bar-note">OK</div>
+            </div>
+          </div>
+        </article>
+        <article class="compare-card">
+          <h3 data-lang="ja">Vulkan 側</h3>
+          <h3 data-lang="en">Vulkan side</h3>
+          <p data-lang="ja">`num_gpu=0` では安定しましたが、`qwen3.5:2b` では GPU offload が入ると失敗しました。</p>
+          <p data-lang="en">`num_gpu=0` remained stable, but with `qwen3.5:2b`, Vulkan failed once GPU offload became active.</p>
+          <div class="bar-stack">
+            <div class="bar-row">
+              <div class="bar-label">num_gpu=0</div>
+              <div class="bar-track"><div class="bar-fill blue" data-width="100"></div></div>
+              <div class="bar-note">5/5 OK</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">num_gpu=1</div>
+              <div class="bar-track"><div class="bar-fill red" data-width="28"></div></div>
+              <div class="bar-note">Crash</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label">num_gpu=2/-1</div>
+              <div class="bar-track"><div class="bar-fill red" data-width="16"></div></div>
+              <div class="bar-note">Crash</div>
+            </div>
+          </div>
+        </article>
+      </div>
+      <div class="truth-box">
+        <span data-lang="ja"><strong>ここが大事です。</strong> 結論は「Vega は全部だめ」ではありません。今回の条件では、<strong>ROCm/HIP では通る経路</strong>と、<strong>Vulkan で特定条件下に失敗する経路</strong>が分かれました。さらに、別モデルの `phi4-mini` は Vulkan offload でも通ったので、失敗は GPU 全体に普遍的ではなく、<strong>モデル依存</strong>でもありました。</span>
+        <span data-lang="en"><strong>This is the key point.</strong> The conclusion is not “Vega is bad everywhere.” In these tested conditions, one path worked under ROCm/HIP, while another path failed under Vulkan for specific conditions. And because `phi4-mini` survived Vulkan offload, the failure was not universal to the GPU itself; it was also <strong>model-dependent</strong>.</span>
+      </div>
+    </section>
+
+    <section class="section reveal" id="why">
+      <h2 data-lang="ja">なぜこの話が大事？</h2>
+      <h2 data-lang="en">Why does this matter?</h2>
+      <p class="section-lead" data-lang="ja">古い GPU を持つ学生や小規模ラボにとって、「公式に新しくない」ことと「もう使えない」ことは同じではありません。</p>
+      <p class="section-lead" data-lang="en">For students and small labs, “not officially current” is not the same as “completely unusable.”</p>
+      <div class="story-grid">
+        <article class="story-card">
+          <h3 data-lang="ja">ハードだけでは決まらない</h3>
+          <h3 data-lang="en">Hardware alone did not decide the outcome</h3>
+          <p data-lang="ja">同じ GPU でも、ソフトウェア経路が違うと結果が違いました。</p>
+          <p data-lang="en">The same GPU behaved differently depending on the software path.</p>
+        </article>
+        <article class="story-card">
+          <h3 data-lang="ja">証拠で切り分けられる</h3>
+          <h3 data-lang="en">Evidence can separate the causes</h3>
+          <p data-lang="ja">コード、ログ、再現実験を合わせることで、曖昧な印象ではなく具体的な説明に近づけました。</p>
+          <p data-lang="en">By combining code, logs, and repeated runs, the explanation became evidence-based instead of impression-based.</p>
+        </article>
+        <article class="story-card">
+          <h3 data-lang="ja">再利用の可能性が見える</h3>
+          <h3 data-lang="en">Reuse still has room</h3>
+          <p data-lang="ja">古い GPU でも、条件を選べば役立つ可能性があると示せました。</p>
+          <p data-lang="en">The study suggests that older GPUs may still be useful when the conditions and software path are chosen carefully.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="next">
+      <h2 data-lang="ja">もっと知りたい人へ</h2>
+      <h2 data-lang="en">Where to go next</h2>
+      <p class="section-lead" data-lang="ja">ここから先は、知りたい深さに合わせて進めます。</p>
+      <p class="section-lead" data-lang="en">From here, choose the depth that matches what you want to learn.</p>
+      <div class="link-grid">
+        <article class="link-card">
+          <h3 data-lang="ja">音声とポスター</h3>
+          <h3 data-lang="en">Audio and poster</h3>
+          <p data-lang="ja">まずは NotebookLM の解説音声とポスターで全体像をつかみたい人向けです。</p>
+          <p data-lang="en">Best if you want a quick overview through the audio commentary and poster.</p>
+          <a class="mini-link" href="media.html">media.html</a>
+        </article>
+        <article class="link-card">
+          <h3 data-lang="ja">実験の流れ</h3>
+          <h3 data-lang="en">Experiment history</h3>
+          <p data-lang="ja">調査がどう進んだかを順番に見たい人向けです。</p>
+          <p data-lang="en">Best if you want to follow the investigation as a story.</p>
+          <a class="mini-link" href="experiment-history.html">experiment-history.html</a>
+        </article>
+        <article class="link-card">
+          <h3 data-lang="ja">厳密なコード根拠</h3>
+          <h3 data-lang="en">Strict code evidence</h3>
+          <p data-lang="ja">`num_gpu` の意味を厳密な行番号で確認したい人向けです。</p>
+          <p data-lang="en">Best if you want line-by-line proof of what `num_gpu` means.</p>
+          <a class="mini-link" href="code-tracing.html">code-tracing.html</a>
+        </article>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span data-lang="ja">General audience page for vega-hbmx-pages</span>
+      <span data-lang="en">General audience page for vega-hbmx-pages</span>
+    </div>
+  </div>
+
+  <script>
+    const html = document.documentElement;
+    const btnJa = document.getElementById('btn-ja');
+    const btnEn = document.getElementById('btn-en');
+    const reveals = document.querySelectorAll('.reveal');
+    const counters = document.querySelectorAll('.stat-value[data-target]');
+    const bars = document.querySelectorAll('.bar-fill[data-width]');
+
+    function setLanguage(lang) {
+      html.setAttribute('data-language', lang);
+      html.setAttribute('lang', lang);
+      btnJa.classList.toggle('active', lang === 'ja');
+      btnEn.classList.toggle('active', lang === 'en');
+      localStorage.setItem('vega-hbmx-general-lang', lang);
+    }
+
+    btnJa.addEventListener('click', () => setLanguage('ja'));
+    btnEn.addEventListener('click', () => setLanguage('en'));
+
+    setLanguage(localStorage.getItem('vega-hbmx-general-lang') === 'en' ? 'en' : 'ja');
+
+    document.addEventListener('mousemove', (event) => {
+      const x = `${(event.clientX / window.innerWidth) * 100}%`;
+      const y = `${(event.clientY / window.innerHeight) * 100}%`;
+      document.documentElement.style.setProperty('--hero-glow-x', x);
+      document.documentElement.style.setProperty('--hero-glow-y', y);
+    });
+
+    function animateCounter(el) {
+      if (el.dataset.animated === 'true') return;
+      el.dataset.animated = 'true';
+      const target = Number(el.dataset.target || '0');
+      const duration = 1200;
+      const start = performance.now();
+
+      function tick(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(target * eased);
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('visible');
+        entry.target.querySelectorAll('.stat-value[data-target]').forEach(animateCounter);
+        entry.target.querySelectorAll('.bar-fill[data-width]').forEach((bar) => {
+          if (bar.dataset.animated === 'true') return;
+          bar.dataset.animated = 'true';
+          bar.style.width = `${bar.dataset.width}%`;
+        });
+      });
+    }, { threshold: 0.18 });
+
+    reveals.forEach((el) => observer.observe(el));
+
+    counters.forEach((el) => {
+      if (el.closest('.visible')) animateCounter(el);
+    });
+
+    bars.forEach((bar) => {
+      if (bar.closest('.visible')) bar.style.width = `${bar.dataset.width}%`;
+    });
+  </script>
+</body>
+</html>
