@@ -1,1 +1,392 @@
-test
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>vega-hbmx-pages | Legacy HBM GPU Investigation</title>
+	<style>
+		:root {
+			--red: #B71C1C;
+			--blue: #0D47A1;
+			--green: #1B5E20;
+			--orange: #E65100;
+			--text: #212121;
+			--muted: #616161;
+			--line: #D7DEE8;
+			--bg: #F6F8FB;
+			--card: #FFFFFF;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(circle at top right, rgba(13,71,161,0.09), transparent 26%),
+				radial-gradient(circle at bottom left, rgba(183,28,28,0.08), transparent 22%),
+				var(--bg);
+		}
+
+		.page {
+			max-width: 1240px;
+			margin: 0 auto;
+			padding: 32px 24px 56px;
+		}
+
+		.toolbar {
+			display: flex;
+			justify-content: flex-end;
+			margin-bottom: 18px;
+		}
+
+		.lang-toggle {
+			display: inline-flex;
+			gap: 6px;
+			padding: 6px;
+			border-radius: 999px;
+			border: 1px solid var(--line);
+			background: rgba(255,255,255,0.92);
+			box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+		}
+
+		.lang-btn {
+			border: none;
+			border-radius: 999px;
+			padding: 8px 14px;
+			font-size: 14px;
+			font-weight: bold;
+			background: transparent;
+			color: #455A64;
+			cursor: pointer;
+		}
+
+		.lang-btn.active {
+			background: var(--blue);
+			color: #FFFFFF;
+		}
+
+		.hero {
+			background: linear-gradient(135deg, #0D47A1 0%, #1565C0 58%, #1976D2 100%);
+			color: #FFFFFF;
+			border-radius: 20px;
+			padding: 34px 34px 28px;
+			box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+		}
+
+		.hero h1 {
+			margin: 0 0 12px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 42px;
+			line-height: 1.1;
+		}
+
+		.hero p {
+			margin: 0;
+			font-size: 22px;
+			line-height: 1.45;
+			color: #E3F2FD;
+		}
+
+		.hero-meta {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 12px;
+			border-radius: 999px;
+			font-size: 14px;
+			font-weight: bold;
+			background: rgba(255,255,255,0.14);
+			color: #FFFFFF;
+			border: 1px solid rgba(255,255,255,0.18);
+		}
+
+		.summary {
+			margin-top: 22px;
+			background: #FFFFFF;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 20px;
+			line-height: 1.5;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+		}
+
+		.section-title {
+			margin: 34px 0 14px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 30px;
+			color: var(--red);
+		}
+
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 18px;
+		}
+
+		.card {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			padding: 20px 20px 18px;
+			box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+			display: flex;
+			flex-direction: column;
+			min-height: 270px;
+		}
+
+		.card-type {
+			display: inline-block;
+			align-self: flex-start;
+			padding: 6px 10px;
+			border-radius: 999px;
+			font-size: 13px;
+			font-weight: bold;
+			color: #FFFFFF;
+			margin-bottom: 12px;
+		}
+
+		.type-slides { background: var(--red); }
+		.type-history { background: var(--green); }
+		.type-trace { background: var(--orange); }
+
+		.card h3 {
+			margin: 0 0 8px;
+			font-size: 28px;
+			line-height: 1.2;
+		}
+
+		.filename {
+			margin: 0 0 12px;
+			font-family: 'Consolas', monospace;
+			font-size: 14px;
+			color: #546E7A;
+			word-break: break-all;
+		}
+
+		.card p {
+			margin: 0 0 12px;
+			font-size: 18px;
+			line-height: 1.5;
+			color: #37474F;
+		}
+
+		.card ul {
+			margin: 0 0 16px;
+			padding-left: 20px;
+			color: #455A64;
+			font-size: 16px;
+			line-height: 1.45;
+		}
+
+		.card li { margin-bottom: 6px; }
+
+		.actions {
+			margin-top: auto;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			padding: 11px 15px;
+			border-radius: 10px;
+			font-weight: bold;
+			font-size: 15px;
+			transition: transform 0.12s ease, box-shadow 0.12s ease;
+		}
+
+		.button:hover {
+			transform: translateY(-1px);
+			box-shadow: 1px 3px 10px rgba(0,0,0,0.08);
+		}
+
+		.button-primary {
+			background: var(--blue);
+			color: #FFFFFF;
+		}
+
+		.button-secondary {
+			background: #ECEFF1;
+			color: #37474F;
+		}
+
+		.note {
+			margin-top: 28px;
+			background: #FFF8E1;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 18px;
+			line-height: 1.5;
+			color: #5D4037;
+		}
+
+		.footer {
+			margin-top: 26px;
+			color: var(--muted);
+			font-size: 15px;
+			text-align: center;
+		}
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] span[data-lang="en"],
+		html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+		html[data-language="en"] p[data-lang="en"],
+		html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"],
+		html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],
+		html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],
+		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+		@media (max-width: 760px) {
+			.page { padding: 20px 16px 42px; }
+			.hero { padding: 26px 22px 22px; }
+			.hero h1 { font-size: 32px; }
+			.hero p { font-size: 18px; }
+			.summary { font-size: 17px; }
+			.section-title { font-size: 24px; }
+			.card h3 { font-size: 24px; }
+			.card p { font-size: 16px; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<div class="lang-toggle" aria-label="Language switch">
+				<button id="btn-ja" class="lang-btn active" type="button">JP</button>
+				<button id="btn-en" class="lang-btn" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">vega-hbmx-pages</h1>
+			<h1 data-lang="en">vega-hbmx-pages</h1>
+			<p data-lang="ja">旧世代 HBM GPU 上での ROCm/HIP と Vulkan の挙動差をまとめた GitHub Pages 公開用トップページです。</p>
+			<p data-lang="en">This is the GitHub Pages landing page for materials on backend-dependent behavior of legacy HBM GPUs under ROCm/HIP and Vulkan.</p>
+			<div class="hero-meta">
+				<span class="badge">https://aets-magi.github.io/vega-hbmx-pages/</span>
+				<span class="badge">AMD Radeon RX Vega / gfx900</span>
+				<span class="badge">ROCm/HIP vs Vulkan</span>
+			</div>
+		</section>
+
+		<div class="summary">
+			<span data-lang="ja">公開するファイル名はそのまま維持し、ルートの index から各資料へ直接移動できるようにしています。スライド型HTMLはブラウザで開いて、そのまま発表資料・補助資料として利用できます。</span>
+			<span data-lang="en">The original filenames are preserved. This root index links directly to each published document so they can be used immediately as presentation materials or supplementary web pages.</span>
+		</div>
+
+		<h2 class="section-title" data-lang="ja">公開コンテンツ</h2>
+		<h2 class="section-title" data-lang="en">Published contents</h2>
+
+		<section class="card-grid">
+			<article class="card">
+				<span class="card-type type-slides">Slides</span>
+				<h3 data-lang="ja">発表用・補助スライド</h3>
+				<h3 data-lang="en">Advanced bilingual slides</h3>
+				<p class="filename">presentation_advanced_en-jp.html</p>
+				<p data-lang="ja">日英切替つきの発表・補助スライドです。実験設定、再現結果、クラッシュ局在化、追加追試までを1本で確認できます。</p>
+				<p data-lang="en">A bilingual slide deck with English/Japanese switching. It covers setup, reproduced results, failure localization, and follow-up tests.</p>
+				<ul>
+					<li data-lang="ja">左右キーでページ移動</li>
+					<li data-lang="en">Navigate with arrow keys</li>
+					<li data-lang="ja">会場でそのまま表示可能</li>
+					<li data-lang="en">Ready for direct presentation use</li>
+				</ul>
+				<div class="actions">
+					<a class="button button-primary" href="presentation_advanced_en-jp.html">Open</a>
+					<a class="button button-secondary" href="./presentation_advanced_en-jp.html">Direct URL</a>
+				</div>
+			</article>
+
+			<article class="card">
+				<span class="card-type type-history">Timeline</span>
+				<h3 data-lang="ja">実験の流れ</h3>
+				<h3 data-lang="en">Experiment history</h3>
+				<p class="filename">experiment-history.html</p>
+				<p data-lang="ja">問題設定から再現確認、モデル依存性の追試まで、調査の流れを時系列で整理したページです。</p>
+				<p data-lang="en">A timeline-style document showing the investigation flow from problem framing to reproducibility and model-dependency follow-up tests.</p>
+				<ul>
+					<li data-lang="ja">1ページで流れを俯瞰</li>
+					<li data-lang="en">Single-page overview of the full workflow</li>
+					<li data-lang="ja">凡例・やさしい解説つき</li>
+					<li data-lang="en">Includes legend and non-specialist explanations</li>
+				</ul>
+				<div class="actions">
+					<a class="button button-primary" href="experiment-history.html">Open</a>
+					<a class="button button-secondary" href="./experiment-history.html">Direct URL</a>
+				</div>
+			</article>
+
+			<article class="card">
+				<span class="card-type type-trace">Trace</span>
+				<h3 data-lang="ja">`num_gpu` コード追跡資料</h3>
+				<h3 data-lang="en">`num_gpu` code-tracing deck</h3>
+				<p class="filename">code-tracing.html</p>
+				<p data-lang="ja">`num_gpu` の意味を client → server → runner → llama.cpp まで厳密な行番号で追う単体資料です。</p>
+				<p data-lang="en">A standalone supplementary deck tracing the exact meaning of `num_gpu` from client to server, runner, and llama.cpp with precise line references.</p>
+				<ul>
+					<li data-lang="ja">全11ページの単体補助資料</li>
+					<li data-lang="en">11-page standalone explainer</li>
+					<li data-lang="ja">`num_gpu` 誤読防止に有効</li>
+					<li data-lang="en">Useful for preventing `num_gpu` misinterpretation</li>
+				</ul>
+				<div class="actions">
+					<a class="button button-primary" href="code-tracing.html">Open</a>
+					<a class="button button-secondary" href="./code-tracing.html">Direct URL</a>
+				</div>
+			</article>
+		</section>
+
+		<div class="note">
+			<span data-lang="ja"><strong>公開メモ:</strong> GitHub Pages のルートは <strong>/vega-hbmx-pages/</strong> です。この index は相対リンクのみを使っているため、公開URL配下でそのまま動作します。</span>
+			<span data-lang="en"><strong>Publishing note:</strong> The GitHub Pages root is <strong>/vega-hbmx-pages/</strong>. This index uses only relative links, so it works directly under the published site root.</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">AETS-MAGI GitHub Pages landing page for vega-hbmx materials</span>
+			<span data-lang="en">AETS-MAGI GitHub Pages landing page for vega-hbmx materials</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+
+		function setLanguage(lang) {
+			html.setAttribute('data-language', lang);
+			html.setAttribute('lang', lang);
+			btnJa.classList.toggle('active', lang === 'ja');
+			btnEn.classList.toggle('active', lang === 'en');
+			localStorage.setItem('vega-hbmx-pages-lang', lang);
+		}
+
+		btnJa.addEventListener('click', () => setLanguage('ja'));
+		btnEn.addEventListener('click', () => setLanguage('en'));
+
+		setLanguage(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
