@@ -132,6 +132,24 @@
 			gap: 18px;
 		}
 
+		.flow-section {
+			margin-top: 26px;
+		}
+
+		.flow-title {
+			margin: 0 0 12px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 22px;
+			color: var(--blue);
+		}
+
+		.flow-lead {
+			margin: 0 0 14px;
+			font-size: 17px;
+			line-height: 1.5;
+			color: #546E7A;
+		}
+
 		.card {
 			background: var(--card);
 			border: 1px solid var(--line);
@@ -157,6 +175,7 @@
 		.type-slides { background: var(--red); }
 		.type-history { background: var(--green); }
 		.type-trace { background: var(--orange); }
+		.type-general { background: var(--blue); }
 
 		.card h3 {
 			margin: 0 0 8px;
@@ -260,14 +279,56 @@
 		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
 
 		@media (max-width: 760px) {
+			.toolbar {
+				justify-content: center;
+			}
+
 			.page { padding: 20px 16px 42px; }
 			.hero { padding: 26px 22px 22px; }
 			.hero h1 { font-size: 32px; }
 			.hero p { font-size: 18px; }
+			.hero-meta { gap: 8px; }
+			.badge {
+				width: 100%;
+				justify-content: center;
+			}
 			.summary { font-size: 17px; }
 			.section-title { font-size: 24px; }
+			.flow-title { font-size: 20px; }
+			.flow-lead { font-size: 16px; }
+			.card-grid {
+				grid-template-columns: 1fr;
+			}
+			.card {
+				min-height: unset;
+				padding: 18px 16px 16px;
+			}
 			.card h3 { font-size: 24px; }
 			.card p { font-size: 16px; }
+			.actions {
+				flex-direction: column;
+			}
+			.button {
+				width: 100%;
+			}
+		}
+
+		@media (max-width: 480px) {
+			.page { padding: 16px 12px 32px; }
+			.hero {
+				padding: 20px 16px 18px;
+				border-radius: 16px;
+			}
+			.hero h1 { font-size: 28px; }
+			.hero p { font-size: 16px; }
+			.summary,
+			.note {
+				padding: 14px 14px;
+				font-size: 15px;
+			}
+			.section-title { font-size: 22px; }
+			.card h3 { font-size: 22px; }
+			.filename { font-size: 13px; }
 		}
 	</style>
 </head>
@@ -300,9 +361,14 @@
 		<h2 class="section-title" data-lang="ja">公開コンテンツ</h2>
 		<h2 class="section-title" data-lang="en">Published contents</h2>
 
-		<section class="card-grid">
-			<article class="card">
-				<span class="card-type type-history">Media</span>
+		<section class="flow-section">
+			<h3 class="flow-title" data-lang="ja">1. まずはやさしい入口から</h3>
+			<h3 class="flow-title" data-lang="en">1. Start with the easiest entry points</h3>
+			<p class="flow-lead" data-lang="ja">最初に音声や時系列資料を見ると、全体像をつかみやすくなります。</p>
+			<p class="flow-lead" data-lang="en">Start with the audio and the timeline if you want a quick overview before reading the more technical materials.</p>
+			<div class="card-grid">
+				<article class="card">
+					<span class="card-type type-general">Media</span>
 				<h3 data-lang="ja">音声・ポスター閲覧ページ</h3>
 				<h3 data-lang="en">Media viewer page</h3>
 				<p class="filename">media.html</p>
@@ -318,29 +384,10 @@
 					<a class="button button-primary" href="media.html">Open</a>
 					<a class="button button-secondary" href="./media.html">Direct URL</a>
 				</div>
-			</article>
+				</article>
 
-			<article class="card">
-				<span class="card-type type-slides">Slides</span>
-				<h3 data-lang="ja">発表用・補助スライド</h3>
-				<h3 data-lang="en">Advanced bilingual slides</h3>
-				<p class="filename">presentation_advanced_en-jp.html</p>
-				<p data-lang="ja">日英切替つきの発表・補助スライドです。実験設定、再現結果、クラッシュ局在化、追加追試までを1本で確認できます。</p>
-				<p data-lang="en">A bilingual slide deck with English/Japanese switching. It covers setup, reproduced results, failure localization, and follow-up tests.</p>
-				<ul>
-					<li data-lang="ja">左右キーでページ移動</li>
-					<li data-lang="en">Navigate with arrow keys</li>
-					<li data-lang="ja">会場でそのまま表示可能</li>
-					<li data-lang="en">Ready for direct presentation use</li>
-				</ul>
-				<div class="actions">
-					<a class="button button-primary" href="presentation_advanced_en-jp.html">Open</a>
-					<a class="button button-secondary" href="./presentation_advanced_en-jp.html">Direct URL</a>
-				</div>
-			</article>
-
-			<article class="card">
-				<span class="card-type type-history">Timeline</span>
+				<article class="card">
+					<span class="card-type type-history">Timeline</span>
 				<h3 data-lang="ja">実験の流れ</h3>
 				<h3 data-lang="en">Experiment history</h3>
 				<p class="filename">experiment-history.html</p>
@@ -356,10 +403,45 @@
 					<a class="button button-primary" href="experiment-history.html">Open</a>
 					<a class="button button-secondary" href="./experiment-history.html">Direct URL</a>
 				</div>
-			</article>
+				</article>
+			</div>
+		</section>
 
-			<article class="card">
-				<span class="card-type type-trace">Trace</span>
+		<section class="flow-section">
+			<h3 class="flow-title" data-lang="ja">2. 発表・補助資料を見る</h3>
+			<h3 class="flow-title" data-lang="en">2. Move to the presentation materials</h3>
+			<p class="flow-lead" data-lang="ja">全体像をつかんだら、次に発表用スライドで結果と主張の流れをまとめて確認できます。</p>
+			<p class="flow-lead" data-lang="en">After the overview, the main slide deck presents the tested conditions, results, and claims in presentation form.</p>
+			<div class="card-grid">
+				<article class="card">
+					<span class="card-type type-slides">Slides</span>
+					<h3 data-lang="ja">発表用・補助スライド</h3>
+					<h3 data-lang="en">Advanced bilingual slides</h3>
+					<p class="filename">presentation_advanced_en-jp.html</p>
+					<p data-lang="ja">日英切替つきの発表・補助スライドです。実験設定、再現結果、クラッシュ局在化、追加追試までを1本で確認できます。</p>
+					<p data-lang="en">A bilingual slide deck with English/Japanese switching. It covers setup, reproduced results, failure localization, and follow-up tests.</p>
+					<ul>
+						<li data-lang="ja">左右キーでページ移動</li>
+						<li data-lang="en">Navigate with arrow keys</li>
+						<li data-lang="ja">会場でそのまま表示可能</li>
+						<li data-lang="en">Ready for direct presentation use</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="presentation_advanced_en-jp.html">Open</a>
+						<a class="button button-secondary" href="./presentation_advanced_en-jp.html">Direct URL</a>
+					</div>
+				</article>
+			</div>
+		</section>
+
+		<section class="flow-section">
+			<h3 class="flow-title" data-lang="ja">3. さらに研究向けの根拠へ進む</h3>
+			<h3 class="flow-title" data-lang="en">3. Go deeper into the research evidence</h3>
+			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、最後に code trace を参照できます。</p>
+			<p class="flow-lead" data-lang="en">If you want the strict implementation-level evidence, the final step is the standalone code-tracing deck.</p>
+			<div class="card-grid">
+				<article class="card">
+					<span class="card-type type-trace">Trace</span>
 				<h3 data-lang="ja">`num_gpu` コード追跡資料</h3>
 				<h3 data-lang="en">`num_gpu` code-tracing deck</h3>
 				<p class="filename">code-tracing.html</p>
@@ -375,7 +457,8 @@
 					<a class="button button-primary" href="code-tracing.html">Open</a>
 					<a class="button button-secondary" href="./code-tracing.html">Direct URL</a>
 				</div>
-			</article>
+				</article>
+			</div>
 		</section>
 
 		<div class="note">
