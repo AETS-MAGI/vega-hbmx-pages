@@ -531,15 +531,15 @@
           That is why I believe AI and large-scale computation should not belong only to elite laboratories or major corporations. They should be open to many more people.
         </p>
         <p data-lang="en">
-          When I think of future technology, I remember <strong>Astro Boy</strong> and <strong>Doraemon</strong>. Those stories did not imagine the future as something that pushes people away. They imagined it as something that helps people.
+          When I think of future technology, I remember the kinds of stories I loved as a child — stories in which technology was imagined not as something that pushes people away, but as something that helps people.
         </p>
         <p data-lang="en">
           I do not want remarkable machines to become "secret tools" for only a small number of privileged people. I want them to be tools that reach toward people who are struggling, and toward people who want to try.
         </p>
         <p data-lang="en">
           But what is happening now?<br>
-          Large corporations are spending billions — even trillions — to hoard semiconductors,<br>
-          and people who want to try new things on their own are finding themselves in a difficult position.
+          Large corporations are investing enormous amounts of money in advanced semiconductor infrastructure,<br>
+          while independent researchers and smaller groups often face difficult barriers to entry.
         </p>
         <p data-lang="en">
           That is why I explore ways for people to take part in science and computation even with older hardware and limited budgets.
@@ -590,7 +590,7 @@
         </p>
 
         <p data-lang="en">
-          I have a deep desire to understand <strong>how human beings think, what they feel, and how they live</strong>. I want to understand the human being as such.
+          I have a deep desire to understand <strong>how human beings think, what they feel, and how they live</strong>. I want to understand what it means to be human.
         </p>
         <p data-lang="en">
           That is why I want to think about humanity, and about human intelligence, through science.
@@ -813,7 +813,7 @@
             including this project, become a source of strength for many people.
           </p>
 
-          <div class="english-close">May the power of science be with us.</div>
+          <div class="english-close">May science remain within everyone's reach.</div>
         </div>
       </div>
     </section>
@@ -834,7 +834,7 @@
             <h3 data-lang="ja">音声解説とポスター</h3>
             <h3 data-lang="en">Audio &amp; poster</h3>
             <p data-lang="ja">AIが生成した解説音声と、伊藤作成のA0ポスターで全体像をつかめます。</p>
-            <p data-lang="en">Get the big picture through AI-generated audio and Human-generated research poster.</p>
+            <p data-lang="en">Get the big picture through AI-generated audio and a human-created research poster.</p>
           </a>
           <a class="nav-card" href="experiment-history.html">
             <div class="nav-label"><span data-lang="ja">流れを追う</span><span data-lang="en">Timeline</span></div>
@@ -857,7 +857,7 @@
             <p data-lang="ja">ソースコードの行番号まで追った厳密な根拠資料です。</p>
             <p data-lang="en">Line-by-line source code evidence for the findings.</p>
           </a>
-          <a class="nav-card" href="https://aets-magi.github.io/magi-pages/" style="border-color:var(--accent-light);">
+          <a class="nav-card" href="https://aets-magi.github.io/magi-pages/" target="_blank" rel="noopener noreferrer" style="border-color:var(--accent-light);">
             <div class="nav-label"><span data-lang="ja">関連プロジェクト</span><span data-lang="en">Related</span></div>
             <h3 data-lang="ja">MAGI — AIが検証可能な科学であるために</h3>
             <h3 data-lang="en">MAGI — Making AI a verifiable science</h3>
@@ -892,12 +892,12 @@
       html.setAttribute('lang', lang);
       btnJa.classList.toggle('active', lang === 'ja');
       btnEn.classList.toggle('active', lang === 'en');
-      localStorage.setItem('vega-hbmx-general-lang', lang);
+      localStorage.setItem('aets-lang', lang);
     }
 
     btnJa.addEventListener('click', () => setLanguage('ja'));
     btnEn.addEventListener('click', () => setLanguage('en'));
-    setLanguage(localStorage.getItem('vega-hbmx-general-lang') === 'en' ? 'en' : 'ja');
+    setLanguage(localStorage.getItem('aets-lang') === 'en' ? 'en' : 'ja');
 
     /* ── Reveal on scroll ── */
     const observer = new IntersectionObserver((entries) => {
