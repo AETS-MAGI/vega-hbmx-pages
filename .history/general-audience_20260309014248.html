@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>未来の道具を、みんなの手に。 | AETS Investigations | IEICE GNW-68 | Kyushu Sangyo University | March 9, 2026</title>
+  <style>
+    :root {
+      --bg: #faf9f7;
+      --bg-warm: #f3efe9;
+      --card: #ffffff;
+      --text: #2a2a2a;
+      --text-light: #555;
+      --text-faint: #999;
+      --accent: #c95d2e;
+      --accent-light: #e8a97e;
+      --accent-glow: rgba(201, 93, 46, 0.08);
+      --blue: #3a6ea5;
+      --blue-soft: rgba(58, 110, 165, 0.07);
+      --line: #e5e0da;
+      --shadow: 0 4px 20px rgba(0,0,0,0.05);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Segoe UI', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.95;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Subtle background pattern ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.25;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(201,93,46,0.08), transparent 30%),
+        radial-gradient(circle at 85% 75%, rgba(58,110,165,0.06), transparent 30%),
+        radial-gradient(1px 1px at 20% 30%, rgba(0,0,0,0.03), transparent),
+        radial-gradient(1px 1px at 60% 70%, rgba(0,0,0,0.02), transparent),
+        radial-gradient(1px 1px at 80% 10%, rgba(0,0,0,0.02), transparent);
+      background-size: 100% 100%, 100% 100%, 3px 3px, 5px 5px, 4px 4px;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 20px 20px 80px;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 0;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .brand {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 4px;
+      padding: 3px;
+      border-radius: 999px;
+      background: var(--bg-warm);
+      border: 1px solid var(--line);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 5px 13px;
+      font-size: 13px;
+      font-weight: 700;
+      background: transparent;
+      color: var(--text-faint);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .lang-btn.active {
+      color: #fff;
+      background: var(--accent);
+    }
+
+    /* ── Full-screen scroll sections ── */
+    .scroll-section {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 0;
+    }
+
+    .scroll-section.short {
+      min-height: auto;
+      padding: 48px 0;
+    }
+
+    /* ── Hero / Catchcopy ── */
+    .hero {
+      text-align: center;
+      padding: 80px 8px 60px;
+    }
+
+    .hero-catch {
+      font-size: clamp(30px, 7vw, 54px);
+      font-weight: 900;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+
+    .hero-catch em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      line-height: 2.1;
+      color: var(--text-light);
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .divider {
+      width: 40px; height: 3px;
+      background: var(--accent-light);
+      border-radius: 2px;
+      margin: 44px auto 0;
+    }
+
+    /* ── Section headings ── */
+    .s-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .s-title {
+      font-size: clamp(22px, 4.2vw, 34px);
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 24px;
+      color: var(--text);
+    }
+
+    .s-body {
+      font-size: 17px;
+      line-height: 2.1;
+      color: var(--text-light);
+    }
+
+    .s-body p + p {
+      margin-top: 20px;
+    }
+
+    .s-body strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .s-body ul {
+      margin: 12px 0 12px 24px;
+      list-style: disc;
+    }
+
+    .s-body li {
+      font-size: 17px;
+      line-height: 2.1;
+      color: var(--text-light);
+    }
+
+    /* ── Analogy card ── */
+    .analogy {
+      margin-top: 32px;
+      padding: 28px 26px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--accent-glow), var(--blue-soft));
+      border: 1px solid rgba(201,93,46,0.10);
+      text-align: center;
+    }
+
+    .analogy p {
+      font-size: 17px;
+      line-height: 2.1;
+      color: var(--text);
+      font-style: italic;
+      max-width: 580px;
+      margin: 0 auto;
+    }
+
+    /* ── Mission cards ── */
+    .mission-points {
+      margin-top: 28px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .mission-point {
+      padding: 14px 20px;
+      border-left: 3px solid var(--accent-light);
+      background: var(--card);
+      border-radius: 0 12px 12px 0;
+      font-size: 16px;
+      line-height: 1.85;
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    /* ── Declaration ── */
+    .declaration {
+      text-align: center;
+      padding: 64px 24px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, #2c2c2c 0%, #38332e 100%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .declaration::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 25% 55%, rgba(201,93,46,0.16), transparent 45%),
+        radial-gradient(circle at 75% 35%, rgba(58,110,165,0.10), transparent 45%);
+      pointer-events: none;
+    }
+
+    .declaration-inner { position: relative; z-index: 1; }
+
+    .declaration h2 {
+      font-size: clamp(22px, 5vw, 38px);
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 24px;
+    }
+
+    .declaration p {
+      font-size: 17px;
+      line-height: 2.1;
+      color: rgba(255,255,255,0.78);
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .declaration .english-close {
+      margin-top: 32px;
+      font-size: 20px;
+      font-weight: 700;
+      font-style: italic;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Nav links ── */
+    .nav-section {
+      margin-top: 8px;
+    }
+
+    .nav-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .nav-intro {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text-light);
+      margin-bottom: 18px;
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .nav-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      padding: 18px 16px;
+      border-radius: 14px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    }
+
+    .nav-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.08);
+      border-color: var(--accent-light);
+    }
+
+    .nav-card .nav-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 4px;
+    }
+
+    .nav-card h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .nav-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-light);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 48px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-faint);
+    }
+
+    /* ── Reveal animation ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Language toggle ── */
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] h1[data-lang="en"],
+    html[data-language="ja"] h1[data-lang="ja"],
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"],
+    html[data-language="en"] h3[data-lang="en"],
+    html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+    html[data-language="en"] ul[data-lang="en"],
+    html[data-language="ja"] ul[data-lang="ja"] { display: block; }
+
+    /* ── Responsive ── */
+    @media (max-width: 760px) {
+      .page { padding: 14px 14px 60px; }
+
+      .topbar { position: static; margin-bottom: 0; }
+
+      .scroll-section { min-height: auto; padding: 40px 0; }
+
+      .hero { padding: 48px 4px 36px; }
+
+      .nav-grid { grid-template-columns: 1fr; }
+
+      .declaration { padding: 44px 18px; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-catch { font-size: 26px; }
+      .s-title { font-size: 21px; }
+      .declaration h2 { font-size: 21px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- Top bar -->
+    <div class="topbar">
+      <a class="brand" href="index.html">
+        <span class="brand-dot"></span>
+        <span>AETS Investigations</span>
+      </a>
+      <div class="lang-toggle" aria-label="Language switch">
+        <button class="lang-btn active" id="btn-ja" type="button">JP</button>
+        <button class="lang-btn" id="btn-en" type="button">EN</button>
+      </div>
+    </div>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         1. CATCHCOPY
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section hero reveal visible">
+      <h1 class="hero-catch" data-lang="ja">
+        <em>未来の道具</em>を、<br>みんなの手に。
+      </h1>
+      <h1 class="hero-catch" data-lang="en">
+        <em>Future tools,</em><br>in everyone's hands.
+      </h1>
+
+      <p class="hero-sub" data-lang="ja">
+        AETS 伊藤あきらの研究開発についてのページです。<br>
+        技術の専門知識がなくても読める内容になっています。
+      </p>
+      <p class="hero-sub" data-lang="en">
+        A page about the R&amp;D work of AETS Akira Ito.<br>
+        Written so it can be read without specialized technical knowledge.
+      </p>
+
+      <div class="divider"></div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         2. PHILOSOPHY
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section reveal" id="philosophy">
+      <div class="s-label">Philosophy</div>
+      <h2 class="s-title" data-lang="ja">理念</h2>
+      <h2 class="s-title" data-lang="en">Philosophy</h2>
+
+      <div class="s-body">
+        <p data-lang="ja">
+          わたしは、<strong>科学する力</strong>を、そして<strong>もっと世界を知りたいという純粋な願い</strong>を、一部の高価な機材を買える人だけのものにしたくありません。
+        </p>
+        <p data-lang="ja">
+          わたしは小さいころから科学が大好きでした。<br>
+          でも、お金や機材が潤沢にあったわけではありません。<br>
+          工夫したり、時には無理をしたりしながら、それでも世界の不思議にふれられる瞬間が好きでした。<br>
+          そして、いまでもそれが大好きです。
+        </p>
+        <p data-lang="ja">
+          だから、AIも、大きな計算も、特別な研究室や大企業だけの道具ではなく、もっと多くの人に開かれていてよいはずだと思うのです。
+        </p>
+        <p data-lang="ja">
+          たとえば、子どものころに見た<strong>鉄腕アトム</strong>や<strong>ドラえもん</strong>のように、未来の技術は本来、人を遠ざけるためではなく、人を助けるためにあるはずです。
+        </p>
+        <p data-lang="ja">
+          すごい機械が「一部の人だけの秘密道具」になるのではなく、困っている人や、挑戦したい人に手を伸ばす存在であってほしい。<br>
+          わたしはそう願っています。
+        </p>
+        <p data-lang="ja">
+          だからわたしは、古い機材や限られた予算でも、工夫と検証によって科学や計算に参加できる道を探しています。
+        </p>
+        <p data-lang="ja">
+          「新しくて高いものがないから無理」で終わらせるのではなく、何ができて、どこで困って、どうすれば道が開くのかを、実験と記録によって明らかにしたいと考えています。
+        </p>
+
+        <p data-lang="en">
+          I do not want <strong>the power to do science</strong>, or <strong>the simple wish to understand the world more deeply</strong>, to belong only to people who can afford expensive equipment.
+        </p>
+        <p data-lang="en">
+          I have loved science since I was a child.<br>
+          But I did not grow up with abundant money or unlimited access to machines.<br>
+          Even so, I loved those moments when, through ingenuity and persistence, I could still touch the mysteries of the world.<br>
+          And I still love them now.
+        </p>
+        <p data-lang="en">
+          That is why I believe AI and large-scale computation should not belong only to elite laboratories or major corporations. They should be open to many more people.
+        </p>
+        <p data-lang="en">
+          When I think of future technology, I remember <strong>Astro Boy</strong> and <strong>Doraemon</strong>. Those stories did not imagine the future as something that pushes people away. They imagined it as something that helps people.
+        </p>
+        <p data-lang="en">
+          I do not want remarkable machines to become "secret tools" for only a small number of privileged people. I want them to be tools that reach toward people who are struggling, and toward people who want to try.
+        </p>
+        <p data-lang="en">
+          That is why I explore ways for people to take part in science and computation even with older hardware and limited budgets.
+        </p>
+        <p data-lang="en">
+          Instead of ending the conversation with "It is impossible because the hardware is old and expensive alternatives are out of reach," I want to clarify what is possible, where the obstacles are, and how a path forward might still be opened — through experiments, records, and evidence.
+        </p>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         3. ABOUT ME
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section reveal" id="about">
+      <div class="s-label">About</div>
+      <h2 class="s-title" data-lang="ja">何を思って研究しているのか？</h2>
+      <h2 class="s-title" data-lang="en">About me</h2>
+
+      <div class="s-body">
+        <p data-lang="ja">
+          わたしは、<strong>人間がどのように考え、なにを想い、どのように生きてゆくのか</strong>、人間という存在そのものを知りたいと強く思っています。
+        </p>
+        <p data-lang="ja">
+          そのために、わたしはAIを通じて、人間や、人間の持つ知性のことを考えたいのです。
+        </p>
+        <p data-lang="ja">
+          そしてコンピュータやAIの実験環境を組みながら、同時に、<strong>さまざまな条件の中で科学を前に進める方法</strong>を探しています。
+        </p>
+        <p data-lang="ja">
+          世の中では、AIや大きな計算は「新しくて高価な機材がないと難しい」と思われがちです。<br>
+          でも、本当にそうなのかを、わたしは自分の手で確かめています。
+        </p>
+        <p data-lang="ja">
+          古い機材や既存の設備でも、条件や組み合わせを工夫すれば、まだできることがあるかもしれません。
+        </p>
+        <p data-lang="ja">
+          今回わたしがやっているのは、ただ古い機材にこだわることではありません。
+        </p>
+        <p data-lang="ja">
+          <strong>高い機材を買える人だけが科学できる世界のままでいいのか。</strong><br>
+          その問いを見つめ直し、もっと多くの人がこの世の中のふしぎに触れる道を作ることです。
+        </p>
+        <p data-lang="ja">
+          だから、うまくいった結果だけでなく、失敗した条件もきちんと残します。<br>
+          それは、次に同じことを試す人が、暗闇の中を手探りしなくてよくなるようにするためです。
+        </p>
+
+        <p data-lang="en">
+          I have a deep desire to understand <strong>how human beings think, what they feel, and how they live</strong>. I want to understand the human being as such.
+        </p>
+        <p data-lang="en">
+          That is why I want to think about humanity, and about human intelligence, through AI.
+        </p>
+        <p data-lang="en">
+          At the same time, while building computer and AI experimentation environments, I am also searching for <strong>ways to move science forward under a wide variety of conditions</strong>.
+        </p>
+        <p data-lang="en">
+          In today's world, people often assume that AI and large-scale computation are difficult without the newest and most expensive hardware. But I want to test, with my own hands, whether that assumption is really true.
+        </p>
+        <p data-lang="en">
+          Even older machines and existing equipment may still have something to offer, if we are careful about conditions, combinations, and design.
+        </p>
+        <p data-lang="en">
+          What I am doing is not simply an attachment to old hardware.
+        </p>
+        <p data-lang="en">
+          I am asking a deeper question:<br>
+          <strong>Should science remain something that only people with expensive equipment can do?</strong>
+        </p>
+        <p data-lang="en">
+          I want to revisit that question and help create more paths by which more people can encounter the mysteries of the world.
+        </p>
+        <p data-lang="en">
+          That is why I do not record only the successful cases. I also preserve the failed conditions.
+        </p>
+        <p data-lang="en">
+          I do that so that the next person who tries the same path will not have to search through the dark alone.
+        </p>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         4. MISSION 1
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section reveal" id="mission1">
+      <div class="s-label">Mission 1</div>
+      <h2 class="s-title" data-lang="ja">科学するための入口を広げる</h2>
+      <h2 class="s-title" data-lang="en">Widening the entrance to science</h2>
+
+      <div class="s-body">
+        <p data-lang="ja">
+          わたしのミッションは、<strong>科学するための入口を広げること</strong>です。
+        </p>
+        <p data-lang="ja">
+          高価な最新機材や、一部の閉じた環境だけに頼らなくても、学び、試し、確かめられる世界を作りたい。
+        </p>
+        <p data-lang="ja">
+          そのために、実際に動く条件、うまくいかない条件、そしてその理由を、証拠に基づいて切り分け、公開しています。
+        </p>
+        <p data-lang="ja">
+          科学は、誰かをふるい落とすためのものではなく、もっと多くの人が世界を理解し、試し、問いを持つためのものだと、わたしは考えています。
+        </p>
+        <p data-lang="ja">
+          世界には、人類がまだ見ぬ宝箱がたくさん隠れています。<br>
+          少なくとも、科学はその宝箱を開けるための強力な道具のひとつだと思っています。
+        </p>
+        <p data-lang="ja">
+          だからこそ、<strong>誰もが科学できる環境</strong>は大切なのです。
+        </p>
+
+        <p data-lang="en">
+          My mission is <strong>to widen the entrance to science</strong>.
+        </p>
+        <p data-lang="en">
+          I want to help create a world in which people can learn, test, and verify things without depending only on expensive cutting-edge hardware or closed environments available to only a few.
+        </p>
+        <p data-lang="en">
+          For that reason, I separate and document the conditions that work, the conditions that fail, and the reasons behind them, based on evidence.
+        </p>
+        <p data-lang="en">
+          I believe science is not something meant to filter people out. It should be something that allows more people to understand the world, to experiment, and to ask questions.
+        </p>
+        <p data-lang="en">
+          There are still many treasure chests in this world that humanity has not yet opened. And I believe science is one of the strongest tools we have for opening them.
+        </p>
+        <p data-lang="en">
+          That is why <strong>an environment in which anyone can do science</strong> matters.
+        </p>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         5. MISSION 2
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section reveal" id="mission2">
+      <div class="s-label">Mission 2</div>
+      <h2 class="s-title" data-lang="ja">パワーだけに頼らない科学</h2>
+      <h2 class="s-title" data-lang="en">A science that does not rely only on brute force</h2>
+
+      <div class="s-body">
+        <p data-lang="ja">
+          わたしが大事にしているのは、<strong>パワーだけに頼らない科学</strong>です。
+        </p>
+        <p data-lang="ja">
+          たくさんお金をかけて最新の機材を並べれば、解ける問題は増えるかもしれません。<br>
+          でもそれだけでは、「なぜ動くのか」「なぜ困るのか」「どこに工夫の余地があるのか」が見えにくくなります。
+        </p>
+        <p data-lang="ja">
+          わたしは、条件を切り分け、失敗も記録し、道を地図にするような研究や実験を大切にしています。
+        </p>
+        <p data-lang="ja">
+          そうすることで、限られた予算でも、既存の機材でも、科学に参加できる可能性を広げたいのです。
+        </p>
+
+        <p data-lang="en">
+          What I value is <strong>a science that does not rely only on brute force</strong>.
+        </p>
+        <p data-lang="en">
+          If we spend enough money and line up the newest machines, we may be able to solve more problems. But if we rely only on that approach, it becomes harder to see:
+        </p>
+        <ul data-lang="en">
+          <li>why something works</li>
+          <li>why something fails</li>
+          <li>where there is still room for ingenuity</li>
+        </ul>
+        <p data-lang="en">
+          I value research and experimentation that separate conditions, preserve failures, and turn the road itself into a map.
+        </p>
+        <p data-lang="en">
+          In doing so, I want to widen the possibility that people can still participate in science, even with limited budgets and existing hardware.
+        </p>
+      </div>
+
+      <div class="mission-points">
+        <div class="mission-point" data-lang="ja">思い込みではなく、証拠で話す</div>
+        <div class="mission-point" data-lang="en">Speak with evidence, not assumptions</div>
+
+        <div class="mission-point" data-lang="ja">失敗は地図になる — 次の人が同じ穴に落ちないために</div>
+        <div class="mission-point" data-lang="en">Failure becomes a map — so the next person doesn't fall into the same hole</div>
+
+        <div class="mission-point" data-lang="ja">工夫は、力の代わりになる</div>
+        <div class="mission-point" data-lang="en">Ingenuity can substitute for brute force</div>
+
+        <div class="mission-point" data-lang="ja">まだ使えるものを、雑に捨てない</div>
+        <div class="mission-point" data-lang="en">Do not carelessly discard what still has value</div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         6. DORAEMON / FUTURE TOOLS
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section reveal" id="futuretools">
+      <div class="s-label">Future tools</div>
+      <h2 class="s-title" data-lang="ja">未来の道具は、誰のもの？</h2>
+      <h2 class="s-title" data-lang="en">Who do the tools of the future belong to?</h2>
+
+      <div class="s-body">
+        <p data-lang="ja">
+          未来の道具というと、ドラえもんのひみつ道具のようなものを思い浮かべる人も多いと思います。
+        </p>
+        <p data-lang="ja">
+          でも、ドラえもんのひみつ道具は、別に「お金のある人だけが使えるもの」として描かれてはいません。<br>
+          みんなの困りごとを助けたり、できなかったことをできるようにしたりするためのものとして描かれています。
+        </p>
+        <p data-lang="ja">
+          わたしにとって、AIや大きな計算もそれに少し似ています。
+        </p>
+        <p data-lang="ja">
+          本来は、人を遠ざけるための壁ではなく、挑戦したい人に開かれた道具であってほしい。
+        </p>
+        <p data-lang="ja">
+          だからわたしは、最新で高価な機材だけに頼るのではなく、古い機材や限られた予算でも、どこまで科学できるのかを調べています。
+        </p>
+        <p data-lang="ja">
+          その過程で見つかった失敗や工夫も、できるだけ残していきます。<br>
+          それは、未来の道具を<strong>「特別な人だけのもの」にしないため</strong>です。
+        </p>
+
+        <p data-lang="en">
+          When people hear the phrase "future tools," many of them may imagine something like Doraemon's gadgets.
+        </p>
+        <p data-lang="en">
+          But Doraemon's tools were not portrayed as things that only wealthy people were allowed to use. They were portrayed as things that help with everyday problems, and that make possible what once seemed impossible.
+        </p>
+        <p data-lang="en">
+          For me, AI and large-scale computation are a little like that.
+        </p>
+        <p data-lang="en">
+          They should not be walls that push people away. They should be tools that remain open to people who want to try.
+        </p>
+        <p data-lang="en">
+          That is why I do not want to rely only on the newest and most expensive hardware. I want to explore how far science can still be done with older machines and limited budgets.
+        </p>
+        <p data-lang="en">
+          And when I discover failures, difficulties, or workarounds along the way, I want to preserve them as carefully as possible.
+        </p>
+        <p data-lang="en">
+          I do that because I do not want future tools to become something reserved only for a select few.
+        </p>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         7. CLOSING DECLARATION
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section reveal" id="closing">
+      <div class="declaration">
+        <div class="declaration-inner">
+          <h2 data-lang="ja">
+            鉄腕アトムやドラえもんの道具が、<br>人を助けるためにあるように。<br><br>
+            未来の計算やAIも、<br>もっと多くの人に開かれていてよいはずです。
+          </h2>
+          <h2 data-lang="en">
+            Just as the tools of <strong>Astro Boy</strong> and <strong>Doraemon</strong><br>were meant to help people —<br><br>
+            the future of computation and AI<br>should also remain open to many more people.
+          </h2>
+
+          <p data-lang="ja">
+            この研究を含め、<br>
+            わたしの研究開発活動が、多くの人の力になりますように。
+          </p>
+          <p data-lang="en">
+            May my research and development work,<br>
+            including this project, become a source of strength for many people.
+          </p>
+
+          <div class="english-close">May the power of science be with us.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         NAVIGATION
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+    <section class="scroll-section short reveal" id="next">
+      <div class="nav-section">
+        <h2 data-lang="ja">詳しく知りたい方へ</h2>
+        <h2 data-lang="en">Want to learn more?</h2>
+        <p class="nav-intro" data-lang="ja">ここから先は技術的な内容に入ります。知りたい深さに合わせてお進みください。</p>
+        <p class="nav-intro" data-lang="en">From here, the content goes deeper into technical details. Choose the depth that matches your interest.</p>
+
+        <div class="nav-grid">
+          <a class="nav-card" href="media.html">
+            <div class="nav-label"><span data-lang="ja">聞いてみる</span><span data-lang="en">Listen</span></div>
+            <h3 data-lang="ja">音声解説とポスター</h3>
+            <h3 data-lang="en">Audio &amp; poster</h3>
+            <p data-lang="ja">AIが生成した解説音声とA0ポスターで全体像をつかめます。</p>
+            <p data-lang="en">Get the big picture through AI-generated audio and a research poster.</p>
+          </a>
+          <a class="nav-card" href="experiment-history.html">
+            <div class="nav-label"><span data-lang="ja">流れを追う</span><span data-lang="en">Timeline</span></div>
+            <h3 data-lang="ja">実験の歴史</h3>
+            <h3 data-lang="en">Experiment history</h3>
+            <p data-lang="ja">調査がどのように進んだか時系列で追えます。</p>
+            <p data-lang="en">Follow how the investigation unfolded, step by step.</p>
+          </a>
+          <a class="nav-card" href="presentation_advanced_en-jp.html">
+            <div class="nav-label"><span data-lang="ja">スライド</span><span data-lang="en">Slides</span></div>
+            <h3 data-lang="ja">発表用スライド</h3>
+            <h3 data-lang="en">Presentation slides</h3>
+            <p data-lang="ja">調査の核心をスライド形式でまとめた資料です。</p>
+            <p data-lang="en">Core findings presented in slide format.</p>
+          </a>
+          <a class="nav-card" href="code-tracing.html">
+            <div class="nav-label"><span data-lang="ja">コード</span><span data-lang="en">Code</span></div>
+            <h3 data-lang="ja">コードトレース</h3>
+            <h3 data-lang="en">Code tracing</h3>
+            <p data-lang="ja">ソースコードの行番号まで追った厳密な根拠資料です。</p>
+            <p data-lang="en">Line-by-line source code evidence for the findings.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span data-lang="ja">AETS — 未来の道具を、みんなの手に。</span>
+      <span data-lang="en">AETS — Future tools, in everyone's hands.</span>
+    </div>
+
+  </div>
+
+  <script>
+    /* ── Language toggle ── */
+    const html = document.documentElement;
+    const btnJa = document.getElementById('btn-ja');
+    const btnEn = document.getElementById('btn-en');
+
+    function setLanguage(lang) {
+      html.setAttribute('data-language', lang);
+      html.setAttribute('lang', lang);
+      btnJa.classList.toggle('active', lang === 'ja');
+      btnEn.classList.toggle('active', lang === 'en');
+      localStorage.setItem('vega-hbmx-general-lang', lang);
+    }
+
+    btnJa.addEventListener('click', () => setLanguage('ja'));
+    btnEn.addEventListener('click', () => setLanguage('en'));
+    setLanguage(localStorage.getItem('vega-hbmx-general-lang') === 'en' ? 'en' : 'ja');
+
+    /* ── Reveal on scroll ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
