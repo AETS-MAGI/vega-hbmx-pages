@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>レガシーHBM GPUにおけるバックエンド依存の安定性 | AETS</title>
+  <style>
+    :root {
+      --bg: #f8f9fb;
+      --card: #ffffff;
+      --text: #1e1e1e;
+      --text-light: #444;
+      --text-faint: #888;
+      --accent: #1a5276;
+      --accent2: #c0392b;
+      --accent3: #27ae60;
+      --blue-soft: rgba(26,82,118,0.06);
+      --red-soft: rgba(192,57,43,0.06);
+      --green-soft: rgba(39,174,96,0.06);
+      --line: #dde1e6;
+      --shadow: 0 2px 12px rgba(0,0,0,0.06);
+      --radius: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header banner ── */
+    .poster-header {
+      background: linear-gradient(135deg, #1a5276 0%, #2e86c1 100%);
+      color: #fff;
+      padding: 40px 24px 32px;
+      text-align: center;
+    }
+    .poster-header h1 {
+      font-size: clamp(20px, 4vw, 32px);
+      font-weight: 900;
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .poster-header .subtitle {
+      font-size: clamp(13px, 2.2vw, 17px);
+      line-height: 1.6;
+      opacity: 0.88;
+      max-width: 760px;
+      margin: 0 auto 16px;
+    }
+    .poster-header .meta {
+      font-size: 13px;
+      opacity: 0.7;
+      line-height: 1.6;
+    }
+
+    /* ── Layout ── */
+    .poster-body {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .poster-body > .full { grid-column: 1 / -1; }
+
+    /* ── Section card ── */
+    .section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      box-shadow: var(--shadow);
+    }
+    .section-num {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .section h2 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    .section p, .section li {
+      font-size: 14px;
+      line-height: 1.85;
+      color: var(--text-light);
+    }
+    .section p + p { margin-top: 10px; }
+    .section ul {
+      margin: 8px 0 8px 20px;
+      list-style: disc;
+    }
+    .section li + li { margin-top: 4px; }
+
+    /* ── Table ── */
+    .poster-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 12px 0;
+      line-height: 1.6;
+    }
+    .poster-table th, .poster-table td {
+      border: 1px solid var(--line);
+      padding: 7px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    .poster-table th {
+      background: var(--blue-soft);
+      font-weight: 700;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+    .poster-table code {
+      font-size: 12px;
+      background: #f0f2f5;
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .ok { color: var(--accent3); font-weight: 700; }
+    .fail { color: var(--accent2); font-weight: 700; }
+    .tag-block { color: var(--accent2); }
+    .tag-allow { color: var(--accent3); }
+    .tag-partial { color: #d4a017; }
+
+    /* ── Hypothesis table ── */
+    .hypo-table td:last-child { font-weight: 700; }
+    .match { color: var(--accent3); }
+    .contra { color: var(--accent2); }
+
+    /* ── Takeaway box ── */
+    .takeaway-box {
+      background: linear-gradient(135deg, var(--blue-soft), var(--green-soft));
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .takeaway-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .takeaway-item + .takeaway-item { margin-top: 14px; }
+    .takeaway-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      line-height: 1;
+      margin-top: 2px;
+    }
+    .takeaway-item p {
+      font-size: 14px;
+      line-height: 1.75;
+    }
+    .takeaway-item strong {
+      color: var(--text);
+    }
+    .closing-line {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Note / caption ── */
+    .note {
+      font-size: 12px;
+      line-height: 1.65;
+      color: var(--text-faint);
+      margin-top: 8px;
+    }
+
+    /* ── Footer ── */
+    .poster-footer {
+      text-align: center;
+      padding: 20px 16px 32px;
+      font-size: 12px;
+      color: var(--text-faint);
+    }
+    .poster-footer a { color: var(--accent); }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-block;
+      margin: 20px 0 0 16px;
+      font-size: 14px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .poster-body {
+        grid-template-columns: 1fr;
+      }
+      .poster-body > .full { grid-column: 1; }
+      .poster-table { font-size: 12px; }
+      .poster-table th, .poster-table td { padding: 5px 7px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back-link" href="index.html">&larr; トップに戻る</a>
+
+  <!-- ═══════════════════════════════════
+       HEADER
+  ═══════════════════════════════════ -->
+  <header class="poster-header">
+    <h1>レガシーHBM GPUにおける<br>バックエンド依存の安定性</h1>
+    <div class="subtitle">
+      ROCm/HIP vs Vulkan（Vega/gfx900）：残存コードパス・オフロードレイヤセマンティクス・再現可能な診断
+    </div>
+    <div class="meta">
+      伊藤あきら ｜ AETS（Akatsuki Enterprise Technology Solutions）｜ aets-giken@hiroshima-aktk.com<br>
+      IEICE GNW-68 ｜ 九州産業大学 ｜ 2026年3月9日
+    </div>
+  </header>
+
+  <div class="poster-body">
+
+    <!-- ───────────────────────────────
+         1. 背景と動機
+    ─────────────────────────────── -->
+    <div class="section">
+      <span class="section-num">1</span>
+      <h2>背景と動機</h2>
+      <p>ROCm 7.2 の公式サポートマトリクスには gfx900 は記載されていないが、実際のシステムでは残存コードやアーティファクトのパスを通じて実行できる場合がある。</p>
+      <p>学生や小規模な研究室にとって重要な問いは、「実行できるのか、安定しているのか、再現できるのか」である。</p>
+      <p>同一の Vega デバイス上に、条件を揃えたデュアルバックエンドのテスト環境を構築し、サポートポリシー・バックエンド選択・ランタイム挙動を切り分けた。</p>
+      <p><strong>目的：「非サポート」と「使えない」は同じ意味ではないことを、証拠に基づいて説明する。</strong></p>
+    </div>
+
+    <!-- ───────────────────────────────
+         2. 問題設定
+    ─────────────────────────────── -->
+    <div class="section">
+      <span class="section-num">2</span>
+      <h2>問題設定</h2>
+      <p>旧世代の Vega GPU は、現行の ROCm ワークロードには一律に不適切であると扱われがちである。</p>
+      <p>成功・失敗の境界は、ディストリビューションのプリセット、ビルドターゲット、初期化バリデーション、バックエンドマクロ、ランタイム計算パスなど、さまざまなレイヤで決まる可能性がある。</p>
+      <p><strong>問い：不安定性の原因は Vega 自体にあるのか、それとも条件を揃えたうえでの特定のバックエンドパスにあるのか？</strong></p>
+    </div>
+
+    <!-- ───────────────────────────────
+         3. 調査で確認された事実
+    ─────────────────────────────── -->
+    <div class="section full">
+      <span class="section-num">3</span>
+      <h2>調査で確認された事実</h2>
+
+      <h3 style="font-size:15px;font-weight:700;margin:14px 0 8px;color:var(--text);">A. gfx900 ゲートマトリクス</h3>
+      <table class="poster-table">
+        <thead>
+          <tr><th>レイヤ</th><th>gfx900 の現在の扱い</th><th>結果</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>公式マトリクス（ROCm 7.2）</td><td>GPU ターゲットリストに gfx900 なし</td><td class="tag-block">ブロック（公式範囲）</td></tr>
+          <tr><td>CMake フィルタ（ollama）</td><td>デフォルト正規表現で gfx900 を除外、<code>AMDGPU_TARGETS</code> による手動オーバーライドは可</td><td class="tag-partial">デフォルトはブロック / 手動で許可</td></tr>
+          <tr><td>rocBLAS アーティファクト</td><td><code>Kernels.so-000-gfx900.hsaco</code> が <code>/usr/lib/ollama/rocblas/library/</code> に存在</td><td class="tag-allow">許可</td></tr>
+          <tr><td>ランナー初期化バリデーション</td><td>ディープ初期化プローブ（<code>GGML_CUDA_INIT=1</code>）：gfx900 を有効なエージェントとして認識</td><td class="tag-allow">許可</td></tr>
+          <tr><td>ソースマクロ（<code>hip.h</code>, <code>common.cuh</code>）</td><td><code>__gfx900__</code> → GCN5 分類を保持、dp4a パスあり</td><td class="tag-allow">許可</td></tr>
+          <tr><td>ランタイム実行</td><td>ROCm/HIP：全 num_gpu 値で OK。Vulkan：<code>num_gpu≥1</code> で SIGSEGV</td><td class="tag-partial">バックエンド依存</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--text);">B. num_gpu セマンティクストレース</h3>
+      <table class="poster-table">
+        <thead>
+          <tr><th>段階</th><th>コード上の位置</th><th>意味</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Python クライアント</td><td><code>ollama-python/_types.py:109</code></td><td>ロード時オプション</td></tr>
+          <tr><td>Ollama CLI</td><td><code>cmd/interactive.go:112</code></td><td>「GPUに送るレイヤ数」</td></tr>
+          <tr><td>サーバ割り当て</td><td><code>llm/server.go:992,1063</code></td><td>requestedLayers = NumGPU</td></tr>
+          <tr><td>ランナーブリッジ</td><td><code>llama/llama.go:266</code></td><td>cparams.n_gpu_layers</td></tr>
+          <tr><td>llama.cpp</td><td><code>include/llama.h:289</code></td><td>「VRAMに格納されるレイヤ」</td></tr>
+        </tbody>
+      </table>
+      <p><strong>結論：num_gpu は「オフロードされるレイヤ数」であり、GPU デバイス数ではない。num_gpu≥2 はマルチ GPU を意味しない。</strong></p>
+
+      <h3 style="font-size:15px;font-weight:700;margin:18px 0 8px;color:var(--text);">C. 関連文献（引用、本リポジトリ内では再現せず）</h3>
+      <ul>
+        <li><strong>LLNL 差分テスト</strong>（arXiv:2410.09172）：60万以上の自動生成カーネルで NVIDIA V100 と AMD MI250 間の FP32 乖離が約9%。原因はベンダ固有の数学ライブラリ、コンパイラフラグ、HIPIFY の副産物。本研究のバックエンド意識型検証アプローチの動機づけ。</li>
+        <li><strong>gem5 Vega モデリング</strong>（ウィスコンシン大マディソン校）：GPUFS モードで実 Linux カーネル + 未改変 amdkfd ドライバを実行。物理 Vega 56 に対し平均6%の誤差で検証済み。Vega の学術的信頼性を確立。</li>
+        <li><strong>ROCm SDMA ワークアラウンド</strong>（AMD ドキュメント + LUMI レポート）：<code>HSA_ENABLE_SDMA=0</code> は欠陥のある DMA を Blit カーネルフォールバックでバイパス（帯域幅約80%）。<code>HSA_OVERRIDE_GFX_VERSION</code> は非サポート GPU の実行を可能にする — 本実験で使用したオーバーライド。</li>
+      </ul>
+      <p class="note">※ 上記は外部参考文献。本ポスターにおけるすべての主張は、リポジトリ内の証拠（セクション 3A, 3B, 6）のみに基づく。</p>
+    </div>
+
+    <!-- ───────────────────────────────
+         4. エンジニアリング上の課題
+    ─────────────────────────────── -->
+    <div class="section">
+      <span class="section-num">4</span>
+      <h2>エンジニアリング上の課題</h2>
+      <ul>
+        <li>gfx900 は公式マトリクスとデフォルトのビルドフィルタで除外されているが、残存コードとアーティファクトにはまだ gfx900 の処理が残っている。</li>
+        <li><code>num_gpu</code> は GPU 数と誤読されやすいが、コードトレースにより「オフロードされるレイヤ数」を意味することを確認した。</li>
+        <li>同一の Vega GPU で、同じモデル・同じプロンプトであっても、ROCm/HIP では成功し Vulkan では失敗する。</li>
+        <li>診断は「レガシー GPU は駄目」と一括りにするのではなく、レイヤごとの証拠に基づかなければならない。</li>
+      </ul>
+    </div>
+
+    <!-- ───────────────────────────────
+         5. 証拠優先の調査戦略
+    ─────────────────────────────── -->
+    <div class="section">
+      <span class="section-num">5</span>
+      <h2>証拠優先の調査戦略</h2>
+      <table class="poster-table">
+        <thead>
+          <tr><th>レイヤ</th><th>介入内容</th><th>効果</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>L1: ディストリビューション / ビルド</td><td>サポートマトリクス、プリセット、ターゲットフィルタ、インストール済みアーティファクトの調査</td><td>gfx900 がどこでブロック・許可・部分的に保持されているかを特定</td></tr>
+          <tr><td>L2: API セマンティクス</td><td>クライアント → サーバ → ランナー → llama.cpp を通じて num_gpu をトレース</td><td>解釈を修正：オフロードレイヤ数であり、GPU 数ではない</td></tr>
+          <tr><td>L3: ランタイム比較</td><td>条件を揃えた ROCm（:11435）と Vulkan（:11434）のテストを実行</td><td>同一ハードウェアでのバックエンド固有の故障モードを分離</td></tr>
+          <tr><td>L4: 証拠の記録</td><td>構造化されたワークログ、ジャーナルトレース、バックエンドプローブ、rocm-smi、ollama ps</td><td>クラッシュの局所化と主張の再現性確保</td></tr>
+        </tbody>
+      </table>
+      <p><strong>アプローチ：楽観的な一度きりの成功ではなく、反証可能な診断と再現性を優先する。</strong></p>
+    </div>
+
+    <!-- ───────────────────────────────
+         6. 実験結果
+    ─────────────────────────────── -->
+    <div class="section full">
+      <span class="section-num">6</span>
+      <h2>実験結果</h2>
+
+      <h3 style="font-size:15px;font-weight:700;margin:8px 0;color:var(--text);">テスト環境</h3>
+      <table class="poster-table">
+        <thead><tr><th>構成要素</th><th>仕様</th></tr></thead>
+        <tbody>
+          <tr><td>GPU</td><td>AMD Radeon RX Vega 56（gfx900）、8 GB HBM2</td></tr>
+          <tr><td>OS / カーネル</td><td>EndeavourOS、カーネル 6.18.16-1-lts</td></tr>
+          <tr><td>ROCm パス</td><td>Ollama 0.17.5（:11435 経由）、library=ROCm、libggml-hip.so</td></tr>
+          <tr><td>Vulkan パス</td><td>Ollama 0.17.4（:11434 経由）、library=Vulkan、同一モデル・プロンプト</td></tr>
+          <tr><td>オーバーライド</td><td><code>HSA_OVERRIDE_GFX_VERSION=9.0.0</code>（ROCm サービスのみ）</td></tr>
+        </tbody>
+      </table>
+      <p class="note">※ Vulkan=0.17.4 vs ROCm=0.17.5：バージョン差はデュアルインストール構成に起因。いずれもインストールされた状態のままテスト。</p>
+
+      <h3 style="font-size:15px;font-weight:700;margin:16px 0 8px;color:var(--text);">条件を揃えた比較結果（qwen3.5:2b、NUM_PREDICT=512）</h3>
+      <table class="poster-table">
+        <thead>
+          <tr><th>num_gpu</th><th>ROCm（:11435）</th><th>Vulkan（:11434）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>0（CPU のみ）</td><td class="ok">OK（46.7s、eval_count=512）</td><td class="ok">OK</td></tr>
+          <tr><td>1</td><td class="ok">OK（48.7s、eval_count=512）</td><td class="fail">FAIL（HTTP 500、SIGSEGV）</td></tr>
+          <tr><td>2</td><td class="ok">OK（47.7s、eval_count=512）</td><td class="fail">FAIL（HTTP 500、SIGSEGV）</td></tr>
+          <tr><td>-1（全レイヤ）</td><td class="ok">OK（44.3s、eval_count=512）</td><td class="fail">FAIL（HTTP 500、SIGSEGV）</td></tr>
+        </tbody>
+      </table>
+
+      <p class="note">
+        Vulkan は num_gpu=0（GPU オフロードなし）で成功。失敗は num_gpu≥1（GPU 計算パスがアクティブ）の場合にのみ発生。<br>
+        ROCm の結果は本テスト範囲内（単一モデル、短い固定実行）のもの。より広範なワークロードでは異なる結果となる可能性がある。<br>
+        モデル依存性を確認：tinyllama は以前のテストで Vulkan でも成功（20/20 OK）、qwen3.5:2b は SIGSEGV を発生。
+      </p>
+
+      <h3 style="font-size:15px;font-weight:700;margin:16px 0 8px;color:var(--text);">クラッシュの局所化</h3>
+      <p>Vulkan の SIGSEGV は <code>ggml_backend_sched_graph_compute_async</code> → <code>computeBatch</code> で発生。モデルのロード完了後、ランナーの起動後であることから、<strong>計算フェーズの故障</strong>であり、初期化の失敗ではない。</p>
+
+      <h3 style="font-size:15px;font-weight:700;margin:16px 0 8px;color:var(--text);">故障仮説の検証</h3>
+      <table class="poster-table hypo-table">
+        <thead>
+          <tr><th>仮説</th><th>期待される証拠</th><th>観測結果</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Vega は全般的に使用不能</td><td>同一 GPU で両バックエンドとも失敗</td><td class="contra">反証：ROCm/HIP は成功した</td></tr>
+          <tr><td>num_gpu は GPU 数を意味する</td><td>失敗がマルチ GPU エントリを示唆</td><td class="contra">反証：コードトレースでオフロードレイヤ数を確認</td></tr>
+          <tr><td>Vulkan 計算パスの不安定性</td><td>ロードは OK、ランナー起動後の計算スタックでクラッシュ</td><td class="match">一致</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px;font-weight:700;margin:16px 0 8px;color:var(--text);">gfx900 がまだ動作する理由</h3>
+      <p>ROCm の変更履歴には「デフォルトではビルドされなくなった」と記載されているが、「禁止された」とは書かれていない。ローカルインストールで gfx900 の hsaco アーティファクトと libggml-hip.so 内の文字列が存在することを確認した。</p>
+      <p><strong>解釈：「非サポート」＝ 保証なし・未テスト、であって「不可能」ではない。</strong></p>
+    </div>
+
+    <!-- ───────────────────────────────
+         Limitations
+    ─────────────────────────────── -->
+    <div class="section">
+      <span class="section-num">&nbsp;</span>
+      <h2>制限事項と今後の課題</h2>
+      <p><strong>制限事項：</strong>条件を揃えた比較は短い固定実行（1エポック、512トークン）で単一モデル（qwen3.5:2b）のみ。Vulkan と ROCm の Ollama バージョンが異なる（0.17.4 vs 0.17.5）。tinyllama は Vulkan で qwen3.5 と異なる挙動を示し、モデル依存の故障条件が存在する。本テスト範囲を超えた一般化は、追加検証なしには行うべきでない。</p>
+      <p><strong>今後の課題：</strong>マルチエポックストレステスト、追加モデル（llm-jp、phi-3）、ROCm バージョン比較（6.x vs 7.x）、<code>GGML_CUDA_NO_PEER_COPY</code> 実験によるオフロードパス故障メカニズムの分離。再現性インフラ（15件の文書化されたワークアラウンドマトリクス）をリポジトリで公開中。</p>
+    </div>
+
+    <!-- ───────────────────────────────
+         7. まとめ
+    ─────────────────────────────── -->
+    <div class="section">
+      <span class="section-num">7</span>
+      <h2>まとめと主要メッセージ</h2>
+      <div class="takeaway-box">
+        <div class="takeaway-item">
+          <span class="takeaway-icon">&#x2705;</span>
+          <p><strong>サポート状況 ≠ 実行可能性</strong><br>公式の除外は、不可能を意味しない。ゲートマトリクスでは6層中5層が gfx900 の実行を許可。残存コードパスと出荷済みアーティファクトにより、部分的な実行が可能。</p>
+        </div>
+        <div class="takeaway-item">
+          <span class="takeaway-icon">&#x1F4A1;</span>
+          <p><strong>バックエンドの選択が支配的</strong><br>qwen3.5:2b を用いた同一 Vega デバイスで、ROCm/HIP はテスト範囲内の全 num_gpu 条件で成功。Vulkan は num_gpu≥1（GPU オフロードがアクティブ）で失敗。故障はバックエンド固有であり、アーキテクチャ全体の問題ではない。モデル依存性（tinyllama vs qwen）も存在する。</p>
+        </div>
+        <div class="takeaway-item">
+          <span class="takeaway-icon">&#x1F52C;</span>
+          <p><strong>主張の前に再現性</strong><br>すべての主張は、特定の run_id とコードトレースに裏付けられている。ゲートマトリクスとワークアラウンドマトリクス（15件）をリポジトリで公開。</p>
+        </div>
+        <div class="closing-line">
+          非サポート ≠ 不可能 ｜ レガシー ≠ 劣等 ｜ バックエンドの選択が重要
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="poster-footer">
+    <a href="media.html">英語版ポスター (PDF)</a> ｜
+    <a href="index.html">トップページ</a> ｜
+    <a href="general-audience.html">理念ページ</a><br>
+    &copy; 2026 AETS / Akira Ito
+  </footer>
+
+</body>
+</html>
