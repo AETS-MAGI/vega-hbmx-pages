@@ -301,21 +301,149 @@
         }
 
         @media (max-width: 640px) {
+            body {
+                padding: 12px;
+                align-items: flex-start;
+            }
+
+            .book {
+                border-radius: 4px 14px 14px 4px;
+            }
+
+            .book::before {
+                width: 12px;
+            }
+
+            .illus {
+                aspect-ratio: 4 / 3;
+            }
+
             .text-area {
-                padding: 24px 20px 20px 36px;
+                padding: 20px 18px 18px 28px;
+            }
+
+            .page-cover .text-area {
+                padding: 20px 18px 28px;
             }
 
             .cover-title {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
+            }
+
+            .cover-subtitle {
+                font-size: .82rem;
+            }
+
+            .page-title {
+                font-size: 1rem;
             }
 
             .page-text {
-                font-size: .96rem;
+                font-size: .92rem;
+                line-height: 1.9;
+            }
+
+            .nav-bar {
+                padding: 10px 12px 14px;
+                gap: 10px;
+            }
+
+            .btn-nav {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+
+            .dots {
+                gap: 5px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .dot {
+                width: 7px;
+                height: 7px;
+            }
+
+            .dot.active {
+                width: 18px;
+            }
+
+            .page-num {
+                min-width: 55px;
+                font-size: .75rem;
+            }
+
+            .btn-detail {
+                font-size: .82rem;
+                padding: 6px 16px;
             }
 
             .modal-box {
-                padding: 28px 20px 20px;
+                padding: 24px 18px 18px;
+                max-height: 85vh;
             }
+
+            .modal-title {
+                font-size: 1rem;
+            }
+
+            .modal-body {
+                font-size: .88rem;
+                line-height: 1.8;
+            }
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 8px;
+            }
+
+            .text-area {
+                padding: 16px 14px 14px 22px;
+            }
+
+            .page-cover .text-area {
+                padding: 16px 14px 22px;
+            }
+
+            .cover-title {
+                font-size: 1.2rem;
+            }
+
+            .page-text {
+                font-size: .88rem;
+                line-height: 1.85;
+            }
+
+            .nav-bar {
+                gap: 8px;
+                padding: 8px 8px 12px;
+            }
+
+            .btn-nav {
+                width: 32px;
+                height: 32px;
+                font-size: .9rem;
+            }
+        }
+
+        /* ── Back link ── */
+        .back-to-top {
+            display: block;
+            text-align: center;
+            padding: 16px 18px;
+            background: var(--cream);
+            border-top: 1px solid rgba(61, 36, 16, .08);
+            color: var(--softbrown);
+            font-size: .85rem;
+            text-decoration: none;
+            letter-spacing: .04em;
+            transition: color .2s, background .2s;
+        }
+        .back-to-top:hover {
+            color: var(--coral);
+            background: #FFF5E8;
         }
     </style>
 </head>
@@ -508,11 +636,7 @@
                 <span class="page-num" id="page-num"></span>
                 <button class="btn-nav" id="btn-next" aria-label="次のページ">▶</button>
             </div>
-        </div>
-    </div>
-
-        <div style="text-align:center; padding:14px 0 4px;">
-            <a href="index.html" style="color:var(--softbrown); font-size:.85rem; text-decoration:none; letter-spacing:.04em;">← トップページへもどる</a>
+            <a href="index.html" class="back-to-top">← トップページへもどる</a>
         </div>
     </div>
 
