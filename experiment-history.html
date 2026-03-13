@@ -747,27 +747,266 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).<span class="hi-yellow">c
 			</div>
 		</article>
 
+		<!-- ── STEP 8 ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">8) Static code audit — ROCm library stack (MIOpen / rocBLAS / CK / Tensile) <span class="step-date">2026-03-13</span></span>
+				<span data-lang="ja">8) 静的コード監査 — ROCm ライブラリスタック（MIOpen / rocBLAS / CK / Tensile） <span class="step-date">2026-03-13</span></span>
+			</h2>
+			<ul>
+				<li>
+					<span class="do" data-lang="en">Did:</span><span class="do" data-lang="ja">実施:</span>
+					<span data-lang="en">Traced all gfx900 computation paths through MIOpen, rocBLAS, hipBLASLt, Composable Kernel (CK), and Tensile source code to map which solver paths remain active and how fallbacks are structured. Source ground truth: <span class="fref">ROCm_AMD_Repo</span> under <span class="fref">rocm-libraries/</span>.</span>
+					<span data-lang="ja">MIOpen・rocBLAS・hipBLASLt・Composable Kernel（CK）・Tensile のソースコードを通じて gfx900 向けの計算経路をすべてトレースし、どの solver 経路が残存しているか・どこでフォールバックするかを確認した。根拠は <span class="fref">ROCm_AMD_Repo</span> 配下の <span class="fref">rocm-libraries/</span>。</span>
+				</li>
+			</ul>
+
+			<div class="hbox">
+				<span data-lang="en"><strong>MLIR iGEMM — explicit gfx900 exclusion (commit 2407d2f, 2021-12-22):</strong><br>
+				<span class="fref">conv_mlir_igemm_{fwd,bwd,wrw}.cpp</span> each contain <code>if(StartsWith(device_name, "gfx900")) return false;</code>.<br>
+				All three files were patched in a single commit by Zhuoran Yin (AMD), citing a private LLVM repo issue <code>llvm-project-private/issues/389</code>.</span>
+				<span data-lang="ja"><strong>MLIR iGEMM — gfx900 を明示除外（コミット 2407d2f, 2021-12-22）:</strong><br>
+				<span class="fref">conv_mlir_igemm_{fwd,bwd,wrw}.cpp</span> の全 3 ファイルにそれぞれ <code>if(StartsWith(device_name, "gfx900")) return false;</code> が存在。<br>
+				AMD 社内の非公開 LLVM リポジトリ issue <code>llvm-project-private/issues/389</code> を根拠に同一コミットで 3 ファイルを一括変更。</span>
+			</div>
+
+			<div class="log-quote"><span class="hi-gray">// conv_mlir_igemm_fwd.cpp : 188  (same pattern in bwd.cpp:68, wrw.cpp:69)</span>
+<span class="hi-blue">if</span>(StartsWith(device_name, <span class="hi-green">"gfx900"</span>))
+{
+    <span class="hi-gray">// Refer to https://github.com/ROCm/llvm-project-private/issues/389</span>
+    <span class="hi-blue">return false</span>;
+}</div>
+
+			<table class="data-table">
+				<thead><tr>
+					<th><span data-lang="en">Solver / path</span><span data-lang="ja">ソルバ / 経路</span></th>
+					<th><span data-lang="en">gfx900 status</span><span data-lang="ja">gfx900 状態</span></th>
+					<th><span data-lang="en">Source reference</span><span data-lang="ja">ソース根拠</span></th>
+				</tr></thead>
+				<tbody>
+					<tr><td><code>ConvMlirIgemm{Fwd|Bwd|WrW}</code></td><td class="td-err">excluded</td><td class="td-run">conv_mlir_igemm_*.cpp:68-188</td></tr>
+					<tr><td><code>ConvMlirIgemm{Fwd|Bwd|WrW}Xdlops</code></td><td class="td-err">excluded (XDLops guard)</td><td class="td-run">implicitgemm_util.hpp:101-105</td></tr>
+					<tr><td><code>ConvAsmImplicitGemmV4R1Dynamic{Fwd|Bwd|WrW}</code></td><td class="td-ok">gfx900/gfx906 only</td><td class="td-run">conv_asm_implicit_gemm_*_v4r1_dynamic.cpp:142-343</td></tr>
+					<tr><td><code>ConvBinWinograd3x3U / ConvBinWinogradRxS*</code></td><td class="td-ok">gfx900 permitted</td><td class="td-run">conv_bin_wino*.cpp:61-270</td></tr>
+					<tr><td><code>ConvWinoRxS (v21 path)</code></td><td class="td-ok">gfx900/906 priority</td><td class="td-run">conv_winoRxS.cpp:210</td></tr>
+					<tr><td><code>CK inner_product&lt;int8x4_t&gt;</code> — dot4 fallback</td><td class="td-ok">sequential accumulate</td><td class="td-run">inner_product.hpp:179-201</td></tr>
+					<tr><td>Tensile ISA (9,0,0) <code>v_dot4_i32_i8</code></td><td class="td-err">False</td><td class="td-run">AsmCaps.py:128,155-159</td></tr>
+					<tr><td>rocBLAS <code>getLazyLoadingArch()</code></td><td class="td-ok">gfx900 explicit map</td><td class="td-run">tensile_host.cpp:238-240</td></tr>
+					<tr><td>rocBLAS hipBLASLt → Tensile fallback</td><td class="td-ok">multi-stage fallback</td><td class="td-run">tensile_host.cpp:1232,1161</td></tr>
+					<tr><td>rocBLAS target list (CMake)</td><td class="td-ok">ROCm 5.6–7.1 maintained</td><td class="td-run">rocblas/CMakeLists.txt:80-85</td></tr>
+				</tbody>
+			</table>
+
+			<div class="hbox green">
+				<span data-lang="en"><strong>Result — three-layer structure confirmed (code_verified):</strong><br>
+				<strong>Maintain (build):</strong> gfx900 remains in rocBLAS CMake target lists through at least ROCm 7.1.<br>
+				<strong>Manage (selection):</strong> MIOpen uses a candidate-list + <code>IsApplicable</code> filter — no explicit if-else fallback chain; old-generation paths remain in the registry and survive when applicable conditions are met.<br>
+				<strong>Supplement (fallback):</strong> rocBLAS carries a multi-stage runtime fallback (hipBLASLt failure → Tensile retry; XF32 failure → FP32); CK carries a dot4-absent sequential accumulation path; Tensile carries per-ISA capability gating.</span>
+				<span data-lang="ja"><strong>結果 — 3 層構造をコードで確認（code_verified）:</strong><br>
+				<strong>維持（build）:</strong> gfx900 は少なくとも ROCm 7.1 まで rocBLAS CMake ターゲットリストに残存。<br>
+				<strong>管理（selection）:</strong> MIOpen は「候補列挙 + <code>IsApplicable</code> フィルタ」方式を採用 — 明示的な if-else フォールバックではなく、旧世代経路はレジストリに残り、適用条件を満たした場合に選択される。<br>
+				<strong>補充（fallback）:</strong> rocBLAS は多段実行時フォールバック（hipBLASLt 失敗 → Tensile 再試行、XF32 失敗 → FP32）を実装済み。CK は dot4 非対応時の逐次積和経路を持つ。Tensile は ISA ごとの能力ゲートで制御。</span>
+			</div>
+		</article>
+
+		<!-- ── STEP 9 ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">9) Vega64 — FP32 solver selection confirmed on real hardware <span class="step-date">2026-03-13</span></span>
+				<span data-lang="ja">9) Vega64 実機 — FP32 solver 選択の動的確認 <span class="step-date">2026-03-13</span></span>
+			</h2>
+			<ul>
+				<li>
+					<span class="do" data-lang="en">Did:</span><span class="do" data-lang="ja">実施:</span>
+					<span data-lang="en">Ran MIOpen convolution driver cases on Vega64 (ROCm 7.2 · MIOpen 3.5.1 · <code>gfx900:xnack-</code>), capturing solver names and kernel names via <code>MIOPEN_ENABLE_LOGGING=1 MIOPEN_LOG_LEVEL=6</code>. Also probed FP16 and BFP16 to observe dtype-driven solver switching.</span>
+					<span data-lang="ja">Vega64 実機（ROCm 7.2・MIOpen 3.5.1・<code>gfx900:xnack-</code>）で MIOpen conv driver を実行し、<code>MIOPEN_ENABLE_LOGGING=1 MIOPEN_LOG_LEVEL=6</code> でソルバ名・カーネル名を収集。dtype による solver 分岐確認のため FP16・BFP16 も追加測定。</span>
+				</li>
+			</ul>
+
+			<table class="data-table">
+				<thead><tr>
+					<th>Case</th><th>dtype</th>
+					<th><span data-lang="en">Solver selected</span><span data-lang="ja">選択 solver</span></th>
+					<th><span data-lang="en">Kernel name</span><span data-lang="ja">カーネル名</span></th>
+					<th><span data-lang="en">Verify</span><span data-lang="ja">検証</span></th>
+				</tr></thead>
+				<tbody>
+					<tr>
+						<td class="td-run">3×3, s1, N32 C64 K64</td><td>FP32</td>
+						<td><code>ConvBinWinograd3x3U</code></td>
+						<td class="td-run">miopenSp3AsmConv3x3F</td>
+						<td class="td-ok">✅ ok</td>
+					</tr>
+					<tr>
+						<td class="td-run">1×1, s1, N32 C64 K64</td><td>FP32</td>
+						<td><code>ConvAsm1x1U</code></td>
+						<td class="td-run">miopenGcnAsmConv1x1U</td>
+						<td class="td-ok">✅ ok</td>
+					</tr>
+					<tr>
+						<td class="td-run">3×3, s2, N32 C64 K128</td><td>FP32</td>
+						<td><code>ConvHipImplicitGemmV4R1Fwd</code></td>
+						<td class="td-run">gridwise_conv_implicit_gemm_v4r1_nchw_kcyx_nkhw_lds_double_buffer</td>
+						<td class="td-ok">✅ ok</td>
+					</tr>
+					<tr>
+						<td class="td-run">3×3, s1, N32 C64 K64 g=2</td><td>FP32</td>
+						<td><code>ConvBinWinogradRxSf2x3</code></td>
+						<td class="td-run">miopenSp3AsmConv_v21_1_3_gfx9_fp32_f2x3_stride1</td>
+						<td class="td-ok">✅ ok</td>
+					</tr>
+					<tr>
+						<td class="td-run">3×3, s1, N16 C64 K64</td><td>FP16</td>
+						<td><code>ConvOclDirectFwd</code></td>
+						<td class="td-run">—</td>
+						<td class="td-ok">✅ 4.32 ms</td>
+					</tr>
+					<tr>
+						<td class="td-run">3×3, s1, N16 C64 K64</td><td>BFP16</td>
+						<td><code>GemmFwdRest</code></td>
+						<td class="td-run">—</td>
+						<td class="td-ok">✅ 5.41 ms</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div class="hbox green">
+				<span data-lang="en"><strong>Key findings (runtime_verified):</strong>
+				<ul style="margin:6px 0 0;">
+					<li><code>ConvMlirIgemm*</code> was <strong>not selected</strong> in any FP32 case — consistent with the static code exclusion (Step 8).</li>
+					<li>Three distinct legacy ASM/HIP paths were observed in natural selection: Binary Winograd, direct ASM 1×1, and HIP implicit GEMM v4r1.</li>
+					<li>dtype switching (FP32→FP16→BFP16 on the same shape) produced three different solver families — the selection system is sensitive to dtype, not only shape.</li>
+					<li>All four FP32 cases passed forward verify: <strong>fallback_confirmed</strong>.</li>
+				</ul>
+				</span>
+				<span data-lang="ja"><strong>主要知見（runtime_verified）:</strong>
+				<ul style="margin:6px 0 0;">
+					<li>FP32 全ケースで <code>ConvMlirIgemm*</code> は<strong>選択されなかった</strong> — 静的コード解析（Step 8）の除外条件と整合。</li>
+					<li>自然選択で Binary Winograd・直接 ASM 1×1・HIP implicit GEMM v4r1 の 3 系統が観測された。</li>
+					<li>同一形状で dtype を FP32→FP16→BFP16 に変更すると solver family が変わり、dtype も選択に影響することが実測で判明。</li>
+					<li>FP32 全 4 ケースが forward verify 通過: <strong>fallback_confirmed</strong>。</li>
+				</ul>
+				</span>
+			</div>
+		</article>
+
+		<!-- ── STEP 10 ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">10) INT8 deep probe — forced solvers, failure taxonomy, and disassembly <span class="step-date">2026-03-13</span></span>
+				<span data-lang="ja">10) INT8 深掘り — 強制 solver 実行・失敗分類・逆アセンブル <span class="step-date">2026-03-13</span></span>
+			</h2>
+			<ul>
+				<li>
+					<span class="do" data-lang="en">Did:</span><span class="do" data-lang="ja">実施:</span>
+					<span data-lang="en">Ran 9+ natural INT8 convolution cases of varying shapes/layouts, then used MIOpen's <code>-S &lt;solver&gt;</code> flag to forcibly invoke each solver family that static analysis suggested might be relevant. Extracted the generated kernel binary from the MIOpen user DB and disassembled it to check for dot-product instructions.</span>
+					<span data-lang="ja">形状・レイアウトを変えた 9 ケース以上の INT8 Conv を自然実行した後、静的解析で候補となった各 solver を MIOpen の <code>-S &lt;solver&gt;</code> フラグで強制起動した。MIOpen ユーザDB からカーネルバイナリを取り出して逆アセンブルし、dot 系命令の有無を確認した。</span>
+				</li>
+			</ul>
+
+			<div class="hbox">
+				<span data-lang="en"><strong>Natural selection result:</strong> All 9+ INT8 cases selected <code>ConvDirectNaiveConvFwd</code> regardless of shape, layout (NCHW/NHWC), stride, or channel count. No non-naive INT8 solver was selected naturally.</span>
+				<span data-lang="ja"><strong>自然選択の結果:</strong> 形状・レイアウト（NCHW/NHWC）・ストライド・チャンネル数を変えた全 9 ケース以上で <code>ConvDirectNaiveConvFwd</code> が選択された。naive 以外の INT8 solver は自然選択では観測できなかった。</span>
+			</div>
+
+			<table class="data-table">
+				<thead><tr>
+					<th><span data-lang="en">Forced solver</span><span data-lang="ja">強制 solver</span></th>
+					<th><span data-lang="en">Failure mode</span><span data-lang="ja">失敗モード</span></th>
+					<th><span data-lang="en">Exit code / error</span><span data-lang="ja">終了コード / エラー</span></th>
+				</tr></thead>
+				<tbody>
+					<tr>
+						<td><code>ConvAsmImplicitGemmV4R1DynamicFwd_1x1</code></td>
+						<td class="td-err"><span data-lang="en">GPU memory access fault</span><span data-lang="ja">GPU メモリアクセス fault</span></td>
+						<td><span data-lang="en">Memory access fault by GPU node-1</span><span data-lang="ja">Memory access fault by GPU node-1</span></td>
+					</tr>
+					<tr>
+						<td><code>ConvMlirIgemmFwd</code></td>
+						<td class="td-err"><span data-lang="en">MIIR invalid param</span><span data-lang="ja">MIIR パラメータ不正</span></td>
+						<td><code>MIIR_INVALID_PARAM · rc=0x7</code></td>
+					</tr>
+					<tr>
+						<td><code>ConvCkIgemmFwdV6r1DlopsNchw</code></td>
+						<td class="td-err"><span data-lang="en">Not applicable (15 cases)</span><span data-lang="ja">適用不可（15 ケース）</span></td>
+						<td><code>rc=0x3</code></td>
+					</tr>
+					<tr>
+						<td><code>ConvHipImplicitGemmFwdXdlops</code></td>
+						<td class="td-err"><span data-lang="en">Assertion abort (INT8 + FP16 + BFP16)</span><span data-lang="ja">Assertion abort（INT8・FP16・BFP16）</span></td>
+						<td><code>std::vector::operator[] __n &lt; size() · EXIT=134</code></td>
+					</tr>
+					<tr>
+						<td><code>ConvHipImplicitGemmForwardV4R5Xdlops</code></td>
+						<td class="td-err"><span data-lang="en">Code object build failed (INT8 + FP16 + BFP16)</span><span data-lang="ja">コードオブジェクトビルド失敗（INT8・FP16・BFP16）</span></td>
+						<td><code>intrin_mfma_* / gcnasm_mfma_* undeclared · rc=0x7</code></td>
+					</tr>
+					<tr>
+						<td><code>ConvHipImplicitGemmGroupFwdXdlops</code></td>
+						<td class="td-err"><span data-lang="en">Not applicable</span><span data-lang="ja">適用不可</span></td>
+						<td><code>rc=0x3</code></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<ul>
+				<li>
+					<span data-lang="en"><strong>Disassembly (INT8 naive kernel from MIOpen user DB):</strong></span>
+					<span data-lang="ja"><strong>逆アセンブル（MIOpen ユーザ DB からの INT8 naive カーネル）:</strong></span>
+				</li>
+			</ul>
+			<div class="log-quote"><span class="hi-gray"># Extract from gfx900_64.ukdb (sqlite3) → bzip2 decompress → ELF64 amdgpu</span>
+<span class="hi-gray"># Symbol: naive_conv_ab_nonpacked_fwd_nchw_int8_t_int32_t_int8_t</span>
+
+llvm-objdump -d --triple=amdgcn ...
+
+<span class="hi-red">v_dot4_i32_i8</span>   <span class="hi-gray">→ NOT FOUND</span>
+<span class="hi-red">v_dot4c_i32_i8</span>  <span class="hi-gray">→ NOT FOUND</span>
+<span class="hi-red">sdot4</span>           <span class="hi-gray">→ NOT FOUND</span>
+<span class="hi-green">v_mul_i32_i24</span>   <span class="hi-gray">→ present (element-wise multiply)</span>
+<span class="hi-green">v_add_u32</span>       <span class="hi-gray">→ present (accumulate)</span></div>
+
+			<div class="hbox green">
+				<span data-lang="en"><strong>Key findings:</strong>
+				<ul style="margin:6px 0 0;">
+					<li>The INT8 naive kernel on gfx900 performs element-wise multiply + accumulate (<code>v_mul</code> / <code>v_add</code>), not dot-product instructions — consistent with the CK <span class="fref">inner_product.hpp</span> dot4-absent fallback path confirmed in static analysis.</li>
+					<li>The Xdlops family produces two distinct failure modes depending on the solver: vector-bound assertion abort vs. MFMA intrinsic compile failure — the failure boundary is solver-family-level, not dtype-level.</li>
+					<li>MLIR iGEMM reaches the compile stage but fails with <code>MIIR_INVALID_PARAM</code> at parameter lowering — the static exclusion (<code>return false</code>) is the correct guard; forced execution falls further down.</li>
+				</ul>
+				</span>
+				<span data-lang="ja"><strong>主要知見:</strong>
+				<ul style="margin:6px 0 0;">
+					<li>gfx900 上の INT8 naive カーネルは dot 系命令を使わず、要素ごとの乗算（<code>v_mul</code>）と加算（<code>v_add</code>）で積和計算を実行 — 静的解析で確認した CK <span class="fref">inner_product.hpp</span> の dot4 不在時フォールバックと整合。</li>
+					<li>Xdlops 系は solver によって 2 種類の失敗モード（ベクタ境界 assertion abort / MFMA intrinsic コンパイル失敗）を示し、失敗境界は dtype 軸ではなく solver ファミリー軸にある。</li>
+					<li>MLIR iGEMM はコンパイル段階まで進むが、パラメータ降格フェーズで <code>MIIR_INVALID_PARAM</code> で落ちる。静的解析の <code>return false</code> が正しい保護ガードであり、強制実行するとさらに下まで落ちることが直接確認できた。</li>
+				</ul>
+				</span>
+			</div>
+		</article>
+
 	</section>
 
 	<!-- ── Footer ── -->
 	<div class="footer-note">
 		<span data-lang="en">
-			<strong>Three-tier verdict (based on collected evidence):</strong>
+			<strong>Four-tier verdict (based on collected evidence):</strong>
 			(1) gfx900 is absent from the ROCm 7.2 official support matrix and the default CMake HIP filter —
 			<em>not officially supported</em>.
 			(2) Under override-assisted configuration (<code>HSA_OVERRIDE_GFX_VERSION=9.0.0</code>) and with a pre-built <code>libggml-hip.so</code>, ROCm/HIP executed all tested conditions —
 			<em>conditionally executable</em>.
 			(3) Vulkan succeeded only at <code>num_gpu=0</code> for <code>qwen3.5:2b Q8_0</code>; <code>phi4-mini</code> survived GPU offload —
 			<em>backend- and model-dependent stability</em>.
+			(4) Static code audit and real-hardware solver tracing confirm that a three-layer structure (maintain / manage / supplement) keeps gfx900 computation paths alive through MIOpen, rocBLAS, and Tensile — with FP32 paths runtime-verified and INT8 paths confirmed to operate via element-wise fallback arithmetic rather than dot-product instructions.
 		</span>
 		<span data-lang="ja">
-			<strong>3段階評価（収集した証拠に基づく）:</strong>
+			<strong>4 段階評価（収集した証拠に基づく）:</strong>
 			(1) gfx900 は ROCm 7.2 公式サポート表および CMake デフォルト HIP フィルタに含まれない —
 			<em>公式サポート外</em>。
 			(2) override-assisted 構成（<code>HSA_OVERRIDE_GFX_VERSION=9.0.0</code>）と事前ビルド済み <code>libggml-hip.so</code> のもとで、ROCm/HIP は全テスト条件を完走 —
 			<em>条件付き実行可能</em>。
 			(3) Vulkan は <code>qwen3.5:2b Q8_0</code> では <code>num_gpu=0</code> のみ成功; <code>phi4-mini</code> は GPU offload でも通過 —
 			<em>バックエンド・モデル依存の安定性</em>。
+			(4) 静的コード監査と実機 solver トレースにより、「維持・管理・補充」の 3 層構造が MIOpen・rocBLAS・Tensile にわたって gfx900 計算経路を存続させていることをコードと実機の両面で確認 — FP32 経路は runtime_verified、INT8 経路は dot 系命令なしの逐次積和フォールバックで動作することが逆アセンブルで確認済み。
 		</span>
 	</div>
 

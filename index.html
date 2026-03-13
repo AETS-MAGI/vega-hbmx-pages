@@ -475,8 +475,8 @@
 		<section class="flow-section">
 			<h3 class="flow-title" data-lang="ja">3. さらに研究向けの根拠へ進む</h3>
 			<h3 class="flow-title" data-lang="en">3. Go deeper into the research evidence</h3>
-			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、最後に code trace を参照できます。</p>
-			<p class="flow-lead" data-lang="en">If you want the strict implementation-level evidence, the final step is the standalone code-tracing deck.</p>
+			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、code trace と solver trace を参照できます。</p>
+			<p class="flow-lead" data-lang="en">For strict implementation-level evidence, two standalone reference decks are available — one for API semantics and one for ROCm library solver paths.</p>
 			<div class="card-grid">
 				<article class="card">
 					<span class="card-type type-trace">Trace</span>
@@ -494,6 +494,27 @@
 				<div class="actions">
 					<a class="button button-primary" href="code-tracing.html">Open</a>
 					<a class="button button-secondary" href="./code-tracing.html">Direct URL</a>
+				</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-trace">Solver Trace</span>
+				<h3 data-lang="ja">gfx900 計算経路トレース（ROCm）</h3>
+				<h3 data-lang="en">gfx900 solver path trace (ROCm)</h3>
+				<p class="filename">solver-trace.html</p>
+				<p data-lang="ja">MIOpen・rocBLAS・CK・Tensile における gfx900 推論経路を、ソース行番号と実機ログで対応づけた技術参照資料です。</p>
+				<p data-lang="en">A technical reference tracing gfx900 computation paths through MIOpen, rocBLAS, CK, and Tensile — with exact source line numbers cross-referenced against real Vega64 runtime logs.</p>
+				<ul>
+					<li data-lang="ja">MLIR 除外コミット・ASM ホワイトリスト・dot4 フォールバックをコードで確認</li>
+					<li data-lang="en">MLIR exclusion commit, ASM whitelist, dot4 fallback — all code-verified</li>
+					<li data-lang="ja">実機逆アセンブルで dot4 命令不在を確認</li>
+					<li data-lang="en">Disassembly confirms no dot4 instructions in INT8 naive kernel on Vega64</li>
+					<li data-lang="ja">「維持・管理・補充」3 層構造をコードと実機の両面で説明</li>
+					<li data-lang="en">Maintain / manage / supplement: three-layer architecture explained with code + runtime evidence</li>
+				</ul>
+				<div class="actions">
+					<a class="button button-primary" href="solver-trace.html">Open</a>
+					<a class="button button-secondary" href="./solver-trace.html">Direct URL</a>
 				</div>
 				</article>
 			</div>
