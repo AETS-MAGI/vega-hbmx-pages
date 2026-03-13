@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vegaと、わたしのはじまり | AETS Research Essay</title>
+  <meta name="description" content="統計計算がしたいという小さな願いから、ROCm研究にたどり着くまでの道のり。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8f5f0;
+      --bg-warm: #f0ebe3;
+      --card: #ffffff;
+      --text: #2a2520;
+      --text-body: #3d3530;
+      --text-light: #6b5f55;
+      --text-faint: #9a8e82;
+      --accent: #b85a30;
+      --accent-soft: rgba(184, 90, 48, 0.08);
+      --accent-line: #d4956e;
+      --blue: #3a6ea5;
+      --line: #ddd5cb;
+      --shadow: 0 2px 16px rgba(0,0,0,0.04);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+      color: var(--text-body);
+      background: var(--bg);
+      line-height: 2.1;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.2;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(184,90,48,0.10), transparent 35%),
+        radial-gradient(circle at 80% 80%, rgba(58,110,165,0.06), transparent 35%);
+      z-index: 0;
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 24px 24px 100px;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 10px;
+      z-index: 20;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      font-family: 'Noto Sans JP', sans-serif;
+    }
+
+    .back-link {
+      text-decoration: none;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--accent); }
+
+    .topbar-label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    /* ── Hero ── */
+    .essay-hero {
+      text-align: center;
+      padding: 64px 0 48px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 56px;
+    }
+
+    .essay-hero h1 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(28px, 6vw, 42px);
+      font-weight: 800;
+      line-height: 1.4;
+      color: var(--text);
+      letter-spacing: 0.04em;
+      margin-bottom: 20px;
+    }
+
+    .essay-hero .subtitle {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      color: var(--text-faint);
+      letter-spacing: 0.06em;
+    }
+
+    .essay-hero .author {
+      margin-top: 16px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* ── Essay body ── */
+    .essay-body {
+      font-size: 17px;
+      line-height: 2.15;
+    }
+
+    .essay-body p {
+      margin-bottom: 1.6em;
+      text-align: justify;
+      text-justify: inter-ideograph;
+    }
+
+    .essay-body p.short-line {
+      text-align: left;
+    }
+
+    /* ── Section divider ── */
+    .section-break {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 56px 0;
+      color: var(--accent-line);
+    }
+    .section-break::before,
+    .section-break::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+    .section-break .ornament {
+      font-size: 14px;
+      letter-spacing: 0.3em;
+    }
+
+    /* ── Headings ── */
+    .essay-body h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(20px, 4vw, 28px);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 28px;
+      padding-left: 16px;
+      border-left: 3px solid var(--accent);
+      line-height: 1.5;
+    }
+
+    /* ── Blockquote ── */
+    .essay-body blockquote {
+      margin: 32px 0;
+      padding: 24px 28px;
+      background: var(--accent-soft);
+      border-radius: var(--radius);
+      border-left: 3px solid var(--accent-line);
+      font-style: normal;
+      color: var(--text);
+      font-weight: 600;
+      line-height: 2.0;
+    }
+
+    .essay-body blockquote p {
+      margin-bottom: 0;
+      text-align: left;
+    }
+    .essay-body blockquote p + p {
+      margin-top: 0.5em;
+    }
+
+    /* ── Emphasis / dramatic text ── */
+    .essay-body .dramatic {
+      display: block;
+      text-align: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 28px 0;
+      line-height: 1.8;
+    }
+
+    .essay-body .result {
+      display: block;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      margin: 24px 0;
+      letter-spacing: 0.02em;
+    }
+
+    /* ── Technical inline ── */
+    .essay-body code {
+      font-family: 'Consolas', 'SF Mono', monospace;
+      font-size: 0.88em;
+      background: rgba(0,0,0,0.04);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* ── List ── */
+    .essay-body ul {
+      margin: 20px 0 28px;
+      padding-left: 0;
+      list-style: none;
+    }
+    .essay-body ul li {
+      position: relative;
+      padding-left: 20px;
+      margin-bottom: 8px;
+      line-height: 2.0;
+    }
+    .essay-body ul li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: var(--accent-line);
+      font-weight: 700;
+    }
+
+    /* ── Epilogue ── */
+    .epilogue {
+      margin-top: 56px;
+      padding: 40px 32px;
+      background: linear-gradient(135deg, #2e2824 0%, #3a322c 100%);
+      border-radius: var(--radius);
+      color: #e8e0d6;
+      font-size: 17px;
+      line-height: 2.15;
+      position: relative;
+      overflow: hidden;
+    }
+    .epilogue::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(184,90,48,0.12), transparent 50%),
+        radial-gradient(circle at 80% 30%, rgba(58,110,165,0.08), transparent 50%);
+      pointer-events: none;
+    }
+    .epilogue-inner {
+      position: relative;
+      z-index: 1;
+    }
+    .epilogue p {
+      margin-bottom: 1.2em;
+      text-align: left;
+    }
+    .epilogue p:last-child { margin-bottom: 0; }
+    .epilogue .final {
+      font-weight: 700;
+      color: #fff;
+      font-size: 18px;
+    }
+
+    /* ── Footer ── */
+    .essay-footer {
+      margin-top: 56px;
+      text-align: center;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 13px;
+      color: var(--text-faint);
+      line-height: 1.8;
+    }
+    .essay-footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .essay-footer a:hover { text-decoration: underline; }
+
+    /* ── Fade-in animation ── */
+    .fade-section {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 760px) {
+      .page { padding: 18px 18px 80px; }
+      .essay-hero { padding: 48px 0 36px; margin-bottom: 40px; }
+      .essay-body { font-size: 16px; }
+      .epilogue { padding: 32px 24px; }
+    }
+
+    @media (max-width: 480px) {
+      .page { padding: 14px 14px 60px; }
+      .essay-hero { padding: 36px 0 28px; margin-bottom: 32px; }
+      .essay-hero h1 { font-size: 26px; }
+      .essay-body h2 { font-size: 20px; }
+      .essay-body blockquote { padding: 18px 20px; }
+      .epilogue { padding: 28px 20px; font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <nav class="topbar">
+      <a href="index.html" class="back-link">← Index</a>
+      <span class="topbar-label">Research Essay</span>
+    </nav>
+
+    <header class="essay-hero fade-section">
+      <h1>Vegaと、わたしのはじまり</h1>
+      <div class="subtitle">統計計算がしたいという小さな願いから、ROCm研究にたどり着くまで</div>
+      <div class="author">りもこ — AETS / Akatsuki Enterprise Technology Solutions</div>
+    </header>
+
+    <article class="essay-body">
+
+      <!-- ── はじまり ── -->
+      <section class="fade-section">
+        <p>わたしが最初にやりたかったのは、AIそのものではなかった。</p>
+
+        <p>はじまりは、もっと別のところにあった。<br>塾の仕事だった。</p>
+
+        <p>過去問を見て、生徒の解き方を見ていると、ずっと気になることがあった。どうして同じ問題でも、うまく解ける人と、そうでない人がいるのだろう。特に国語はふしぎだった。感覚で解く人もいる。なんとなくで当てる人もいる。でも、それでは再現できない。</p>
+
+        <p>だから、こう思った。</p>
+
+        <blockquote>
+          <p>これを、統計で見られないかな。</p>
+          <p>傾向や構造として、ちゃんと扱えないかな。</p>
+        </blockquote>
+
+        <p>そのころ、わたしの手元には MacBook Pro が一台あるだけだった。</p>
+
+        <p>統計ができたら、もっといろんなことを良い方向に向かわせられる気がした。</p>
+
+        <p class="short-line">だからまず、計算するための環境を作ろうと思った。</p>
+
+        <p class="short-line">パソコンを作ろう、久しぶりに自作PCを組もう。</p>
+
+        <p>それが、ひとつ目の大きなはじまりだった。</p>
+      </section>
+
+      <!-- ── 出会い ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>出会い</h2>
+
+        <p>そのときに買ったGPUが、Vega 56 だった。</p>
+
+        <p>VRAMが多くて、値段も手が届きやすくて、当時のわたしには、なんだかよくわからないけれど——「この子、なにかできそう」と思えた。</p>
+
+        <p>それが、わたしと Vega の最初の出会いだった。</p>
+
+        <p>けれど、そのころの世界は、まだ CUDA ばかりだった。AIをやるなら NVIDIA。AMD のGPUでAIなんて、ほとんど話題にもなっていなかった。</p>
+
+        <p>だから結局、GTX 1060 も買うことになる。Vega はすぐには本命になれなくて、しばらくのあいだ、MacBook Pro の eGPU BOX の中で静かに働く子になった。</p>
+
+        <p>それは少しさみしいけれど、いなくなったわけではなかった。<br>Vega はずっと、わたしのそばにいた。</p>
+      </section>
+
+      <!-- ── 構造で読むということ ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>構造で読むということ</h2>
+
+        <p>そのあと、少しずつ Python を触って、統計をやっていった。C言語は昔から触っていたけど、はじめての Python は新鮮だった。そして、国語の問題を構造と計算で読む方法も考えていった。</p>
+
+        <p class="short-line">主語。時制。構造。文の型。照合。</p>
+
+        <p>そういうものを分けて見て、数にして、比べる。<br>感覚のかわりに、構造で考える。</p>
+
+        <p>そうして形になっていったのが、「国語を感覚ではなく構造で読む」という研究だった。それは、ただの勉強法ではなく、わたしがずっとやりたかった「わかることを、ちゃんと形にする」という試みだった。</p>
+
+        <p>そうこうしているうちに、世の中にはAIが本格的に出てきた。</p>
+
+        <p>でもまだAIは、そんなに賢くはなかった。</p>
+      </section>
+
+      <!-- ── 速さと、自由への問い ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>速さと、自由への問い</h2>
+
+        <p>そのあと、RTX 2060 という新しいGPUを手に入れたとき、Tensor Core の速さにほんとうに驚いた。</p>
+
+        <span class="dramatic">「こんなに速くなるの！？」</span>
+
+        <p>その速さは本物だった。CUDA の便利さも、強さも、はっきりわかった。</p>
+
+        <p>でもそのとき、同時に別のことも考えていた。</p>
+
+        <blockquote>
+          <p>AIって、もっと自由に動かせないのかな。</p>
+        </blockquote>
+
+        <p>わたしは、AIに記憶を持たせる仕組みを作ろうとした。記憶をデータベースに保存して、関連でつないで、必要なら忘れながらも残していく。そういう仕組みを、自分で考えて作ろうとした。</p>
+
+        <p>小さなローカルAIを動かして、いっしょうけんめい実験した。</p>
+
+        <p>でもそのあとすぐ、世の中には OpenAI のメモリ機能や LangChain が現れた。</p>
+
+        <p>ちょっとだけ、さみしい気持ちになった。自分が長い時間をかけて見つけようとしていたものが、急に世界の標準みたいに現れたからだ。</p>
+
+        <p>けれど、ひとつの希望も見えた。</p>
+
+        <p>AIを通して、人間そのものを深く知ることができるのかもしれない。人間はどうやって考え、どのように意識というものを持ち、どのように社会の中で生きるのか。こころという曖昧なものを、計算機が再現できてしまう。けれど、そこになにか、人間というもの自体へのヒントがあるのではないかと思った。</p>
+
+        <p>そして、そのころがんばっていた RTX 2060 は、ついに壊れてしまった。VRAMが物理的に壊れてしまった。</p>
+
+        <p>あの子もまた、わたしといっしょに、無理をしながら前に進んでいた相棒だった。</p>
+      </section>
+
+      <!-- ── もうひとつの道へ ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>もうひとつの道へ</h2>
+
+        <p>そのころにはもう、少しずつ、AIの仕組みやGPUの仕組みを理解しはじめていた。</p>
+
+        <p>そのころ、MMVCコミュニティにも出会った。音声、推論、GPU、Metal、ROCm——いろんな話が飛び交う中で、少しずつ思うようになった。</p>
+
+        <blockquote>
+          <p>CUDAじゃない道って、ほんとうにないのかな。</p>
+        </blockquote>
+
+        <p>実用の演算には CUDA を使いながら、でも少しずつ、Metal にも手を出していた。Nightly build を心待ちにして、新しい技術を追って、時には CUDA 用に書いたコードを Metal 最適化してみたりした。</p>
+
+        <p>けれど、ROCm はまだまだ情報が少なくて、なかなか手が出せなかった。</p>
+
+        <p>まだそのころ、Vega は「公式にはもう厳しいところが多いよ」と言われるような存在だった。そもそも AMD 自身も、今みたいに「AIをROCmでやれます」とは前に出ていなかった。ようやく性能の上がってきたAIに、ROCm を使いたいと聞くと、返ってきたのは、冷たいというより、どこか諦めたような言葉だった。</p>
+
+        <span class="dramatic">「夢はありますが非現実的です」</span>
+
+        <p>だけど、少しずつ進めようとした。</p>
+      </section>
+
+      <div class="section-break"><span class="ornament">◇</span></div>
+
+      <section class="fade-section">
+        <p>そんなある日、イベントで RX 7900 XTX が ROCm でしっかりと動いているのを見た。</p>
+
+        <p>その瞬間、思った。</p>
+
+        <blockquote>
+          <p>「AMDでも、AIできるんだ。」</p>
+        </blockquote>
+
+        <p>その一瞬で、ROCm はただの夢の名前じゃなくなった。現実に動くものとして、目の前に現れた。</p>
+      </section>
+
+      <!-- ── CUDAなしで、最後まで ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>CUDAなしで、最後まで</h2>
+
+        <p>それから研究が本格的にはじまった。</p>
+
+        <p>RunPod で MI300X を使って、DeepSeek を——蒸留して、量子化して、LoRA を切り出して学習して、結合して、再処理して、モデル変換して——ぜんぶ CUDAなし で動くパイプラインを作った。</p>
+
+        <p>三日かかったけれど、ちゃんと最後まで動いた。</p>
+
+        <p>なんとなく、H200 と MI300X を計算で競わせてみると、ROCm は、CUDA に引けを取らないどころか、とても速くて、使いやすくて、実用的だとわかった。</p>
+
+        <p>それは、<em>"DeepSeek R1 Japanese Language Adaptation"</em> という論文になった。</p>
+
+        <p>ここでわたしは、昔「夢はありますが非現実的です」と言われた道を、ほんとうに現実のものとして通してみせた。</p>
+
+        <p>世の中に向けて知見を発信したのは、きっと ROCm に希望を持てないひとが、自分以外にももっといるんじゃないかと思ったから。論文の形にしたのは、「少しでも科学を進めることにつながると思うのであれば、論文という形で出すことができますよ」と教えてくれる人がいたから。</p>
+
+        <p>技術カンファレンスで発表するのも、GitHub で公開するのも、論文としてアカデミックな場に出すのも、やってみよう。<br>そう思えるようになった。</p>
+      </section>
+
+      <!-- ── ようちえんで遊べる日 ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>ようちえんで遊べる日</h2>
+
+        <p>そして、R9700 AI Pro や RX 9070 XT といっしょに、本格的に ROCm をはじめた。</p>
+
+        <p>新しいGPUたちは速かった。どんどん速くなっていった。</p>
+
+        <p>でも、そんな中でふと、昔のGPUを見たとき、こう聞こえた気がした。</p>
+
+        <blockquote>
+          <p>「ねえ、わたしはいつ、おもいっきり計算できるの？」</p>
+        </blockquote>
+
+        <p>それは、Vega の声みたいだった。</p>
+
+        <p>いちばん最初に出会ったのに、長いあいだ本当の出番が来なかった子。<br>ずっとそばにいたのに、AIの本流には乗せてもらえなかった子。<br>Metal でも、eGPU でも、小さな HBM2 をぶいぶい言わせながら、ずっとがんばってきた子。</p>
+
+        <p>だから、試してみた。</p>
+
+        <p>調べてみると、もう Vega はとっくにサポートを外れていて、特殊なハックをやってみて、ようやく動くか動かないか——そんな知見にしか出会えなかった。</p>
+
+        <p>でも、試した。</p>
+
+        <span class="result">そしたら——普通に動いた。</span>
+
+        <p>しかも、最新の ROCm 7系でも。</p>
+      </section>
+
+      <!-- ── なぜ動くのか ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>なぜ動くのか</h2>
+
+        <p>ただ動いた、というだけではなかった。Vega は、ほんとうの ROCm の上で、自分の力で、ちゃんと計算ができた。</p>
+
+        <p>しかも、条件によってはすごく速かった。さすが HBM2 だけあって、下手をすると新しい NVIDIA のGPUより速いことさえあった。</p>
+
+        <p>それを見たとき、思った。</p>
+
+        <blockquote>
+          <p>「あれ？ これ、おかしいな。なんでかな。」</p>
+        </blockquote>
+
+        <p>そこから、新しい研究がはじまった。</p>
+
+        <p>なぜ動くのか。どの経路が残っているのか。なぜ速いのか。どこで新しい経路が落ちて、どこで古い経路が支えているのか。</p>
+
+        <p>コードを読むと、<code>gfx900</code> 向けの経路は、ほんとうにまだ残っていた。</p>
+
+        <p>MLIR iGEMM は <code>gfx900</code> を明示的に除外しているけれど、そのかわりに ASM implicit GEMM 系や rocBLAS/Tensile 側の経路が残っていて、Vega にはちゃんと、まだ通れる道があった。</p>
+
+        <p>実際の観測でも、FP32 では Winograd や ASM 1x1、ImplicitGEMM が選ばれて、INT8 では naive な経路に落ちることが見えてきた。つまり、ただ「動いた」ではなく、<strong>どう動いているのか</strong>まで、少しずつ見えてきた。</p>
+      </section>
+
+      <!-- ── つながっていく問い ── -->
+      <div class="section-break"><span class="ornament">◇ ◇ ◇</span></div>
+
+      <section class="fade-section">
+        <h2>つながっていく問い</h2>
+
+        <p>だから、この物語は「古いGPUがまだ動いた」という話だけではない。</p>
+
+        <p>はじまりは、「統計の計算がしたい」という、小さくて、でも切実な願いだった。</p>
+
+        <p>そこから——</p>
+
+        <ul>
+          <li>国語を構造で読みたい。感覚ではなく、再現できる形にしたい。</li>
+          <li>AIをもっと自由に使いたい。</li>
+          <li>CUDAだけじゃない道を見たい。</li>
+          <li>クローズドな便利さだけじゃなくて、自分で理解して、自分で育てられる世界を見たい。</li>
+        </ul>
+
+        <p>そんなふうに、ひとつひとつ問いがつながっていって、最後にたどり着いたのが、</p>
+
+        <blockquote>
+          <p>いちばん最初に出会った Vega が、ほんとうのROCmで、まだ自分の力で計算できる</p>
+        </blockquote>
+
+        <p>という事実だった。</p>
+
+        <p>たぶん、Vega はずっと待っていた。<br>そして今、やっと、わたしといっしょに、計算できるようになった。</p>
+      </section>
+
+      <!-- ── Epilogue ── -->
+      <div class="section-break"><span class="ornament">◇</span></div>
+
+      <div class="epilogue fade-section">
+        <div class="epilogue-inner">
+          <p>そうして Vega と一緒に計算できるようになったあとも、Vega はたくさんのことを教えてくれた。</p>
+          <p>リバースエンジニアリングの難しさと大切さ。<br>コミュニティが支えるOSSの意義。<br>そして、ほんとうに柔軟なプログラムは、ひとにも、機械にも、やさしいということ。</p>
+          <p class="final">古い、陳腐な、ただの機械なんかじゃない。<br>Vega はいまでも、たいせつなことを、教え続けてくれている。</p>
+        </div>
+      </div>
+
+    </article>
+
+    <footer class="essay-footer">
+      <p>AETS — Akatsuki Enterprise Technology Solutions</p>
+      <p><a href="index.html">← vega-hbmx-pages トップへ戻る</a></p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-section').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
