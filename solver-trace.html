@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Solver Trace — gfx900 Computation Paths in ROCm | vega-hbmx-pages</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			background-color: #FFFFFF;
+			color: #212121;
+		}
+
+		.page {
+			max-width: 1400px;
+			margin: 0 auto;
+			padding: 36px 40px 54px;
+			box-sizing: border-box;
+		}
+
+		.header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			gap: 16px;
+			margin-bottom: 18px;
+		}
+
+		.title-wrap h1 {
+			margin: 0;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 38px;
+			color: #0D47A1;
+			line-height: 1.1;
+		}
+
+		.title-wrap p {
+			margin: 8px 0 0;
+			font-size: 18px;
+			color: #616161;
+		}
+
+		.env-badge {
+			display: flex;
+			gap: 8px;
+			flex-wrap: wrap;
+			margin-top: 10px;
+		}
+
+		.badge {
+			display: inline-block;
+			padding: 3px 10px;
+			border-radius: 999px;
+			font-size: 14px;
+			font-weight: bold;
+		}
+
+		.badge-gpu  { background: #E3F2FD; color: #0D47A1; }
+		.badge-rocm { background: #FFF3E0; color: #E65100; }
+		.badge-src  { background: #E8F5E9; color: #1B5E20; }
+		.badge-ver  { background: #F3E5F5; color: #6A1B9A; }
+
+		.lang-toggle {
+			display: inline-flex;
+			border: 1px solid #BDBDBD;
+			border-radius: 999px;
+			overflow: hidden;
+			background: #F5F5F5;
+			flex-shrink: 0;
+		}
+
+		.lang-btn {
+			border: none;
+			background: transparent;
+			color: #424242;
+			font-size: 16px;
+			font-weight: bold;
+			padding: 10px 16px;
+			cursor: pointer;
+		}
+
+		.lang-btn.active {
+			background: #0D47A1;
+			color: #FFFFFF;
+		}
+
+		.summary {
+			background: #F5F5F5;
+			border-left: 6px solid #0D47A1;
+			border-radius: 8px;
+			padding: 16px 20px;
+			margin-bottom: 24px;
+			font-size: 19px;
+			line-height: 1.5;
+		}
+
+		.timeline {
+			position: relative;
+			margin-top: 4px;
+			padding-left: 32px;
+		}
+
+		.timeline::before {
+			content: '';
+			position: absolute;
+			left: 10px;
+			top: 8px;
+			bottom: 8px;
+			width: 4px;
+			background: #0D47A1;
+			border-radius: 999px;
+		}
+
+		.step {
+			position: relative;
+			background: #F9F9F9;
+			border-radius: 10px;
+			box-shadow: 1px 1px 8px rgba(0,0,0,0.08);
+			padding: 20px 22px;
+			margin-bottom: 18px;
+		}
+
+		.step::before {
+			content: '';
+			position: absolute;
+			left: -28px;
+			top: 28px;
+			width: 14px;
+			height: 14px;
+			border-radius: 50%;
+			background: #0D47A1;
+			box-shadow: 0 0 0 4px #FFFFFF;
+		}
+
+		.step h2 {
+			margin: 0 0 12px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 24px;
+			color: #0D47A1;
+			line-height: 1.2;
+		}
+
+		.step ul {
+			margin: 0 0 10px;
+			padding-left: 22px;
+			font-size: 18px;
+			line-height: 1.55;
+		}
+
+		.step li { margin-bottom: 7px; }
+
+		.do     { color: #0D47A1; font-weight: bold; }
+		.result { color: #1B5E20; font-weight: bold; }
+		.warn   { color: #B71C1C; font-weight: bold; }
+
+		.log-quote {
+			background: #1E1E1E;
+			color: #D4D4D4;
+			font-family: 'Consolas', 'Courier New', monospace;
+			font-size: 13.5px;
+			line-height: 1.6;
+			border-radius: 6px;
+			padding: 10px 14px;
+			margin: 8px 0 10px;
+			overflow-x: auto;
+			white-space: pre;
+		}
+
+		.log-quote .hi-green  { color: #4EC9B0; }
+		.log-quote .hi-yellow { color: #DCDCAA; }
+		.log-quote .hi-red    { color: #F44747; }
+		.log-quote .hi-blue   { color: #9CDCFE; }
+		.log-quote .hi-gray   { color: #808080; }
+		.log-quote .hi-orange { color: #CE9178; }
+
+		.fref {
+			display: inline-block;
+			font-family: 'Consolas', 'Courier New', monospace;
+			font-size: 13px;
+			background: #E3F2FD;
+			color: #0D47A1;
+			border-radius: 4px;
+			padding: 1px 6px;
+			margin: 0 2px;
+		}
+
+		.data-table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 16px;
+			margin: 10px 0;
+		}
+
+		.data-table th {
+			background: #1565C0;
+			color: #FFFFFF;
+			padding: 7px 10px;
+			text-align: left;
+			font-weight: bold;
+		}
+
+		.data-table td {
+			padding: 6px 10px;
+			border-bottom: 1px solid #E0E0E0;
+			vertical-align: top;
+		}
+
+		.data-table tr:nth-child(even) td { background: #F5F5F5; }
+		.data-table tr:hover td { background: #E3F2FD; }
+
+		.td-ok    { color: #1B5E20; font-weight: bold; }
+		.td-err   { color: #B71C1C; font-weight: bold; }
+		.td-warn  { color: #E65100; font-weight: bold; }
+		.td-run   { font-family: monospace; font-size: 13px; color: #546E7A; }
+
+		.hbox {
+			border-left: 5px solid #0D47A1;
+			background: #E3F2FD;
+			border-radius: 6px;
+			padding: 10px 14px;
+			font-size: 17px;
+			margin: 10px 0;
+			line-height: 1.5;
+		}
+
+		.hbox.green {
+			border-left-color: #1B5E20;
+			background: #E8F5E9;
+		}
+
+		.hbox.red {
+			border-left-color: #B71C1C;
+			background: #FFEBEE;
+		}
+
+		.hbox.orange {
+			border-left-color: #E65100;
+			background: #FFF3E0;
+		}
+
+		.verdict {
+			margin-top: 24px;
+			background: #E3F2FD;
+			border: 2px solid #0D47A1;
+			border-radius: 10px;
+			padding: 18px 22px;
+			font-size: 18px;
+			line-height: 1.55;
+		}
+
+		.verdict h3 {
+			margin: 0 0 10px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 22px;
+			color: #0D47A1;
+		}
+
+		.footer-note {
+			margin-top: 20px;
+			padding: 12px 18px;
+			border-radius: 8px;
+			background: #ECEFF1;
+			font-size: 16px;
+			color: #546E7A;
+			line-height: 1.5;
+		}
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+
+		html[data-language="en"] table[data-lang="en"],
+		html[data-language="ja"] table[data-lang="ja"] { display: table; }
+		html[data-language="en"] tr[data-lang="en"],
+		html[data-language="ja"] tr[data-lang="ja"] { display: table-row; }
+		html[data-language="en"] pre[data-lang="en"],
+		html[data-language="ja"] pre[data-lang="ja"] { display: block; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+
+		@media (max-width: 980px) {
+			.page { padding: 24px 16px 30px; }
+			.header { align-items: flex-start; flex-direction: column; }
+			.title-wrap h1 { font-size: 28px; }
+			.summary { font-size: 16px; }
+			.step h2 { font-size: 20px; }
+			.step ul  { font-size: 16px; }
+			.log-quote { font-size: 12px; }
+			.data-table { font-size: 14px; }
+		}
+	</style>
+</head>
+<body>
+<div class="page">
+
+	<!-- ── Header ── -->
+	<div class="header">
+		<div class="title-wrap">
+			<h1>
+				<span data-lang="en">Solver Trace — gfx900 Computation Paths in ROCm</span>
+				<span data-lang="ja">Solver トレース — ROCm における gfx900 計算経路</span>
+			</h1>
+			<p>
+				<span data-lang="en">Static code audit + runtime verification: how MIOpen, rocBLAS, CK, and Tensile handle gfx900</span>
+				<span data-lang="ja">静的コード監査 + 実機検証：MIOpen・rocBLAS・CK・Tensile が gfx900 をどう扱うか</span>
+			</p>
+			<div class="env-badge">
+				<span class="badge badge-gpu">AMD Radeon RX Vega64 / gfx900:xnack-</span>
+				<span class="badge badge-rocm">ROCm 7.2 · MIOpen 3.5.1</span>
+				<span class="badge badge-src">Source: ROCm_AMD_Repo / rocm-libraries/</span>
+				<span class="badge badge-ver">Updated: 2026-03-13</span>
+			</div>
+		</div>
+		<div class="lang-toggle" aria-label="Language switch">
+			<button id="btn-en" class="lang-btn active" type="button">EN</button>
+			<button id="btn-ja" class="lang-btn" type="button">JP</button>
+		</div>
+	</div>
+
+	<!-- ── Summary ── -->
+	<div class="summary">
+		<span data-lang="en">This page traces the exact source-code paths through which gfx900 (AMD Vega10 / Radeon RX Vega) computation requests flow in the ROCm library stack. Every claim is backed by file paths and line numbers verified against the AMD ROCm source repository. A companion runtime experiment on a real Vega64 machine confirms which paths are active in practice.</span>
+		<span data-lang="ja">このページは、AMD Vega10／Radeon RX Vega（gfx900）の計算リクエストが ROCm ライブラリスタック内でどのソースコード経路を通るかをトレースしたものです。すべての主張は AMD ROCm ソースリポジトリで照合したファイルパスと行番号に基づいています。実機 Vega64 での動的実験により、どの経路が実際に動作するかを確認しています。</span>
+	</div>
+
+	<section class="timeline">
+
+		<!-- ── 1: MIOpen solver selection mechanism ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">1) MIOpen solver selection — candidate list + IsApplicable filter</span>
+				<span data-lang="ja">1) MIOpen solver 選択メカニズム — 候補列挙 + IsApplicable フィルタ</span>
+			</h2>
+			<ul>
+				<li>
+					<span data-lang="en">MIOpen does <strong>not</strong> use an explicit if-else fallback chain. Instead, it maintains a global solver registry and filters it through <code>IsApplicable()</code> at runtime.</span>
+					<span data-lang="ja">MIOpen は明示的な if-else フォールバックチェーンを使わない。代わりに、グローバルな solver レジストリを保持し、実行時に <code>IsApplicable()</code> でフィルタリングする方式。</span>
+				</li>
+			</ul>
+			<div class="log-quote"><span class="hi-gray">// miopen/src/conv/solver_finders.cpp : 98-110</span>
+<span class="hi-blue">if</span>(!parameters.use_winograd_only
+   &amp;&amp; !env::disabled(MIOPEN_DEBUG_CONV_IMPLICIT_GEMM))
+{
+    FindAllImplicitGemmSolutions(...)   <span class="hi-gray">// FWD / BwdData</span>
+    FindImplicitGemmWrWAllSolutions(...)  <span class="hi-gray">// BwdWrW</span>
+}
+
+<span class="hi-gray">// miopen/src/include/miopen/find_solution.hpp : 326 / 381 / 451</span>
+<span class="hi-blue">else if</span>(!solver.IsApplicable(ctx, problem))
+{
+    <span class="hi-yellow">log</span>(<span class="hi-orange">"Not applicable"</span>);
+    <span class="hi-blue">continue</span>;
+}
+
+<span class="hi-gray">// miopen/src/problem.cpp : 573 / 625</span>
+<span class="hi-blue">if</span>(!solver-&gt;IsApplicable(ctx, problem_description))
+    <span class="hi-yellow">log</span>(<span class="hi-orange">"Not applicable"</span>);</div>
+			<div class="hbox">
+				<span data-lang="en"><strong>Design implication:</strong> Old-generation solver entries remain registered even as new solvers are added. On gfx900, newer solvers fall out via <code>IsApplicable</code>, and legacy solvers with explicit gfx900 whitelisting survive the filter — this is how the "maintain" layer works.</span>
+				<span data-lang="ja"><strong>設計上の含意:</strong> 新しい solver が追加されても旧世代 solver のエントリはレジストリに残る。gfx900 では新しめの solver が <code>IsApplicable</code> で落ち、gfx900 を明示的に許可している旧世代 solver が生き残る構造 — これが「維持」層の仕組み。</span>
+			</div>
+		</article>
+
+		<!-- ── 2: MLIR iGEMM exclusion ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">2) MLIR iGEMM — gfx900 explicitly excluded (commit 2407d2f, Dec 2021)</span>
+				<span data-lang="ja">2) MLIR iGEMM — gfx900 を明示除外（コミット 2407d2f、2021年12月）</span>
+			</h2>
+			<ul>
+				<li>
+					<span data-lang="en">Three files — <span class="fref">conv_mlir_igemm_fwd.cpp:188</span>, <span class="fref">conv_mlir_igemm_bwd.cpp:68</span>, <span class="fref">conv_mlir_igemm_wrw.cpp:69</span> — each contain an explicit early-return for gfx900.</span>
+					<span data-lang="ja">3 ファイル — <span class="fref">conv_mlir_igemm_fwd.cpp:188</span>、<span class="fref">conv_mlir_igemm_bwd.cpp:68</span>、<span class="fref">conv_mlir_igemm_wrw.cpp:69</span> — それぞれに gfx900 向けの early-return が含まれる。</span>
+				</li>
+			</ul>
+			<div class="log-quote"><span class="hi-gray">// conv_mlir_igemm_fwd.cpp : 188  (identical pattern in bwd.cpp:68, wrw.cpp:69)</span>
+<span class="hi-blue">if</span>(StartsWith(device_name, <span class="hi-green">"gfx900"</span>))
+{
+    <span class="hi-gray">// Refer to https://github.com/ROCm/llvm-project-private/issues/389</span>
+    <span class="hi-blue">return false</span>;
+}</div>
+			<table class="data-table">
+				<thead><tr>
+					<th><span data-lang="en">Commit</span><span data-lang="ja">コミット</span></th>
+					<th><span data-lang="en">Date</span><span data-lang="ja">日付</span></th>
+					<th><span data-lang="en">Author</span><span data-lang="ja">作者</span></th>
+					<th><span data-lang="en">Message</span><span data-lang="ja">メッセージ</span></th>
+				</tr></thead>
+				<tbody>
+					<tr>
+						<td class="td-run">2407d2f</td>
+						<td>2021-12-22</td>
+						<td>Zhuoran Yin (AMD)</td>
+						<td><code>[MLIR] Disable gfx900 from non-xdlops solver (#1328)</code></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="hbox orange">
+				<span data-lang="en"><strong>Note on the cited issue:</strong> <code>llvm-project-private/issues/389</code> refers to AMD's internal (private) LLVM repository — not the public MIOpen #389 or public llvm-project #389. The root cause is likely a constraint in the MLIR compiler backend for gfx900, but the details are not publicly accessible.</span>
+				<span data-lang="ja"><strong>参照 issue について:</strong> <code>llvm-project-private/issues/389</code> は AMD 社内の非公開 LLVM リポジトリ — 公開 MIOpen #389 や公開 llvm-project #389 とは別物。根本原因は gfx900 向け MLIR コンパイラバックエンドの制約と推測されるが、詳細は外部から確認不可。</span>
+			</div>
+			<div class="hbox red">
+				<span data-lang="en"><strong>Runtime confirmation:</strong> Forced execution via <code>miopen-driver -S ConvMlirIgemmFwd</code> on Vega64 reached the compile stage but failed with <code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code>. The static exclusion is the correct guard; forced execution falls further down the error path.</span>
+				<span data-lang="ja"><strong>実機確認:</strong> Vega64 で <code>miopen-driver -S ConvMlirIgemmFwd</code> を強制実行するとコンパイル段階まで進むが、<code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code> で失敗する。静的除外が正しいガードであり、強制実行によってエラー経路のさらに下まで落ちることが直接確認できた。</span>
+			</div>
+		</article>
+
+		<!-- ── 3: ASM v4r1 dynamic — gfx900 whitelisted ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">3) ASM implicit GEMM v4r1 dynamic — explicit gfx900 / gfx906 whitelist</span>
+				<span data-lang="ja">3) ASM implicit GEMM v4r1 dynamic — gfx900/gfx906 明示ホワイトリスト</span>
+			</h2>
+			<ul>
+				<li>
+					<span data-lang="en">Four solver files carry the same conditional: <code>StartsWith(device_name, "gfx900") || StartsWith(device_name, "gfx906")</code>.</span>
+					<span data-lang="ja">4 つの solver ファイルが同一の条件を持つ: <code>StartsWith(device_name, "gfx900") || StartsWith(device_name, "gfx906")</code>。</span>
+				</li>
+			</ul>
+			<div class="log-quote"><span class="hi-gray">// conv_asm_implicit_gemm_v4r1_dynamic.cpp : 293  (FWD general)</span>
+<span class="hi-gray">// conv_asm_implicit_gemm_v4r1_dynamic.cpp : 343  (FWD 1x1)</span>
+<span class="hi-gray">// conv_asm_implicit_gemm_bwd_v4r1_dynamic.cpp : 142  (BWD)</span>
+<span class="hi-gray">// conv_asm_implicit_gemm_wrw_v4r1_dynamic.cpp : 306  (WRW)</span>
+
+<span class="hi-blue">return</span> StartsWith(device_name, <span class="hi-green">"gfx900"</span>)
+    || StartsWith(device_name, <span class="hi-green">"gfx906"</span>);
+    <span class="hi-gray">// ... plus shape / padding / stride conditions</span></div>
+			<div class="hbox green">
+				<span data-lang="en"><strong>Runtime confirmation:</strong> <code>ConvHipImplicitGemmV4R1Fwd</code> (the HIP counterpart) was selected by MIOpen on Vega64 for a 3×3 stride-2 FP32 case (verified OK). Note that <code>ConvAsmImplicitGemmV4R1DynamicFwd_1x1</code> forced on an INT8 shape triggered a GPU memory access fault — shape and dtype conditions must be met for safe execution.</span>
+				<span data-lang="ja"><strong>実機確認:</strong> Vega64 の FP32 3×3 stride-2 ケースで <code>ConvHipImplicitGemmV4R1Fwd</code>（HIP 版相当）が MIOpen に選択され、verify OK となった。なお、INT8 形状に <code>ConvAsmImplicitGemmV4R1DynamicFwd_1x1</code> を強制すると GPU メモリアクセス fault が発生した — 安全な実行には形状と dtype の条件が重要。</span>
+			</div>
+		</article>
+
+		<!-- ── 4: Winograd and legacy ASM ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">4) Winograd and legacy ASM paths — survive for gfx900</span>
+				<span data-lang="ja">4) Winograd・旧 ASM 系 — gfx900 向けに生存</span>
+			</h2>
+			<ul>
+				<li>
+					<span data-lang="en">Multiple Winograd solvers and legacy fixed-shape ASM kernels explicitly include or prefer gfx900.</span>
+					<span data-lang="ja">複数の Winograd solver と旧式固定形状 ASM カーネルが gfx900 を明示的に含む・優先する。</span>
+				</li>
+			</ul>
+			<table class="data-table">
+				<thead><tr>
+					<th><span data-lang="en">Solver</span><span data-lang="ja">ソルバ</span></th>
+					<th><span data-lang="en">gfx900 handling</span><span data-lang="ja">gfx900 の扱い</span></th>
+					<th><span data-lang="en">Source</span><span data-lang="ja">ソース</span></th>
+				</tr></thead>
+				<tbody>
+					<tr>
+						<td><code>ConvBinWinograd3x3U</code></td>
+						<td class="td-ok"><span data-lang="en">permitted</span><span data-lang="ja">許可</span></td>
+						<td class="td-run">conv_bin_wino3x3U.cpp:61</td>
+					</tr>
+					<tr>
+						<td><code>ConvBinWinogradRxS*</code></td>
+						<td class="td-ok"><span data-lang="en">permitted; v21 path prioritized for gfx900/906</span><span data-lang="ja">許可; v21 経路が gfx900/906 で優先</span></td>
+						<td class="td-run">conv_bin_winoRxS.cpp:265, conv_winoRxS.cpp:210</td>
+					</tr>
+					<tr>
+						<td><code>ConvMPBidirectionalWinograd</code></td>
+						<td class="td-ok"><span data-lang="en">gfx900/906/908 limited</span><span data-lang="ja">gfx900/906/908 限定</span></td>
+						<td class="td-run">conv_MP_bidirectional_winograd.cpp:202</td>
+					</tr>
+					<tr>
+						<td><code>ConvWinoFuryRxS</code> (multipass WrW)</td>
+						<td class="td-ok"><span data-lang="en">gfx8/900/906/908/90a branches</span><span data-lang="ja">gfx8/900/906/908/90a 分岐</span></td>
+						<td class="td-run">conv_multipass_wino3x3WrW.cpp:490,501</td>
+					</tr>
+					<tr>
+						<td><code>ConvAsm5x10u2v2f1</code>, <code>ConvAsm7x7c3h224*</code></td>
+						<td class="td-ok"><span data-lang="en">fixed-shape legacy ASM permitted</span><span data-lang="ja">固定形状 legacy ASM が許可</span></td>
+						<td class="td-run">conv_asm_5x10u2v2f1.cpp:68, conv_asm_7x7*.cpp:76</td>
+					</tr>
+					<tr>
+						<td><code>ConvAsm1x1U</code></td>
+						<td class="td-ok"><span data-lang="en">permitted (gfx8/9 family)</span><span data-lang="ja">許可（gfx8/9 系）</span></td>
+						<td class="td-run">conv_asm_1x1u.cpp</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="hbox green">
+				<span data-lang="en"><strong>Runtime confirmation:</strong> On Vega64, natural solver selection yielded <code>ConvBinWinograd3x3U</code> (3×3 s1 FP32), <code>ConvAsm1x1U</code> (1×1 s1 FP32), and <code>ConvBinWinogradRxSf2x3</code> (3×3 grouped FP32) — all verified OK.</span>
+				<span data-lang="ja"><strong>実機確認:</strong> Vega64 での自然選択では <code>ConvBinWinograd3x3U</code>（3×3 s1 FP32）・<code>ConvAsm1x1U</code>（1×1 s1 FP32）・<code>ConvBinWinogradRxSf2x3</code>（3×3 group FP32）が選択され、いずれも verify OK。</span>
+			</div>
+		</article>
+
+		<!-- ── 5: XDLops systematic exclusion ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">5) XDLops solver family — systematically excluded for gfx900</span>
+				<span data-lang="ja">5) XDLops solver ファミリー — gfx900 で系統的に除外</span>
+			</h2>
+			<ul>
+				<li>
+					<span data-lang="en">All XDLops-family solvers share a common gate via <span class="fref">implicitgemm_util.hpp:101-105</span>. The default <code>IsXdlopsSupport()</code> lists only gfx908 / gfx90a / gfx942 / gfx950 — gfx900 is absent.</span>
+					<span data-lang="ja">全 XDLops 系 solver は <span class="fref">implicitgemm_util.hpp:101-105</span> の共通ゲートを持つ。既定の <code>IsXdlopsSupport()</code> は gfx908・gfx90a・gfx942・gfx950 のみ — gfx900 は含まれない。</span>
+				</li>
+			</ul>
+			<div class="log-quote"><span class="hi-gray">// miopen/src/include/miopen/solver/implicitgemm_util.hpp : 95-105</span>
+<span class="hi-blue">inline bool</span> IsXdlopsSupport(<span class="hi-blue">const</span> ExecutionContext&amp; ctx)
+{
+    <span class="hi-blue">if</span>(env::enabled(MIOPEN_DEBUG_CONV_IMPLICIT_GEMM_XDLOPS_EMULATE))
+        <span class="hi-blue">return true</span>;  <span class="hi-gray">// override: force-emulate</span>
+
+    <span class="hi-blue">return</span> StartsWith(ctx.device_name, <span class="hi-green">"gfx908"</span>)
+        || StartsWith(ctx.device_name, <span class="hi-green">"gfx90a"</span>)
+        || StartsWith(ctx.device_name, <span class="hi-green">"gfx942"</span>)
+        || StartsWith(ctx.device_name, <span class="hi-green">"gfx950"</span>);
+    <span class="hi-gray">// gfx900 → returns false by default</span>
+}</div>
+			<div class="hbox red">
+				<span data-lang="en"><strong>Runtime failures observed (forced execution):</strong>
+				<br>• <code>ConvHipImplicitGemmFwdXdlops</code> / GrpFwd → <code>std::vector::operator[]</code> assertion abort (<code>EXIT=134</code>) — same across INT8, FP16, BFP16.
+				<br>• <code>ConvHipImplicitGemmForwardV4R5Xdlops</code> → <code>intrin_mfma_*</code> / <code>gcnasm_mfma_*</code> undeclared → code object build failed (<code>rc=0x7</code>) — same across INT8, FP16, BFP16.
+				<br>Failure mode is solver-family-level, not dtype-level. MFMA intrinsics simply do not exist on gfx900.</span>
+				<span data-lang="ja"><strong>実機での失敗観測（強制実行）:</strong>
+				<br>• <code>ConvHipImplicitGemmFwdXdlops</code> / GrpFwd → <code>std::vector::operator[]</code> assertion abort（<code>EXIT=134</code>）— INT8・FP16・BFP16 で同型。
+				<br>• <code>ConvHipImplicitGemmForwardV4R5Xdlops</code> → <code>intrin_mfma_*</code>・<code>gcnasm_mfma_*</code> 未定義 → code object ビルド失敗（<code>rc=0x7</code>）— INT8・FP16・BFP16 で同型。
+				<br>失敗モードは dtype 軸ではなく solver ファミリー軸で決まる。gfx900 には MFMA intrinsic が存在しない。</span>
+			</div>
+		</article>
+
+		<!-- ── 6: CK dot4 fallback ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">6) Composable Kernel (CK) — dot4-absent fallback path</span>
+				<span data-lang="ja">6) Composable Kernel（CK）— dot4 不在時フォールバック経路</span>
+			</h2>
+			<ul>
+				<li>
+					<span data-lang="en"><span class="fref">composablekernel/include/ck/utility/inner_product.hpp:179-201</span> contains the INT8 inner product. Three branches exist: hardware dot4 (<code>CK_USE_AMD_V_DOT4_I32_I8</code>), GFX11 dot4, and a sequential fallback.</span>
+					<span data-lang="ja"><span class="fref">composablekernel/include/ck/utility/inner_product.hpp:179-201</span> に INT8 内積の実装がある。3 分岐: ハードウェア dot4（<code>CK_USE_AMD_V_DOT4_I32_I8</code>）、GFX11 dot4、逐次フォールバック。</span>
+				</li>
+			</ul>
+			<div class="log-quote"><span class="hi-gray">// composablekernel/include/ck/utility/inner_product.hpp : 179-201</span>
+<span class="hi-blue">template</span>&lt;&gt; <span class="hi-blue">struct</span> inner_product&lt;int8x4_t, int8x4_t, int32_t&gt;
+{
+    <span class="hi-blue">#if defined</span>(CK_USE_AMD_V_DOT4_I32_I8)
+        <span class="hi-gray">// hardware dot4 path (gfx906+)</span>
+        c += __builtin_amdgcn_sdot4(a, b, 0, <span class="hi-blue">false</span>);
+    <span class="hi-blue">#elif defined</span>(CK_USE_AMD_V_DOT4_I32_I8_GFX11)
+        <span class="hi-gray">// GFX11 dot4 variant</span>
+    <span class="hi-blue">#else</span>
+        <span class="hi-gray">// fallback: sequential 4-element accumulate</span>
+        static_for&lt;0, 4, 1&gt;{}([&amp;](auto i) {
+            c += cast_to&lt;int32_t&gt;(a[i]) * cast_to&lt;int32_t&gt;(b[i]);
+        });
+    <span class="hi-blue">#endif</span>
+};</div>
+			<ul>
+				<li>
+					<span data-lang="en"><span class="fref">legacy_composable_kernel/composable_kernel/include/utility/config.hpp:51</span>: gfx803 and gfx900 use <code>CK_USE_AMD_V_MAC_F32</code>; <code>CK_USE_AMD_V_DOT4_I32_I8</code> is only enabled for gfx906+.</span>
+					<span data-lang="ja"><span class="fref">legacy_composable_kernel/…/config.hpp:51</span>: gfx803・gfx900 は <code>CK_USE_AMD_V_MAC_F32</code>; <code>CK_USE_AMD_V_DOT4_I32_I8</code> は gfx906 以降のみ有効。</span>
+				</li>
+			</ul>
+			<div class="hbox green">
+				<span data-lang="en"><strong>Disassembly confirmation:</strong> The INT8 naive kernel (<code>naive_conv_ab_nonpacked_fwd_nchw_int8_t_int32_t_int8_t</code>) extracted from the Vega64 MIOpen user DB and disassembled shows <code>v_mul_i32_i24</code> + <code>v_add_u32</code> operations for INT8 arithmetic — <strong>no <code>v_dot4_i32_i8</code>, <code>v_dot4c_i32_i8</code>, <code>sdot4</code>, or <code>sudot4</code> instructions found.</strong> Consistent with the static fallback branch.</span>
+				<span data-lang="ja"><strong>逆アセンブル確認:</strong> Vega64 MIOpen ユーザ DB から抽出した INT8 naive カーネル（<code>naive_conv_ab_nonpacked_fwd_nchw_int8_t_int32_t_int8_t</code>）を逆アセンブルすると、INT8 演算に <code>v_mul_i32_i24</code> + <code>v_add_u32</code> が使われており、<strong><code>v_dot4_i32_i8</code>・<code>v_dot4c_i32_i8</code>・<code>sdot4</code>・<code>sudot4</code> は未検出。</strong>静的フォールバック分岐と整合。</span>
+			</div>
+		</article>
+
+		<!-- ── 7: Tensile ISA capability table ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">7) Tensile — ISA capability table gates dot4 for gfx900</span>
+				<span data-lang="ja">7) Tensile — ISA 能力テーブルが gfx900 の dot4 を gate</span>
+			</h2>
+			<ul>
+				<li>
+					<span data-lang="en"><span class="fref">shared/tensile/Tensile/AsmCaps.py</span> contains a per-ISA capability dictionary. ISA <code>(9, 0, 0)</code> corresponds to gfx900 and has all dot4 capabilities set to <code>False</code>.</span>
+					<span data-lang="ja"><span class="fref">shared/tensile/Tensile/AsmCaps.py</span> には ISA ごとの能力辞書がある。ISA <code>(9, 0, 0)</code> が gfx900 に対応し、dot4 系能力は全て <code>False</code>。</span>
+				</li>
+			</ul>
+			<div class="log-quote"><span class="hi-gray"># shared/tensile/Tensile/AsmCaps.py : 128 (ISA (9,0,0) = gfx900)</span>
+(9, 0, 0): {
+    ...
+    <span class="hi-green">"VOP3v_dot4_i32_i8"</span>: <span class="hi-red">False</span>,   <span class="hi-gray"># line 155</span>
+    <span class="hi-green">"v_dot4_i32_i8"</span>:     <span class="hi-red">False</span>,   <span class="hi-gray"># line 158</span>
+    <span class="hi-green">"v_dot4c_i32_i8"</span>:    <span class="hi-red">False</span>,   <span class="hi-gray"># line 159</span>
+    ...
+}
+
+<span class="hi-gray"># shared/tensile/Tensile/Code.py : 628</span>
+<span class="hi-gray"># "int8 not implemented yet for gfx900"  ← inline comment</span>
+
+<span class="hi-gray"># shared/tensile/Tensile/Common.py : 2065-2067</span>
+<span class="hi-gray"># v_dot4_i32_i8 / v_dot4c_i32_i8 / VOP3v_dot4_i32_i8</span>
+<span class="hi-gray"># → tested at assemble time to populate the capability dict</span></div>
+			<div class="hbox">
+				<span data-lang="en">Tensile's catalog structure also carries gfx900-specific artifacts: <span class="fref">solution-selection-catalogs.rst</span> references both <code>TensileLibrary_lazy_gfx900.yaml</code> (lazy loading catalog) and <code>...fallback_gfx900.hsaco</code> (fallback code object) — showing that the supplement layer is architecturally expected.</span>
+				<span data-lang="ja">Tensile のカタログ構造にも gfx900 向けアーティファクトがある: <span class="fref">solution-selection-catalogs.rst</span> に <code>TensileLibrary_lazy_gfx900.yaml</code>（lazy loading カタログ）と <code>...fallback_gfx900.hsaco</code>（フォールバック code object）への参照があり、補充層が設計上想定されていることを示す。</span>
+			</div>
+		</article>
+
+		<!-- ── 8: rocBLAS lazy loading + fallback ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">8) rocBLAS — gfx900 lazy loading + multi-stage runtime fallback</span>
+				<span data-lang="ja">8) rocBLAS — gfx900 lazy loading + 多段実行時フォールバック</span>
+			</h2>
+			<div class="log-quote"><span class="hi-gray">// rocblas/library/src/tensile_host.cpp</span>
+
+<span class="hi-gray">// :232-240  getLazyLoadingArch — explicit gfx900 map</span>
+<span class="hi-blue">if</span>(deviceString.find(<span class="hi-green">"gfx900"</span>) != std::string::npos)
+    <span class="hi-blue">return</span> Tensile::LazyLoadingInit::<span class="hi-yellow">gfx900</span>;
+
+<span class="hi-gray">// :1232  hipBLASLt failure → Tensile fallback</span>
+log(<span class="hi-orange">"hipBlasLT failed, falling back to tensile."</span>);
+
+<span class="hi-gray">// :1161  XF32 solution not found → FP32 fallback</span>
+log(<span class="hi-orange">"No Tensile solution found for XF32, fall back to FP32"</span>);
+
+<span class="hi-gray">// rocblas/CMakeLists.txt : 80-85</span>
+<span class="hi-gray"># TARGET_LIST_ROCM_5.6 … TARGET_LIST_ROCM_7.1  all include "gfx900"</span></div>
+			<div class="hbox green">
+				<span data-lang="en"><strong>Summary of the "supplement" layer:</strong>
+				<br>① The build system keeps gfx900 in target lists through at least ROCm 7.1.
+				<br>② At runtime, gfx900 is explicitly routed to its own lazy-loaded library entry.
+				<br>③ If hipBLASLt fails, rocBLAS automatically falls back to Tensile.
+				<br>④ If no XF32 Tensile solution is found, rocBLAS falls back to FP32.
+				<br>These are independent automatic recovery mechanisms — each one ensures a computation result even when a faster path is unavailable.</span>
+				<span data-lang="ja"><strong>「補充」層のまとめ:</strong>
+				<br>① ビルドシステムは ROCm 7.1 以降もターゲットリストに gfx900 を保持。
+				<br>② 実行時に gfx900 は専用の lazy loading ライブラリエントリへ明示ルーティング。
+				<br>③ hipBLASLt が失敗すると、rocBLAS は自動的に Tensile にフォールバック。
+				<br>④ XF32 の Tensile 解が見つからない場合、rocBLAS は FP32 にフォールバック。
+				<br>それぞれ独立した自動回復メカニズムで、高速経路が使えない場合でも計算結果を保証する。</span>
+			</div>
+		</article>
+
+		<!-- ── 9: Runtime summary table ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">9) Runtime verification summary — Vega64 (gfx900:xnack-)</span>
+				<span data-lang="ja">9) 動的検証サマリ — Vega64（gfx900:xnack-）</span>
+			</h2>
+			<table class="data-table">
+				<thead><tr>
+					<th><span data-lang="en">Case</span><span data-lang="ja">ケース</span></th>
+					<th>dtype</th>
+					<th><span data-lang="en">Solver / result</span><span data-lang="ja">ソルバ / 結果</span></th>
+					<th><span data-lang="en">Status</span><span data-lang="ja">状態</span></th>
+				</tr></thead>
+				<tbody>
+					<tr><td>FP32 3×3 s1 NCHW</td><td>FP32</td><td><code>ConvBinWinograd3x3U</code></td><td class="td-ok">✅ runtime_verified</td></tr>
+					<tr><td>FP32 1×1 s1 NCHW</td><td>FP32</td><td><code>ConvAsm1x1U</code></td><td class="td-ok">✅ runtime_verified</td></tr>
+					<tr><td>FP32 3×3 s2 NCHW</td><td>FP32</td><td><code>ConvHipImplicitGemmV4R1Fwd</code></td><td class="td-ok">✅ runtime_verified</td></tr>
+					<tr><td>FP32 3×3 s1 group=2 NCHW</td><td>FP32</td><td><code>ConvBinWinogradRxSf2x3</code></td><td class="td-ok">✅ runtime_verified</td></tr>
+					<tr><td>FP16 3×3 s1 NCHW</td><td>FP16</td><td><code>ConvOclDirectFwd</code></td><td class="td-ok">✅ runtime_verified</td></tr>
+					<tr><td>BFP16 3×3 s1 NCHW</td><td>BFP16</td><td><code>GemmFwdRest</code></td><td class="td-ok">✅ runtime_verified</td></tr>
+					<tr><td>INT8 (all 9+ shapes/layouts)</td><td>INT8</td><td><code>ConvDirectNaiveConvFwd</code> only</td><td class="td-warn">⚠ naive only — non-naive path not found</td></tr>
+					<tr><td>INT8 naive kernel disassembly</td><td>INT8</td><td>no <code>v_dot4*</code> / <code>sdot4</code></td><td class="td-ok">✅ dot4-absent fallback confirmed</td></tr>
+					<tr><td>MLIR iGEMM (forced)</td><td>INT8</td><td><code>MIIR_INVALID_PARAM</code> rc=0x7</td><td class="td-err">❌ fail</td></tr>
+					<tr><td>ASM v4r1 1×1 (forced, INT8)</td><td>INT8</td><td>GPU memory access fault</td><td class="td-err">❌ fault</td></tr>
+					<tr><td>CK DLOPS (forced, 15 cases)</td><td>INT8</td><td><em>not applicable</em> rc=0x3</td><td class="td-err">❌ not applicable</td></tr>
+					<tr><td>HipImplicitGemm Xdlops (forced)</td><td>INT8/FP16/BFP16</td><td>assertion abort / compile fail</td><td class="td-err">❌ fail (mfma not present)</td></tr>
+				</tbody>
+			</table>
+		</article>
+
+	</section>
+
+	<!-- ── Verdict ── -->
+	<div class="verdict">
+		<h3>
+			<span data-lang="en">Overall verdict</span>
+			<span data-lang="ja">総合判定</span>
+		</h3>
+		<span data-lang="en">
+		The gfx900 (Vega10) computation path in the ROCm library stack is structured across three layers:<br><br>
+		<strong>Maintain (build):</strong> gfx900 is present in rocBLAS CMake target lists through at least ROCm 7.1. The Tensile shared library is built with gfx900 support by default.<br><br>
+		<strong>Manage (selection):</strong> MIOpen's IsApplicable filter system allows old-generation solvers to survive in the global registry. On gfx900, MLIR iGEMM and all XDLops-family solvers fall out, while Winograd-family, ASM 1×1, implicit GEMM v4r1 (HIP/ASM), and legacy direct ASM solvers remain available. Solver choice is also dtype-sensitive (FP32 / FP16 / BFP16 each route to different families).<br><br>
+		<strong>Supplement (fallback):</strong> rocBLAS carries multi-stage runtime fallbacks. CK carries a dot4-absent sequential accumulation path. Tensile provides per-ISA capability gating and gfx900-specific lazy-load catalogs.<br><br>
+		<strong>Confirmed gap:</strong> No natural INT8 solver selection beyond <code>ConvDirectNaiveConvFwd</code> was observed. The naive kernel operates via element-wise multiply-accumulate without dot-product instructions — functional but not peak-performance.
+		</span>
+		<span data-lang="ja">
+		ROCm ライブラリスタックにおける gfx900（Vega10）計算経路は 3 層で構成される:<br><br>
+		<strong>維持（build）:</strong> gfx900 は少なくとも ROCm 7.1 まで rocBLAS CMake ターゲットリストに存在する。Tensile 共有ライブラリもデフォルトで gfx900 サポートを含む。<br><br>
+		<strong>管理（selection）:</strong> MIOpen の IsApplicable フィルタ方式は旧世代 solver がグローバルレジストリに残ることを許す。gfx900 では MLIR iGEMM と全 XDLops 系 solver が落ちる一方、Winograd 系・ASM 1×1・implicit GEMM v4r1（HIP/ASM）・旧式直接 ASM solver が残る。dtype によっても solver 選択が分岐する（FP32・FP16・BFP16 でそれぞれ異なるファミリーへルーティング）。<br><br>
+		<strong>補充（fallback）:</strong> rocBLAS は多段実行時フォールバックを持つ。CK は dot4 非対応時の逐次積和経路を保持。Tensile は ISA 別能力ゲートと gfx900 専用 lazy-load カタログを提供。<br><br>
+		<strong>確認済みギャップ:</strong> INT8 での自然 solver 選択は <code>ConvDirectNaiveConvFwd</code> のみ観測された。naive カーネルは dot 系命令を使わず要素ごとの乗算・加算で動作 — 機能的には成立するが最大性能ではない。
+		</span>
+	</div>
+
+	<div class="footer-note">
+		<span data-lang="en">Ground truth: AMD ROCm source repository under <code>rocm-libraries/</code>. Classification: <code>code_verified</code> = confirmed in source; <code>runtime_verified</code> = confirmed on real Vega64 hardware. All runtime experiments: Vega64, ROCm 7.2, MIOpen 3.5.1, host <em>abyss-hbmx</em>.</span>
+		<span data-lang="ja">根拠: AMD ROCm ソースリポジトリ <code>rocm-libraries/</code> 配下。分類: <code>code_verified</code> = ソースで確認済み; <code>runtime_verified</code> = 実機 Vega64 で確認済み。全実機実験: Vega64・ROCm 7.2・MIOpen 3.5.1・ホスト <em>abyss-hbmx</em>。</span>
+	</div>
+
+</div>
+
+<script>
+	const html  = document.documentElement;
+	const btnEn = document.getElementById('btn-en');
+	const btnJa = document.getElementById('btn-ja');
+
+	function setLanguage(lang) {
+		html.setAttribute('data-language', lang);
+		html.setAttribute('lang', lang);
+		btnEn.classList.toggle('active', lang === 'en');
+		btnJa.classList.toggle('active', lang === 'ja');
+		localStorage.setItem('solver-trace-lang', lang);
+	}
+
+	btnEn.addEventListener('click', () => setLanguage('en'));
+	btnJa.addEventListener('click', () => setLanguage('ja'));
+
+	const saved = localStorage.getItem('solver-trace-lang');
+	setLanguage(saved === 'ja' ? 'ja' : 'en');
+</script>
+</body>
+</html>
