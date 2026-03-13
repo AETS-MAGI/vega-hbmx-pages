@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Hypothesis: Why Does gfx900 Still Run?</title>
+	<style>
+		:root {
+			--red: #B71C1C;
+			--blue: #0D47A1;
+			--green: #1B5E20;
+			--orange: #E65100;
+			--purple: #4A148C;
+			--text: #212121;
+			--muted: #616161;
+			--line: #D7DEE8;
+			--bg: #F6F8FB;
+			--card: #FFFFFF;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(circle at top right, rgba(13,71,161,0.09), transparent 26%),
+				radial-gradient(circle at bottom left, rgba(183,28,28,0.08), transparent 22%),
+				var(--bg);
+		}
+
+		.page {
+			max-width: 960px;
+			margin: 0 auto;
+			padding: 32px 24px 56px;
+		}
+
+		/* ── Toolbar ── */
+		.toolbar {
+			display: flex;
+			justify-content: flex-end;
+			margin-bottom: 18px;
+		}
+
+		.lang-toggle {
+			display: inline-flex;
+			gap: 6px;
+			padding: 6px;
+			border-radius: 999px;
+			border: 1px solid var(--line);
+			background: rgba(255,255,255,0.92);
+			box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+		}
+
+		.lang-btn {
+			border: none;
+			border-radius: 999px;
+			padding: 8px 14px;
+			font-size: 14px;
+			font-weight: bold;
+			background: transparent;
+			color: #455A64;
+			cursor: pointer;
+		}
+
+		.lang-btn.active {
+			background: var(--blue);
+			color: #FFFFFF;
+		}
+
+		/* ── Hero ── */
+		.hero {
+			background: linear-gradient(135deg, #0D47A1 0%, #1565C0 58%, #1976D2 100%);
+			color: #FFFFFF;
+			border-radius: 20px;
+			padding: 34px 34px 28px;
+			box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+		}
+
+		.hero h1 {
+			margin: 0 0 12px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 36px;
+			line-height: 1.15;
+		}
+
+		.hero p {
+			margin: 0;
+			font-size: 19px;
+			line-height: 1.5;
+			color: #E3F2FD;
+		}
+
+		.hero-meta {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 12px;
+			border-radius: 999px;
+			font-size: 13px;
+			font-weight: bold;
+			background: rgba(255,255,255,0.14);
+			color: #FFFFFF;
+			border: 1px solid rgba(255,255,255,0.18);
+		}
+
+		/* ── Key finding ── */
+		.key-finding {
+			margin-top: 22px;
+			background: #FFFFFF;
+			border-left: 6px solid var(--blue);
+			border-radius: 12px;
+			padding: 20px 22px;
+			font-size: 17px;
+			line-height: 1.6;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+		}
+
+		.key-finding strong { color: var(--blue); }
+
+		/* ── Sections ── */
+		.section-title {
+			margin: 38px 0 6px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 26px;
+		}
+
+		.section-title.red { color: var(--red); }
+		.section-title.blue { color: var(--blue); }
+		.section-title.green { color: var(--green); }
+		.section-title.orange { color: var(--orange); }
+		.section-title.purple { color: var(--purple); }
+
+		.section-lead {
+			margin: 0 0 18px;
+			font-size: 15px;
+			line-height: 1.5;
+			color: var(--muted);
+		}
+
+		/* ── Cards ── */
+		.card {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			padding: 22px 24px 20px;
+			box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+			margin-bottom: 16px;
+		}
+
+		.card h3 {
+			margin: 0 0 10px;
+			font-size: 20px;
+			line-height: 1.3;
+		}
+
+		.card p, .card li {
+			font-size: 16px;
+			line-height: 1.55;
+			color: #37474F;
+		}
+
+		.card ul, .card ol {
+			margin: 8px 0 12px;
+			padding-left: 20px;
+		}
+
+		.card li { margin-bottom: 5px; }
+
+		/* ── Confidence badges ── */
+		.conf {
+			display: inline-block;
+			padding: 4px 10px;
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: bold;
+			color: #FFFFFF;
+			vertical-align: middle;
+			margin-left: 6px;
+		}
+
+		.conf-verified { background: var(--green); }
+		.conf-hypothesis { background: var(--orange); }
+		.conf-speculative { background: #9E9E9E; }
+
+		/* ── Tables ── */
+		.table-wrap {
+			overflow-x: auto;
+			margin: 12px 0 16px;
+			border-radius: 12px;
+			border: 1px solid var(--line);
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 14px;
+			background: #FFFFFF;
+		}
+
+		th {
+			background: #ECEFF1;
+			text-align: left;
+			padding: 10px 14px;
+			font-weight: bold;
+			border-bottom: 2px solid var(--line);
+			white-space: nowrap;
+		}
+
+		td {
+			padding: 9px 14px;
+			border-bottom: 1px solid #ECEFF1;
+			vertical-align: top;
+		}
+
+		tr:last-child td { border-bottom: none; }
+
+		/* ── Callout / note ── */
+		.note {
+			margin: 18px 0;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 16px;
+			line-height: 1.55;
+		}
+
+		.note-warn { background: #FFF8E1; color: #5D4037; }
+		.note-info { background: #E3F2FD; border-left-color: var(--blue); color: #1A237E; }
+		.note-green { background: #E8F5E9; border-left-color: var(--green); color: #1B5E20; }
+
+		/* ── Blockquote ── */
+		blockquote {
+			margin: 14px 0;
+			padding: 14px 18px;
+			background: #F5F5F5;
+			border-left: 4px solid #B0BEC5;
+			border-radius: 8px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #37474F;
+		}
+
+		blockquote p { margin: 0; color: #37474F; }
+
+		/* ── Code ── */
+		code {
+			background: #ECEFF1;
+			padding: 2px 6px;
+			border-radius: 4px;
+			font-family: 'Consolas', 'Monaco', monospace;
+			font-size: 0.92em;
+		}
+
+		/* ── Thinking process toggle ── */
+		details {
+			margin: 12px 0;
+			border: 1px solid var(--line);
+			border-radius: 12px;
+			background: #FFFFFF;
+			overflow: hidden;
+		}
+
+		details > summary {
+			padding: 14px 18px;
+			font-weight: bold;
+			font-size: 16px;
+			cursor: pointer;
+			background: #FAFAFA;
+			border-bottom: 1px solid var(--line);
+			list-style: none;
+		}
+
+		details > summary::before {
+			content: '\25B6\00a0';
+			font-size: 13px;
+			color: var(--muted);
+		}
+
+		details[open] > summary::before { content: '\25BC\00a0'; }
+
+		details > .details-body {
+			padding: 16px 20px;
+		}
+
+		details > .details-body p,
+		details > .details-body li {
+			font-size: 15px;
+			line-height: 1.55;
+			color: #455A64;
+		}
+
+		/* ── Divider ── */
+		hr {
+			border: none;
+			border-top: 1px solid var(--line);
+			margin: 32px 0;
+		}
+
+		/* ── Footer ── */
+		.footer {
+			margin-top: 32px;
+			color: var(--muted);
+			font-size: 14px;
+			text-align: center;
+			line-height: 1.5;
+		}
+
+		.footer a { color: var(--blue); }
+
+		/* ── i18n ── */
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] span[data-lang="en"],
+		html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+		html[data-language="en"] p[data-lang="en"],
+		html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"],
+		html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],
+		html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],
+		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+		html[data-language="en"] blockquote[data-lang="en"],
+		html[data-language="ja"] blockquote[data-lang="ja"] { display: block; }
+		html[data-language="en"] details[data-lang="en"],
+		html[data-language="ja"] details[data-lang="ja"] { display: block; }
+		html[data-language="en"] .table-wrap[data-lang="en"],
+		html[data-language="ja"] .table-wrap[data-lang="ja"] { display: block; }
+
+		/* ── Responsive ── */
+		@media (max-width: 760px) {
+			.toolbar { justify-content: center; }
+			.page { padding: 20px 16px 42px; }
+			.hero { padding: 26px 22px 22px; }
+			.hero h1 { font-size: 28px; }
+			.hero p { font-size: 16px; }
+			.section-title { font-size: 22px; }
+			.card { padding: 18px 16px 16px; }
+			.card h3 { font-size: 18px; }
+			table { font-size: 13px; }
+			th, td { padding: 8px 10px; }
+		}
+
+		@media (max-width: 480px) {
+			.page { padding: 16px 12px 32px; }
+			.hero { padding: 20px 16px 18px; border-radius: 16px; }
+			.hero h1 { font-size: 24px; }
+			.key-finding { font-size: 15px; padding: 14px 14px; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+
+		<!-- ══════════════════════════════════════════════
+			 TOOLBAR
+			 ══════════════════════════════════════════════ -->
+		<div class="toolbar">
+			<div class="lang-toggle" aria-label="Language switch">
+				<button id="btn-ja" class="lang-btn active" type="button">JP</button>
+				<button id="btn-en" class="lang-btn" type="button">EN</button>
+			</div>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 HERO
+			 ══════════════════════════════════════════════ -->
+		<section class="hero">
+			<h1 data-lang="ja">gfx900 はなぜ今も動くのか<br>— ROCm における Capability-Based 設計の構造分析</h1>
+			<h1 data-lang="en">Why Does gfx900 Still Run?<br>— Structural Analysis of Capability-Based Design in ROCm</h1>
+			<p data-lang="ja">AMD Vega (gfx900) が ROCm の公式推奨対象から外れた後も、なぜ複数のライブラリ経路で計算を実行できるのか。コードベース調査・実機検証・git 履歴調査に基づく、工学的構造分析を記録する。</p>
+			<p data-lang="en">An engineering investigation into why AMD Vega (gfx900) can still execute computation through multiple library paths in the ROCm stack, even after being removed from official support lists — based on source code tracing, runtime verification, and git provenance analysis.</p>
+			<div class="hero-meta">
+				<span class="badge">AMD Radeon RX Vega 64 / gfx900</span>
+				<span class="badge">ROCm Stack (MIOpen · rocBLAS · Tensile · CK)</span>
+				<span class="badge">2026-03-13</span>
+			</div>
+		</section>
+
+		<!-- ══════════════════════════════════════════════
+			 KEY FINDING
+			 ══════════════════════════════════════════════ -->
+		<div class="key-finding">
+			<p data-lang="ja"><strong>現時点で最も堅い知見:</strong><br>
+			gfx900 が今も通れるのは、ROCm の設計が capability-based のフォールバック構造を持っているからである。この構造は gfx900 に限らず「能力が低い世代」全般に対して自然に働く。これは設計の寛容性であり、意図的か否かにかかわらず<strong>結果として後方互換が成立している</strong>。</p>
+			<p data-lang="en"><strong>Current strongest finding:</strong><br>
+			gfx900 remains functional because the ROCm stack employs a capability-based fallback architecture. This architecture naturally accommodates any generation lacking specific capabilities — not just gfx900. Regardless of whether this was intentional, <strong>backward compatibility is effectively maintained as a structural consequence of the design</strong>.</p>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 §1  OBSERVATIONS (CODE-VERIFIED)
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title green" data-lang="ja">§1. コードベース観測（検証済み事実）</h2>
+		<h2 class="section-title green" data-lang="en">§1. Codebase Observations (Verified Facts)</h2>
+		<p class="section-lead" data-lang="ja">以下はすべてソースコード調査で根拠を確認した観測事項である。仮説ではない。</p>
+		<p class="section-lead" data-lang="en">All items below are grounded in source code inspection and are factual observations, not hypotheses.</p>
+
+		<div class="card">
+			<h3 data-lang="ja">gfx900 の実行経路は3層構造で残存している <span class="conf conf-verified">code_verified</span></h3>
+			<h3 data-lang="en">gfx900 execution paths persist across three layers <span class="conf conf-verified">code_verified</span></h3>
+
+			<div class="table-wrap" data-lang="ja">
+			<table>
+				<thead><tr><th>層</th><th>内容</th><th>具体例</th></tr></thead>
+				<tbody>
+					<tr><td><strong>維持 (Build)</strong></td><td>ビルドシステムに gfx900 ターゲットが残存</td><td>rocBLAS <code>CMakeLists</code> に ROCm 5.6–7.1 で <code>gfx900</code> が継続</td></tr>
+					<tr><td><strong>管理 (Selection)</strong></td><td>Solver / kernel 選択で capability 判定が機能</td><td>MIOpen の <code>IsApplicable</code> フィルタ、<code>IsXdlopsSupport</code> ガード</td></tr>
+					<tr><td><strong>補充 (Fallback)</strong></td><td>高速経路が使えないとき汎用経路へ落ちる</td><td>CK <code>dot4</code> 不在時の逐次積和、rocBLAS の XF32→FP32 フォールバック</td></tr>
+				</tbody>
+			</table>
+			</div>
+			<div class="table-wrap" data-lang="en">
+			<table>
+				<thead><tr><th>Layer</th><th>Description</th><th>Example</th></tr></thead>
+				<tbody>
+					<tr><td><strong>Build</strong></td><td>gfx900 target remains in build systems</td><td>rocBLAS <code>CMakeLists</code>: <code>gfx900</code> listed in ROCm 5.6–7.1</td></tr>
+					<tr><td><strong>Selection</strong></td><td>Capability-based solver/kernel selection</td><td>MIOpen <code>IsApplicable</code> filters, <code>IsXdlopsSupport</code> guard</td></tr>
+					<tr><td><strong>Fallback</strong></td><td>Generic paths activated when fast paths are unavailable</td><td>CK sequential multiply-add when <code>dot4</code> is absent; rocBLAS XF32→FP32 fallback</td></tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+
+		<div class="card">
+			<h3 data-lang="ja">個別のコード根拠 <span class="conf conf-verified">code_verified</span></h3>
+			<h3 data-lang="en">Specific code evidence <span class="conf conf-verified">code_verified</span></h3>
+			<ul>
+				<li data-lang="ja"><strong>MIOpen:</strong> gfx900 向けの ASM implicit GEMM v4r1 dynamic 経路が残存</li>
+				<li data-lang="en"><strong>MIOpen:</strong> ASM implicit GEMM v4r1 dynamic path for gfx900 remains</li>
+				<li data-lang="ja"><strong>MIOpen:</strong> MLIR iGEMM は gfx900 を明示除外し、別経路（ASM / Winograd）へ落ちる</li>
+				<li data-lang="en"><strong>MIOpen:</strong> MLIR iGEMM explicitly excludes gfx900; falls back to ASM / Winograd paths</li>
+				<li data-lang="ja"><strong>MIOpen:</strong> XDLops 系は共通ガード <code>IsXdlopsSupport</code> で gfx900 を弾く</li>
+				<li data-lang="en"><strong>MIOpen:</strong> XDLops solvers blocked by common guard <code>IsXdlopsSupport</code></li>
+				<li data-lang="ja"><strong>MIOpen:</strong> Winograd / 旧 ASM 系にも gfx900 生存経路あり</li>
+				<li data-lang="en"><strong>MIOpen:</strong> Winograd and legacy ASM solvers have live gfx900 paths</li>
+				<li data-lang="ja"><strong>rocBLAS:</strong> hipBLASLt → Tensile、XF32 → FP32 の二段フォールバック設計</li>
+				<li data-lang="en"><strong>rocBLAS:</strong> Two-stage fallback: hipBLASLt → Tensile, XF32 → FP32</li>
+				<li data-lang="ja"><strong>Tensile:</strong> gfx900 向け lazy catalog / fallback code object の設計概念が存在</li>
+				<li data-lang="en"><strong>Tensile:</strong> Lazy catalog and fallback code object design for gfx900 exists</li>
+				<li data-lang="ja"><strong>Tensile:</strong> <code>AsmCaps</code> で ISA (9,0,0) の <code>dot4</code> capability は <code>False</code></li>
+				<li data-lang="en"><strong>Tensile:</strong> <code>AsmCaps</code> reports <code>dot4</code> capability as <code>False</code> for ISA (9,0,0)</li>
+				<li data-lang="ja"><strong>CK:</strong> <code>dot4</code> 不在時の逐次積和フォールバック（gfx900 専用ではなく汎用設計）</li>
+				<li data-lang="en"><strong>CK:</strong> Sequential multiply-add fallback when <code>dot4</code> is absent (generic, not gfx900-specific)</li>
+			</ul>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 §2  RUNTIME VERIFICATION
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title orange" data-lang="ja">§2. 実機検証の結果</h2>
+		<h2 class="section-title orange" data-lang="en">§2. Runtime Verification Results</h2>
+		<p class="section-lead" data-lang="ja">Vega 64 実機上で MIOpen の solver 選択動作と DLOPS/XDLOPS 系の挙動を検証した結果。</p>
+		<p class="section-lead" data-lang="en">Results from solver selection testing and DLOPS/XDLOPS behavior verification on a Vega 64.</p>
+
+		<div class="card">
+			<h3 data-lang="ja">FP32 solver の自然選択 <span class="conf conf-verified">runtime_verified</span></h3>
+			<h3 data-lang="en">Natural FP32 solver selection <span class="conf conf-verified">runtime_verified</span></h3>
+			<p data-lang="ja">FP32 畳み込みにおいて、以下の solver が Vega 64 上で自然選択されることを確認した:</p>
+			<p data-lang="en">The following solvers were naturally selected on Vega 64 for FP32 convolution:</p>
+			<ul>
+				<li data-lang="ja"><code>ConvBinWinograd3x3U</code> — Winograd 系</li>
+				<li data-lang="en"><code>ConvBinWinograd3x3U</code> — Winograd family</li>
+				<li data-lang="ja"><code>ConvAsm1x1U</code> — 旧 ASM 系</li>
+				<li data-lang="en"><code>ConvAsm1x1U</code> — Legacy ASM family</li>
+				<li data-lang="ja"><code>ConvHipImplicitGemmV4R1Fwd</code> — implicit GEMM v4r1</li>
+				<li data-lang="en"><code>ConvHipImplicitGemmV4R1Fwd</code> — Implicit GEMM v4r1</li>
+			</ul>
+		</div>
+
+		<div class="card">
+			<h3 data-lang="ja">DLOPS / XDLOPS 系の失敗モード分類 <span class="conf conf-verified">runtime_verified</span></h3>
+			<h3 data-lang="en">DLOPS / XDLOPS failure mode taxonomy <span class="conf conf-verified">runtime_verified</span></h3>
+			<p data-lang="ja">solver family ごとに到達点が異なり、失敗モードは以下の3類型に分かれた:</p>
+			<p data-lang="en">Each solver family fails at a different stage. Three distinct failure modes were identified:</p>
+
+			<div class="table-wrap" data-lang="ja">
+			<table>
+				<thead><tr><th>類型</th><th>症状</th><th>例</th></tr></thead>
+				<tbody>
+					<tr><td>Applicability 棄却</td><td><code>not applicable</code>, <code>rc=0x3</code></td><td><code>ConvCkIgemmFwdV6r1DlopsNchw</code> (全ケース)</td></tr>
+					<tr><td>Build 失敗</td><td><code>MIIR_INVALID_PARAM</code> / <code>Code object build failed</code>, <code>rc=0x7</code></td><td><code>ConvMlirIgemmFwd</code>, <code>ConvHipImplicitGemmForwardV4R5Xdlops</code></td></tr>
+					<tr><td>Runtime abort</td><td><code>std::vector::operator[]</code> assertion, <code>EXIT=134</code></td><td><code>ConvHipImplicitGemmFwdXdlops</code></td></tr>
+				</tbody>
+			</table>
+			</div>
+			<div class="table-wrap" data-lang="en">
+			<table>
+				<thead><tr><th>Mode</th><th>Symptom</th><th>Example</th></tr></thead>
+				<tbody>
+					<tr><td>Applicability reject</td><td><code>not applicable</code>, <code>rc=0x3</code></td><td><code>ConvCkIgemmFwdV6r1DlopsNchw</code> (all cases)</td></tr>
+					<tr><td>Build failure</td><td><code>MIIR_INVALID_PARAM</code> / <code>Code object build failed</code>, <code>rc=0x7</code></td><td><code>ConvMlirIgemmFwd</code>, <code>ConvHipImplicitGemmForwardV4R5Xdlops</code></td></tr>
+					<tr><td>Runtime abort</td><td><code>std::vector::operator[]</code> assertion, <code>EXIT=134</code></td><td><code>ConvHipImplicitGemmFwdXdlops</code></td></tr>
+				</tbody>
+			</table>
+			</div>
+
+			<p data-lang="ja" style="margin-top:10px;font-size:15px;color:#546E7A">同一 3&#215;3 問題で dtype を変えると、FP16 → <code>ConvOclDirectFwd</code>、BFP16 → <code>GemmFwdRest</code> が選択され、solver finder が dtype ごとに別経路を自然選択することも確認された。</p>
+			<p data-lang="en" style="margin-top:10px;font-size:15px;color:#546E7A">Changing dtype on the same 3&#215;3 problem yielded FP16 → <code>ConvOclDirectFwd</code> and BFP16 → <code>GemmFwdRest</code>, confirming per-dtype path differentiation by the solver finder.</p>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 §3  HYPOTHESES
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title blue" data-lang="ja">§3. 仮説群</h2>
+		<h2 class="section-title blue" data-lang="en">§3. Hypotheses</h2>
+		<p class="section-lead" data-lang="ja">以下はコード根拠に基づく仮説であり、断定ではない。確度を明示して記載する。</p>
+		<p class="section-lead" data-lang="en">The following are hypotheses informed by code evidence, not assertions. Confidence levels are explicitly noted.</p>
+
+		<!-- Hypothesis A -->
+		<div class="card">
+			<h3 data-lang="ja">仮説 A:「表のサポート」と「設計上のサポート」は別の概念である <span class="conf conf-hypothesis">hypothesis (code evidence)</span></h3>
+			<h3 data-lang="en">Hypothesis A: "Official support" and "design-level support" are distinct concepts <span class="conf conf-hypothesis">hypothesis (code evidence)</span></h3>
+
+			<p data-lang="ja">「サポート終了」とは、公式推奨リスト・QA 対象・優先修正対象から外れたことを意味する。しかしそれは、ソフトウェア設計上の実行経路が消滅することとは別の話である。</p>
+			<p data-lang="en">"End of support" means removal from official recommendation lists, QA targets, and priority fix queues. It does not necessarily mean the elimination of software execution paths.</p>
+
+			<div class="table-wrap" data-lang="ja">
+			<table>
+				<thead><tr><th>層</th><th>定義</th><th>gfx900 の現状</th></tr></thead>
+				<tbody>
+					<tr><td>表のサポート</td><td>公式推奨・QA対象・ベンチ対象・優先修正</td><td>弱い（公式リスト外）</td></tr>
+					<tr><td>設計上のサポート</td><td>抽象化・capability 判定・fallback・backend 切替</td><td>まだ残っている</td></tr>
+					<tr><td>運用上のサポート</td><td>バグ報告が通るか、CI にいるか</td><td>確認中</td></tr>
+					<tr><td>生存可能性</td><td>明示的に守られていないが、設計のため動ける</td><td>成立している可能性が高い</td></tr>
+				</tbody>
+			</table>
+			</div>
+			<div class="table-wrap" data-lang="en">
+			<table>
+				<thead><tr><th>Layer</th><th>Definition</th><th>gfx900 status</th></tr></thead>
+				<tbody>
+					<tr><td>Official support</td><td>Listed in official docs, QA-tested, benchmark-targeted</td><td>Weak (off-list)</td></tr>
+					<tr><td>Design-level support</td><td>Abstractions, capability checks, fallback, backend switching</td><td>Still present</td></tr>
+					<tr><td>Operational support</td><td>Bug reports accepted, present in CI</td><td>Under investigation</td></tr>
+					<tr><td>Survivability</td><td>Not explicitly maintained but structurally functional</td><td>Likely viable</td></tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+
+		<!-- Hypothesis B -->
+		<div class="card">
+			<h3 data-lang="ja">仮説 B: gfx900 の生存は Capability-Based 設計の自然な帰結である <span class="conf conf-hypothesis">hypothesis (code evidence)</span></h3>
+			<h3 data-lang="en">Hypothesis B: gfx900 survival is a natural consequence of capability-based design <span class="conf conf-hypothesis">hypothesis (code evidence)</span></h3>
+
+			<p data-lang="ja">gfx900 が今も通れるのは「放置された残骸」ではなく、ROCm のライブラリ設計が後方互換・多段フォールバックを強く意識しているため、その設計の自然な結果として gfx900 が通れる経路が残っている、という読み方ができる。</p>
+			<p data-lang="en">Rather than being a neglected remnant, gfx900's continued functionality can be read as a natural consequence of ROCm's library design, which is built around backward compatibility and multi-stage fallback.</p>
+			<ul>
+				<li data-lang="ja">MIOpen の solver finder は候補列挙 + <code>IsApplicable</code> フィルタ方式であり、「ある世代が使えない経路は落として次へ」という汎用設計</li>
+				<li data-lang="en">MIOpen's solver finder uses candidate enumeration + <code>IsApplicable</code> filtering: a generic design that drops unsupported paths and moves to the next</li>
+				<li data-lang="ja"><code>dot4</code> 不在時の逐次積和は gfx900 専用ではなく、<code>dot4</code> capability が立たない世代全般向けの汎用互換レイヤ</li>
+				<li data-lang="en">The sequential multiply-add fallback when <code>dot4</code> is absent is not gfx900-specific — it is a generic compatibility layer for any generation without <code>dot4</code></li>
+				<li data-lang="ja">gfx900 は GCN 世代であり RDNA でも CDNA でもない。アーキテクチャファミリーを超えてこの構造が機能している事実は、設計が capability ベースであることの独立した根拠</li>
+				<li data-lang="en">gfx900 is GCN — neither RDNA nor CDNA. The fact that this design works across architecture families is independent evidence of a capability-based approach</li>
+			</ul>
+		</div>
+
+		<!-- Hypothesis C -->
+		<div class="card">
+			<h3 data-lang="ja">仮説 C: 保守の出所には複数の層がある <span class="conf conf-hypothesis">hypothesis (partial evidence)</span></h3>
+			<h3 data-lang="en">Hypothesis C: Maintenance provenance has multiple layers <span class="conf conf-hypothesis">hypothesis (partial evidence)</span></h3>
+
+			<p data-lang="ja">現状の見立て:</p>
+			<p data-lang="en">Current assessment:</p>
+			<ol>
+				<li data-lang="ja">AMD が主力サポートから外した</li>
+				<li data-lang="en">AMD has removed gfx900 from primary support</li>
+				<li data-lang="ja">しかし公式実装の互換・フォールバック設計がまだ残っている</li>
+				<li data-lang="en">But official compatibility/fallback designs remain in the codebase</li>
+				<li data-lang="ja">そのうえでコミュニティが発見・運用・一部保守を支えている可能性が高い</li>
+				<li data-lang="en">Community members likely contribute to discovery, operation, and partial maintenance</li>
+				<li data-lang="ja">ただし「その通路自体が主にコミュニティ実装で維持されている」とまでは証拠不足</li>
+				<li data-lang="en">However, there is insufficient evidence to claim routes are primarily community-maintained</li>
+			</ol>
+
+			<div class="table-wrap" data-lang="ja">
+			<table>
+				<thead><tr><th>層</th><th>コミュニティが関与可能か</th></tr></thead>
+				<tbody>
+					<tr><td>Userspace library / solver registry / fallback logic / capability table / build system / CI</td><td>理論上可能</td></tr>
+					<tr><td>カーネルモードドライバ / firmware / 公式 QA / リリース判定</td><td>関与困難</td></tr>
+				</tbody>
+			</table>
+			</div>
+			<div class="table-wrap" data-lang="en">
+			<table>
+				<thead><tr><th>Layer</th><th>Community influence feasible?</th></tr></thead>
+				<tbody>
+					<tr><td>Userspace library / solver registry / fallback logic / capability table / build system / CI</td><td>Theoretically yes</td></tr>
+					<tr><td>Kernel-mode driver / firmware / official QA / release gating</td><td>Difficult</td></tr>
+				</tbody>
+			</table>
+			</div>
+		</div>
+
+		<!-- Hypothesis D -->
+		<div class="card">
+			<h3 data-lang="ja">仮説 D: RDNA/CDNA 分離は再統合前の「繋ぎ」だった可能性 <span class="conf conf-speculative">speculative</span></h3>
+			<h3 data-lang="en">Hypothesis D: RDNA/CDNA split may have been a transitional phase <span class="conf conf-speculative">speculative</span></h3>
+
+			<p data-lang="ja">AMD は RDNA（ゲーム向け）と CDNA（計算向け）を別系統で開発してきたが、2024年に UDNA による統合方向が示されている。もし毎回ぜんぶ切り捨てる設計なら、アーキテクチャが増えるたびにコンパイラ・ランタイム・ライブラリの保守コストが際限なく膨れる。ROCm のような大規模 OSS スタックが持続するには、どこかに共通化の芯が必要であり、結果として後方互換や抽象化の筋を残しておくのが合理的である。</p>
+			<p data-lang="en">AMD has developed RDNA (gaming) and CDNA (compute) as separate lines, but indicated a UDNA unification direction in 2024. If each new architecture completely discarded the old, compiler/runtime/library maintenance costs would grow without bound. A large-scale OSS stack like ROCm requires a shared abstraction core — making it rational to preserve backward compatibility and abstraction as a structural investment.</p>
+
+			<div class="note note-warn">
+				<span data-lang="ja"><strong>注意:</strong> この仮説は現時点で最も推測的である。UDNA の正体は未確定であり、git 履歴で「統合を見越した設計意図」が読めてから語るべき話である。現在のコードに「そう読めるだけの構造がある」ことは観測できるが、意図の断定は避ける。</span>
+				<span data-lang="en"><strong>Caution:</strong> This is the most speculative hypothesis. The nature of UDNA is unconfirmed, and claims about intentional unification design should be deferred until git history evidence is available. The code structure is consistent with this reading, but intent cannot be asserted.</span>
+			</div>
+		</div>
+
+		<!-- Hypothesis E -->
+		<div class="card">
+			<h3 data-lang="ja">仮説 E:「意図は未確定、構造は観測できる」 <span class="conf conf-hypothesis">hypothesis (code evidence)</span></h3>
+			<h3 data-lang="en">Hypothesis E: "Intent is undetermined; structure is observable" <span class="conf conf-hypothesis">hypothesis (code evidence)</span></h3>
+
+			<blockquote data-lang="ja">
+				<p>UDNA の正体そのものはまだ断言できない。しかし将来の再統合コストを下げるためには、後方互換や抽象化の筋をどこかに残しておくのが合理的である。現在のコードベース調査は、少なくとも「そう読めるだけの構造が存在する」ことをかなり強く支持している。したがって意図的設計だったか副産物だったかは保留しつつも、結果論として再統合しやすい形に寄っている可能性は高い。</p>
+			</blockquote>
+			<blockquote data-lang="en">
+				<p>The nature of UDNA cannot yet be determined. However, preserving backward-compatible abstractions is rational for reducing future re-integration costs. The codebase investigation strongly supports the existence of structures consistent with this reading. Whether this was intentional design or an emergent property remains open — but the result converges toward a re-integration-friendly form.</p>
+			</blockquote>
+		</div>
+
+		<!-- Third possibility -->
+		<div class="card">
+			<h3 data-lang="ja">補足: 見落としやすい第三の可能性 — 「積極的に消していない」</h3>
+			<h3 data-lang="en">Addendum: An easily overlooked third possibility — "Not actively removed"</h3>
+
+			<p data-lang="ja">「なぜ残っているか」の答えとして、「設計の自然な帰結」と「コミュニティの保守」の二択で考えがちだが、実はもう一つある。<strong>コスト-便益的に「消すコストのほうが高いから残っている」</strong>という状態である。これは「積極的に維持している」とも「積極的に切り捨てている」とも違い、git blame で「誰も最近触っていない」という結果が出れば支持される。</p>
+			<p data-lang="en">When asking "why does it remain?", it is tempting to choose between "natural consequence of design" and "community maintenance". But there is a third state: <strong>it remains because the cost of removing it exceeds the cost of leaving it</strong>. This differs from both active maintenance and active deprecation, and would be supported by git blame results showing no recent modifications.</p>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 §4  PROVENANCE (GIT HISTORY)
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title red" data-lang="ja">§4. 出所調査（Git 履歴分析）</h2>
+		<h2 class="section-title red" data-lang="en">§4. Provenance Investigation (Git History Analysis)</h2>
+		<p class="section-lead" data-lang="ja">gfx900 の MLIR 除外がいつ・誰により・なぜ投入されたかの追跡結果。</p>
+		<p class="section-lead" data-lang="en">Tracking who introduced the gfx900 MLIR exclusion, when, and why.</p>
+
+		<div class="card">
+			<h3 data-lang="ja">MLIR iGEMM の gfx900 除外: Issue #389 の正体 <span class="conf conf-verified">code_verified (git blame)</span></h3>
+			<h3 data-lang="en">MLIR iGEMM gfx900 exclusion: The nature of Issue #389 <span class="conf conf-verified">code_verified (git blame)</span></h3>
+
+			<p data-lang="ja"><code>ConvMlirIgemmFwd::IsApplicable()</code> における gfx900 明示除外について、git blame で provenance を確定した。</p>
+			<p data-lang="en">Provenance of the explicit gfx900 exclusion in <code>ConvMlirIgemmFwd::IsApplicable()</code> was established via git blame.</p>
+
+			<div class="table-wrap" data-lang="ja">
+			<table>
+				<thead><tr><th>項目</th><th>内容</th></tr></thead>
+				<tbody>
+					<tr><td>コミット</td><td><code>2407d2f556c7</code></td></tr>
+					<tr><td>著者</td><td>Zhuoran Yin (<code>zhuoryin@amd.com</code>) — <strong>AMD 社員</strong></td></tr>
+					<tr><td>日時</td><td>2021-12-22</td></tr>
+					<tr><td>PR</td><td>MIOpen <code>#1328</code>: "[MLIR] Disable gfx900 from non-xdlops solver"</td></tr>
+					<tr><td>参照 issue</td><td><code>ROCm/llvm-project-private/issues/389</code> — <strong>AMD 社内非公開リポジトリ</strong></td></tr>
+					<tr><td>影響範囲</td><td>fwd / bwd / wrw の全3ファイルに同一パターンを一括投入</td></tr>
+				</tbody>
+			</table>
+			</div>
+			<div class="table-wrap" data-lang="en">
+			<table>
+				<thead><tr><th>Item</th><th>Detail</th></tr></thead>
+				<tbody>
+					<tr><td>Commit</td><td><code>2407d2f556c7</code></td></tr>
+					<tr><td>Author</td><td>Zhuoran Yin (<code>zhuoryin@amd.com</code>) — <strong>AMD employee</strong></td></tr>
+					<tr><td>Date</td><td>2021-12-22</td></tr>
+					<tr><td>PR</td><td>MIOpen <code>#1328</code>: "[MLIR] Disable gfx900 from non-xdlops solver"</td></tr>
+					<tr><td>Referenced issue</td><td><code>ROCm/llvm-project-private/issues/389</code> — <strong>AMD internal private repo</strong></td></tr>
+					<tr><td>Scope</td><td>Same exclusion pattern applied to all 3 files (fwd / bwd / wrw)</td></tr>
+				</tbody>
+			</table>
+			</div>
+
+			<div class="note note-info">
+				<span data-lang="ja"><strong>構造の特徴:</strong> <code>IsMlirSupportedHardware()</code> には gfx900 が「対応ハード」として gfx906/908/90a/942 と並列にリストされている。しかし <code>ConvMlirIgemmFwd::IsApplicable()</code> が個別に gfx900 を除外している。つまり「MLIR 対応と表明しつつ、特定アーチで例外除外」という二層構造であり、設計意図としての残存と個別バグ回避が共存している。</span>
+				<span data-lang="en"><strong>Structural note:</strong> <code>IsMlirSupportedHardware()</code> lists gfx900 alongside gfx906/908/90a/942 as "supported hardware". Yet <code>ConvMlirIgemmFwd::IsApplicable()</code> individually excludes gfx900. This two-layer structure — declaring support while making architecture-specific exceptions — indicates coexistence of design-level inclusion and individual bug workarounds.</span>
+			</div>
+
+			<p data-lang="ja" style="font-size:15px;color:#546E7A;margin-top:10px">"Disable" の語感はバグ回避寄りだが、private issue の本文が非公開のため設計判断かバグ回避かの確定はできない。ただし <code>MIIR_INVALID_PARAM</code> が <code>miirLowerTuningParams</code> で発生することから、問題は LLVM バックエンド（AMDGPU codegen）レベルにある可能性が高い。</p>
+			<p data-lang="en" style="font-size:15px;color:#546E7A;margin-top:10px">The word "Disable" suggests a bug workaround, but the private issue body is inaccessible, so whether this was a design decision or bug avoidance cannot be confirmed. The <code>MIIR_INVALID_PARAM</code> error originating from <code>miirLowerTuningParams</code> suggests the problem lies at the LLVM backend (AMDGPU codegen) level.</p>
+		</div>
+
+		<div class="card">
+			<h3 data-lang="ja">仮説への影響</h3>
+			<h3 data-lang="en">Impact on hypotheses</h3>
+			<ul>
+				<li data-lang="ja"><strong>仮説 A を具体化:</strong> <code>IsMlirSupportedHardware</code> リストへの gfx900 残存は「設計意図としてのサポート表明」であり、solver レベルの skip は別レイヤの問題</li>
+				<li data-lang="en"><strong>Hypothesis A refined:</strong> gfx900's presence in <code>IsMlirSupportedHardware</code> constitutes a design-level support declaration; solver-level skip is a separate-layer concern</li>
+				<li data-lang="ja"><strong>仮説 B を強化:</strong> MLIR 以外の経路（ASM / Winograd）は引き続き生存しており、capability-based な solver 選択が機能している</li>
+				<li data-lang="en"><strong>Hypothesis B strengthened:</strong> Non-MLIR paths (ASM / Winograd) remain live, confirming capability-based solver selection works</li>
+				<li data-lang="ja"><strong>仮説 C を部分確定:</strong> MLIR の gfx900 除外は <strong>AMD 社員が投入した修正</strong>であり、コミュニティパッチではない</li>
+				<li data-lang="en"><strong>Hypothesis C partially confirmed:</strong> The MLIR gfx900 exclusion was <strong>an AMD employee's commit</strong>, not a community patch</li>
+			</ul>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 §5  DEFINITION
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title blue" data-lang="ja">§5. 「サポート」の再定義</h2>
+		<h2 class="section-title blue" data-lang="en">§5. Redefining "Support"</h2>
+
+		<div class="card">
+			<blockquote data-lang="ja">
+				<p>Vega/gfx900 は「完全非対応」というより、「主要サポート対象から外れたが、なお複数の実行経路とフォールバック経路が残っている世代」と捉えるのが適切である。</p>
+			</blockquote>
+			<blockquote data-lang="en">
+				<p>Vega/gfx900 is better understood as <em>deprecated</em> rather than strictly <em>non-functional</em>: while no longer positioned as a primary support target, multiple execution and fallback paths remain present in the ROCm software stack.</p>
+			</blockquote>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 §6  CURRENT ASSESSMENT
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title green" data-lang="ja">§6. 判定マトリクス（現時点の総括）</h2>
+		<h2 class="section-title green" data-lang="en">§6. Assessment Matrix (Current Summary)</h2>
+
+		<div class="table-wrap" data-lang="ja">
+		<table>
+			<thead><tr><th>問い</th><th>現在の答え</th><th>確度</th></tr></thead>
+			<tbody>
+				<tr><td>gfx900 の経路はコードに残っているか</td><td>残っている</td><td><span class="conf conf-verified">code_verified</span></td></tr>
+				<tr><td>それは設計上自然に残っているか</td><td>そう読める</td><td><span class="conf conf-hypothesis">hypothesis + code evidence</span></td></tr>
+				<tr><td>コミュニティが保守を主張できるか</td><td>OSS 層では理論上可能</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>MLIR iGEMM 除外の投入者は誰か</td><td>AMD 社員 Zhuoran Yin</td><td><span class="conf conf-verified">code_verified</span></td></tr>
+				<tr><td>MLIR 除外の根拠 issue は公開か</td><td>非公開（<code>llvm-project-private</code>）</td><td><span class="conf conf-verified">code_verified</span></td></tr>
+				<tr><td>除外の性質（設計判断 vs バグ回避）</td><td>"Disable" はバグ回避寄り。確定不可</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>経路はコミュニティ実装で維持されているか</td><td>MLIR 除外は AMD 投入。他経路は未確定</td><td><span class="conf conf-speculative">要履歴調査</span></td></tr>
+				<tr><td>実際に実機で選ばれているか</td><td>FP32 solver 選択は確認済み</td><td><span class="conf conf-verified">runtime_verified</span></td></tr>
+				<tr><td>UDNA / 再統合との関係</td><td>意図は未確定、構造は観測できる</td><td><span class="conf conf-speculative">speculative</span></td></tr>
+			</tbody>
+		</table>
+		</div>
+		<div class="table-wrap" data-lang="en">
+		<table>
+			<thead><tr><th>Question</th><th>Current answer</th><th>Confidence</th></tr></thead>
+			<tbody>
+				<tr><td>Do gfx900 execution paths remain in code?</td><td>Yes</td><td><span class="conf conf-verified">code_verified</span></td></tr>
+				<tr><td>Are they a natural consequence of design?</td><td>Consistent reading</td><td><span class="conf conf-hypothesis">hypothesis + code evidence</span></td></tr>
+				<tr><td>Can the community claim maintenance?</td><td>Theoretically, at OSS layers</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>Who introduced MLIR iGEMM exclusion?</td><td>Zhuoran Yin (AMD)</td><td><span class="conf conf-verified">code_verified</span></td></tr>
+				<tr><td>Is the root issue public?</td><td>No (<code>llvm-project-private</code>)</td><td><span class="conf conf-verified">code_verified</span></td></tr>
+				<tr><td>Nature of exclusion (design vs bug workaround)?</td><td>"Disable" leans bug-workaround. Cannot confirm</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>Are paths community-maintained?</td><td>MLIR exclusion is AMD-authored. Others TBD</td><td><span class="conf conf-speculative">needs history analysis</span></td></tr>
+				<tr><td>Actually selected at runtime?</td><td>FP32 solver selection confirmed</td><td><span class="conf conf-verified">runtime_verified</span></td></tr>
+				<tr><td>Relation to UDNA / re-integration?</td><td>Intent undetermined; structure observable</td><td><span class="conf conf-speculative">speculative</span></td></tr>
+			</tbody>
+		</table>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 §7  THINKING PROCESS
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title purple" data-lang="ja">§7. 思考過程の記録</h2>
+		<h2 class="section-title purple" data-lang="en">§7. Thinking Process Log</h2>
+		<p class="section-lead" data-lang="ja">以下は調査過程で生じたブレインストーミング・仮説形成・査読コメントの記録である。これは陰謀論ではなく、工学的問いの思考過程であり、調査によってどのように解消・修正されていったかを含めて記載する。結論から読みたい方は §1–§6 のみで十分である。</p>
+		<p class="section-lead" data-lang="en">Below is a record of brainstorming, hypothesis formation, and review comments generated during the investigation. This is not conspiracy theorizing — it is the thinking process behind an engineering question, including how ideas were resolved or corrected through investigation. Readers interested only in conclusions may skip to §1–§6.</p>
+
+		<!-- Initial framing -->
+		<details data-lang="ja">
+			<summary>初期の問い立て — 何が分からなかったのか</summary>
+			<div class="details-body">
+				<p>出発点は素朴な疑問だった:</p>
+				<blockquote><p>Vega/gfx900 はなぜ今も生きているのか。それは情けで放置されているのか、設計上自然に残っているのか。</p></blockquote>
+				<p>この問いには暗黙の前提がある。「サポート終了 = 動かなくなる」という思い込みである。この前提自体を疑うところから調査は始まった。結果として、「動く」と「サポートされている」の間には広いグレーゾーンがあることが判明し、仮説 A（表のサポートと設計上のサポートは別）が生まれた。</p>
+			</div>
+		</details>
+		<details data-lang="en">
+			<summary>Initial framing — What was unknown</summary>
+			<div class="details-body">
+				<p>The starting point was a naive question:</p>
+				<blockquote><p>Why does Vega/gfx900 still work? Is it neglected out of mercy, or naturally preserved by design?</p></blockquote>
+				<p>This question contained an implicit assumption: "end of support = stops working". Questioning this assumption was the beginning of the investigation. The result was the discovery of a wide gray zone between "functional" and "supported", which led to Hypothesis A (official support and design-level support are distinct).</p>
+			</div>
+		</details>
+
+		<!-- Hypothesis evolution -->
+		<details data-lang="ja">
+			<summary>仮説の発展と修正 — どう考えが変わったか</summary>
+			<div class="details-body">
+				<p><strong>段階 1: 「延命されている」仮説</strong><br>
+				最初は「誰かが gfx900 を特別扱いで延命しているのでは」と考えた。しかしコード調査の結果、<code>dot4</code> 不在時のフォールバックが gfx900 専用ではなく汎用設計であることが判明し、この仮説は棄却された。</p>
+
+				<p><strong>段階 2: 「設計の副産物」仮説</strong><br>
+				MIOpen の solver finder が候補列挙 + <code>IsApplicable</code> フィルタ方式であることを確認した時点で、仮説 B（capability-based 設計の自然な帰結）が形成された。これは最も強いコード根拠を持つ仮説として現在も維持されている。</p>
+
+				<p><strong>段階 3: 「UDNA への布石」仮説</strong><br>
+				RDNA/CDNA 分離と UDNA 統合方向の話が出た時点で、仮説 D（繋ぎとしての分離）が生まれた。しかし査読で「UDNA というゴールが見えている今だからそう見えているだけで、証拠を積む前に語りすぎるとロマンで終わる」という批判を受け、仮説 E（意図は未確定、構造は観測できる）に着地した。</p>
+
+				<p><strong>段階 4: 「第三の可能性」の発見</strong><br>
+				「設計の自然な帰結 vs コミュニティの保守」の二項対立で考えていたが、査読で「AMD が積極的に消していない」という第三の状態の存在を指摘された。これはコスト-便益的な判断によるものであり、より地に足のついた説明として有力。</p>
+			</div>
+		</details>
+		<details data-lang="en">
+			<summary>Hypothesis evolution — How thinking changed</summary>
+			<div class="details-body">
+				<p><strong>Stage 1: "Life support" hypothesis</strong><br>
+				Initially, the assumption was that someone was giving gfx900 special treatment. Code investigation revealed that the <code>dot4</code> fallback is generic, not gfx900-specific, and this hypothesis was rejected.</p>
+
+				<p><strong>Stage 2: "Design byproduct" hypothesis</strong><br>
+				After confirming MIOpen's solver finder uses candidate enumeration + <code>IsApplicable</code> filtering, Hypothesis B (natural consequence of capability-based design) was formed. This remains the hypothesis with the strongest code evidence.</p>
+
+				<p><strong>Stage 3: "UDNA foresight" hypothesis</strong><br>
+				The RDNA/CDNA split combined with UDNA unification signals gave rise to Hypothesis D (split as transitional). Peer review criticism — "it only looks that way because UDNA is now visible; without evidence this is just romance" — led to the more conservative Hypothesis E (intent undetermined, structure observable).</p>
+
+				<p><strong>Stage 4: Discovery of the "third possibility"</strong><br>
+				The binary framing of "design consequence vs community maintenance" was challenged by peer review, which identified a third state: "AMD hasn't actively removed it". This cost-benefit explanation is potentially the most grounded.</p>
+			</div>
+		</details>
+
+		<!-- Dynamic verification journey -->
+		<details data-lang="ja">
+			<summary>動的検証の試行錯誤 — DLOPS/XDLOPS 系で何が起きたか</summary>
+			<div class="details-body">
+				<p>solver の静的コード調査だけでは不十分と考え、Vega 64 実機上で solver を強制実行する検証に移った。ここで想定外の現象が次々と発生した:</p>
+				<ul>
+					<li><code>ConvMlirIgemmFwd</code> 強制実行 → <code>MIIR_INVALID_PARAM</code> / <code>rc=0x7</code></li>
+					<li><code>ConvCkIgemmFwdV6r1DlopsNchw</code> 7ケース → 全件 <code>not applicable</code> / <code>rc=0x3</code></li>
+					<li><code>-s 1</code> + C/K 極値 + stride 差 + NHWC/NCHW の8ケース → 同じく全件 not applicable</li>
+					<li><code>ConvHipImplicitGemmFwdXdlops</code> → <code>CompileSolution</code>/<code>GetInvoker</code> まで進むが assertion abort (<code>EXIT=134</code>)</li>
+					<li><code>ConvHipImplicitGemmForwardV4R5Xdlops</code> → xdlops kernel compile 失敗（<code>intrin_mfma_*</code> 不在）</li>
+				</ul>
+				<p>この経験から得られた教訓: <strong>DLOPS/XDLOPS 系は「候補名が存在する」ことと「当該 problem で成立する」ことが完全に分離している</strong>。solver family ごとに「到達点（applicability 判定の前後）」が異なるため、失敗モード分類（§2）の枠組みが生まれた。</p>
+			</div>
+		</details>
+		<details data-lang="en">
+			<summary>Dynamic verification trials — What happened with DLOPS/XDLOPS</summary>
+			<div class="details-body">
+				<p>Static code analysis alone was deemed insufficient, so runtime solver forcing on Vega 64 was attempted. Unexpected failures emerged in sequence:</p>
+				<ul>
+					<li><code>ConvMlirIgemmFwd</code> forced → <code>MIIR_INVALID_PARAM</code> / <code>rc=0x7</code></li>
+					<li><code>ConvCkIgemmFwdV6r1DlopsNchw</code> in 7 configs → all <code>not applicable</code> / <code>rc=0x3</code></li>
+					<li><code>-s 1</code> + extreme C/K + stride variations + NHWC/NCHW (8 cases) → all not applicable</li>
+					<li><code>ConvHipImplicitGemmFwdXdlops</code> → reached <code>CompileSolution</code>/<code>GetInvoker</code> but assertion abort (<code>EXIT=134</code>)</li>
+					<li><code>ConvHipImplicitGemmForwardV4R5Xdlops</code> → xdlops kernel compile failure (missing <code>intrin_mfma_*</code>)</li>
+				</ul>
+				<p>Key lesson: <strong>"Solver name exists" and "solver applies to a given problem" are completely separate</strong>. Each solver family fails at a different stage, leading to the failure mode taxonomy in §2.</p>
+			</div>
+		</details>
+
+		<!-- Peer review -->
+		<details data-lang="ja">
+			<summary>査読コメントからの修正 — 何が指摘されたか</summary>
+			<div class="details-body">
+				<p><strong>最も評価された点:</strong></p>
+				<ul>
+					<li>「<code>dot4</code> 不在フォールバックは gfx900 専用ではなく、capability が立たない世代全般向けの汎用レイヤ」という観察 → capability-based 設計の証拠として最も強い</li>
+					<li>「維持・管理・補充の3層」整理 → 「コードが残ってる」と「意図的に維持されている」の間を埋める枠組みとして機能</li>
+				</ul>
+
+				<p><strong>慎重にすべきと指摘された点:</strong></p>
+				<ul>
+					<li>仮説 D（RDNA/CDNA 分離は繋ぎ）は「最もロマン寄り」→ git 履歴で設計意図が読めてから語るべき</li>
+					<li>「CUDA への秘策をコードに忍ばせた」方向の話は仮説 E の整理通り「意図は未確定」で止めるのが正しい</li>
+				</ul>
+
+				<p><strong>新たな視点:</strong></p>
+				<ul>
+					<li>gfx900 が GCN であり RDNA でも CDNA でもないという事実自体が、「アーキテクチャファミリーを問わずに capability で分岐する設計になっている」ことの独立した根拠 → 仮説 B を補強</li>
+				</ul>
+			</div>
+		</details>
+		<details data-lang="en">
+			<summary>Corrections from peer review — What was flagged</summary>
+			<div class="details-body">
+				<p><strong>Most positively received:</strong></p>
+				<ul>
+					<li>"<code>dot4</code> fallback is not gfx900-specific but a generic layer for any generation without the capability" → strongest evidence for capability-based design</li>
+					<li>"Build / Selection / Fallback three-layer model" → effectively bridges "code remains" and "intentionally maintained"</li>
+				</ul>
+
+				<p><strong>Flagged for caution:</strong></p>
+				<ul>
+					<li>Hypothesis D (RDNA/CDNA split as transitional) → "most romantic" — should be deferred until git history shows design intent</li>
+					<li>Any narrative about "secret weapons hidden in code against CUDA" → Hypothesis E's framing ("intent undetermined") is the correct stopping point</li>
+				</ul>
+
+				<p><strong>New perspectives added:</strong></p>
+				<ul>
+					<li>The fact that gfx900 is GCN (neither RDNA nor CDNA) is itself independent evidence that the design uses capability-based branching regardless of architecture family → strengthens Hypothesis B</li>
+				</ul>
+			</div>
+		</details>
+
+		<!-- Static trace baseline -->
+		<details data-lang="ja">
+			<summary>rocMLIR 静的結線の基準点</summary>
+			<div class="details-body">
+				<p>動的失敗シグネチャを読むための静的結線の基準点を以下に固定した:</p>
+				<ul>
+					<li><code>solver.cpp</code>: solver 登録点</li>
+					<li><code>fin_interface.cpp</code>: 強制指定 ID（80/114/128）</li>
+					<li><code>mlir_build.cpp</code>: <code>MIIR_INVALID_PARAM</code> 変換点</li>
+					<li><code>hipoc_program.cpp</code>: <code>.mlir</code> 分岐と <code>Code object build failed</code> throw 点</li>
+				</ul>
+				<p>これにより、前節の動的失敗シグネチャを3層（applicability reject / build 失敗 / runtime abort）に分けて読む前提が整った。</p>
+			</div>
+		</details>
+		<details data-lang="en">
+			<summary>rocMLIR static trace baseline</summary>
+			<div class="details-body">
+				<p>Static trace baseline was established to interpret dynamic failure signatures:</p>
+				<ul>
+					<li><code>solver.cpp</code>: solver registration point</li>
+					<li><code>fin_interface.cpp</code>: forced solver IDs (80/114/128)</li>
+					<li><code>mlir_build.cpp</code>: <code>MIIR_INVALID_PARAM</code> translation point</li>
+					<li><code>hipoc_program.cpp</code>: <code>.mlir</code> branch and <code>Code object build failed</code> throw point</li>
+				</ul>
+				<p>This allowed the dynamic failure signatures to be read across three layers: applicability reject / build failure / runtime abort.</p>
+			</div>
+		</details>
+
+		<!-- ══════════════════════════════════════════════
+			 §8  NEXT STEPS
+			 ══════════════════════════════════════════════ -->
+		<h2 class="section-title orange" data-lang="ja">§8. 今後の調査課題</h2>
+		<h2 class="section-title orange" data-lang="en">§8. Remaining Investigation Items</h2>
+
+		<div class="card">
+			<h3 data-lang="ja">完了済み</h3>
+			<h3 data-lang="en">Completed</h3>
+			<ul>
+				<li data-lang="ja">&#x2705; FP32 fallback 確認（Vega 64 で <code>ConvBinWinograd3x3U</code> / <code>ConvAsm1x1U</code> / <code>ConvHipImplicitGemmV4R1Fwd</code> を自然選択で確認）</li>
+				<li data-lang="en">&#x2705; FP32 fallback confirmed (Vega 64 naturally selected <code>ConvBinWinograd3x3U</code> / <code>ConvAsm1x1U</code> / <code>ConvHipImplicitGemmV4R1Fwd</code>)</li>
+				<li data-lang="ja">&#x2705; HSACO 逆アセンブル手順の確立</li>
+				<li data-lang="en">&#x2705; HSACO disassembly procedure established</li>
+				<li data-lang="ja">&#x2705; <code>v_dot4_*</code> の有無確認手順の確立</li>
+				<li data-lang="en">&#x2705; <code>v_dot4_*</code> presence verification procedure established</li>
+				<li data-lang="ja">&#x2705; git blame で gfx900 関連行の出所を確認（コミット <code>2407d2f</code>、PR #1328）</li>
+				<li data-lang="en">&#x2705; git blame provenance confirmed (commit <code>2407d2f</code>, PR #1328)</li>
+				<li data-lang="ja">&#x2705; <code>#389</code> の参照先が <code>llvm-project-private</code>（AMD private）であることを確定</li>
+				<li data-lang="en">&#x2705; Confirmed <code>#389</code> references <code>llvm-project-private</code> (AMD private repository)</li>
+			</ul>
+		</div>
+
+		<div class="card">
+			<h3 data-lang="ja">未完了（優先度順）</h3>
+			<h3 data-lang="en">Remaining (by priority)</h3>
+			<ul>
+				<li data-lang="ja">&#x1F538; MIOpen PR #1328 のレビューコメントで追加背景情報を確認（<code>gh pr view 1328 --repo ROCm/MIOpen --comments</code>）</li>
+				<li data-lang="en">&#x1F538; Review MIOpen PR #1328 comments for background context (<code>gh pr view 1328 --repo ROCm/MIOpen --comments</code>)</li>
+				<li data-lang="ja">&#x1F538; 公開 <code>llvm-project</code> で gfx900 / MLIR 関連の commit / issue を再探索</li>
+				<li data-lang="en">&#x1F538; Search public <code>llvm-project</code> for gfx900 / MLIR related commits and issues</li>
+				<li data-lang="ja">&#x1F538; <code>MiirIsConfigApplicable</code> 内部の制約確認（MLIR ライブラリ側の直接制限）</li>
+				<li data-lang="en">&#x1F538; Verify <code>MiirIsConfigApplicable</code> internal constraints (MLIR library-side restrictions)</li>
+				<li data-lang="ja">&#x1F538; 他の gfx900 関連コミットへの AMD 社員 / 外部貢献の分類拡張</li>
+				<li data-lang="en">&#x1F538; Extend AMD employee vs external contributor classification to other gfx900 commits</li>
+				<li data-lang="ja">&#x1F538; Provenance map の作成</li>
+				<li data-lang="en">&#x1F538; Create provenance map</li>
+				<li data-lang="ja">&#x1F539; INT8 非 naive solver の自然選択確認（現状: 全形状で <code>ConvDirectNaiveConvFwd</code> のみ）</li>
+				<li data-lang="en">&#x1F539; INT8 non-naive solver natural selection verification (current: all shapes use <code>ConvDirectNaiveConvFwd</code> only)</li>
+			</ul>
+		</div>
+
+		<!-- ══════════════════════════════════════════════
+			 FOOTER
+			 ══════════════════════════════════════════════ -->
+		<hr>
+
+		<div class="note note-green">
+			<span data-lang="ja"><strong>本ページの立場:</strong> この文書は AMD の設計判断を批判するものではない。ROCm の capability-based 設計がなぜ旧世代を包含しうるかの構造分析であり、AMD エンジニアリングの設計合理性に対する技術的関心に基づいている。すべての仮説は反証可能な形で記載しており、新しい証拠により修正される。</span>
+			<span data-lang="en"><strong>Position of this document:</strong> This is not a critique of AMD's design decisions. It is a structural analysis of how ROCm's capability-based design can encompass legacy generations, grounded in technical interest in the rationality of AMD's engineering. All hypotheses are stated in falsifiable form and are subject to revision with new evidence.</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-13 | <a href="index.html">&#8592; トップへ戻る</a></span>
+			<span data-lang="en">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-13 | <a href="index.html">&#8592; Back to index</a></span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+
+		function setLanguage(lang) {
+			html.setAttribute('data-language', lang);
+			html.setAttribute('lang', lang);
+			btnJa.classList.toggle('active', lang === 'ja');
+			btnEn.classList.toggle('active', lang === 'en');
+			localStorage.setItem('vega-hbmx-pages-lang', lang);
+		}
+
+		btnJa.addEventListener('click', function() { setLanguage('ja'); });
+		btnEn.addEventListener('click', function() { setLanguage('en'); });
+
+		setLanguage(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>

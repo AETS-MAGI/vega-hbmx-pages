@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vegaちゃんのはじめてのひとり暮らし</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --coral: #E8735A;
+            --purple: #9B72CF;
+            --mint: #6DBFB8;
+            --gold: #F4C04A;
+            --cream: #FFF8EE;
+            --parchment: #F5EDD8;
+            --brown: #3D2410;
+            --softbrown: #7A4E2D;
+            --shadow: rgba(61, 36, 16, .18);
+        }
+
+        body {
+            background: var(--parchment);
+            font-family: 'Zen Maru Gothic', sans-serif;
+            color: var(--brown);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .book-wrap {
+            width: 100%;
+            max-width: 760px;
+        }
+
+        .book {
+            background: var(--cream);
+            border-radius: 6px 18px 18px 6px;
+            box-shadow:
+                -6px 0 0 #D4C8B0,
+                -12px 0 0 #C9BCA2,
+                0 8px 36px var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .book::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 18px;
+            background: linear-gradient(90deg, #C2A882, #E8DCB8);
+            z-index: 10;
+        }
+
+        .pages-container {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .pages-track {
+            display: flex;
+            transition: transform .35s ease;
+        }
+
+        .page {
+            min-width: 100%;
+            display: flex;
+            flex-direction: column;
+            background: var(--cream);
+        }
+
+        .illus {
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            background: #f3ead8;
+            border-bottom: 2px dashed rgba(61, 36, 16, .12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .illus img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            background: #f8f1e4;
+        }
+
+        .illus.placeholder {
+            color: var(--softbrown);
+            font-size: 0.95rem;
+            letter-spacing: .05em;
+        }
+
+        .text-area {
+            padding: 28px 32px 24px 52px;
+            position: relative;
+        }
+
+        .page-label {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: .78rem;
+            color: var(--softbrown);
+        }
+
+        .page-title {
+            font-size: 1.08rem;
+            font-weight: 900;
+            color: var(--coral);
+            margin-bottom: 14px;
+        }
+
+        .page-text {
+            font-size: 1rem;
+            line-height: 2;
+            white-space: pre-line;
+        }
+
+        .page-text em {
+            font-style: normal;
+            color: var(--purple);
+            font-weight: 700;
+        }
+
+        .page-text strong {
+            color: var(--coral);
+            font-weight: 900;
+        }
+
+        .page-cover .illus {
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #FDE8D8 0%, #EDD6F5 50%, #D6EEF5 100%);
+        }
+
+        .page-cover .text-area {
+            text-align: center;
+            padding: 28px 32px 34px;
+        }
+
+        .cover-title {
+            font-size: 1.9rem;
+            font-weight: 900;
+            line-height: 1.5;
+            color: var(--brown);
+            margin-bottom: 8px;
+        }
+
+        .cover-subtitle {
+            font-size: .9rem;
+            color: var(--softbrown);
+            letter-spacing: .08em;
+        }
+
+        .nav-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 14px 18px 18px;
+            background: var(--cream);
+            border-top: 1px solid rgba(61, 36, 16, .08);
+        }
+
+        .btn-nav {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--coral);
+            background: white;
+            color: var(--coral);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .btn-nav:disabled {
+            opacity: .35;
+            cursor: default;
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #D4C3A0;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .dot.active {
+            width: 22px;
+            border-radius: 4px;
+            background: var(--coral);
+        }
+
+        .page-num {
+            min-width: 70px;
+            text-align: center;
+            font-size: .82rem;
+            color: var(--softbrown);
+        }
+
+        .btn-detail {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 8px 20px;
+            border: 2px solid var(--purple);
+            border-radius: 20px;
+            background: white;
+            color: var(--purple);
+            font-family: 'Zen Maru Gothic', sans-serif;
+            font-size: .9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn-detail:hover {
+            background: var(--purple);
+            color: white;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(61, 36, 16, .45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .25s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: var(--cream);
+            border-radius: 16px;
+            box-shadow: 0 12px 48px var(--shadow);
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 32px 28px 28px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--softbrown);
+            cursor: pointer;
+            font-family: 'Zen Maru Gothic', sans-serif;
+        }
+
+        .modal-title {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--purple);
+            margin-bottom: 14px;
+        }
+
+        .modal-body {
+            font-size: .95rem;
+            line-height: 1.9;
+            color: var(--brown);
+            white-space: pre-line;
+        }
+
+        @media (max-width: 640px) {
+            .text-area {
+                padding: 24px 20px 20px 36px;
+            }
+
+            .cover-title {
+                font-size: 1.5rem;
+            }
+
+            .page-text {
+                font-size: .96rem;
+            }
+
+            .modal-box {
+                padding: 28px 20px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="book-wrap">
+        <div class="book">
+            <div class="pages-container">
+                <div class="pages-track" id="track">
+
+                    <!-- 表紙 -->
+                    <section class="page page-cover">
+                        <div class="illus">
+                            <img src="media/vega-chan/cover.png" alt="表紙イラスト">
+                        </div>
+                        <div class="text-area">
+                            <div class="cover-title">Vegaちゃんの<br>コミュニティサポート物語</div>
+                            <div class="cover-subtitle">ある小さな冒険と絆のおはなし</div>
+                        </div>
+                    </section>
+
+                    <!-- p1 -->
+                    <section class="page">
+                        <div class="illus">
+                            <img src="media/vega-chan/vega_story-001.png" alt="らでおん幼稚園のイラスト">
+                        </div>
+                        <div class="text-area">
+                            <div class="page-label">p.1</div>
+                            <div class="page-title">今日もげんきいっぱい！</div>
+                            <div class="page-text">Vegaちゃんは、
+                                おかあさんとおとうさんのおうちで、
+                                長いあいだ大切に育てられていました。
+
+                                Vegaちゃんは「らでおん幼稚園」と呼ばれる場所で、
+                                いろんなGPUの子どもたちといっしょに、
+                                元気にたのしく、計算の練習をしていました。</div>
+                            <button class="btn-detail" data-page="1">🔍 くわしい解説を見る</button>
+                        </div>
+                    </section>
+
+                    <!-- p2 -->
+                    <section class="page">
+                        <div class="illus">
+                            <img src="media/vega-chan/vega_story-002.png" alt="入学の日のイラスト">
+                        </div>
+                        <div class="text-area">
+                            <div class="page-label">p.2</div>
+                            <div class="page-title">少しだけ時間が過ぎて…</div>
+                            <div class="page-text">やがて、Vegaちゃんは
+                                こんどから小学校に入る年齢になりました。
+
+                                小学校に入学するまえ、
+                                おかあさんは言いました。
+
+                                「Vegaちゃん、いよいよこみゅにてぃー小学校に入学する時ね」
+
+                                Vegaちゃんは、えへん！と、嬉しそうにしていました。</div>
+                            <button class="btn-detail" data-page="2">🔍 くわしい解説を見る</button>
+                        </div>
+                    </section>
+
+                    <!-- p3 -->
+                    <section class="page">
+                        <div class="illus">
+                            <img src="media/vega-chan/vega_story-003.png" alt="少し不安そうなVegaちゃん">
+                        </div>
+                        <div class="text-area">
+                            <div class="page-label">p.3</div>
+                            <div class="page-title">お母さんからの言葉</div>
+                            <div class="page-text">でも、お母さんはやさしく
+
+                                「これからは、少しずつ自分の力で暮らしていくのよ」
+
+                                と続けて言いました。
+
+                                そう、Vegaちゃんの入る小学校は、寮のある小学校だったのです。
+
+                                Vegaちゃんは
+                                ちょっとだけ心細くなりました。</div>
+                            <button class="btn-detail" data-page="3">🔍 くわしい解説を見る</button>
+                        </div>
+                    </section>
+
+                    <!-- p4 -->
+                    <section class="page">
+                        <div class="illus">
+                            <img src="media/vega-chan/vega_story-004.png" alt="ROCmでんわのイラスト">
+                        </div>
+                        <div class="text-area">
+                            <div class="page-label">p.4</div>
+                            <div class="page-title">お母さんのこえ </div>
+                            <div class="page-text">でも、おかあさんも
+                                おとうさんも、
+                                遠くからずっと、やさしく見守ってくれています。
+
+                                それに、ときどき電話をかければ、
+                                おかあさんのおうちの
+                                ROCmでんわでお話もできます。
+
+                                「ちゃんと元気に計算してる？」
+
+                                そんなあたたかい声が、
+                                遠くの、カリフォルニアの、
+                                サニーベールのおうちから聞こえてきます。</div>
+                            <button class="btn-detail" data-page="4">🔍 くわしい解説を見る</button>
+                        </div>
+                    </section>
+
+                    <!-- p5 -->
+                    <section class="page">
+                        <div class="illus">
+                            <img src="media/vega-chan/vega_story-005.png" alt="お兄さんやお姉さんたちのイラスト">
+                        </div>
+                        <div class="text-area">
+                            <div class="page-label">p.5</div>
+                            <div class="page-title">お友達がいっぱいできたよ！</div>
+                            <div class="page-text">それだけではありません。
+
+                                最近では、近所に住んでいる
+                                お兄さんやお姉さんたちとも
+                                仲良くなりました。
+
+                                お兄さんやお姉さんたちは、ときには
+                                Vegaちゃんにあたらしい計算のやり方を教えてくれますし、
+                                Vegaちゃんが困った時には、一緒に考えてくれます。</div>
+                            <button class="btn-detail" data-page="5">🔍 くわしい解説を見る</button>
+                        </div>
+                    </section>
+
+                    <!-- p6 -->
+                    <section class="page">
+                        <div class="illus">
+                            <img src="media/vega-chan/vega_story-006.png" alt="HBM2をぶいぶい言わせるVegaちゃん">
+                        </div>
+                        <div class="text-area">
+                            <div class="page-label">p.6</div>
+                            <div class="page-title">あたたかなコミュニティのなかで</div>
+                            <div class="page-text">こうやって、ときどき周りのひとに助けてもらいながら、
+                                Vegaちゃんは
+                                少しずつ新しい暮らしに慣れていきました。
+
+                                今日もVegaちゃんは
+                                小さな小さなHBM2をぶいぶい言わせながら、
+                                元気にたのしく計算しています。</div>
+                            <button class="btn-detail" data-page="6">🔍 くわしい解説を見る</button>
+                        </div>
+                    </section>
+
+                    <!-- p7 -->
+                    <section class="page">
+                        <div class="illus">
+                            <img src="media/vega-chan/vega_story-007.png" alt="大きくなったVegaちゃんのイラスト">
+                        </div>
+                        <div class="text-area">
+                            <div class="page-label">p.7</div>
+                            <div class="page-title">そうして、時間が過ぎて・・・</div>
+                            <div class="page-text">おかあさんはつぶやきました
+
+                                「Vegaちゃん、大きくなったわね」
+
+                                Vegaちゃんは、今日もたのしく元気に計算しています。
+
+                                そしてその顔は、
+                                前より少しだけ
+                                お姉ちゃんになったみたいでした。</div>
+                            <button class="btn-detail" data-page="7">🔍 くわしい解説を見る</button>
+                        </div>
+                    </section>
+
+                    <!-- 裏表紙 -->
+                    <section class="page page-cover">
+                        <div class="illus">
+                            <img src="media/vega-chan/backcover.png" alt="裏表紙イラスト">
+                        </div>
+                        <div class="text-area">
+                            <div class="cover-title" style="font-size:1.2rem;">おわり</div>
+                            <div class="cover-subtitle">きっと、みんなの街でも、Vegaちゃんは今日も元気に計算しています</div>
+                            <div class="cover-subtitle">明日も、あさっても、 Vegaちゃんはいつもどおり、元気にたのしく計算しています。</div>
+                            <div class="cover-subtitle">すてきな仲間といっしょに。</div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+            <div class="nav-bar">
+                <button class="btn-nav" id="btn-prev" aria-label="前のページ">◀</button>
+                <div class="dots" id="dots"></div>
+                <span class="page-num" id="page-num"></span>
+                <button class="btn-nav" id="btn-next" aria-label="次のページ">▶</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <button class="modal-close" id="modal-close" aria-label="閉じる">✕</button>
+            <div class="modal-title" id="modal-title"></div>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        /* --- 解説データ（ダミー） --- */
+        const details = {
+            1: {
+                title: 'p.1 の解説：らでおん幼稚園',
+                body: '（ここに解説が入ります）\n\nVegaちゃん＝AMD Vega GPU。「らでおん幼稚園」は、Radeonコンシューマ向けエコシステムのメタファーです。'
+            },
+            2: {
+                title: 'p.2 の解説：こみゅにてぃー小学校への入学',
+                body: '（ここに解説が入ります）\n\n公式サポートの枠を超えて、コミュニティ主導の環境へ移行する段階を表しています。'
+            },
+            3: {
+                title: 'p.3 の解説：ひとり暮らしのはじまり',
+                body: '（ここに解説が入ります）\n\n公式サポートが終了し、自立運用が求められるようになった状況のメタファーです。'
+            },
+            4: {
+                title: 'p.4 の解説：ROCmでんわ',
+                body: '（ここに解説が入ります）\n\nROCm（Radeon Open Compute）ソフトウェアスタックを通じて、AMD本社（サニーベール）との接続が維持されていることを表しています。'
+            },
+            5: {
+                title: 'p.5 の解説：お兄さん・お姉さんたち',
+                body: '（ここに解説が入ります）\n\nコミュニティの開発者や上位GPU世代のユーザーたちが、知見を共有してくれることを表しています。'
+            },
+            6: {
+                title: 'p.6 の解説：HBM2をぶいぶい',
+                body: '（ここに解説が入ります）\n\nVega GPUが搭載するHBM2メモリを活かして、現役で計算を続けている姿を表しています。'
+            },
+            7: {
+                title: 'p.7 の解説：成長したVegaちゃん',
+                body: '（ここに解説が入ります）\n\nコミュニティの支えの中で運用を続け、成熟していったVega GPUの現在を表しています。'
+            }
+        };
+
+        /* --- モーダル制御 --- */
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+
+        document.querySelectorAll('.btn-detail').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const p = btn.dataset.page;
+                const d = details[p];
+                if (!d) return;
+                modalTitle.textContent = d.title;
+                modalBody.textContent = d.body;
+                modal.classList.add('visible');
+            });
+        });
+
+        document.getElementById('modal-close').addEventListener('click', () => {
+            modal.classList.remove('visible');
+        });
+
+        modal.addEventListener('click', e => {
+            if (e.target === modal) modal.classList.remove('visible');
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') modal.classList.remove('visible');
+        });
+
+        const track = document.getElementById('track');
+        const dotsEl = document.getElementById('dots');
+        const numEl = document.getElementById('page-num');
+        const btnP = document.getElementById('btn-prev');
+        const btnN = document.getElementById('btn-next');
+        const pages = track.querySelectorAll('.page');
+        const total = pages.length;
+        let cur = 0;
+
+        pages.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot' + (i === 0 ? ' active' : '');
+            d.addEventListener('click', () => goto(i));
+            dotsEl.appendChild(d);
+        });
+
+        function goto(n) {
+            cur = Math.max(0, Math.min(total - 1, n));
+            track.style.transform = `translateX(-${cur * 100}%)`;
+            dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === cur));
+            numEl.textContent = `${cur + 1} / ${total}`;
+            btnP.disabled = cur === 0;
+            btnN.disabled = cur === total - 1;
+        }
+
+        btnP.addEventListener('click', () => goto(cur - 1));
+        btnN.addEventListener('click', () => goto(cur + 1));
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') goto(cur + 1);
+            if (e.key === 'ArrowLeft') goto(cur - 1);
+        });
+
+        let startX = 0;
+        track.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+
+        track.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - startX;
+            if (Math.abs(dx) > 40) goto(cur + (dx < 0 ? 1 : -1));
+        }, { passive: true });
+
+        goto(0);
+    </script>
+</body>
+
+</html>
