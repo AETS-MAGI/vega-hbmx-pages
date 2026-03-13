@@ -563,8 +563,8 @@
 				<li data-lang="en">MIOpen's solver finder uses candidate enumeration + <code>IsApplicable</code> filtering: a generic design that drops unsupported paths and moves to the next</li>
 				<li data-lang="ja"><code>dot4</code> 不在時の逐次積和は gfx900 専用ではなく、<code>dot4</code> capability が立たない世代全般向けの汎用互換レイヤ</li>
 				<li data-lang="en">The sequential multiply-add fallback when <code>dot4</code> is absent is not gfx900-specific — it is a generic compatibility layer for any generation without <code>dot4</code></li>
-				<li data-lang="ja">gfx900 は GCN 世代であり rDNA でも cDNA でもない。アーキテクチャファミリーを超えてこの構造が機能している事実は、設計が capability ベースであることの独立した根拠</li>
-				<li data-lang="en">gfx900 is GCN — neither rDNA nor cDNA. The fact that this design works across architecture families is independent evidence of a capability-based approach</li>
+				<li data-lang="ja">gfx900 は GCN 世代であり RDNA でも cDNA でもない。アーキテクチャファミリーを超えてこの構造が機能している事実は、設計が capability ベースであることの独立した根拠</li>
+				<li data-lang="en">gfx900 is GCN — neither RDNA nor cDNA. The fact that this design works across architecture families is independent evidence of a capability-based approach</li>
 			</ul>
 		</div>
 
@@ -608,11 +608,11 @@
 
 		<!-- Hypothesis D -->
 		<div class="card">
-			<h3 data-lang="ja">仮説 D: rDNA/cDNA 分離は再統合前の「繋ぎ」だった可能性 <span class="conf conf-speculative">speculative</span></h3>
-			<h3 data-lang="en">Hypothesis D: rDNA/cDNA split may have been a transitional phase <span class="conf conf-speculative">speculative</span></h3>
+			<h3 data-lang="ja">仮説 D: RDNA/cDNA 分離は再統合前の「繋ぎ」だった可能性 <span class="conf conf-speculative">speculative</span></h3>
+			<h3 data-lang="en">Hypothesis D: RDNA/cDNA split may have been a transitional phase <span class="conf conf-speculative">speculative</span></h3>
 
-			<p data-lang="ja">AMD は rDNA（ゲーム向け）と cDNA（計算向け）を別系統で開発してきたが、2024年に UDNA による統合方向が示されている。もし毎回ぜんぶ切り捨てる設計なら、アーキテクチャが増えるたびにコンパイラ・ランタイム・ライブラリの保守コストが際限なく膨れる。ROCm のような大規模 OSS スタックが持続するには、どこかに共通化の芯が必要であり、結果として後方互換や抽象化の筋を残しておくのが合理的である。</p>
-			<p data-lang="en">AMD has developed rDNA (gaming) and cDNA (compute) as separate lines, but indicated a UDNA unification direction in 2024. If each new architecture completely discarded the old, compiler/runtime/library maintenance costs would grow without bound. A large-scale OSS stack like ROCm requires a shared abstraction core — making it rational to preserve backward compatibility and abstraction as a structural investment.</p>
+			<p data-lang="ja">AMD は RDNA（ゲーム向け）と cDNA（計算向け）を別系統で開発してきたが、2024年に UDNA による統合方向が示されている。もし毎回ぜんぶ切り捨てる設計なら、アーキテクチャが増えるたびにコンパイラ・ランタイム・ライブラリの保守コストが際限なく膨れる。ROCm のような大規模 OSS スタックが持続するには、どこかに共通化の芯が必要であり、結果として後方互換や抽象化の筋を残しておくのが合理的である。</p>
+			<p data-lang="en">AMD has developed RDNA (gaming) and cDNA (compute) as separate lines, but indicated a UDNA unification direction in 2024. If each new architecture completely discarded the old, compiler/runtime/library maintenance costs would grow without bound. A large-scale OSS stack like ROCm requires a shared abstraction core — making it rational to preserve backward compatibility and abstraction as a structural investment.</p>
 
 			<div class="note note-warn">
 				<span data-lang="ja"><strong>注意:</strong> この仮説は現時点で最も推測的である。UDNA の正体は未確定であり、git 履歴で「統合を見越した設計意図」が読めてから語るべき話である。現在のコードに「そう読めるだけの構造がある」ことは観測できるが、意図の断定は避ける。</span>
@@ -797,7 +797,7 @@
 				MIOpen の solver finder が候補列挙 + <code>IsApplicable</code> フィルタ方式であることを確認した時点で、仮説 B（capability-based 設計の自然な帰結）が形成された。これは最も強いコード根拠を持つ仮説として現在も維持されている。</p>
 
 				<p><strong>段階 3: 「UDNA への布石」仮説</strong><br>
-				rDNA/cDNA 分離と UDNA 統合方向の話が出た時点で、仮説 D（繋ぎとしての分離）が生まれた。しかし査読で「UDNA というゴールが見えている今だからそう見えているだけで、証拠を積む前に語りすぎるとロマンで終わる」という批判を受け、仮説 E（意図は未確定、構造は観測できる）に着地した。</p>
+				RDNA/cDNA 分離と UDNA 統合方向の話が出た時点で、仮説 D（繋ぎとしての分離）が生まれた。しかし査読で「UDNA というゴールが見えている今だからそう見えているだけで、証拠を積む前に語りすぎるとロマンで終わる」という批判を受け、仮説 E（意図は未確定、構造は観測できる）に着地した。</p>
 
 				<p><strong>段階 4: 「第三の可能性」の発見</strong><br>
 				「設計の自然な帰結 vs コミュニティの保守」の二項対立で考えていたが、査読で「AMD が積極的に消していない」という第三の状態の存在を指摘された。これはコスト-便益的な判断によるものであり、より地に足のついた説明として有力。</p>
@@ -813,7 +813,7 @@
 				After confirming MIOpen's solver finder uses candidate enumeration + <code>IsApplicable</code> filtering, Hypothesis B (natural consequence of capability-based design) was formed. This remains the hypothesis with the strongest code evidence.</p>
 
 				<p><strong>Stage 3: "UDNA foresight" hypothesis</strong><br>
-				The rDNA/cDNA split combined with UDNA unification signals gave rise to Hypothesis D (split as transitional). Peer review criticism — "it only looks that way because UDNA is now visible; without evidence this is just romance" — led to the more conservative Hypothesis E (intent undetermined, structure observable).</p>
+				The RDNA/cDNA split combined with UDNA unification signals gave rise to Hypothesis D (split as transitional). Peer review criticism — "it only looks that way because UDNA is now visible; without evidence this is just romance" — led to the more conservative Hypothesis E (intent undetermined, structure observable).</p>
 
 				<p><strong>Stage 4: Discovery of the "third possibility"</strong><br>
 				The binary framing of "design consequence vs community maintenance" was challenged by peer review, which identified a third state: "AMD hasn't actively removed it". This cost-benefit explanation is potentially the most grounded.</p>
@@ -862,13 +862,13 @@
 
 				<p><strong>慎重にすべきと指摘された点:</strong></p>
 				<ul>
-					<li>仮説 D（rDNA/cDNA 分離は繋ぎ）は「最もロマン寄り」→ git 履歴で設計意図が読めてから語るべき</li>
+					<li>仮説 D（RDNA/cDNA 分離は繋ぎ）は「最もロマン寄り」→ git 履歴で設計意図が読めてから語るべき</li>
 					<li>「CUDA への秘策をコードに忍ばせた」方向の話は仮説 E の整理通り「意図は未確定」で止めるのが正しい</li>
 				</ul>
 
 				<p><strong>新たな視点:</strong></p>
 				<ul>
-					<li>gfx900 が GCN であり rDNA でも cDNA でもないという事実自体が、「アーキテクチャファミリーを問わずに capability で分岐する設計になっている」ことの独立した根拠 → 仮説 B を補強</li>
+					<li>gfx900 が GCN であり RDNA でも cDNA でもないという事実自体が、「アーキテクチャファミリーを問わずに capability で分岐する設計になっている」ことの独立した根拠 → 仮説 B を補強</li>
 				</ul>
 			</div>
 		</details>
@@ -883,13 +883,13 @@
 
 				<p><strong>Flagged for caution:</strong></p>
 				<ul>
-					<li>Hypothesis D (rDNA/cDNA split as transitional) → "most romantic" — should be deferred until git history shows design intent</li>
+					<li>Hypothesis D (RDNA/cDNA split as transitional) → "most romantic" — should be deferred until git history shows design intent</li>
 					<li>Any narrative about "secret weapons hidden in code against CUDA" → Hypothesis E's framing ("intent undetermined") is the correct stopping point</li>
 				</ul>
 
 				<p><strong>New perspectives added:</strong></p>
 				<ul>
-					<li>The fact that gfx900 is GCN (neither rDNA nor cDNA) is itself independent evidence that the design uses capability-based branching regardless of architecture family → strengthens Hypothesis B</li>
+					<li>The fact that gfx900 is GCN (neither RDNA nor cDNA) is itself independent evidence that the design uses capability-based branching regardless of architecture family → strengthens Hypothesis B</li>
 				</ul>
 			</div>
 		</details>
