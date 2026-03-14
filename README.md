@@ -43,6 +43,10 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - gfx900 個別調査を起点にしながら、ROCm 一般の設計思想を GitHub 側の一次資料で検証した要約ページです。
 - layered support、capability-based fallback、staged deprecation、support の層分解、AMD とコミュニティの役割分解を扱います。
 
+### 7. `rocm-history.html`
+- これまでに確定した commit、release block、issue trail をもとに、ROCm の変遷を public 向けの年表として整理したページです。
+- `gfx900` を入口にしつつ、component ごとの追加・後退・統合・fallback を時間軸で読めるようにしています。
+
 ## 発表・補助資料
 
 ### `presentation_advanced_en-jp.html`
@@ -91,6 +95,8 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
   - Audit-log page for public-site wording changes, including old wording, new wording, rationale, and affected pages.
 - `reveal-hypothesis.html`
   - Public summary page for the ROCm-wide design-model hypotheses revealed by the gfx900 investigation.
+- `rocm-history.html`
+  - Public-facing ROCm chronology built from the already-confirmed GitHub-side timeline anchors.
 - `code-tracing.html`
   - Standalone supplementary deck for the exact meaning of `num_gpu`.
 - `solver-trace.html`
@@ -117,6 +123,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Use `media.html` for the audio commentary and poster PDF.
 - Read `experiment-history.html` for the investigation timeline (Steps 1–11).
 - Open `reveal-hypothesis.html` for the ROCm-wide design-model interpretation revealed by the gfx900 investigation.
+- Open `rocm-history.html` for the public GitHub-side chronology of ROCm itself.
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
 - Use `code-tracing.html` for the most technical evidence on `num_gpu` semantics.
 - Use `solver-trace.html` for gfx900 computation path tracing through the ROCm library stack (code + runtime verified).

@@ -410,6 +410,62 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">ROCm GitHub 履歴タイムラインを公開ページへ追加</h2>
+        <h2 data-lang="en">Added a public ROCm GitHub history timeline</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">内部ノート <code>rocm-github-investigate.md</code> と <code>reveal_hypothesis.md</code> に固定した知見を使い、ROCm の変遷を年表として読める独立ページを公開側に追加した。</p>
+      <p class="entry-lead" data-lang="en">Using the findings fixed in <code>rocm-github-investigate.md</code> and <code>reveal_hypothesis.md</code>, a standalone public page was added so ROCm's evolution can be read as a timeline.</p>
+      <div class="file-list">
+        <span class="file-tag">rocm-history.html</span>
+        <span class="file-tag">index.html</span>
+        <span class="file-tag">reveal-hypothesis.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>rocm-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧状態</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">公開サイトには、ROCm 自体の GitHub 履歴を commit・release block・issue trail の混在した年表として読める独立ページがなかった。</p>
+            <p data-lang="en">The public site had no standalone page that turned ROCm's own GitHub history into a readable chronology mixing commits, release blocks, and issue trails.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新状態</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">新規ページ <code>rocm-history.html</code> を追加し、<code>2021-12-22</code> の MIOpen disable、<code>ROCm 5.5.0 / 6.2.0 / 7.0.0</code> block、support の層分解、front-door 統合、fallback 残存を、working chronology として公開した。</p>
+            <p data-lang="en">A new page, <code>rocm-history.html</code>, now publishes a working chronology covering the <code>2021-12-22</code> MIOpen disable, the <code>ROCm 5.5.0 / 6.2.0 / 7.0.0</code> blocks, support-layer splitting, front-door consolidation, and fallback survival.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> <code>rocm-github-investigate.md</code> の時系列整理と、<code>reveal_hypothesis.md</code> の ROCm-wide 読み筋。exact date と release-note anchor を混ぜることを明示し、未確定日付は埋めていない。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The chronology in <code>rocm-github-investigate.md</code> and the ROCm-wide reading in <code>reveal_hypothesis.md</code>. The page explicitly mixes exact dates with release-note anchors and avoids inventing dates that remain unconfirmed.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>index.html</code> / <code>reveal-hypothesis.html</code> / <code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">ROCm 全体像ページまではあっても、歴史軸で読む導線がトップにも設計モデルページにも README にも無かった。</p>
+            <p data-lang="en">Even with the ROCm-wide design page in place, there was no top-level, design-page, or README route into a historical reading of ROCm itself.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">トップに <code>History</code> カードを追加し、<code>reveal-hypothesis.html</code> の action からも年表へ移動できるようにし、README にも収録ファイルとして明記した。</p>
+            <p data-lang="en">A new <code>History</code> card was added to the index, the design-model page now links into the timeline, and the README lists it as a published file.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">GitHub 側の一般設計思想調査を公開ページへ追加</h2>
         <h2 data-lang="en">Added the broader ROCm design-model investigation to the public pages</h2>
         <span class="entry-date">2026-03-15</span>

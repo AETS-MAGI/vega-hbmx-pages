@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROCm GitHub History Timeline | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --red: #B71C1C;
+      --blue: #0D47A1;
+      --green: #1B5E20;
+      --orange: #E65100;
+      --purple: #6A1B9A;
+      --text: #212121;
+      --muted: #616161;
+      --line: #D7DEE8;
+      --bg: #F7F8FB;
+      --card: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(183,28,28,0.08), transparent 24%),
+        radial-gradient(circle at top right, rgba(13,71,161,0.08), transparent 24%),
+        var(--bg);
+    }
+
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--blue);
+      font-weight: bold;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      background: transparent;
+      color: #455A64;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: var(--blue);
+      color: #FFFFFF;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #B71C1C 0%, #6A1B9A 52%, #0D47A1 100%);
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 34px 34px 28px;
+      box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 38px;
+      line-height: 1.12;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.5;
+      color: #F3E5F5;
+    }
+
+    .hero-meta {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      background: rgba(255,255,255,0.14);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .summary {
+      margin-top: 22px;
+      background: #FFFFFF;
+      border-left: 6px solid var(--orange);
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-size: 18px;
+      line-height: 1.6;
+      box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      margin: 38px 0 10px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 28px;
+      color: var(--red);
+    }
+
+    .section-lead {
+      margin: 0 0 18px;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .note {
+      margin: 18px 0;
+      border-left: 6px solid var(--orange);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 16px;
+      line-height: 1.58;
+    }
+
+    .note-info { background: #E3F2FD; border-left-color: var(--blue); color: #1A237E; }
+    .note-warn { background: #FFF8E1; color: #5D4037; }
+    .note-green { background: #E8F5E9; border-left-color: var(--green); color: #1B5E20; }
+
+    .timeline {
+      position: relative;
+      margin-top: 6px;
+      padding-left: 34px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 8px;
+      bottom: 8px;
+      width: 4px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--purple), var(--red));
+    }
+
+    .step {
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 24px 18px;
+      box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+
+    .step::before {
+      content: '';
+      position: absolute;
+      left: -30px;
+      top: 28px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 4px #FFFFFF;
+    }
+
+    .step h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .step p, .step li {
+      font-size: 16px;
+      line-height: 1.58;
+      color: #37474F;
+    }
+
+    .step ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    .anchor-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .anchor {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .anchor-date { background: #FCE4EC; color: #AD1457; }
+    .anchor-release { background: #FFF3E0; color: #E65100; }
+    .anchor-current { background: #E8F5E9; color: #1B5E20; }
+    .anchor-issue { background: #E3F2FD; color: #0D47A1; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px 22px;
+      box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      line-height: 1.3;
+    }
+
+    .card p, .card li {
+      font-size: 16px;
+      line-height: 1.58;
+      color: #37474F;
+    }
+
+    .card ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 12px 0 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #FFFFFF;
+    }
+
+    th {
+      background: #ECEFF1;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: bold;
+      border-bottom: 2px solid var(--line);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #ECEFF1;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      padding: 11px 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 15px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 1px 3px 10px rgba(0,0,0,0.08);
+    }
+
+    .button-primary {
+      background: var(--blue);
+      color: #FFFFFF;
+    }
+
+    .button-secondary {
+      background: #FFFFFF;
+      color: var(--blue);
+      border: 1px solid #90CAF9;
+    }
+
+    .footer {
+      margin-top: 34px;
+      background: #FAFAFA;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #455A64;
+    }
+
+    [data-language="ja"] [data-lang="en"],
+    [data-language="en"] [data-lang="ja"] {
+      display: none !important;
+    }
+
+    @media (max-width: 720px) {
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero h1 { font-size: 31px; }
+      .hero p { font-size: 18px; }
+      .summary { font-size: 17px; }
+      .timeline { padding-left: 26px; }
+      .step::before { left: -22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar">
+      <a class="home-link" href="index.html" data-lang="ja">← トップに戻る</a>
+      <a class="home-link" href="index.html" data-lang="en">← Back to index</a>
+      <div class="lang-toggle" aria-label="Language toggle">
+        <button id="btn-ja" class="lang-btn active" type="button">日本語</button>
+        <button id="btn-en" class="lang-btn" type="button">English</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1 data-lang="ja">ROCm GitHub 履歴タイムライン</h1>
+      <h1 data-lang="en">ROCm GitHub History Timeline</h1>
+      <p data-lang="ja">ここでは、すでに内部ノートで確認済みの commit・release block・issue trail・現行コードの痕跡だけを使って、ROCm の変遷を public 向けの年表として並べ直しています。</p>
+      <p data-lang="en">This page turns already-confirmed commits, release blocks, issue trails, and current-code traces into a public-facing chronology of ROCm's evolution.</p>
+      <div class="hero-meta">
+        <span class="badge">GitHub archaeology</span>
+        <span class="badge">Working chronology</span>
+        <span class="badge">Updated: 2026-03-15</span>
+      </div>
+      <div class="summary">
+        <span data-lang="ja"><strong>要点:</strong> いま見えている範囲だけでも、ROCm の歴史は「対応 / 非対応」の単純な二値ではなく、component ごとの追加・後退・統合・fallback がずれながら積み重なる履歴として読むほうが自然です。</span>
+        <span data-lang="en"><strong>Key point:</strong> Even with the limited evidence already fixed in the notebook, ROCm history reads less like a simple supported/unsupported binary and more like a layered record of component-specific expansion, retreat, consolidation, and fallback.</span>
+      </div>
+    </section>
+
+    <div class="note note-info">
+      <span data-lang="ja"><strong>読み方:</strong> この年表は、<strong>正確な日付の commit</strong> と <strong>ROCm release block 単位でしか固定できていない出来事</strong> と <strong>issue trail から読める継続的議論</strong> を混ぜています。まだ公式通史ではなく、公開用の working draft です。</span>
+      <span data-lang="en"><strong>How to read this:</strong> This timeline mixes <strong>exactly dated commits</strong>, <strong>events only anchored to ROCm release blocks</strong>, and <strong>ongoing issue-trail discussions</strong>. It is a public working draft, not yet a complete official history.</span>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">主要な時間軸</h2>
+    <h2 class="section-title" data-lang="en">Primary timeline</h2>
+    <p class="section-lead" data-lang="ja">中心に置いたのは、GitHub 側の履歴から「事件」として読み取りやすいものです。gfx900 は入り口ですが、年表の主題は ROCm 一般の振る舞いです。</p>
+    <p class="section-lead" data-lang="en">The focus is on events that stand out in GitHub-side history as meaningful turning points. gfx900 is the entry point, but the larger subject is ROCm behavior in general.</p>
+
+    <div class="timeline">
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-date">2021-12-22</span>
+          <span class="anchor anchor-date" data-lang="ja">exact commit</span>
+          <span class="anchor anchor-date" data-lang="en">exact commit</span>
+        </div>
+        <h3 data-lang="ja">MIOpen が MLIR iGEMM の <code>gfx900</code> を明示 disable</h3>
+        <h3 data-lang="en">MIOpen explicitly disables <code>gfx900</code> for MLIR iGEMM</h3>
+        <ul>
+          <li data-lang="ja">commit <code>2407d2f</code>（Zhuoran Yin, AMD）が、forward / backward / wrw の MLIR solver から <code>gfx900</code> を除外。</li>
+          <li data-lang="en">Commit <code>2407d2f</code> (Zhuoran Yin, AMD) excludes <code>gfx900</code> from forward, backward, and wrw MLIR solvers.</li>
+          <li data-lang="ja">根拠コメントは <code>llvm-project-private#389</code> を参照しており、公開側からは理由の核心が読めない。</li>
+          <li data-lang="en">The explanatory comment points to <code>llvm-project-private#389</code>, so the core rationale is not visible from the public side.</li>
+          <li data-lang="ja"><strong>意味:</strong> public product code が private backend constraint を吸収している可能性を示す強い観測点。</li>
+          <li data-lang="en"><strong>Meaning:</strong> A strong observation point suggesting that public product code may absorb private backend constraints.</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-release">ROCm 5.5.0 block</span>
+          <span class="anchor anchor-release" data-lang="ja">release-note anchor</span>
+          <span class="anchor anchor-release" data-lang="en">release-note anchor</span>
+        </div>
+        <h3 data-lang="ja">Tensile 側では <code>gfx900:xnack-</code> の追加記録が残る</h3>
+        <h3 data-lang="en">Tensile still records an addition for <code>gfx900:xnack-</code></h3>
+        <ul>
+          <li data-lang="ja"><code>Tensile 4.36.0</code> の release block には <code>gfx900:xnack-</code> を他の arch と並べて追加した記録がある。</li>
+          <li data-lang="en">The <code>Tensile 4.36.0</code> release block records <code>gfx900:xnack-</code> being added alongside other architectures.</li>
+          <li data-lang="ja"><strong>意味:</strong> 同じ ecosystem の中で、ある component では除外が進み、別 component ではまだ追加系の動きがある。</li>
+          <li data-lang="en"><strong>Meaning:</strong> Within the same ecosystem, one component may be retreating while another still shows expansion-style target work.</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-date">2023-12-13</span>
+          <span class="anchor anchor-date" data-lang="ja">exact commit</span>
+          <span class="anchor anchor-date" data-lang="en">exact commit</span>
+        </div>
+        <h3 data-lang="ja">private issue 参照は残したまま URL だけ更新される</h3>
+        <h3 data-lang="en">The private-issue reference survives, with only the URL updated</h3>
+        <ul>
+          <li data-lang="ja">commit <code>b0f912e</code> は <code>ROCmSoftwarePlatform</code> から <code>ROCm</code> への URL 更新を行う。</li>
+          <li data-lang="en">Commit <code>b0f912e</code> updates the URL from <code>ROCmSoftwarePlatform</code> to <code>ROCm</code>.</li>
+          <li data-lang="ja">ただし、参照先が private issue であること自体は変わらない。</li>
+          <li data-lang="en">But the referenced issue remains private.</li>
+          <li data-lang="ja"><strong>意味:</strong> 理由へのポインタは残るが、その理由は公開されないという非対称性が継続した。</li>
+          <li data-lang="en"><strong>Meaning:</strong> The pointer to the reason remains, while the reason itself stays non-public.</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-release">ROCm 6.2.0 block</span>
+          <span class="anchor anchor-release" data-lang="ja">release-note anchor</span>
+          <span class="anchor anchor-release" data-lang="en">release-note anchor</span>
+        </div>
+        <h3 data-lang="ja">rocSOLVER では <code>gfx900</code> を default build target に追加</h3>
+        <h3 data-lang="en">rocSOLVER adds <code>gfx900</code> to default build targets</h3>
+        <ul>
+          <li data-lang="ja"><code>rocSOLVER 3.26.0</code> の release block に <code>Added gfx900 to default build targets.</code> が残る。</li>
+          <li data-lang="en">The <code>rocSOLVER 3.26.0</code> release block contains <code>Added gfx900 to default build targets.</code></li>
+          <li data-lang="ja"><strong>意味:</strong> MIOpen 側で特定 solver が止まっていても、別 component では default target 拡張が続いていた。</li>
+          <li data-lang="en"><strong>Meaning:</strong> Even while a specific MIOpen solver path was blocked, another component was still broadening default target coverage.</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-release">ROCm 7.0.0 block</span>
+          <span class="anchor anchor-release" data-lang="ja">release-note anchor</span>
+          <span class="anchor anchor-release" data-lang="en">release-note anchor</span>
+        </div>
+        <h3 data-lang="ja">hipCUB が <code>gfx803 / gfx900</code> を default build から外す</h3>
+        <h3 data-lang="en">hipCUB removes <code>gfx803 / gfx900</code> from default build</h3>
+        <ul>
+          <li data-lang="ja"><code>hipCUB 4.0.0</code> では、これらの target は default では build されず、明示 opt-in が必要と書かれる。</li>
+          <li data-lang="en">In <code>hipCUB 4.0.0</code>, those targets are no longer built by default and require explicit opt-in.</li>
+          <li data-lang="ja"><strong>意味:</strong> 完全削除ではなく、運用上の visibility と regression detection を弱める形で legacy 化が進む。</li>
+          <li data-lang="en"><strong>Meaning:</strong> This is not total deletion, but a form of legacy-ization that weakens operational visibility and regression detection.</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-current" data-lang="ja">current tree snapshot</span>
+          <span class="anchor anchor-current" data-lang="en">current tree snapshot</span>
+        </div>
+        <h3 data-lang="ja">それでも runtime/fallback 側には旧経路が残り続ける</h3>
+        <h3 data-lang="en">Even so, legacy runtime and fallback paths still remain</h3>
+        <ul>
+          <li data-lang="ja">現行 tree には MIOpen の ASM implicit GEMM 許可、rocBLAS/Tensile の lazy loading、dot4 非対応時の fallback が残っている。</li>
+          <li data-lang="en">The current tree still contains MIOpen ASM implicit GEMM allowances, rocBLAS/Tensile lazy loading, and fallback paths for missing dot4 capability.</li>
+          <li data-lang="ja"><strong>意味:</strong> `default build` 後退と `runtime path` 残存は同時に起こりうる。ここが today の「半死半生」状態を作っている。</li>
+          <li data-lang="en"><strong>Meaning:</strong> Default-build retreat and runtime-path survival can happen simultaneously. That is what produces today's half-retreated state.</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-current">2026-03-15</span>
+          <span class="anchor anchor-current" data-lang="ja">public synthesis</span>
+          <span class="anchor anchor-current" data-lang="en">public synthesis</span>
+        </div>
+        <h3 data-lang="ja">年表として読むと、ROCm の変遷は「層状の後退と統合」に見える</h3>
+        <h3 data-lang="en">Read as a timeline, ROCm looks like a history of layered retreat and consolidation</h3>
+        <ul>
+          <li data-lang="ja">追加、選択的 disable、default build からの後退、fallback 残存、front door 統合が、完全には同期せず進んでいる。</li>
+          <li data-lang="en">Expansion, selective disable, retreat from default build, fallback survival, and front-door consolidation all proceed without perfect synchronization.</li>
+          <li data-lang="ja"><strong>意味:</strong> ROCm の歴史は単純な support matrix の増減ではなく、component autonomy と stack-wide 整理圧力のせめぎ合いとして読むほうが強い。</li>
+          <li data-lang="en"><strong>Meaning:</strong> ROCm history is better read not as a simple support-matrix delta, but as an interaction between component autonomy and stack-wide pressure to reorganize.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">並行して進んでいる別の流れ</h2>
+    <h2 class="section-title" data-lang="en">Other currents running in parallel</h2>
+    <div class="grid">
+      <div class="card">
+        <h3 data-lang="ja">support の層分解</h3>
+        <h3 data-lang="en">Support splitting by layer</h3>
+        <p data-lang="ja"><code>TheRock #1414 / #1975</code> や <code>rocm-install-on-linux #648</code> では、super-project、component、driver、user space を同じ “support” として扱えないことが露わになっている。</p>
+        <p data-lang="en"><code>TheRock #1414 / #1975</code> and <code>rocm-install-on-linux #648</code> expose that super-project, component, driver, and user-space support cannot be treated as one single notion.</p>
+      </div>
+
+      <div class="card">
+        <h3 data-lang="ja">front door の統合</h3>
+        <h3 data-lang="en">Front-door consolidation</h3>
+        <p data-lang="ja"><code>HIPCC -&gt; AMD Clang</code>、<code>AMDGPU_TARGETS -&gt; GPU_TARGETS</code>、<code>TheRock</code> の unified CMake は、入口や build knob を減らして stack をまとめようとする流れを示す。</p>
+        <p data-lang="en"><code>HIPCC -&gt; AMD Clang</code>, <code>AMDGPU_TARGETS -&gt; GPU_TARGETS</code>, and <code>TheRock</code>'s unified CMake point toward a more consolidated front door and build surface.</p>
+      </div>
+
+      <div class="card">
+        <h3 data-lang="ja">capability-based fallback の持続</h3>
+        <h3 data-lang="en">Persistent capability-based fallback</h3>
+        <p data-lang="ja"><code>Tensile</code> docs と <code>rocBLAS</code> 実装は、individual arch ID より capability と fallback catalog を重視する設計が長く続いていることを示す。</p>
+        <p data-lang="en"><code>Tensile</code> docs and <code>rocBLAS</code> runtime code show a durable design preference for capability-based selection and fallback catalogs over strict per-arch branching.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">この年表から今言えること</h2>
+    <h2 class="section-title" data-lang="en">What this timeline currently supports</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-lang="ja">読み筋</th>
+            <th data-lang="en">Reading</th>
+            <th data-lang="ja">現時点の強さ</th>
+            <th data-lang="en">Current strength</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-lang="ja">ROCm は component ごとに異なる速度で変化する</td>
+            <td data-lang="en">ROCm changes at different speeds by component</td>
+            <td data-lang="ja">強い</td>
+            <td data-lang="en">Strong</td>
+          </tr>
+          <tr>
+            <td data-lang="ja">legacy support は一括削除より staged retreat に近い</td>
+            <td data-lang="en">Legacy support behaves more like staged retreat than instant deletion</td>
+            <td data-lang="ja">強い</td>
+            <td data-lang="en">Strong</td>
+          </tr>
+          <tr>
+            <td data-lang="ja">public code が private backend constraint を吸収する例がある</td>
+            <td data-lang="en">Public code sometimes absorbs private backend constraints</td>
+            <td data-lang="ja">部分的</td>
+            <td data-lang="en">Partial</td>
+          </tr>
+          <tr>
+            <td data-lang="ja">AMD / community の役割は単一主体では説明しきれない</td>
+            <td data-lang="en">AMD/community roles are too layered for a single-owner story</td>
+            <td data-lang="ja">枠組みとして有効</td>
+            <td data-lang="en">Useful as framing</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note note-warn">
+      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
+      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, and explicit maintainer statements of design intent. This page re-assembles already-confirmed fragments for public use.</span>
+    </div>
+
+    <div class="note note-green">
+      <span data-lang="ja"><strong>暫定結論:</strong> ROCm の歴史は、単に「古いものを切って新しいものに置き換える」直線ではなく、追加・統合・選択的無効化・fallback 残存が層ごとにずれながら進む履歴として読める。</span>
+      <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm history is better read not as a straight line of replacing the old with the new, but as a layered record in which expansion, consolidation, selective disable, and fallback survival proceed at different speeds.</span>
+    </div>
+
+    <div class="actions">
+      <a class="button button-primary" href="reveal-hypothesis.html" data-lang="ja">設計モデルページへ</a>
+      <a class="button button-primary" href="reveal-hypothesis.html" data-lang="en">Go to the design-model page</a>
+      <a class="button button-secondary" href="solver-trace.html" data-lang="ja">solver trace を見る</a>
+      <a class="button button-secondary" href="solver-trace.html" data-lang="en">Open the solver trace</a>
+      <a class="button button-secondary" href="page-history.html" data-lang="ja">更新ログを見る</a>
+      <a class="button button-secondary" href="page-history.html" data-lang="en">View the page-update log</a>
+    </div>
+
+    <div class="footer">
+      <span data-lang="ja"><strong>公開方針:</strong> このページは内部ノート <code>rocm-github-investigate.md</code> と <code>reveal_hypothesis.md</code> を公開向けに再編した年表です。正確さを優先し、未確認の日付や未読の issue コメントは無理に埋めていません。</span>
+      <span data-lang="en"><strong>Publishing note:</strong> This timeline is a public restructuring of the internal notes <code>rocm-github-investigate.md</code> and <code>reveal_hypothesis.md</code>. It prioritizes accuracy over completeness and does not fabricate dates or issue details that have not yet been confirmed.</span>
+    </div>
+  </div>
+
+  <script>
+    const html = document.documentElement;
+    const btnJa = document.getElementById('btn-ja');
+    const btnEn = document.getElementById('btn-en');
+
+    function setLanguage(lang) {
+      html.setAttribute('data-language', lang);
+      btnJa.classList.toggle('active', lang === 'ja');
+      btnEn.classList.toggle('active', lang === 'en');
+    }
+
+    btnJa.addEventListener('click', () => setLanguage('ja'));
+    btnEn.addEventListener('click', () => setLanguage('en'));
+  </script>
+</body>
+</html>
