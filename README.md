@@ -35,6 +35,10 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - 調査がどう進んだかを時系列で追えるページです。
 - 非専門向けの説明や凡例も入っています。
 
+### 5. `page-history.html`
+- 公開ページ側の更新内容を残す監査ログです。
+- 「旧記述 → 新記述 → 根拠 → 影響ページ」の順で、何をどう差し替えたかを共有できます。
+
 ## 発表・補助資料
 
 ### `presentation_advanced_en-jp.html`
@@ -79,6 +83,8 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
   - Main bilingual slide deck (English/Japanese toggle).
 - `experiment-history.html`
   - Timeline-style summary of the investigation flow (Steps 1–11 as of 2026-03-14).
+- `page-history.html`
+  - Audit-log page for public-site wording changes, including old wording, new wording, rationale, and affected pages.
 - `code-tracing.html`
   - Standalone supplementary deck for the exact meaning of `num_gpu`.
 - `solver-trace.html`

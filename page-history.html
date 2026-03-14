@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Update History | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --red: #B71C1C;
+      --blue: #0D47A1;
+      --green: #1B5E20;
+      --orange: #E65100;
+      --purple: #6A1B9A;
+      --text: #212121;
+      --muted: #616161;
+      --line: #D7DEE8;
+      --bg: #F6F8FB;
+      --card: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(13,71,161,0.09), transparent 26%),
+        radial-gradient(circle at bottom left, rgba(183,28,28,0.08), transparent 22%),
+        var(--bg);
+    }
+
+    .page {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--blue);
+      font-weight: bold;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      background: transparent;
+      color: #455A64;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: var(--blue);
+      color: #FFFFFF;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #37474F 0%, #455A64 50%, #607D8B 100%);
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 34px 34px 28px;
+      box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 40px;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.5;
+      color: #ECEFF1;
+    }
+
+    .hero-meta {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: bold;
+      background: rgba(255,255,255,0.14);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .summary {
+      margin-top: 22px;
+      background: #FFFFFF;
+      border-left: 6px solid var(--orange);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 18px;
+      line-height: 1.55;
+      box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      margin: 34px 0 14px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 30px;
+      color: var(--red);
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+
+    .guide-card,
+    .entry,
+    .update-block {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+    }
+
+    .guide-card {
+      padding: 18px 20px;
+    }
+
+    .guide-card h3 {
+      margin: 0 0 8px;
+      font-size: 21px;
+      color: var(--blue);
+    }
+
+    .guide-card p,
+    .guide-card li {
+      font-size: 16px;
+      line-height: 1.5;
+      color: #37474F;
+    }
+
+    .guide-card ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    .entry {
+      padding: 22px 24px 24px;
+      margin-bottom: 20px;
+    }
+
+    .entry-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .entry h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+      color: var(--blue);
+    }
+
+    .entry-date {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #FFFFFF;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .entry-lead {
+      margin: 0 0 18px;
+      font-size: 17px;
+      line-height: 1.55;
+      color: #455A64;
+    }
+
+    .file-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 18px;
+    }
+
+    .file-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      color: var(--blue);
+      background: #E3F2FD;
+      border: 1px solid #BBDEFB;
+    }
+
+    .update-block {
+      padding: 18px 20px 18px;
+      margin-bottom: 14px;
+    }
+
+    .update-block h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .delta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin: 12px 0 14px;
+    }
+
+    .delta-box {
+      border-radius: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+    }
+
+    .delta-old {
+      background: #FFF3E0;
+      border-left: 5px solid var(--orange);
+    }
+
+    .delta-new {
+      background: #E8F5E9;
+      border-left: 5px solid var(--green);
+    }
+
+    .delta-box h4 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .delta-old h4 { color: var(--orange); }
+    .delta-new h4 { color: var(--green); }
+
+    .delta-box p,
+    .delta-box li,
+    .update-block p,
+    .update-block li {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.55;
+      color: #37474F;
+    }
+
+    .delta-box p + p,
+    .update-block p + p {
+      margin-top: 8px;
+    }
+
+    .update-block ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    .why-box {
+      margin-top: 12px;
+      background: #F5F5F5;
+      border-left: 5px solid var(--purple);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 15px;
+      line-height: 1.55;
+      color: #37474F;
+    }
+
+    .source-note {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: 28px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: #ECEFF1;
+      color: #546E7A;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    code {
+      font-family: 'Consolas', 'Courier New', monospace;
+      background: rgba(0,0,0,0.04);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 0.92em;
+    }
+
+    [data-lang] { display: none; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] div[data-lang="ja"],
+    html[data-language="en"] div[data-lang="en"] { display: block; }
+    html[data-language="ja"] li[data-lang="ja"],
+    html[data-language="en"] li[data-lang="en"] { display: list-item; }
+
+    @media (max-width: 860px) {
+      .page { padding: 24px 16px 40px; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .hero h1 { font-size: 30px; }
+      .entry-head { flex-direction: column; }
+      .entry-date { align-self: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar">
+      <a class="home-link" href="index.html">← <span data-lang="ja">トップへ戻る</span><span data-lang="en">Back to index</span></a>
+      <div class="lang-toggle" aria-label="Language switch">
+        <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+        <button id="btn-en" class="lang-btn" type="button">EN</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1 data-lang="ja">Page Update History</h1>
+      <h1 data-lang="en">Page Update History</h1>
+      <p data-lang="ja">このページは、公開サイト側で何をどう更新したかを、<strong>旧記述 → 新記述 → 根拠 → 影響ページ</strong>の順で残すための監査ログです。</p>
+      <p data-lang="en">This page is an audit log for public-site changes, recorded in the order <strong>old wording → new wording → rationale → affected pages</strong>.</p>
+      <div class="hero-meta">
+        <span class="badge">vega-hbmx-pages</span>
+        <span class="badge">Public update audit log</span>
+        <span class="badge">Updated: 2026-03-15</span>
+      </div>
+    </section>
+
+    <div class="summary">
+      <span data-lang="ja">研究ノート本体は日々進む一方で、公開ページは「何をどの表現で外に出したか」を後から辿れる必要があります。このログでは、単なる changelog ではなく、<strong>古い説明が何で、何に置き換えたのか</strong>を明示します。</span>
+      <span data-lang="en">The lab notebook evolves quickly, while the public pages need a traceable record of <em>what was exposed and how it was phrased</em>. This log is more than a changelog: it explicitly records <strong>what the old public wording was and what replaced it</strong>.</span>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">このログの読み方</h2>
+    <h2 class="section-title" data-lang="en">How to read this log</h2>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h3 data-lang="ja">1. 旧記述</h3>
+        <h3 data-lang="en">1. Old public state</h3>
+        <p data-lang="ja">更新前にページ上でどう説明していたか。代表的な文面や、止まっていた時点を短く抜粋します。</p>
+        <p data-lang="en">How the public page described the point before the update. Representative wording or the frozen state is excerpted briefly.</p>
+      </div>
+      <div class="guide-card">
+        <h3 data-lang="ja">2. 新記述</h3>
+        <h3 data-lang="en">2. New public state</h3>
+        <p data-lang="ja">更新後に何へ差し替えたか。新しい知見に沿う表現へ変わった要点を記録します。</p>
+        <p data-lang="en">What replaced it after the update. The key wording changes are logged in the form actually reflected in public pages.</p>
+      </div>
+      <div class="guide-card">
+        <h3 data-lang="ja">3. 根拠</h3>
+        <h3 data-lang="en">3. Rationale</h3>
+        <p data-lang="ja">内部ノートや実機ログのどの知見を受けて修正したかを添えます。公開表現の出所を見失わないためです。</p>
+        <p data-lang="en">The underlying notebook/log evidence is listed so the public wording can always be traced back to its source.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">更新ログ</h2>
+    <h2 class="section-title" data-lang="en">Update log</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h2 data-lang="ja">ページ更新ログページを新設</h2>
+        <h2 data-lang="en">Created a dedicated page-update log</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">公開サイト全体で「何をどう書き換えたか」を共有しやすくするため、専用の監査ログページを追加した。</p>
+      <p class="entry-lead" data-lang="en">A dedicated audit-log page was added so public-site wording changes can be shared and traced more clearly.</p>
+      <div class="file-list">
+        <span class="file-tag">page-history.html</span>
+        <span class="file-tag">index.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3 data-lang="ja">旧状態と新状態</h3>
+        <h3 data-lang="en">Old state vs new state</h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧状態</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">公開サイト内に「ページ更新そのもの」を時系列で追う場所がなかった。トップからは各資料へ飛べるが、どの記述がいつ差し替わったかは追いづらかった。</p>
+            <p data-lang="en">The site had no dedicated place to track public-page updates themselves. The index linked to the pages, but wording changes over time were hard to follow.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新状態</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>page-history.html</code> を追加し、<strong>旧記述 / 新記述 / 根拠 / 影響ページ</strong>を1エントリ単位で残す方式にした。</p>
+            <p data-lang="en"><code>page-history.html</code> was added as a per-entry log that records <strong>old wording / new wording / rationale / affected pages</strong>.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>理由:</strong> 研究ノートの更新速度に対して、公開ページ側の変更理由も透明に残したかったため。</span>
+          <span data-lang="en"><strong>Why:</strong> The notebook evolves quickly, and the reasoning behind public-facing changes also needs to remain transparent.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h2 data-lang="ja">3月14日知見を公開ページへ同期</h2>
+        <h2 data-lang="en">Synced 2026-03-14 findings into the public pages</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">内部ノート <code>vega-rocm.md</code>・<code>facts.md</code>・<code>work_logs.md</code> の 2026-03-14 更新を受けて、公開側の技術ページに残っていた古い説明を差し替えた。</p>
+      <p class="entry-lead" data-lang="en">After the 2026-03-14 updates in <code>vega-rocm.md</code>, <code>facts.md</code>, and <code>work_logs.md</code>, stale wording in the public technical pages was revised.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">experiment-history.html</span>
+        <span class="file-tag">hypothesis.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">MLIR iGEMM 強制実行は「<code>MIIR_INVALID_PARAM</code> で落ちる」という説明が中心で、3/14 の追試で見えた <code>Perf Db: record not found</code> → <code>boost::optional::get()</code> までは未反映だった。</p>
+            <p data-lang="en">Forced MLIR iGEMM was mainly described as failing with <code>MIIR_INVALID_PARAM</code>, without reflecting the 2026-03-14 follow-up that exposed <code>Perf Db: record not found</code> → <code>boost::optional::get()</code>.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">「初期追試では <code>MIIR_INVALID_PARAM</code>、3/14 追試では <code>CompileSolution</code> → <code>GetInvoker</code> → Perf DB 不在 → assertion」という形で、強制実行が <code>IsApplicable()</code> を越えた先の failure boundary まで見せることを明記した。</p>
+            <p data-lang="en">The page now states both observed downstream failures: earlier <code>MIIR_INVALID_PARAM</code>, and the 2026-03-14 path reaching <code>CompileSolution</code> → <code>GetInvoker</code> → missing Perf DB → assertion after bypassing <code>IsApplicable()</code>.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> <code>vega-rocm.md</code> §2.2.2 / §2.2.3 と 2026-03-14 実機追試。</span>
+          <span data-lang="en"><strong>Rationale:</strong> <code>vega-rocm.md</code> §2.2.2 / §2.2.3 and the 2026-03-14 runtime follow-up.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>experiment-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">時系列は Step 10（2026-03-13 の INT8 深掘り）で止まっていた。CIFS 問題やローカル Debug MIOpen ビルド成功は公開タイムラインに存在しなかった。</p>
+            <p data-lang="en">The timeline stopped at Step 10 (the 2026-03-13 INT8 deep probe). The CIFS bottleneck and successful local Debug MIOpen rebuild were not yet in the public timeline.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">Step 11 を追加し、「CIFS D-state → WD-Black NVMe へ移動 → configure 7.5-9.6秒 → Debug MIOpen build 成功 → 強制 MLIR 追試で Perf DB 不在を確認」という流れを公開側にも固定した。</p>
+            <p data-lang="en">A new Step 11 was added to document the chain: CIFS D-state bottleneck → move to WD-Black NVMe → 7.5-9.6 s configure → successful Debug MIOpen build → forced MLIR follow-up exposing missing Perf DB records.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> <code>work_logs.md</code> 2026-03-14 の build/runtime 記録。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The 2026-03-14 build/runtime entries in <code>work_logs.md</code>.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>hypothesis.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">MLIR 除外の背景について、「<code>MIIR_INVALID_PARAM</code> が <code>miirLowerTuningParams</code> で起きるので LLVM backend 由来の可能性が高い」とやや単線的に読める記述だった。</p>
+            <p data-lang="en">The page leaned toward a single-cause reading: because <code>MIIR_INVALID_PARAM</code> appeared at <code>miirLowerTuningParams</code>, the issue was likely at the LLVM backend level.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">「private issue は LLVM 側事情を示唆するが、3/14 追試では tuning / Perf DB 欠落も露出したため、公開情報だけで原因を単一レイヤに還元できない」と修正した。</p>
+            <p data-lang="en">This was revised to: the private issue still suggests an LLVM-side reason for the original exclusion, but the 2026-03-14 follow-up also exposed tuning / Perf DB absence, so the public evidence does not justify reducing the problem to a single layer.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> <code>vega-rocm.md</code> §2.2.3 の forced MLIR failure mechanism。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The forced-MLIR failure mechanism documented in <code>vega-rocm.md</code> §2.2.3.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja"><code>solver-trace.html</code> は「2026-03-13 追加」、<code>experiment-history.html</code> は「Steps 1-10」と案内していた。</p>
+            <p data-lang="en"><code>solver-trace.html</code> was described as "added on 2026-03-13," and <code>experiment-history.html</code> as covering "Steps 1-10."</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>solver-trace.html</code> を「2026-03-14 更新」とし、二重排除構造と Perf DB / optional 系 failure を追記。<code>experiment-history.html</code> は Steps 1-11 に更新した。</p>
+            <p data-lang="en"><code>solver-trace.html</code> is now marked as "updated on 2026-03-14" with the dual-guard structure and Perf DB / optional failure path noted. <code>experiment-history.html</code> is updated to Steps 1-11.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <div class="footer">
+      <span data-lang="ja"><strong>運用メモ:</strong> このページは「公開ページ側の監査ログ」です。研究の正本は内部ノート側にあり、公開表現はそこから必要な範囲だけを抽出・翻訳して更新します。</span>
+      <span data-lang="en"><strong>Operational note:</strong> This page is the audit log for the public-facing site. The lab notebook remains the internal source of truth, and public wording is updated by selectively translating and extracting from that notebook.</span>
+    </div>
+  </div>
+
+  <script>
+    const html = document.documentElement;
+    const btnJa = document.getElementById('btn-ja');
+    const btnEn = document.getElementById('btn-en');
+
+    function setLanguage(lang) {
+      html.setAttribute('data-language', lang);
+      html.setAttribute('lang', lang);
+      btnJa.classList.toggle('active', lang === 'ja');
+      btnEn.classList.toggle('active', lang === 'en');
+      localStorage.setItem('page-history-lang', lang);
+    }
+
+    btnJa.addEventListener('click', () => setLanguage('ja'));
+    btnEn.addEventListener('click', () => setLanguage('en'));
+
+    setLanguage(localStorage.getItem('page-history-lang') === 'en' ? 'en' : 'ja');
+  </script>
+</body>
+</html>
