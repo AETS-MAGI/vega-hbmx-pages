@@ -312,7 +312,7 @@
 				<span class="badge badge-gpu">AMD Radeon RX Vega64 / gfx900:xnack-</span>
 				<span class="badge badge-rocm">ROCm 7.2 · MIOpen 3.5.1</span>
 				<span class="badge badge-src">Source: ROCm_AMD_Repo / rocm-libraries/</span>
-				<span class="badge badge-ver">Updated: 2026-03-13</span>
+				<span class="badge badge-ver">Updated: 2026-03-14</span>
 			</div>
 		</div>
 		<div class="lang-toggle" aria-label="Language switch">
@@ -400,12 +400,12 @@
 				</tbody>
 			</table>
 			<div class="hbox orange">
-				<span data-lang="en"><strong>Note on the cited issue:</strong> <code>llvm-project-private/issues/389</code> refers to AMD's internal (private) LLVM repository — not the public MIOpen #389 or public llvm-project #389. The root cause is likely a constraint in the MLIR compiler backend for gfx900, but the details are not publicly accessible.</span>
-				<span data-lang="ja"><strong>参照 issue について:</strong> <code>llvm-project-private/issues/389</code> は AMD 社内の非公開 LLVM リポジトリ — 公開 MIOpen #389 や公開 llvm-project #389 とは別物。根本原因は gfx900 向け MLIR コンパイラバックエンドの制約と推測されるが、詳細は外部から確認不可。</span>
+				<span data-lang="en"><strong>Note on the cited issue:</strong> <code>llvm-project-private/issues/389</code> refers to AMD's internal (private) LLVM repository — not the public MIOpen #389 or public llvm-project #389. The issue reference suggests an internal LLVM-side reason for the original exclusion, but the details are not publicly accessible. A 2026-03-14 runtime follow-up also exposed missing gfx900 tuning records after forced guard bypass, so the public evidence does <em>not</em> support collapsing the whole problem to a single visible cause.</span>
+				<span data-lang="ja"><strong>参照 issue について:</strong> <code>llvm-project-private/issues/389</code> は AMD 社内の非公開 LLVM リポジトリ — 公開 MIOpen #389 や公開 llvm-project #389 とは別物。この参照は「元の除外理由のどこかに LLVM 側事情があった」ことを示唆するが、詳細は外部から確認できない。さらに 2026-03-14 の追試では、強制実行後に gfx900 向け tuning record 不在も露出しており、公開情報だけで原因を単一レイヤに還元することはできない。</span>
 			</div>
 			<div class="hbox red">
-				<span data-lang="en"><strong>Runtime confirmation:</strong> Forced execution via <code>miopen-driver -S ConvMlirIgemmFwd</code> on Vega64 reached the compile stage but failed with <code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code>. The static exclusion is the correct guard; forced execution falls further down the error path.</span>
-				<span data-lang="ja"><strong>実機確認:</strong> Vega64 で <code>miopen-driver -S ConvMlirIgemmFwd</code> を強制実行するとコンパイル段階まで進むが、<code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code> で失敗する。静的除外が正しいガードであり、強制実行によってエラー経路のさらに下まで落ちることが直接確認できた。</span>
+				<span data-lang="en"><strong>Runtime confirmation:</strong> Forced execution via <code>miopen-driver -S ConvMlirIgemmFwd</code> on Vega64 confirms that the static guard is meaningful. Earlier runs hit <code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code>. A 2026-03-14 follow-up on both INT8 and FP32 reached <code>CompileSolution</code> → <code>GetInvoker</code> and then failed with <code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assertion. In other words, <code>-S</code> can bypass <code>IsApplicable()</code>, but downstream MLIR/tuning support for gfx900 remains incomplete.</span>
+				<span data-lang="ja"><strong>実機確認:</strong> Vega64 で <code>miopen-driver -S ConvMlirIgemmFwd</code> を強制実行すると、静的ガードが有意味であることが逆に確認できる。初期の追試では <code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code>。さらに 2026-03-14 の追試では INT8/FP32 の両方で <code>CompileSolution</code> → <code>GetInvoker</code> まで進んだ後、<code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assertion で停止した。つまり <code>-S</code> は <code>IsApplicable()</code> をバイパスできるが、その先の MLIR/tuning 支援は gfx900 で未完成のままである。</span>
 			</div>
 		</article>
 
@@ -656,9 +656,10 @@ log(<span class="hi-orange">"No Tensile solution found for XF32, fall back to FP
 					<tr><td>FP32 3×3 s1 group=2 NCHW</td><td>FP32</td><td><code>ConvBinWinogradRxSf2x3</code></td><td class="td-ok">✅ runtime_verified</td></tr>
 					<tr><td>FP16 3×3 s1 NCHW</td><td>FP16</td><td><code>ConvOclDirectFwd</code></td><td class="td-ok">✅ runtime_verified</td></tr>
 					<tr><td>BFP16 3×3 s1 NCHW</td><td>BFP16</td><td><code>GemmFwdRest</code></td><td class="td-ok">✅ runtime_verified</td></tr>
+					<tr><td>Local Debug MIOpen (MLIR Off)</td><td>FP32</td><td>build + forward conv OK</td><td class="td-ok">✅ build_verified / runtime_verified</td></tr>
 					<tr><td>INT8 (all 9+ shapes/layouts)</td><td>INT8</td><td><code>ConvDirectNaiveConvFwd</code> only</td><td class="td-warn">⚠ naive only — non-naive path not found</td></tr>
 					<tr><td>INT8 naive kernel disassembly</td><td>INT8</td><td>no <code>v_dot4*</code> / <code>sdot4</code></td><td class="td-ok">✅ dot4-absent fallback confirmed</td></tr>
-					<tr><td>MLIR iGEMM (forced)</td><td>INT8</td><td><code>MIIR_INVALID_PARAM</code> rc=0x7</td><td class="td-err">❌ fail</td></tr>
+					<tr><td>MLIR iGEMM (forced)</td><td>INT8 / FP32</td><td><code>MIIR_INVALID_PARAM</code> or <code>Perf Db: record not found</code> → <code>boost::optional::get()</code></td><td class="td-err">❌ downstream failure after guard bypass</td></tr>
 					<tr><td>ASM v4r1 1×1 (forced, INT8)</td><td>INT8</td><td>GPU memory access fault</td><td class="td-err">❌ fault</td></tr>
 					<tr><td>CK DLOPS (forced, 15 cases)</td><td>INT8</td><td><em>not applicable</em> rc=0x3</td><td class="td-err">❌ not applicable</td></tr>
 					<tr><td>HipImplicitGemm Xdlops (forced)</td><td>INT8/FP16/BFP16</td><td>assertion abort / compile fail</td><td class="td-err">❌ fail (mfma not present)</td></tr>
@@ -679,6 +680,7 @@ log(<span class="hi-orange">"No Tensile solution found for XF32, fall back to FP
 		<strong>Maintain (build):</strong> gfx900 is present in rocBLAS CMake target lists through at least ROCm 7.1. The Tensile shared library is built with gfx900 support by default.<br><br>
 		<strong>Manage (selection):</strong> MIOpen's IsApplicable filter system allows old-generation solvers to survive in the global registry. On gfx900, MLIR iGEMM and all XDLops-family solvers fall out, while Winograd-family, ASM 1×1, implicit GEMM v4r1 (HIP/ASM), and legacy direct ASM solvers remain available. Solver choice is also dtype-sensitive (FP32 / FP16 / BFP16 each route to different families).<br><br>
 		<strong>Supplement (fallback):</strong> rocBLAS carries multi-stage runtime fallbacks. CK carries a dot4-absent sequential accumulation path. Tensile provides per-ISA capability gating and gfx900-specific lazy-load catalogs.<br><br>
+		<strong>2026-03-14 follow-up:</strong> A local Debug MIOpen build succeeded once the source tree was moved off CIFS to NVMe-local storage and the incompatible MLIR/CK pieces were disabled for the rebuild. Forced <code>-S ConvMlirIgemmFwd</code> can bypass the normal applicability gate, but then falls into incomplete downstream support (<code>MIIR_INVALID_PARAM</code> and/or missing gfx900 Perf DB records).<br><br>
 		<strong>Confirmed gap:</strong> No natural INT8 solver selection beyond <code>ConvDirectNaiveConvFwd</code> was observed. The naive kernel operates via element-wise multiply-accumulate without dot-product instructions — functional but not peak-performance.
 		</span>
 		<span data-lang="ja">
@@ -686,6 +688,7 @@ log(<span class="hi-orange">"No Tensile solution found for XF32, fall back to FP
 		<strong>維持（build）:</strong> gfx900 は少なくとも ROCm 7.1 まで rocBLAS CMake ターゲットリストに存在する。Tensile 共有ライブラリもデフォルトで gfx900 サポートを含む。<br><br>
 		<strong>管理（selection）:</strong> MIOpen の IsApplicable フィルタ方式は旧世代 solver がグローバルレジストリに残ることを許す。gfx900 では MLIR iGEMM と全 XDLops 系 solver が落ちる一方、Winograd 系・ASM 1×1・implicit GEMM v4r1（HIP/ASM）・旧式直接 ASM solver が残る。dtype によっても solver 選択が分岐する（FP32・FP16・BFP16 でそれぞれ異なるファミリーへルーティング）。<br><br>
 		<strong>補充（fallback）:</strong> rocBLAS は多段実行時フォールバックを持つ。CK は dot4 非対応時の逐次積和経路を保持。Tensile は ISA 別能力ゲートと gfx900 専用 lazy-load カタログを提供。<br><br>
+		<strong>2026-03-14 追補:</strong> ソースを CIFS から NVMe ローカルへ移し、再ビルド時に非互換な MLIR/CK 要素を切り離すことで、ローカル Debug MIOpen はビルド・実行に成功した。一方で <code>-S ConvMlirIgemmFwd</code> 強制は通常の適用ガードをバイパスできても、その先で <code>MIIR_INVALID_PARAM</code> や gfx900 向け Perf DB 不在に突き当たる。<br><br>
 		<strong>確認済みギャップ:</strong> INT8 での自然 solver 選択は <code>ConvDirectNaiveConvFwd</code> のみ観測された。naive カーネルは dot 系命令を使わず要素ごとの乗算・加算で動作 — 機能的には成立するが最大性能ではない。
 		</span>
 	</div>

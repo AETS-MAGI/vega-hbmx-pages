@@ -49,7 +49,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - 「`num_gpu` は GPU 枚数ではなく offload 層数である」という点を、ソースコードから順に確認できます。
 - 発表中の質疑や、実装上の意味を厳密に確認したい場合に向いています。
 
-### `solver-trace.html` ★ 2026-03-13 追加
+### `solver-trace.html` ★ 2026-03-14 更新
 - MIOpen・rocBLAS・CK・Tensile における gfx900（Vega10）計算経路を、ソース行番号と実機ログで対応づけた技術参照資料です。
 - 静的コード監査（code_verified）と実機 Vega64 での動的検証（runtime_verified）の両方を収録。
 - 主な内容:
@@ -61,6 +61,8 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
   - Tensile AsmCaps での (9,0,0) の dot4 全 False
   - rocBLAS getLazyLoadingArch の gfx900 明示マップ + 多段フォールバック
   - 実機逆アセンブルで INT8 naive カーネルに dot4 命令が存在しないことを確認
+  - `IsMlirSupportedHardware()` と `ConvMlirIgemm*::IsApplicable()` の二重構造
+  - 強制 MLIR 実行で露出した `Perf Db: record not found` / `boost::optional::get()` 系の下流失敗
   - 「維持（build）・管理（selection）・補充（fallback）」3 層構造の説明
 
 ## 収録ファイル一覧
@@ -76,7 +78,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `presentation_advanced_en-jp.html`
   - Main bilingual slide deck (English/Japanese toggle).
 - `experiment-history.html`
-  - Timeline-style summary of the investigation flow (Steps 1–10 as of 2026-03-13).
+  - Timeline-style summary of the investigation flow (Steps 1–11 as of 2026-03-14).
 - `code-tracing.html`
   - Standalone supplementary deck for the exact meaning of `num_gpu`.
 - `solver-trace.html`
@@ -101,7 +103,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Start with `index.html` for navigation.
 - Open `general-audience.html` for the vision and philosophy — why this work matters.
 - Use `media.html` for the audio commentary and poster PDF.
-- Read `experiment-history.html` for the investigation timeline (Steps 1–10).
+- Read `experiment-history.html` for the investigation timeline (Steps 1–11).
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
 - Use `code-tracing.html` for the most technical evidence on `num_gpu` semantics.
 - Use `solver-trace.html` for gfx900 computation path tracing through the ROCm library stack (code + runtime verified).

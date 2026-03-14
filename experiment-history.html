@@ -981,10 +981,86 @@ llvm-objdump -d --triple=amdgcn ...
 					<li>MLIR iGEMM はコンパイル段階まで進むが、パラメータ降格フェーズで <code>MIIR_INVALID_PARAM</code> で落ちる。静的解析の <code>return false</code> が正しい保護ガードであり、強制実行するとさらに下まで落ちることが直接確認できた。</li>
 				</ul>
 				</span>
+				</div>
+			</article>
+
+		<!-- ── STEP 11 ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">11) 2026-03-14 follow-up — CIFS bottleneck resolved, local Debug MIOpen build succeeded <span class="step-date">2026-03-14</span></span>
+				<span data-lang="ja">11) 2026-03-14 追試 — CIFS ボトルネック解消、ローカル Debug MIOpen ビルド成功 <span class="step-date">2026-03-14</span></span>
+			</h2>
+			<ul>
+				<li>
+					<span class="do" data-lang="en">Did:</span><span class="do" data-lang="ja">実施:</span>
+					<span data-lang="en">Diagnosed the previous 12h+ CMake stall as CIFS I/O wait, recloned the MIOpen source tree to WD-Black NVMe, then rebuilt a local Debug MIOpen with <code>/opt/rocm/llvm/bin/clang++</code>, <code>-DMIOPEN_USE_MLIR=Off</code>, <code>-DMIOPEN_USE_COMPOSABLEKERNEL=Off</code>, and a small <code>half</code> compatibility patch.</span>
+					<span data-lang="ja">前日までの 12 時間超 CMake 停滞を CIFS I/O wait と診断し、MIOpen ソースを WD-Black NVMe に clone し直したうえで、<code>/opt/rocm/llvm/bin/clang++</code>、<code>-DMIOPEN_USE_MLIR=Off</code>、<code>-DMIOPEN_USE_COMPOSABLEKERNEL=Off</code>、および小さな <code>half</code> 互換パッチでローカル Debug MIOpen を再ビルドした。</span>
+				</li>
+			</ul>
+
+			<div class="stat-grid">
+				<div class="stat-box red">
+					<div class="stat-label">Before</div>
+					<div class="stat-val">12h+</div>
+					<div class="stat-sub">CMake configure stuck on CIFS</div>
+				</div>
+				<div class="stat-box green">
+					<div class="stat-label">After move</div>
+					<div class="stat-val">7.5-9.6s</div>
+					<div class="stat-sub">Configure on NVMe-local source</div>
+				</div>
+				<div class="stat-box green">
+					<div class="stat-label">Build</div>
+					<div class="stat-val">OK</div>
+					<div class="stat-sub">ninja MIOpen / MIOpenDriver / install</div>
+				</div>
+				<div class="stat-box green">
+					<div class="stat-label">Smoke test</div>
+					<div class="stat-val">FP32 OK</div>
+					<div class="stat-sub">Local Debug MIOpen forward conv succeeded</div>
+				</div>
+			</div>
+
+			<div class="log-quote"><span class="hi-gray"># Root cause isolation</span>
+cmake (previous day)  →  <span class="hi-red">State: D</span>  <span class="hi-gray">(uninterruptible sleep on CIFS I/O)</span>
+
+<span class="hi-gray"># After recloning to WD-Black NVMe</span>
+cmake -G Ninja ...    →  <span class="hi-green">configure done in 7.5-9.6 sec</span>
+ninja MIOpen          →  <span class="hi-green">OK</span>
+ninja MIOpenDriver    →  <span class="hi-green">OK</span>
+ninja install         →  <span class="hi-green">OK</span></div>
+
+			<div class="hbox orange">
+				<span data-lang="en"><strong>Build blockers removed:</strong> CIFS source I/O was the main reason the earlier build looked "mysteriously impossible." Additional fixes were still needed: system GCC could not handle <code>--offload-arch=gfx900</code>, CK emitted <code>v_fmac_f32</code> (gfx906+), and <code>half 2.2.x</code> required a compatibility patch.</span>
+				<span data-lang="ja"><strong>外したビルド障害:</strong> 以前の「なぜか絶対に通らない」感触の主因は CIFS 上のソース I/O だった。加えて、システム GCC は <code>--offload-arch=gfx900</code> を扱えず、CK は <code>v_fmac_f32</code>（gfx906+）を吐き、<code>half 2.2.x</code> には互換パッチが必要だった。</span>
+			</div>
+
+			<div class="hbox green">
+				<span data-lang="en"><strong>Result:</strong> A local Debug MIOpen build for gfx900 is feasible when storage placement and toolchain constraints are handled correctly. This is important because it shifts the diagnosis from "Vega cannot even be rebuilt" to "specific optional paths (MLIR / CK) are the problematic layer."</span>
+				<span data-lang="ja"><strong>結果:</strong> ストレージ配置とツールチェーン制約を正しく処理すれば、gfx900 向けローカル Debug MIOpen は十分ビルド可能だと分かった。これは「Vega はそもそも再ビルド不能」ではなく、「問題は特定の optional path（MLIR / CK）に集中している」へ診断を前進させる。</span>
+			</div>
+
+			<ul>
+				<li>
+					<span class="do" data-lang="en">Follow-up test:</span><span class="do" data-lang="ja">追試:</span>
+					<span data-lang="en">Re-ran forced <code>ConvMlirIgemmFwd</code> on the system MIOpen for both INT8 and FP32 to clarify what happens after bypassing the normal applicability guard.</span>
+					<span data-lang="ja">通常の適用ガードをバイパスした後に何が起きるかを明確にするため、システム MIOpen 上で <code>ConvMlirIgemmFwd</code> 強制実行を INT8 / FP32 の両方で再試行した。</span>
+				</li>
+			</ul>
+
+			<div class="log-quote"><span class="hi-gray"># Forced MLIR follow-up (system MIOpen, 2026-03-14)</span>
+CompileSolution: <span class="hi-blue">ConvMlirIgemmFwd</span>
+GetInvoker:      <span class="hi-blue">ConvMlirIgemmFwd</span>
+Perf Db:         <span class="hi-yellow">record not found</span>
+MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Assertion ... terminated</div>
+
+			<div class="hbox red">
+				<span data-lang="en"><strong>Interpretation:</strong> <code>-S</code> can bypass <code>IsApplicable()</code> and push MLIR iGEMM into deeper stages. Once there, gfx900 still lacks complete downstream support: earlier runs failed at <code>miirLowerTuningParams</code>, and the 2026-03-14 follow-up exposed a second failure boundary at missing Perf DB tuning records. The failure is therefore more specific than a vague top-level "MLIR mystery."</span>
+				<span data-lang="ja"><strong>解釈:</strong> <code>-S</code> は <code>IsApplicable()</code> をバイパスして MLIR iGEMM をさらに深い段階へ押し込める。しかしその先では gfx900 向け下流支援がまだ欠けている。初期追試では <code>miirLowerTuningParams</code> で失敗し、2026-03-14 の追試では Perf DB の tuning record 不在という別の失敗境界も見えた。つまり失敗像は、漠然とした「MLIR がダメ」よりずっと具体的になった。</span>
 			</div>
 		</article>
 
-	</section>
+		</section>
 
 	<!-- ── Footer ── -->
 	<div class="footer-note">
@@ -997,6 +1073,7 @@ llvm-objdump -d --triple=amdgcn ...
 			(3) Vulkan succeeded only at <code>num_gpu=0</code> for <code>qwen3.5:2b Q8_0</code>; <code>phi4-mini</code> survived GPU offload —
 			<em>backend- and model-dependent stability</em>.
 			(4) Static code audit and real-hardware solver tracing confirm that a three-layer structure (maintain / manage / supplement) keeps gfx900 computation paths alive through MIOpen, rocBLAS, and Tensile — with FP32 paths runtime-verified and INT8 paths confirmed to operate via element-wise fallback arithmetic rather than dot-product instructions.
+			(5) The 2026-03-14 follow-up further showed that the biggest rebuild blocker was CIFS storage placement, not a blanket impossibility of building for Vega, and that forced MLIR can fall into missing-tuning states after bypassing the normal applicability guard.
 		</span>
 		<span data-lang="ja">
 			<strong>4 段階評価（収集した証拠に基づく）:</strong>
@@ -1007,6 +1084,7 @@ llvm-objdump -d --triple=amdgcn ...
 			(3) Vulkan は <code>qwen3.5:2b Q8_0</code> では <code>num_gpu=0</code> のみ成功; <code>phi4-mini</code> は GPU offload でも通過 —
 			<em>バックエンド・モデル依存の安定性</em>。
 			(4) 静的コード監査と実機 solver トレースにより、「維持・管理・補充」の 3 層構造が MIOpen・rocBLAS・Tensile にわたって gfx900 計算経路を存続させていることをコードと実機の両面で確認 — FP32 経路は runtime_verified、INT8 経路は dot 系命令なしの逐次積和フォールバックで動作することが逆アセンブルで確認済み。
+			(5) 2026-03-14 の追試により、再ビルド最大の障害は Vega 一般論ではなく CIFS 上のソース配置だったこと、また MLIR 強制実行は通常ガードをバイパスした先で tuning 不在に落ちうることが分かった。
 		</span>
 	</div>
 

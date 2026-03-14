@@ -386,7 +386,7 @@
 			<div class="hero-meta">
 				<span class="badge">AMD Radeon RX Vega 64 / gfx900</span>
 				<span class="badge">ROCm Stack (MIOpen · rocBLAS · Tensile · CK)</span>
-				<span class="badge">2026-03-13</span>
+				<span class="badge">2026-03-14</span>
 			</div>
 		</section>
 
@@ -491,7 +491,7 @@
 				<thead><tr><th>類型</th><th>症状</th><th>例</th></tr></thead>
 				<tbody>
 					<tr><td>Applicability 棄却</td><td><code>not applicable</code>, <code>rc=0x3</code></td><td><code>ConvCkIgemmFwdV6r1DlopsNchw</code> (全ケース)</td></tr>
-					<tr><td>Build 失敗</td><td><code>MIIR_INVALID_PARAM</code> / <code>Code object build failed</code>, <code>rc=0x7</code></td><td><code>ConvMlirIgemmFwd</code>, <code>ConvHipImplicitGemmForwardV4R5Xdlops</code></td></tr>
+					<tr><td>Build / tuning 失敗</td><td><code>MIIR_INVALID_PARAM</code> / <code>Perf Db: record not found</code> / <code>Code object build failed</code></td><td><code>ConvMlirIgemmFwd</code>, <code>ConvHipImplicitGemmForwardV4R5Xdlops</code></td></tr>
 					<tr><td>Runtime abort</td><td><code>std::vector::operator[]</code> assertion, <code>EXIT=134</code></td><td><code>ConvHipImplicitGemmFwdXdlops</code></td></tr>
 				</tbody>
 			</table>
@@ -501,7 +501,7 @@
 				<thead><tr><th>Mode</th><th>Symptom</th><th>Example</th></tr></thead>
 				<tbody>
 					<tr><td>Applicability reject</td><td><code>not applicable</code>, <code>rc=0x3</code></td><td><code>ConvCkIgemmFwdV6r1DlopsNchw</code> (all cases)</td></tr>
-					<tr><td>Build failure</td><td><code>MIIR_INVALID_PARAM</code> / <code>Code object build failed</code>, <code>rc=0x7</code></td><td><code>ConvMlirIgemmFwd</code>, <code>ConvHipImplicitGemmForwardV4R5Xdlops</code></td></tr>
+					<tr><td>Build / tuning failure</td><td><code>MIIR_INVALID_PARAM</code> / <code>Perf Db: record not found</code> / <code>Code object build failed</code></td><td><code>ConvMlirIgemmFwd</code>, <code>ConvHipImplicitGemmForwardV4R5Xdlops</code></td></tr>
 					<tr><td>Runtime abort</td><td><code>std::vector::operator[]</code> assertion, <code>EXIT=134</code></td><td><code>ConvHipImplicitGemmFwdXdlops</code></td></tr>
 				</tbody>
 			</table>
@@ -689,8 +689,8 @@
 				<span data-lang="en"><strong>Structural note:</strong> <code>IsMlirSupportedHardware()</code> lists gfx900 alongside gfx906/908/90a/942 as "supported hardware". Yet <code>ConvMlirIgemmFwd::IsApplicable()</code> individually excludes gfx900. This two-layer structure — declaring support while making architecture-specific exceptions — indicates coexistence of design-level inclusion and individual bug workarounds.</span>
 			</div>
 
-			<p data-lang="ja" style="font-size:15px;color:#546E7A;margin-top:10px">"Disable" の語感はバグ回避寄りだが、private issue の本文が非公開のため設計判断かバグ回避かの確定はできない。ただし <code>MIIR_INVALID_PARAM</code> が <code>miirLowerTuningParams</code> で発生することから、問題は LLVM バックエンド（AMDGPU codegen）レベルにある可能性が高い。</p>
-			<p data-lang="en" style="font-size:15px;color:#546E7A;margin-top:10px">The word "Disable" suggests a bug workaround, but the private issue body is inaccessible, so whether this was a design decision or bug avoidance cannot be confirmed. The <code>MIIR_INVALID_PARAM</code> error originating from <code>miirLowerTuningParams</code> suggests the problem lies at the LLVM backend (AMDGPU codegen) level.</p>
+			<p data-lang="ja" style="font-size:15px;color:#546E7A;margin-top:10px">"Disable" の語感はバグ回避寄りだが、private issue の本文が非公開のため設計判断かバグ回避かの確定はできない。さらに 2026-03-14 の強制実行追試では、<code>-S</code> により <code>IsApplicable()</code> をバイパスすると <code>CompileSolution</code> → <code>GetInvoker</code> まで進み、<code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assert に落ちることも確認された。したがって、現時点で確定しているのは「後段経路のどこかが未整備である」ことであり、単一原因を LLVM バックエンドだけに還元することはできない。</p>
+			<p data-lang="en" style="font-size:15px;color:#546E7A;margin-top:10px">The word "Disable" suggests a bug workaround, but the private issue body is inaccessible, so whether this was a design decision or bug avoidance cannot be confirmed. A 2026-03-14 forced-run follow-up also showed that once <code>-S</code> bypasses <code>IsApplicable()</code>, execution can reach <code>CompileSolution</code> → <code>GetInvoker</code> and then fail with <code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assertion. What is firmly established is therefore that some downstream path remains incomplete; the public evidence does not justify reducing everything to the LLVM backend alone.</p>
 		</div>
 
 		<div class="card">
@@ -701,6 +701,8 @@
 				<li data-lang="en"><strong>Hypothesis A refined:</strong> gfx900's presence in <code>IsMlirSupportedHardware</code> constitutes a design-level support declaration; solver-level skip is a separate-layer concern</li>
 				<li data-lang="ja"><strong>仮説 B を強化:</strong> MLIR 以外の経路（ASM / Winograd）は引き続き生存しており、capability-based な solver 選択が機能している</li>
 				<li data-lang="en"><strong>Hypothesis B strengthened:</strong> Non-MLIR paths (ASM / Winograd) remain live, confirming capability-based solver selection works</li>
+				<li data-lang="ja"><strong>仮説 A/B をさらに補強:</strong> solver レベルの除外と、その後段にある tuning / Perf DB 欠落は別レイヤの問題であり、「サポート」を多層に分けて読む必要がある</li>
+				<li data-lang="en"><strong>Hypotheses A/B further reinforced:</strong> solver-level exclusion and downstream tuning / Perf DB absence are separate layers, reinforcing the need to read "support" as a multi-layer concept</li>
 				<li data-lang="ja"><strong>仮説 C を部分確定:</strong> MLIR の gfx900 除外は <strong>AMD 社員が投入した修正</strong>であり、コミュニティパッチではない</li>
 				<li data-lang="en"><strong>Hypothesis C partially confirmed:</strong> The MLIR gfx900 exclusion was <strong>an AMD employee's commit</strong>, not a community patch</li>
 			</ul>
@@ -833,6 +835,7 @@
 					<li><code>ConvHipImplicitGemmForwardV4R5Xdlops</code> → xdlops kernel compile 失敗（<code>intrin_mfma_*</code> 不在）</li>
 				</ul>
 				<p>この経験から得られた教訓: <strong>DLOPS/XDLOPS 系は「候補名が存在する」ことと「当該 problem で成立する」ことが完全に分離している</strong>。solver family ごとに「到達点（applicability 判定の前後）」が異なるため、失敗モード分類（§2）の枠組みが生まれた。</p>
+				<p>さらに 2026-03-14 の追試では、<code>ConvMlirIgemmFwd</code> 強制実行が <code>CompileSolution</code> / <code>GetInvoker</code> まで進み、<code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assert に落ちることも確認した。つまり強制実行は通常ガードの外側にある未整備な downstream path を露出させる。</p>
 			</div>
 		</details>
 		<details data-lang="en">
@@ -847,6 +850,7 @@
 					<li><code>ConvHipImplicitGemmForwardV4R5Xdlops</code> → xdlops kernel compile failure (missing <code>intrin_mfma_*</code>)</li>
 				</ul>
 				<p>Key lesson: <strong>"Solver name exists" and "solver applies to a given problem" are completely separate</strong>. Each solver family fails at a different stage, leading to the failure mode taxonomy in §2.</p>
+				<p>A 2026-03-14 follow-up further showed that forced <code>ConvMlirIgemmFwd</code> can reach <code>CompileSolution</code> / <code>GetInvoker</code> and then die at <code>Perf Db: record not found</code> → <code>boost::optional::get()</code>. Forced execution therefore exposes unfinished downstream paths outside the normal guard.</p>
 			</div>
 		</details>
 
@@ -975,8 +979,8 @@
 		</div>
 
 		<div class="footer">
-			<span data-lang="ja">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-13 | <a href="index.html">&#8592; トップへ戻る</a></span>
-			<span data-lang="en">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-13 | <a href="index.html">&#8592; Back to index</a></span>
+			<span data-lang="ja">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-14 | <a href="index.html">&#8592; トップへ戻る</a></span>
+			<span data-lang="en">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-14 | <a href="index.html">&#8592; Back to index</a></span>
 		</div>
 	</div>
 
