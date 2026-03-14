@@ -570,39 +570,47 @@
 
 		<!-- Hypothesis C -->
 		<div class="card">
-			<h3 data-lang="ja">仮説 C: 保守の出所には複数の層がある <span class="conf conf-hypothesis">hypothesis (partial evidence)</span></h3>
-			<h3 data-lang="en">Hypothesis C: Maintenance provenance has multiple layers <span class="conf conf-hypothesis">hypothesis (partial evidence)</span></h3>
+			<h3 data-lang="ja">仮説 C: 保守主体は層ごとに異なる <span class="conf conf-hypothesis">hypothesis (partial evidence)</span></h3>
+			<h3 data-lang="en">Hypothesis C: Maintenance ownership differs by layer <span class="conf conf-hypothesis">hypothesis (partial evidence)</span></h3>
 
-			<p data-lang="ja">現状の見立て:</p>
-			<p data-lang="en">Current assessment:</p>
-			<ol>
-				<li data-lang="ja">AMD が主力サポートから外した</li>
-				<li data-lang="en">AMD has removed gfx900 from primary support</li>
-				<li data-lang="ja">しかし公式実装の互換・フォールバック設計がまだ残っている</li>
-				<li data-lang="en">But official compatibility/fallback designs remain in the codebase</li>
-				<li data-lang="ja">そのうえでコミュニティが発見・運用・一部保守を支えている可能性が高い</li>
-				<li data-lang="en">Community members likely contribute to discovery, operation, and partial maintenance</li>
-				<li data-lang="ja">ただし「その通路自体が主にコミュニティ実装で維持されている」とまでは証拠不足</li>
-				<li data-lang="en">However, there is insufficient evidence to claim routes are primarily community-maintained</li>
-			</ol>
+			<p data-lang="ja">ここで重要なのは、「AMD かコミュニティか」を一語で決めるより、<strong>投入主体・維持主体・運用主体・修正可能主体</strong>を分けることです。</p>
+			<p data-lang="en">The key is not to force a single answer such as “AMD” or “community,” but to separate <strong>insertion ownership, maintenance ownership, operational ownership, and repair-capable ownership</strong>.</p>
 
 			<div class="table-wrap" data-lang="ja">
 			<table>
-				<thead><tr><th>層</th><th>コミュニティが関与可能か</th></tr></thead>
+				<thead><tr><th>主体</th><th>問い</th></tr></thead>
 				<tbody>
-					<tr><td>Userspace library / solver registry / fallback logic / capability table / build system / CI</td><td>理論上可能</td></tr>
-					<tr><td>カーネルモードドライバ / firmware / 公式 QA / リリース判定</td><td>関与困難</td></tr>
+					<tr><td>投入主体</td><td>その分岐やコードを最初に入れたのは誰か</td></tr>
+					<tr><td>維持主体</td><td>その後も壊れないように残し続けているのは誰か</td></tr>
+					<tr><td>運用主体</td><td>見つけて、動かして、回避策を共有しているのは誰か</td></tr>
+					<tr><td>修正可能主体</td><td>その層の問題を現実に直せるのは誰か</td></tr>
 				</tbody>
 			</table>
 			</div>
 			<div class="table-wrap" data-lang="en">
 			<table>
-				<thead><tr><th>Layer</th><th>Community influence feasible?</th></tr></thead>
+				<thead><tr><th>Role</th><th>Question</th></tr></thead>
 				<tbody>
-					<tr><td>Userspace library / solver registry / fallback logic / capability table / build system / CI</td><td>Theoretically yes</td></tr>
-					<tr><td>Kernel-mode driver / firmware / official QA / release gating</td><td>Difficult</td></tr>
+					<tr><td>Insertion owner</td><td>Who introduced the branch or code?</td></tr>
+					<tr><td>Maintenance owner</td><td>Who keeps it from breaking over time?</td></tr>
+					<tr><td>Operational owner</td><td>Who discovers, runs, and shares workarounds?</td></tr>
+					<tr><td>Repair-capable owner</td><td>Who can realistically fix the issue at that layer?</td></tr>
 				</tbody>
 			</table>
+			</div>
+
+			<ul>
+				<li data-lang="ja"><strong>投入主体について強く言えること:</strong> MLIR の <code>gfx900</code> 除外は AMD 社員 Zhuoran Yin の commit <code>2407d2f</code> であり、private issue 参照も AMD 側にある</li>
+				<li data-lang="en"><strong>What is strong for insertion ownership:</strong> the MLIR <code>gfx900</code> exclusion was commit <code>2407d2f</code> by AMD engineer Zhuoran Yin, with a private AMD-side issue reference</li>
+				<li data-lang="ja"><strong>まだ弱いこと:</strong> そこからそのまま ROCm 全体の維持主体や運用主体まで一般化すること</li>
+				<li data-lang="en"><strong>What remains weak:</strong> generalizing from that insertion point to overall maintenance ownership or operational ownership across ROCm</li>
+				<li data-lang="ja"><strong>より妥当な読み:</strong> AMD 起点の重要分岐 + capability/fallback 設計の残存 + コミュニティによる発見・運用・知見共有の重なり</li>
+				<li data-lang="en"><strong>More defensible reading:</strong> an overlap of AMD-origin critical branches, surviving capability/fallback design, and community discovery/operation/knowledge-sharing</li>
+			</ul>
+
+			<div class="note note-info">
+				<span data-lang="ja"><strong>補足:</strong> この論点は <code>gfx900</code> を超えて ROCm 一般の設計思想に広がるため、別ページ <a href="reveal-hypothesis.html">What gfx900 Reveals About ROCm</a> に整理した。</span>
+				<span data-lang="en"><strong>Note:</strong> Because this question extends beyond <code>gfx900</code> into ROCm-wide design, a separate page summarizes it: <a href="reveal-hypothesis.html">What gfx900 Reveals About ROCm</a>.</span>
 			</div>
 		</div>
 
@@ -735,7 +743,10 @@
 			<tbody>
 				<tr><td>gfx900 の経路はコードに残っているか</td><td>残っている</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>それは設計上自然に残っているか</td><td>そう読める</td><td><span class="conf conf-hypothesis">hypothesis + code evidence</span></td></tr>
-				<tr><td>コミュニティが保守を主張できるか</td><td>OSS 層では理論上可能</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>主要分岐の投入主体は誰か</td><td>少なくとも一部は AMD 側。MLIR <code>gfx900</code> 除外は AMD 社員 commit</td><td><span class="conf conf-verified">history_verified</span></td></tr>
+				<tr><td>維持主体は誰か</td><td>未確定。積極維持・削除コスト由来残存・部分的コミュニティ支援の寄与は未分離</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>運用主体は誰か</td><td>コミュニティが発見・運用・回避策共有を担う可能性が高い</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>修正可能主体は誰か</td><td>層ごとに異なる。userspace は外部修正余地があり、backend 根本対応は到達困難な可能性</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
 				<tr><td>MLIR iGEMM 除外の投入者は誰か</td><td>AMD 社員 Zhuoran Yin</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>MLIR 除外の根拠 issue は公開か</td><td>非公開（<code>llvm-project-private</code>）</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>除外の性質（設計判断 vs バグ回避）</td><td>"Disable" はバグ回避寄り。確定不可</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
@@ -751,7 +762,10 @@
 			<tbody>
 				<tr><td>Do gfx900 execution paths remain in code?</td><td>Yes</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>Are they a natural consequence of design?</td><td>Consistent reading</td><td><span class="conf conf-hypothesis">hypothesis + code evidence</span></td></tr>
-				<tr><td>Can the community claim maintenance?</td><td>Theoretically, at OSS layers</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>Who owns key insertion points?</td><td>At least some are AMD-side. The MLIR <code>gfx900</code> exclusion is an AMD employee commit</td><td><span class="conf conf-verified">history_verified</span></td></tr>
+				<tr><td>Who owns long-term maintenance?</td><td>Unresolved. Active maintenance, deletion-cost survival, and partial community support are not yet separated</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>Who owns operation in practice?</td><td>The community likely carries discovery, operation, and workaround sharing</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
+				<tr><td>Who can realistically repair issues?</td><td>Depends on the layer: some userspace issues are reachable, backend root fixes may not be</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
 				<tr><td>Who introduced MLIR iGEMM exclusion?</td><td>Zhuoran Yin (AMD)</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>Is the root issue public?</td><td>No (<code>llvm-project-private</code>)</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>Nature of exclusion (design vs bug workaround)?</td><td>"Disable" leans bug-workaround. Cannot confirm</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>

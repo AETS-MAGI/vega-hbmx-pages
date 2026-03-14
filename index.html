@@ -534,8 +534,8 @@
 		<section class="flow-section">
 			<h3 class="flow-title" data-lang="ja">3. さらに研究向けの根拠へ進む</h3>
 			<h3 class="flow-title" data-lang="en">3. Go deeper into the research evidence</h3>
-			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、code trace と solver trace を参照できます。</p>
-			<p class="flow-lead" data-lang="en">For strict implementation-level evidence, two standalone reference decks are available — one for API semantics and one for ROCm library solver paths.</p>
+			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、gfx900 仮説ページ、そこから一段引いた ROCm 全体像ページ、そして code / solver trace 資料へ進めます。</p>
+			<p class="flow-lead" data-lang="en">For deeper research evidence, you can move from the gfx900 hypothesis page to the broader ROCm design-model page, and then into the code / solver trace reference decks.</p>
 			<div class="card-grid">
 				<article class="card">
 					<span class="card-type type-hypothesis">Hypothesis</span>
@@ -553,6 +553,25 @@
 					<div class="actions">
 						<a class="button button-primary" href="hypothesis.html">Open</a>
 						<a class="button button-secondary" href="./hypothesis.html">Direct URL</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-hypothesis" style="background:#6A1B9A;">Design Model</span>
+					<h3 data-lang="ja">gfx900 が明かした ROCm 全体像</h3>
+					<h3 data-lang="en">What gfx900 Revealed About ROCm</h3>
+					<p class="filename">reveal-hypothesis.html</p>
+					<p data-lang="ja">gfx900 個別調査を起点にしながら、ROCm 一般の設計思想を GitHub 側の一次資料で検証した要約ページです。layered support、capability-based fallback、staged deprecation、AMD とコミュニティの役割分解を扱います。</p>
+					<p data-lang="en">A GitHub-grounded summary page that starts from the gfx900 investigation but expands into ROCm-wide design questions: layered support, capability-based fallback, staged deprecation, and the split roles of AMD and the community.</p>
+					<ul>
+						<li data-lang="ja">README・changelog・TheRock issue・runtime fallback 実装を横断</li>
+						<li data-lang="en">Cross-reads README, changelog, TheRock issues, and runtime fallback implementations</li>
+						<li data-lang="ja">「support」を build / runtime / driver / user space に分解</li>
+						<li data-lang="en">Breaks “support” into build, runtime, driver, and user-space layers</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="reveal-hypothesis.html">Open</a>
+						<a class="button button-secondary" href="./reveal-hypothesis.html">Direct URL</a>
 					</div>
 				</article>
 

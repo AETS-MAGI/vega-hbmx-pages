@@ -410,6 +410,84 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">GitHub 側の一般設計思想調査を公開ページへ追加</h2>
+        <h2 data-lang="en">Added the broader ROCm design-model investigation to the public pages</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">内部ノート <code>reveal_hypothesis.md</code> と更新済み <code>hypothesis.md</code> を受けて、公開サイト側でも「gfx900 個別事件」から一段引いた ROCm 全体像を説明できるようにした。</p>
+      <p class="entry-lead" data-lang="en">After the internal note <code>reveal_hypothesis.md</code> and the updated <code>hypothesis.md</code>, the public site was expanded so it can explain not only the gfx900 incident itself, but also what it reveals about ROCm more broadly.</p>
+      <div class="file-list">
+        <span class="file-tag">reveal-hypothesis.html</span>
+        <span class="file-tag">hypothesis.html</span>
+        <span class="file-tag">index.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>reveal-hypothesis.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧状態</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">公開サイトには「gfx900 の出来事から ROCm 全体の設計思想をどう読むか」をまとめた独立ページがなかった。一般化は <code>hypothesis.html</code> の中に散らばっていた。</p>
+            <p data-lang="en">The public site had no standalone page explaining what the gfx900 investigation reveals about ROCm as a whole. The broader interpretation was scattered inside <code>hypothesis.html</code>.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新状態</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">新規ページ <code>reveal-hypothesis.html</code> を追加し、layered support、capability-based fallback、staged deprecation、support の層分解、AMD とコミュニティの役割分解を、GitHub 側の一次資料つきで独立表示できるようにした。</p>
+            <p data-lang="en">A new page, <code>reveal-hypothesis.html</code>, now presents layered support, capability-based fallback, staged deprecation, support-layer splitting, and AMD/community role splitting as a standalone GitHub-grounded explainer.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> <code>reveal_hypothesis.md</code> に固定した ROCm-wide 仮説検証。<code>ROCm/README</code>、<code>CHANGELOG</code>、<code>TheRock</code> issue、<code>Tensile</code> docs、<code>rocBLAS</code> fallback 実装。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The ROCm-wide hypothesis verification fixed in <code>reveal_hypothesis.md</code>, grounded in the <code>ROCm</code> README, changelog, <code>TheRock</code> issues, <code>Tensile</code> docs, and <code>rocBLAS</code> fallback implementation.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>hypothesis.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">仮説Cは「AMD が外したが互換設計は残り、コミュニティが運用や一部保守を支える」という線で読めたが、投入主体と維持主体と運用主体がまだ十分には分離されていなかった。</p>
+            <p data-lang="en">Hypothesis C could be read as “AMD removed primary support, compatibility remains, and the community supports operation and some maintenance,” but insertion, maintenance, and operation ownership were not yet clearly separated.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">仮説Cを「保守主体は層ごとに異なる」に更新し、<strong>投入主体 / 維持主体 / 運用主体 / 修正可能主体</strong> の4分解で public wording を整理した。さらに一般設計ページへのリンクを追加した。</p>
+            <p data-lang="en">Hypothesis C now reads “maintenance ownership differs by layer,” reorganized around <strong>insertion / maintenance / operation / repair-capable ownership</strong>, with a direct link to the broader ROCm-design page.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> 2026-03-15 時点の <code>hypothesis.md</code> 再評価。<code>2407d2f</code> は投入主体の証拠だが、そこから ROCm 全体の維持主体へ一般化するのは早い、という整理。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The 2026-03-15 reevaluation in <code>hypothesis.md</code>: <code>2407d2f</code> is evidence of insertion ownership, but not sufficient to generalize maintenance ownership across ROCm.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>index.html</code> / <code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">トップと README からは、一般化された ROCm 設計思想ページへ直接進めなかった。</p>
+            <p data-lang="en">The top page and README had no direct path to a page about ROCm-wide design interpretation.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>Design Model</code> カードを追加し、README にも <code>reveal-hypothesis.html</code> を収録ファイルとして明記した。</p>
+            <p data-lang="en">A new <code>Design Model</code> card was added to the index, and the README now lists <code>reveal-hypothesis.html</code> explicitly.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">ページ更新ログページを新設</h2>
         <h2 data-lang="en">Created a dedicated page-update log</h2>
         <span class="entry-date">2026-03-15</span>
