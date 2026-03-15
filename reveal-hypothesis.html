@@ -556,7 +556,7 @@ xychart-beta
       </div>
       <div class="mermaid">
 flowchart LR
-    subgraph ROLES["4-role provenance model — gfx900 survival paths"]
+    subgraph ROLES["4-role provenance model — gfx900 survival paths (P1–P8)"]
         A["Insertion owner\n投入主体"]
         B["Maintenance owner\n維持主体"]
         C["Operational owner\n運用主体"]
@@ -564,21 +564,25 @@ flowchart LR
     end
     A --> E["AMD(M)\nMLIR disable\nrocMLIR gating"]
     A --> F["ExtC / AMD(C)\nWinograd, ASM v4r1\nWORKAROUND_1204"]
+    A --> F2["AMD(M) build pipeline\nShipped artifacts (P8)"]
     B --> G["AMD active patches\nWinograd 2021–2025\nMP_bidir 2025-03"]
     B --> H["Deletion-cost residual\nv4r1, WORKAROUND_1204\nno active maintainer"]
+    B --> G2["Build pipeline\nregenerated per release\nPerf DB + rocBLAS + FW"]
     C --> I["Community\n-S solver forcing\nenv var workarounds\nforum knowledge"]
-    D --> J["AMD(M) only\nbackend / compiler\nllvm-project-private"]
+    D --> J["AMD(M) only\nbackend / compiler\nllvm-project-private\nbuild pipeline"]
     D --> K["ExtC reachable\nPython-level\nTensile logic"]
     style E fill:#ddeeff,stroke:#3366aa
     style F fill:#eeffee,stroke:#44aa44
+    style F2 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
     style G fill:#ddeeff,stroke:#3366aa
     style H fill:#f5f5f5,stroke:#999
+    style G2 fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
     style I fill:#fff8dd,stroke:#aaaa44
     style J fill:#ffeedd,stroke:#cc6600
     style K fill:#eeffee,stroke:#44aa44
       </div>
       <div class="table-wrap" data-lang="ja">
-        <p><strong>P1–P7 経路別主体一覧（git blame ベース、2026-03-15）</strong></p>
+        <p><strong>P1–P8 経路別主体一覧（git blame ベース、2026-03-15）</strong></p>
         <table>
           <thead>
             <tr>
@@ -628,12 +632,18 @@ flowchart LR
               <td>AMD(M) 積極維持</td>
               <td>AMD(M)</td>
             </tr>
+            <tr style="background:#e8f5e9;">
+              <td>P8</td><td>Shipped artifacts（ROCm 7.2 パッケージ）</td>
+              <td>AMD(M) build pipeline</td>
+              <td>Perf DB 169K行 + rocBLAS 128ファイル + firmware 16 blob。RDNA3/2 を上回る</td>
+              <td>AMD(M)</td>
+            </tr>
           </tbody>
         </table>
         <p style="font-size:0.85em;color:#666;">ラベル: AMD(M) = org member / @amd.com メール, AMD(C) = @amd.com だが contributor ラベルまたは後に AMD メールで活動, ExtC = 非 AMD ドメイン。雇用関係を断定するものではない。</p>
       </div>
       <div class="table-wrap" data-lang="en">
-        <p><strong>P1–P7 per-path ownership table (git-blame basis, 2026-03-15)</strong></p>
+        <p><strong>P1–P8 per-path ownership table (git-blame basis, 2026-03-15)</strong></p>
         <table>
           <thead>
             <tr>
@@ -681,6 +691,12 @@ flowchart LR
               <td>P7</td><td>rocMLIR gating (Miir C API)</td>
               <td>AMD(M)</td>
               <td>Actively maintained by AMD(M)</td>
+              <td>AMD(M)</td>
+            </tr>
+            <tr style="background:#e8f5e9;">
+              <td>P8</td><td>Shipped artifacts (ROCm 7.2 package)</td>
+              <td>AMD(M) build pipeline</td>
+              <td>Perf DB 169K lines + rocBLAS 128 files + firmware 16 blobs. Exceeds RDNA 3/2</td>
               <td>AMD(M)</td>
             </tr>
           </tbody>
