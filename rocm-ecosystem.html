@@ -373,22 +373,18 @@ flowchart TD
     <div class="mermaid">
 %%{init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1565C0' } } }%%
 flowchart LR
-    subgraph GFX900["gfx900 access map"]
-      direction TB
-      G_HIP["HIP compilation\ngfx900 target"]
-      G_ROCR["ROCr runtime\nkernel launch"]
-      G_MIOPEN["MIOpen solvers\ncapability check"]
-      G_ROCBLAS["rocBLAS\ngeneric GEMM path"]
-      G_PERF["Perf DB\n169,182 entries"]
-    end
-
-    G_HIP --> |"pass — arch supported"| OK1["Compile OK"]
-    G_ROCR --> |"pass — HSA queue works"| OK2["Runtime OK"]
-    G_MIOPEN --> |"MLIR iGEMM: BLOCKED\n(commit 2407d2f)"| BLOCKED["gfx900 excluded"]
-    G_MIOPEN --> |"ASM v4r1 / Winograd: pass"| OK3["Solvers OK"]
-    G_MIOPEN --> |"INT8 naive: fallback only"| PARTIAL["Limited"]
-    G_ROCBLAS --> |"gfx900 GEMM files: 128 files"| OK4["Generic GEMM OK"]
-    G_PERF --> |"entries ship with ROCm 7.2"| OK5["Perf DB OK"]
+        G_HIP["HIP / compile\ngfx900 target"]
+    G_ROCR["ROCr runtime\nkernel launch"]
+    G_MIOPEN["MIOpen solvers\ncapability check"]
+    G_ROCBLAS["rocBLAS\ngeneric GEMM"]
+    G_PERF["Perf DB\n169K entries"]
+    G_HIP --> OK1["Compile OK"]
+    G_ROCR --> OK2["Runtime OK"]
+    G_MIOPEN --> BLOCKED["MLIR iGEMM\nBLOCKED 2407d2f"]
+    G_MIOPEN --> OK3["ASM v4r1/Winograd\npass"]
+    G_MIOPEN --> PARTIAL["INT8 naive\nfallback only"]
+    G_ROCBLAS --> OK4["GEMM OK 128 files"]
+    G_PERF --> OK5["Perf DB OK ROCm 7.2"]
 
     style BLOCKED fill:#FFEBEE,stroke:#B71C1C,color:#B71C1C
     style PARTIAL fill:#FFF3E0,stroke:#E65100,color:#E65100
