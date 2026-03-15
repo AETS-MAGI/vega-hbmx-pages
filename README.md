@@ -57,9 +57,10 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 `theory/` ディレクトリには、GPU・ROCm・深層学習の基礎概念を「イメージでわかる」形式で解説した入門ページ群が収録されています。
 
 ### `theory/index.html`（理論ページ総合案内）
-- 全 17 ページへのカード形式ナビゲーション。
+- 全 18 ページへのカード形式ナビゲーション。
 - 「はじめの一歩 → 気になるテーマ → 全体を見渡す資料」の 3 段階で構成。
 - おすすめ順路つき。
+- 一部テーマには「ROCmで見る」実コード例ページへのリンクあり。
 
 ### はじめの一歩（4 ページ）
 - `theory/gpu-basics.html` — GPU ってなに？
@@ -83,6 +84,14 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 ### 全体を見渡す資料（2 ページ）
 - `theory/glossary.html` — 用語集
 - `theory/rocm-ecosystem.html` — ROCm エコシステム全体図
+
+### 「ROCmで見る」実コード例ページ（5 ページ）
+理論ページの概念を 10〜30 行の最小 PyTorch コードで確認する実例ページです。
+- `theory/linear-algebra-rocm-example.html` — 行列積を GPU で実行
+- `theory/deep-learning-rocm-example.html` — 小さなニューラルネットの forward
+- `theory/training-flow-rocm-example.html` — 1 ステップの学習（forward → loss → backward → step）
+- `theory/inference-flow-rocm-example.html` — 推論（forward only）の比較
+- `theory/attention-rocm-example.html` — Scaled Dot-Product Attention の手計算
 
 ## 発表・補助資料
 
@@ -160,6 +169,11 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `theory/what-support-means.html` — What "support" means in ROCm.
 - `theory/glossary.html` — Glossary of terms.
 - `theory/rocm-ecosystem.html` — ROCm ecosystem overview.
+- `theory/linear-algebra-rocm-example.html` — "See in ROCm" example: matrix multiply on GPU.
+- `theory/deep-learning-rocm-example.html` — "See in ROCm" example: small neural network forward pass.
+- `theory/training-flow-rocm-example.html` — "See in ROCm" example: one training step.
+- `theory/inference-flow-rocm-example.html` — "See in ROCm" example: inference (forward only).
+- `theory/attention-rocm-example.html` — "See in ROCm" example: Scaled Dot-Product Attention.
 
 ## Media assets
 
@@ -188,4 +202,4 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
 - Use `code-tracing.html` for the most technical evidence on `num_gpu` semantics.
 - Use `solver-trace.html` for gfx900 computation path tracing through the ROCm library stack (code + runtime verified).
-- Open `theory/index.html` for the theory page hub — beginner-friendly visual guides covering GPU basics, ROCm, deep learning, linear algebra, and more (17 pages in `theory/`).
+- Open `theory/index.html` for the theory page hub — beginner-friendly visual guides covering GPU basics, ROCm, deep learning, linear algebra, and more (18 pages in `theory/`, plus 5 "See in ROCm" code example pages).
