@@ -407,6 +407,29 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
         <tr><td class="green"><strong>3. Shipped artifacts</strong></td><td>The ROCm 7.2 package ships gfx900 Perf DB (169 K lines), 128 rocBLAS pre-compiled kernels, and 16 firmware blobs — exceeding gfx1100 (RDNA 3) and gfx1030 (RDNA 2) on multiple metrics. This implies active build-pipeline inclusion.</td></tr>
         <tr><td class="blue"><strong>4. Backend-dependent stability</strong></td><td>Under matched qwen3.5:2b conditions across two days, Vulkan SIGSEGV'd for num_gpu&gt;=1 while ROCm/HIP did not; Vulkan remained stable at num_gpu=0, including a 5-epoch run. A phi4-mini follow-up completed at num_gpu=1, indicating model dependence.</td></tr>
       </table>
+      <!-- Shipped artifacts visual comparison -->
+      <div style="display:flex;gap:18px;margin:10px 0 6px;">
+        <div style="flex:1;">
+          <p style="font-size:14px;font-weight:bold;color:#1B5E20;margin:0 0 4px;">rocBLAS Pre-compiled Files</p>
+          <div style="font-size:12px;line-height:1.8;">
+            <div>gfx942 <span style="display:inline-block;width:242px;max-width:60%;height:14px;background:#1565c0;border-radius:2px;vertical-align:middle;"></span> 242</div>
+            <div>gfx906 <span style="display:inline-block;width:156px;max-width:60%;height:14px;background:#42a5f5;border-radius:2px;vertical-align:middle;"></span> 156</div>
+            <div style="font-weight:bold;color:#B71C1C;">gfx900 <span style="display:inline-block;width:128px;max-width:60%;height:14px;background:#c62828;border-radius:2px;vertical-align:middle;"></span> 128</div>
+            <div>gfx1100 <span style="display:inline-block;width:96px;max-width:60%;height:14px;background:#a5d6a7;border-radius:2px;vertical-align:middle;"></span> 96</div>
+            <div>gfx1030 <span style="display:inline-block;width:88px;max-width:60%;height:14px;background:#c8e6c9;border-radius:2px;vertical-align:middle;"></span> 88</div>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <p style="font-size:14px;font-weight:bold;color:#1B5E20;margin:0 0 4px;">MIOpen Perf DB (top variant, ×1 K lines)</p>
+          <div style="font-size:12px;line-height:1.8;">
+            <div>gfx942 <span style="display:inline-block;width:188px;max-width:60%;height:14px;background:#1565c0;border-radius:2px;vertical-align:middle;"></span> 470 K</div>
+            <div>gfx906 <span style="display:inline-block;width:94px;max-width:60%;height:14px;background:#42a5f5;border-radius:2px;vertical-align:middle;"></span> 235 K</div>
+            <div style="font-weight:bold;color:#B71C1C;">gfx900 <span style="display:inline-block;width:68px;max-width:60%;height:14px;background:#c62828;border-radius:2px;vertical-align:middle;"></span> 169 K</div>
+            <div>gfx1030 <span style="display:inline-block;width:44px;max-width:60%;height:14px;background:#a5d6a7;border-radius:2px;vertical-align:middle;"></span> 111 K</div>
+            <div>gfx1100 <span style="display:inline-block;width:2px;height:14px;background:#e0e0e0;border-radius:2px;vertical-align:middle;"></span> <em style="color:#B71C1C;">0</em></div>
+          </div>
+        </div>
+      </div>
       <div class="takeaway">The four tiers are independent claims. Tier 2 does not contradict Tier 1; Tier 3 shows that vendor packaging goes beyond code residue; Tier 4 is supported by two matched qwen runs, a 5-epoch Vulkan num_gpu=0 control, a phi4-mini counterexample, and deterministic crash-timing statistics.</div>
     </div>
 
@@ -771,6 +794,29 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
         <tr><td class="green"><strong>3. Shipped artifacts</strong></td><td>ROCm 7.2 パッケージは gfx900 Perf DB（169 K 行）、rocBLAS プリコンパイル済みカーネル 128 個、firmware 16 blob を出荷しており、gfx1100（RDNA3）・gfx1030（RDNA2）を複数指標で上回る。これはビルドパイプラインへの能動的な包含を示唆する。</td></tr>
         <tr><td class="blue"><strong>4. Backend-dependent stability</strong></td><td>matched qwen3.5:2b 条件では 2 日とも Vulkan が num_gpu&gt;=1 で SIGSEGV、ROCm/HIP は非該当。Vulkan num_gpu=0 は 5 epoch 安定で、phi4-mini は num_gpu=1 で完了し、model dependence を示した。</td></tr>
       </table>
+      <!-- 出荷成果物 視覚比較 -->
+      <div style="display:flex;gap:18px;margin:10px 0 6px;">
+        <div style="flex:1;">
+          <p style="font-size:14px;font-weight:bold;color:#1B5E20;margin:0 0 4px;">rocBLAS ファイル数</p>
+          <div style="font-size:12px;line-height:1.8;">
+            <div>gfx942 <span style="display:inline-block;width:242px;max-width:60%;height:14px;background:#1565c0;border-radius:2px;vertical-align:middle;"></span> 242</div>
+            <div>gfx906 <span style="display:inline-block;width:156px;max-width:60%;height:14px;background:#42a5f5;border-radius:2px;vertical-align:middle;"></span> 156</div>
+            <div style="font-weight:bold;color:#B71C1C;">gfx900 <span style="display:inline-block;width:128px;max-width:60%;height:14px;background:#c62828;border-radius:2px;vertical-align:middle;"></span> 128</div>
+            <div>gfx1100 <span style="display:inline-block;width:96px;max-width:60%;height:14px;background:#a5d6a7;border-radius:2px;vertical-align:middle;"></span> 96</div>
+            <div>gfx1030 <span style="display:inline-block;width:88px;max-width:60%;height:14px;background:#c8e6c9;border-radius:2px;vertical-align:middle;"></span> 88</div>
+          </div>
+        </div>
+        <div style="flex:1;">
+          <p style="font-size:14px;font-weight:bold;color:#1B5E20;margin:0 0 4px;">MIOpen Perf DB（top variant, ×1 K 行）</p>
+          <div style="font-size:12px;line-height:1.8;">
+            <div>gfx942 <span style="display:inline-block;width:188px;max-width:60%;height:14px;background:#1565c0;border-radius:2px;vertical-align:middle;"></span> 470 K</div>
+            <div>gfx906 <span style="display:inline-block;width:94px;max-width:60%;height:14px;background:#42a5f5;border-radius:2px;vertical-align:middle;"></span> 235 K</div>
+            <div style="font-weight:bold;color:#B71C1C;">gfx900 <span style="display:inline-block;width:68px;max-width:60%;height:14px;background:#c62828;border-radius:2px;vertical-align:middle;"></span> 169 K</div>
+            <div>gfx1030 <span style="display:inline-block;width:44px;max-width:60%;height:14px;background:#a5d6a7;border-radius:2px;vertical-align:middle;"></span> 111 K</div>
+            <div>gfx1100 <span style="display:inline-block;width:2px;height:14px;background:#e0e0e0;border-radius:2px;vertical-align:middle;"></span> <em style="color:#B71C1C;">0</em></div>
+          </div>
+        </div>
+      </div>
       <div class="takeaway">この 4 層は独立した主張である。Tier 2 は Tier 1 を否定しない。Tier 3 はベンダーパッケージングがコード残存を超えることを示す。Tier 4 は matched qwen run 2 本、Vulkan num_gpu=0 control、phi4-mini 反例、deterministic crash timing 統計で支えられている。</div>`,
 `      <div class="slide-title"><div class="slide-num bg-orange">18</div><h2 class="slide-title-text orange">再現可能性パッケージ</h2></div>
       <table>
