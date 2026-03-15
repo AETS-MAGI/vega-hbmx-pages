@@ -21,9 +21,9 @@ BRACKET   = (0.30,  0.30,  0.40)
 C_R1      = (1.00, 0.63, 0.12, 0.78)   # orange  — matrix row 1 / y1
 C_R1_B    = (0.82, 0.38, 0.0,  1.0)
 C_R2      = (0.52, 0.18, 0.80, 0.68)   # purple  — matrix row 2 / y2
-C_R2_B    = (0.42, 0.08, 0.68, 1.0)
+C_R2_B    = (0.42, 0.08, 0.68)
 C_VEC     = (0.10, 0.52, 0.88, 0.62)   # blue    — input x
-C_VEC_B   = (0.0,  0.30, 0.65, 1.0)
+C_VEC_B   = (0.0,  0.30, 0.65)
 C_RES1    = (1.00, 0.55, 0.10, 0.90)   # strong orange for y1 result
 C_RES2    = (0.58, 0.22, 0.82, 0.88)   # strong purple for y2 result
 
