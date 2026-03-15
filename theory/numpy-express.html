@@ -76,6 +76,11 @@
 		.code-block .kw { color: #82B1FF; }
 		.code-block .str { color: #FFCB6B; }
 		.code-block .fn { color: #C3E88D; }
+		code { background: #F0F4F8; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.92em; }
+		.term-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 14px 0 18px; }
+		.term-card { background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 18px 18px 16px; }
+		.term-card h3 { margin: 0 0 6px; font-size: 18px; color: var(--navy); }
+		.term-card p { margin: 0; font-size: 15px; line-height: 1.7; }
 		.quick-map { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 15px; }
 		.quick-map th, .quick-map td { border: 1px solid var(--line); padding: 11px 14px; text-align: left; }
 		.quick-map th { background: var(--navy); color: #fff; font-weight: 600; }
@@ -102,6 +107,7 @@
 			.hero h1 { font-size: 24px; }
 			.page { padding: 20px 14px 40px; }
 			.code-block { font-size: 12px; }
+			.term-grid { grid-template-columns: 1fr; }
 		}
 	</style>
 </head>
@@ -120,100 +126,231 @@
 		<h1 data-lang="en">NumPy Express</h1>
 		<p class="subtitle" data-lang="ja">NumPy ってなあに？を 1 ページで</p>
 		<p class="subtitle" data-lang="en">What is NumPy? in one page</p>
-		<p data-lang="ja">このページは、PyTorch に入る前に NumPy を最短でつかむ導入です。「配列」「shape」「軸」「ベクトル化」がわかると、後続ページの理解がかなり楽になります。</p>
-		<p data-lang="en">This page is a fast NumPy introduction before PyTorch. Understanding arrays, shape, axes, and vectorization makes later pages much easier.</p>
+		<p data-lang="ja">このページは、PyTorch に入る前に <strong>「数字の表をどう見るか」</strong> に慣れるための導入です。NumPy は、数字を表の形に並べて、まとめて計算するための道具です。このページではまず、<strong>配列・shape・axis</strong> の 3 つを中心に見ていきます。</p>
+		<p data-lang="en">This page is a gentle introduction before PyTorch, helping you get used to <strong>thinking in tables of numbers</strong>. NumPy is a tool for arranging numbers into table-like forms and computing on them together. We focus first on <strong>arrays, shape, and axis</strong>.</p>
 	</section>
 
-	<h2 class="section-title" data-lang="ja">1. NumPy は何か</h2>
-	<h2 class="section-title" data-lang="en">1. What NumPy Is</h2>
-	<p class="section-lead" data-lang="ja">ひとことで言うと、Python で高速に多次元配列を扱うための基盤ライブラリです。</p>
-	<p class="section-lead" data-lang="en">In one sentence: the foundational Python library for fast multi-dimensional array computing.</p>
+	<h2 class="section-title" data-lang="ja">1. NumPy はなに？</h2>
+	<h2 class="section-title" data-lang="en">1. What Is NumPy?</h2>
+	<p class="section-lead" data-lang="ja">ひとことで言うと、数字を表の形に並べて、まとめて計算するための道具です。</p>
+	<p class="section-lead" data-lang="en">In one sentence: a tool for arranging numbers into tables and computing on them together.</p>
 	<div class="prose">
-		<p data-lang="ja">NumPy は、リストより効率よく数値データを扱うための <strong>ndarray</strong> を提供します。線形代数、統計、前処理などの多くが NumPy で表現できます。</p>
-		<p data-lang="en">NumPy provides <strong>ndarray</strong> for efficient numeric data handling beyond Python lists. Many tasks in linear algebra, statistics, and preprocessing can be expressed with NumPy.</p>
+		<p data-lang="ja">NumPy は、<strong>数字を表の形でまとめてあつかうための道具</strong>です。Python のふつうのリストでも数字は置けますが、NumPy を使うと、数字をきれいに並べやすく、表の大きさを確認しやすく、まとめて計算しやすくなります。</p>
+		<p data-lang="en">NumPy is a tool for <strong>handling numbers in table-like form</strong>. Ordinary Python lists can also store numbers, but NumPy makes it easier to arrange them neatly, inspect their size, and compute on many of them together.</p>
+		<p data-lang="ja">たとえば、<code>[1, 2, 3]</code> は 1 本の数字の列、<code>[[1, 2, 3], [4, 5, 6]]</code> は 2 行 3 列の表、と考えやすくなります。</p>
+		<p data-lang="en">For example, <code>[1, 2, 3]</code> can be seen as one row of numbers, while <code>[[1, 2, 3], [4, 5, 6]]</code> is a table with 2 rows and 3 columns.</p>
 	</div>
 	<div class="fact-box">
-		<p data-lang="ja"><strong>覚える最小セット:</strong> ndarray / shape / dtype / axis / broadcasting</p>
-		<p data-lang="en"><strong>Minimal set to remember:</strong> ndarray / shape / dtype / axis / broadcasting</p>
+		<p data-lang="ja"><strong>このページでまず大事なのは 3 つだけ:</strong> 配列 / shape / axis</p>
+		<p data-lang="en"><strong>The first three things that matter here:</strong> array / shape / axis</p>
 	</div>
 
-	<h2 class="section-title" data-lang="ja">2. どこで使うか（このサイト内）</h2>
-	<h2 class="section-title" data-lang="en">2. Where It Appears (In This Site)</h2>
+	<h2 class="section-title" data-lang="ja">2. まず覚える 3 つ</h2>
+	<h2 class="section-title" data-lang="en">2. Three Ideas to Learn First</h2>
+	<p class="section-lead" data-lang="ja">最初は、この 3 つがわかれば十分です。</p>
+	<p class="section-lead" data-lang="en">At the start, these three ideas are enough.</p>
+
+	<div class="term-grid">
+		<div class="term-card">
+			<h3 data-lang="ja">配列</h3>
+			<h3 data-lang="en">Array</h3>
+			<p data-lang="ja">数字を並べたものです。1 列でも、表でも、もっと大きなかたまりでもよいです。</p>
+			<p data-lang="en">A collection of numbers. It can be one row, a table, or something larger.</p>
+		</div>
+		<div class="term-card">
+			<h3>shape</h3>
+			<p data-lang="ja">表の大きさです。たとえば <code>(2, 3)</code> は「2 行 3 列」と考えれば十分です。</p>
+			<p data-lang="en">The size of the table. For example, <code>(2, 3)</code> means “2 rows and 3 columns.”</p>
+		</div>
+		<div class="term-card">
+			<h3>axis</h3>
+			<p data-lang="ja">どの向きに見るかを表します。最初は <code>axis=0</code> はたて、<code>axis=1</code> はよこ、と考えると入りやすいです。</p>
+			<p data-lang="en">The direction you are looking along. A simple first picture is <code>axis=0</code> for vertical and <code>axis=1</code> for horizontal.</p>
+		</div>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>あとでよく出る 1 語:</strong> <code>dtype</code> は「数字の種類」です。最初は後回しでも大丈夫です。</p>
+		<p data-lang="en"><strong>One more word you will meet later:</strong> <code>dtype</code> means the kind of numbers. It is okay to leave it for later at first.</p>
+	</div>
+
+	<div class="warn-box">
+		<p data-lang="ja"><strong>補足:</strong> ドキュメントでは <code>ndarray</code> という名前も出ますが、このページではまず「数字の表」と読めば十分です。</p>
+		<p data-lang="en"><strong>Note:</strong> In documentation you may see the name <code>ndarray</code>, but on this page it is enough to read it as “a table of numbers.”</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">3. いちばん小さい例</h2>
+	<h2 class="section-title" data-lang="en">3. The Smallest Example</h2>
+	<p class="section-lead" data-lang="ja">まずは 1 本の数字の列から始めます。</p>
+	<p class="section-lead" data-lang="en">Start with one row of numbers.</p>
+
+	<div class="code-block">import numpy as np
+
+a = np.array([1, 2, 3])
+
+print(a)
+print(a.shape)</div>
+
+	<div class="prose">
+		<p data-lang="ja">この例では、3 つの数字をひとまとめにしています。<code>import numpy as np</code> は、NumPy を <code>np</code> という短い名前で呼ぶ、という意味です。</p>
+		<p data-lang="en">This example groups three numbers together. <code>import numpy as np</code> means “use the short name <code>np</code> for NumPy.”</p>
+		<p data-lang="ja"><code>np.array(...)</code> は、数字を NumPy の配列にする、という意味です。</p>
+		<p data-lang="en"><code>np.array(...)</code> means “turn these numbers into a NumPy array.”</p>
+		<p data-lang="ja"><code>a.shape</code> を見ると、その数字のまとまりがどんな大きさかがわかります。</p>
+		<p data-lang="en">Looking at <code>a.shape</code> tells you the size of that group of numbers.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>ここで見てほしいこと:</strong> 1 個ずつ数字を見るのではなく、<strong>まとまったかたまり</strong>として見ていることです。</p>
+		<p data-lang="en"><strong>What to notice here:</strong> we are not looking at numbers one by one, but as <strong>one structured bundle</strong>.</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">4. 表にしてみる</h2>
+	<h2 class="section-title" data-lang="en">4. Turn It into a Table</h2>
+	<p class="section-lead" data-lang="ja">次は 2 次元の表にしてみます。</p>
+	<p class="section-lead" data-lang="en">Next, let’s make a two-dimensional table.</p>
+
+	<div class="code-block">import numpy as np
+
+b = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+print(b)
+print(b.shape)</div>
+
+	<div class="prose">
+		<p data-lang="ja">この <code>b</code> は、2 行 3 列の表です。だから shape は <code>(2, 3)</code> になります。</p>
+		<p data-lang="en">This <code>b</code> is a table with 2 rows and 3 columns, so its shape is <code>(2, 3)</code>.</p>
+		<p data-lang="ja">ここで大事なのは、shape を見て <strong>「いま自分はどんな表を持っているのか」</strong> を確認するくせをつけることです。</p>
+		<p data-lang="en">The important habit is to check the shape and ask: <strong>“What kind of table am I holding right now?”</strong></p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">5. axis ってなに？</h2>
+	<h2 class="section-title" data-lang="en">5. What Is axis?</h2>
+	<p class="section-lead" data-lang="ja">axis は、「どの向きにまとめるか」を決める番号です。</p>
+	<p class="section-lead" data-lang="en">axis is the number that chooses which direction to combine along.</p>
+
+	<div class="code-block">import numpy as np
+
+b = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+print(np.sum(b, axis=0))
+print(np.sum(b, axis=1))</div>
+
+	<div class="prose">
+		<p data-lang="ja">表の数字を足すとき、たて方向に見るか、よこ方向に見るかで結果が変わります。</p>
+		<p data-lang="en">When you add numbers in a table, the result changes depending on whether you look vertically or horizontally.</p>
+		<p data-lang="ja">最初は、<code>axis=0</code> は <strong>たて方向</strong>、<code>axis=1</code> は <strong>よこ方向</strong>、と考えるだけで十分です。</p>
+		<p data-lang="en">At first, it is enough to think of <code>axis=0</code> as <strong>vertical</strong> and <code>axis=1</code> as <strong>horizontal</strong>.</p>
+	</div>
+
+	<div class="warn-box">
+		<p data-lang="ja"><strong>最初はここで迷いやすいです:</strong> axis は慣れるまで混乱しやすいので、「向きを決める番号」と思えば十分です。</p>
+		<p data-lang="en"><strong>This is a common confusion point:</strong> axis often feels tricky at first, so it is enough to think of it as “the number that chooses a direction.”</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">6. 表どうしをかけてみる</h2>
+	<h2 class="section-title" data-lang="en">6. Multiply Two Tables</h2>
+	<p class="section-lead" data-lang="ja">行列のかけ算は最後に見ます。ここでもまず大事なのは shape です。</p>
+	<p class="section-lead" data-lang="en">We leave matrix multiplication for later. Here too, the first thing that matters is shape.</p>
+
+	<div class="code-block">import numpy as np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+b = np.array([[7, 8],
+              [9, 10],
+              [11, 12]])
+
+c = a @ b
+
+print(a.shape)
+print(b.shape)
+print(c.shape)
+print(c)</div>
+
+	<div class="prose">
+		<p data-lang="ja">ここでは、表どうしのかけ算をしています。<code>@</code> は、このページでは「表どうしをかける記号」くらいに読めば十分です。</p>
+		<p data-lang="en">Here we multiply two tables. On this page, it is enough to read <code>@</code> as “the symbol for multiplying two tables.”</p>
+		<p data-lang="ja">まず数字そのものより、<strong>shape を先に見る</strong>のが大事です。</p>
+		<p data-lang="en">The important thing is to look at the <strong>shapes first</strong>, before the numbers themselves.</p>
+		<p data-lang="ja"><code>a</code> は <code>(2, 3)</code>、<code>b</code> は <code>(3, 2)</code> です。内側の 3 と 3 がつながるので計算できて、結果の <code>c</code> は <code>(2, 2)</code> になります。</p>
+		<p data-lang="en"><code>a</code> has shape <code>(2, 3)</code>, and <code>b</code> has shape <code>(3, 2)</code>. The inner 3 and 3 match, so multiplication works, and the result <code>c</code> has shape <code>(2, 2)</code>.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>この読み方はあとで効きます:</strong> PyTorch の tensor や ROCm 関連ページでも、まず shape を見る習慣がとても大事です。</p>
+		<p data-lang="en"><strong>This reading habit matters later:</strong> on PyTorch tensor pages and ROCm-related pages, checking shape first is very important.</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">7. このサイトではどこで出てくる？</h2>
+	<h2 class="section-title" data-lang="en">7. Where Does It Appear in This Site?</h2>
+	<p class="section-lead" data-lang="ja">NumPy は、このあと出てくる PyTorch や線形代数のページを読みやすくするための土台です。</p>
+	<p class="section-lead" data-lang="en">NumPy is a foundation that makes the later PyTorch and linear algebra pages easier to read.</p>
 	<table class="quick-map">
 		<thead>
 			<tr>
 				<th data-lang="ja">ページ</th>
 				<th data-lang="en">Page</th>
-				<th data-lang="ja">NumPyの役割</th>
-				<th data-lang="en">Role of NumPy</th>
+				<th data-lang="ja">NumPy が役立つところ</th>
+				<th data-lang="en">How NumPy Helps</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td data-lang="ja">線形代数 / 行列とAI</td>
 				<td data-lang="en">Linear algebra / Matrices &amp; AI</td>
-				<td data-lang="ja">行列やベクトルの基本表現を理解する土台</td>
-				<td data-lang="en">Foundation for vectors and matrices representation</td>
+				<td data-lang="ja">ベクトルや行列を「数字の表」として見る練習になる</td>
+				<td data-lang="en">It helps you see vectors and matrices as tables of numbers</td>
 			</tr>
 			<tr>
 				<td data-lang="ja">PyTorch特急便</td>
 				<td data-lang="en">PyTorch Express</td>
-				<td data-lang="ja">テンソル理解の前段として shape/axis 感覚を作る</td>
-				<td data-lang="en">Build shape/axis intuition before tensors</td>
+				<td data-lang="ja">shape や axis の感覚が、tensor を読む助けになる</td>
+				<td data-lang="en">Its shape and axis intuition helps you read tensors later</td>
 			</tr>
 			<tr>
 				<td data-lang="ja">ROCmで見る 系</td>
 				<td data-lang="en">See in ROCm series</td>
-				<td data-lang="ja">入力データの形と計算結果を読む基礎</td>
-				<td data-lang="en">Basics for reading input/output data shapes</td>
+				<td data-lang="ja">入力や出力の「形」を読む基礎になる</td>
+				<td data-lang="en">It becomes a basis for reading the shapes of inputs and outputs</td>
 			</tr>
 		</tbody>
 	</table>
 
-	<h2 class="section-title" data-lang="ja">3. 最短サンプル（10行）</h2>
-	<h2 class="section-title" data-lang="en">3. Shortest Sample (10 lines)</h2>
-	<div class="code-block"><span class="kw">import</span> numpy <span class="kw">as</span> np
-
-a = np.array([[1, 2, 3],
-              [4, 5, 6]], dtype=np.float32)
-
-b = np.array([[7, 8],
-              [9, 10],
-              [11, 12]], dtype=np.float32)
-
-c = a @ b
-<span class="fn">print</span>(a.shape, b.shape, c.shape)
-<span class="fn">print</span>(c)</div>
-
-	<div class="prose">
-		<p data-lang="ja">この 10 行で「配列を作る」「shape を確認する」「行列積を計算する」ができます。PyTorch のテンソル計算と読み方がかなり近いので、先にここを通ると学習がスムーズです。</p>
-		<p data-lang="en">These 10 lines already cover array creation, shape inspection, and matrix multiplication. The reading style is close to PyTorch tensor math, making later learning smoother.</p>
-	</div>
-
-	<h2 class="section-title" data-lang="ja">4. 初学者が詰まりやすい点</h2>
-	<h2 class="section-title" data-lang="en">4. Common Beginner Stumbles</h2>
+	<h2 class="section-title" data-lang="ja">8. 初学者が詰まりやすいところ</h2>
+	<h2 class="section-title" data-lang="en">8. Common Beginner Stumbles</h2>
 	<div class="warn-box">
-		<p data-lang="ja"><strong>よくある詰まり:</strong> 1) shape を見ないまま計算する 2) axis の意味を取り違える 3) list と ndarray を混同する</p>
-		<p data-lang="en"><strong>Common stumbles:</strong> 1) Computing without checking shape 2) Misreading axis semantics 3) Mixing list and ndarray mental models</p>
+		<p data-lang="ja"><strong>よくある詰まり:</strong><br>1) shape を見ないまま計算する<br>2) list と NumPy の配列を同じ気分で扱う<br>3) axis の向きを混乱する</p>
+		<p data-lang="en"><strong>Common stumbles:</strong><br>1) Computing without checking shape<br>2) Treating Python lists and NumPy arrays as if they were the same<br>3) Getting confused about axis directions</p>
 	</div>
 
-	<h2 class="section-title" data-lang="ja">5. NumPyとPyTorchの関係</h2>
-	<h2 class="section-title" data-lang="en">5. NumPy and PyTorch Relationship</h2>
+	<h2 class="section-title" data-lang="ja">9. NumPy と PyTorch の関係</h2>
+	<h2 class="section-title" data-lang="en">9. NumPy and PyTorch</h2>
 	<div class="prose">
-		<p data-lang="ja">NumPy は CPU 側の配列計算基盤、PyTorch はそれを拡張して自動微分や GPU 実行を持つ学習向け基盤、と考えると把握しやすいです。つまり、NumPy は PyTorch を読むための語彙づくりに向いています。</p>
-		<p data-lang="en">A useful mental model: NumPy is the CPU-side array foundation, while PyTorch extends this style with autograd and GPU execution for learning workflows. NumPy builds vocabulary for reading PyTorch code.</p>
+		<p data-lang="ja">NumPy は、<strong>数字の表を読む練習</strong>に向いています。PyTorch は、その考え方を持ったまま、AI モデルを書いたり、学習で必要な計算をしたり、GPU で動かしたりできる道具です。</p>
+		<p data-lang="en">NumPy is great for <strong>practising how to read tables of numbers</strong>. PyTorch keeps that same way of thinking, but extends it to writing AI models, doing training-related computation, and running on GPUs.</p>
+		<p data-lang="ja">つまり、<strong>NumPy = 数字の表の練習</strong>、<strong>PyTorch = その考え方で AI を作って動かす道具</strong> と考えるとわかりやすいです。</p>
+		<p data-lang="en">A useful picture is: <strong>NumPy = practice with numeric tables</strong>, and <strong>PyTorch = use the same style to build and run AI</strong>.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>ROCm とのつながり:</strong> ROCm 系のページで出てくる入力や出力の shape も、まずは NumPy の表を見る感覚で読むと入りやすいです。</p>
+		<p data-lang="en"><strong>Connection to ROCm:</strong> The input and output shapes shown on ROCm-related pages are easier to read if you keep the NumPy “table of numbers” picture in mind.</p>
 	</div>
 
 	<div class="next-links">
 		<strong data-lang="ja">📖 次に読むなら:</strong>
 		<strong data-lang="en">📖 Read next:</strong><br>
 		<span data-lang="ja">
-			<a href="pytorch-express.html">PyTorch特急便</a> — NumPy からテンソルへ進む<br>
-			<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 行列計算の意味を図で補強
+			<a href="pytorch-express.html">PyTorch特急便</a> — NumPy の「数字の表」の考え方が、PyTorch の tensor にどうつながるかを見る<br>
+			<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 行列やベクトルの意味を、図やたとえで補強する
 		</span>
 		<span data-lang="en">
-			<a href="pytorch-express.html">PyTorch Express</a> — Move from NumPy to tensors
-			<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Reinforce matrix intuition with diagrams
+			<a href="pytorch-express.html">PyTorch Express</a> — See how NumPy’s table-of-numbers thinking connects to PyTorch tensors<br>
+			<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Reinforce vectors and matrices with diagrams and analogies
 		</span>
 	</div>
 
