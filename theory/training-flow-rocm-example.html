@@ -78,6 +78,8 @@
 	<div class="fact-box">
 		<p data-lang="ja"><strong>注記:</strong> このページの GPU 指定は "cuda" 表記ですが、ROCm版 PyTorch の互換 API 名です。実行経路は HIP/ROCm です。</p>
 		<p data-lang="en"><strong>Note:</strong> GPU selection appears as "cuda" in this page, but that is the compatibility API name used by PyTorch ROCm. Execution path is HIP/ROCm.</p>
+		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① 学習時の主要計算経路は HIP/rocBLAS/MIOpen 側で走る ② 実行観測は rocprof が基本 ③ どの経路が使われるかは GPU 世代と演算条件に依存します。</p>
+		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Main training paths run through HIP/rocBLAS/MIOpen 2) rocprof is the primary observation tool 3) The chosen path depends on GPU generation and operation conditions.</p>
 	</div>
 
 	<!-- ── 1 ── -->

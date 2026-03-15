@@ -77,6 +77,8 @@
 	<div class="fact-box">
 		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm では GPU デバイス名に "cuda" を使います。名前は CUDA 互換ですが、実行は HIP/ROCm 側で行われます。</p>
 		<p data-lang="en"><strong>Note:</strong> PyTorch ROCm uses "cuda" as the GPU device name. The name is CUDA-compatible, but execution runs on the HIP/ROCm side.</p>
+		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① 推論の実行基盤は HIP/rocBLAS/MIOpen ② 観測ツールは rocprof ③ 実機ごとの対応境界・最適経路により挙動差が出る場合があります。</p>
+		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Inference runs on HIP/rocBLAS/MIOpen foundations 2) rocprof is used for observation 3) Behavior can differ with hardware support boundaries and optimal-path selection.</p>
 	</div>
 
 	<!-- ── 1 ── -->
