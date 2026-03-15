@@ -280,17 +280,28 @@
   <h2 class="section-title" data-lang="en">④ What is softmax?</h2>
 
   <div class="prose">
-    <p data-lang="ja">まず、各単語ペアに「関係の深さスコア」を計算します。しかしスコアはバラバラな数値なので、<strong>「合計が 1 になる割合」に変換</strong>する必要があります。その変換をするのが <strong>softmax</strong> です。</p>
-    <p data-lang="en">First, a "relevance score" is computed for every word pair. But raw scores are arbitrary numbers. They need to be <strong>converted into proportions that add up to 1</strong>. That conversion is what <strong>softmax</strong> does.</p>
+    <p data-lang="ja">各単語ペアの「関係の強さ」に点数をつけます。でも、そのままでは点数の大きさがバラバラで使いにくいです。</p>
+    <p data-lang="en">A "relevance score" is computed for every word pair. But raw scores are awkward to work with as-is — they're just arbitrary numbers of different sizes.</p>
+    <p data-lang="ja">そこで <strong>softmax</strong> の出番です。softmax は、バラバラの点数を <strong>「どの単語にどれだけ注目するか」の振り分け</strong> に変える仕組みです。関係が深い単語には大きく、あまり関係ない単語には少しだけ注目が配られます。</p>
+    <p data-lang="en">That's where <strong>softmax</strong> comes in. softmax turns those uneven scores into a <strong>distribution of attention</strong> — assigning a lot of attention to relevant words and very little to unrelated ones.</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">おこづかいのたとえ：</strong>
+    <strong data-lang="en">The allowance analogy:</strong>
+    <p data-lang="ja" style="margin:8px 0 0;">「注目ポイント」が 10 枚あるとして、「太郎」「ケーキ」「食べた」に配るとします。点数が高かった「太郎」にはたくさん、低かった「食べた」にはほんの少しだけ配ります。</p>
+    <p data-lang="en" style="margin:8px 0 0;">Imagine 10 "attention tokens" to hand out among "Taro", "cake", and "ate". Most go to "Taro" (highest score), very few to "ate" (lowest score).</p>
+    <p data-lang="ja" style="margin:6px 0 0;">softmax は、ちょうどこういう「注目の配り方」を自動で決める仕組みです。</p>
+    <p data-lang="en" style="margin:6px 0 0;">softmax automates exactly this kind of distribution.</p>
   </div>
 
   <div class="callout callout-blue">
-    <h4 data-lang="ja">softmax = 点数を「合計 1 の注目割合」に変える関数</h4>
-    <h4 data-lang="en">softmax = a function that turns scores into "attention shares" summing to 1</h4>
+    <h4 data-lang="ja">点数 → 注目の振り分け</h4>
+    <h4 data-lang="en">Scores → attention distribution</h4>
     <div class="softmax-row">
       <div>
-        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="ja">スコア（生の数字）</div>
-        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="en">Raw scores</div>
+        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="ja">点数（バラバラな数字）</div>
+        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="en">Raw scores (uneven numbers)</div>
         <div style="display:flex;gap:6px;">
           <span class="score-chip">太郎: 8.2</span>
           <span class="score-chip">ケーキ: 1.4</span>
@@ -298,25 +309,25 @@
         </div>
       </div>
       <span class="arrow-lbl">→</span>
-      <div style="font-size:22px;color:#888;font-weight:700;">softmax</div>
+      <div style="font-size:18px;color:#888;font-weight:700;text-align:center;">softmax<br><span style="font-size:11px;color:#aaa;font-weight:400;" data-lang="ja">大きいほど多く配る</span><span style="font-size:11px;color:#aaa;font-weight:400;" data-lang="en">bigger score → more attention</span></div>
       <span class="arrow-lbl">→</span>
       <div>
-        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="ja">注目割合（合計 = 1）</div>
-        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="en">Attention weights (sum = 1)</div>
+        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="ja">注目の配り方</div>
+        <div style="font-size:12px;color:#888;margin-bottom:4px;" data-lang="en">Attention distribution</div>
         <div style="display:flex;gap:6px;">
-          <span class="weight-chip">太郎: 0.87</span>
-          <span class="weight-chip">ケーキ: 0.08</span>
-          <span class="weight-chip">食べた: 0.05</span>
+          <span class="weight-chip">太郎: 87%</span>
+          <span class="weight-chip">ケーキ: 8%</span>
+          <span class="weight-chip">食べた: 5%</span>
         </div>
       </div>
     </div>
-    <p data-lang="ja" style="margin:10px 0 0;font-size:13px;color:#555;">「太郎」に 87% 注目、「ケーキ」に 8%、「食べた」に 5% 注目、という注目の割り当てになります。</p>
-    <p data-lang="en" style="margin:10px 0 0;font-size:13px;color:#555;">Result: 87% attention on "Taro", 8% on "cake", 5% on "ate" — a clear, proportional assignment.</p>
+    <p data-lang="ja" style="margin:10px 0 0;font-size:13px;color:#555;">「彼」を処理するとき、注目の 87% を「太郎」に向ける、というイメージです。全部合わせると 100% ぶん配りきった状態になります。</p>
+    <p data-lang="en" style="margin:10px 0 0;font-size:13px;color:#555;">When processing "he," 87% of attention goes to "Taro." Together all shares add up to 100% — all the attention has been distributed.</p>
   </div>
 
   <div class="prose">
-    <p data-lang="ja">「なんでわざわざ割合に直すの？」という疑問は自然です。理由は2つあります：①あとで「情報を割合通りに混ぜ合わせる」計算をするため、②スコアが大きすぎたり小さすぎたりしても安定して計算できるためです。</p>
-    <p data-lang="en">You might ask: "Why convert to proportions?" Two reasons: ① the next step is to blend information in exactly these proportions, and ② it keeps the arithmetic numerically stable no matter how large or small the raw scores are.</p>
+    <p data-lang="ja">なぜ「全部で 100%（＝合計 1）」になるように揃えるかというと、あとで「注目の強さに比例して情報を混ぜる」計算をするためです。全部配りきった状態にしておくと、その計算がきれいにまとまります。</p>
+    <p data-lang="en">The reason the shares are kept at 100% (sum = 1) is that the next step blends information in proportion to these shares. Having them sum to 1 makes that blending step clean and well-defined.</p>
   </div>
 
   <!-- 5. Q / K / V -->
