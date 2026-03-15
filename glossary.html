@@ -149,7 +149,9 @@
 
   <div class="hero">
     <h1><span data-lang="ja">用語解説</span><span data-lang="en">Glossary</span></h1>
-    <p data-lang="ja">ROCm・GPU アーキテクチャ・ソフトウェアスタックの用語を、専門外の方でも読めるように整理しました。<br>まず要点 → 重要 8 語 → 詳しい辞書 → 深掘り用語、の順に読めます。</p>
+    <p data-lang="ja">ROCm・GPU アーキテクチャ・ソフトウェアスタックの用語を整理した辞書です。<br>
+      <strong>緑のボックス「やさしく言うと」</strong>から読めば、専門知識ゼロでも意味がつかめます。<br>
+      まず要点 → 重要 8 語 → 詳しい辞書 → 深掘り用語、の順に読めます。</p>
     <p data-lang="en">Key terms from ROCm, GPU architecture, and the software stack, organized for accessibility.<br>Read in order: key point → 8 essential terms → detailed dictionary → deep-dive terms.</p>
   </div>
 
@@ -481,6 +483,7 @@ flowchart TD
       <p class="term-name">ROCm</p>
       <p class="term-aka" data-lang="ja">Radeon Open Compute Platform</p>
       <p class="term-aka" data-lang="en">Radeon Open Compute Platform</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>AMD GPU を動かすためのソフトウェアがぜんぶ入った「大きな道具箱」の名前です。ドライバ（GPU と PC を繋ぐもの）、計算ライブラリ、コンパイラ（プログラムを翻訳するもの）などがひとまとめになっています。一つの巨大プログラムではなく、多数のソフトの「集合体」です。</div>
       <p class="term-def" data-lang="ja">AMD の GPU 向けオープンソースソフトウェアスタック全体の総称。ドライバ・ランタイム・ライブラリ・コンパイラツールチェーンをまとめた「エコシステム」。単一のリポジトリではなく、多数のリポジトリのマニフェスト（管理ファイル）が「ROCm リポジトリ」。</p>
       <p class="term-def" data-lang="en">The umbrella name for AMD's open-source GPU software stack: drivers, runtimes, libraries, and compiler toolchains. Not a single repository but a manifest coordinating many repos.</p>
       <div class="term-key" data-lang="ja"><strong>構成:</strong> drivers / HIP / MIOpen / rocBLAS / Tensile / CK / rocMLIR / ROCr など</div>
@@ -492,6 +495,7 @@ flowchart TD
       <p class="term-name">HIP</p>
       <p class="term-aka" data-lang="ja">Heterogeneous-computing Interface for Portability</p>
       <p class="term-aka" data-lang="en">Heterogeneous-computing Interface for Portability</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>AMD GPU 向けプログラミングの「標準変換窓口」です。ゲームや AI プログラムを「どの世代の AMD GPU でも同じコードで動かせる」ようにする翻訳担当です。NVIDIA GPU 向けの CUDA コードを AMD GPU でも動くように変換するツールも含まれます。</div>
       <p class="term-def" data-lang="ja">CUDA に似た API で AMD GPU をプログラムするための移植性レイヤ。CUDA コードを HIP に変換するツールもある。GPU の種類を抽象化し、上位ライブラリが特定 GPU に縛られないようにする役割を持つ。</p>
       <p class="term-def" data-lang="en">A CUDA-like API portability layer for AMD GPUs. Tools exist to translate CUDA code to HIP. Abstracts away specific GPU details so higher-level libraries don't depend on particular hardware.</p>
       <div class="term-key" data-lang="ja"><strong>役割:</strong> 上位コードと GPU 世代の差を吸収する「翻訳層」</div>
@@ -525,6 +529,7 @@ flowchart TD
       <p class="term-name">Tensile</p>
       <p class="term-aka" data-lang="ja">rocBLAS のカーネル自動チューニングシステム</p>
       <p class="term-aka" data-lang="en">Auto-tuning system for rocBLAS kernels</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>rocBLAS の「カーネル工場」です。行列の掛け算（GEMM）の計算プログラムを、GPU の種類ごとに自動で最適化して量産します。gfx900 向けカーネルも Tensile が生成したファイルが ROCm 7.2 に入っています。</div>
       <p class="term-def" data-lang="ja">行列積（GEMM）カーネルを GPU アーキテクチャごとに最適化し、rocBLAS に収録するためのシステム。Python で書かれており、community contributor が gfx900 向けの arch parsing を追加した経緯がある。</p>
       <p class="term-def" data-lang="en">A system that generates and tunes matrix multiplication (GEMM) kernels per GPU architecture for inclusion in rocBLAS. Written in Python; community contributors have added gfx900-specific arch parsing.</p>
       <div class="term-key" data-lang="ja"><strong>調査との関係:</strong> 外部 contributor が fallback 拡張を追加 → AMD 関連が revert した経緯あり (PR#1862→#1879)</div>
@@ -536,6 +541,7 @@ flowchart TD
       <p class="term-name">rocMLIR</p>
       <p class="term-aka" data-lang="ja">MLIR ベースの AMD GPU コンパイラバックエンド</p>
       <p class="term-aka" data-lang="en">MLIR-based AMD GPU compiler backend</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>MIOpen の「新型コンパイラ経路」です。新しい技術（MLIR）を使って GPU の計算プログラムを作る担当ですが、gfx900 は入口の段階で「使わせない」ガードがかかっています。そのため gfx900 ではここには到達しません。</div>
       <p class="term-def" data-lang="ja">MLIR（Multi-Level Intermediate Representation）を使って GPU カーネルをコンパイルするバックエンド。MIOpen の MLIR iGEMM ソルバーが使用する。gfx900 は IsApplicable で除外されており、このバックエンドは到達しない。</p>
       <p class="term-def" data-lang="en">A compiler backend using MLIR (Multi-Level Intermediate Representation) to compile GPU kernels. Used by MIOpen's MLIR iGEMM solvers. gfx900 is excluded at the IsApplicable gate and never reaches this backend.</p>
       <div class="term-key" data-lang="ja"><strong>gfx900 との関係:</strong> gfx900 は明示除外済み。MIOpen PR #1328 (commit 2407d2f) が起点。</div>
@@ -566,6 +572,7 @@ flowchart TD
       <p class="term-name">IsApplicable()</p>
       <p class="term-aka" data-lang="ja">ソルバーの適用可能性チェック関数</p>
       <p class="term-aka" data-lang="en">solver applicability check function</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>ソルバーが「自分は今の GPU に使えるか？」を答えるチェック関数です。入口の守衛のようなもので、gfx900 が MLIR 系ソルバーを使おうとすると「NO（使えない）」と返します。このチェックを通過したソルバーだけが実際に使われます。</div>
       <p class="term-def" data-lang="ja">各ソルバーが「今の GPU・dtype・形状の組み合わせに使えるか」を判定する関数。gfx900 では MLIR iGEMM ソルバーが明示的に false を返す（= 使えない）実装になっている。</p>
       <p class="term-def" data-lang="en">A function each solver implements to answer "can I handle this GPU + dtype + shape combination?" For gfx900, the MLIR iGEMM solver explicitly returns false (not applicable).</p>
       <div class="term-key" data-lang="ja"><strong>重要な実装:</strong> <code>if(StartsWith(device_name, "gfx900")) return false;</code> — conv_mlir_igemm_fwd.cpp より</div>
@@ -621,6 +628,7 @@ flowchart TD
       <p class="term-name">HSACO</p>
       <p class="term-aka" data-lang="ja">HSA Code Object / AMD GPU 実行バイナリ</p>
       <p class="term-aka" data-lang="en">HSA Code Object / AMD GPU executable binary</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>AMD GPU 向けの「実行ファイル」です。パソコンでいう「.exe ファイル」の GPU 版です。gfx900 向けに作られた HSACO が ROCm パッケージに入っているということは、AMD が意図的に gfx900 用にビルドしていた証拠として使えます。</div>
       <p class="term-def" data-lang="ja">AMD GPU 向けのコンパイル済みカーネルバイナリ形式（拡張子 .hsaco）。`--offload-arch=gfx900` を指定してコンパイルした場合にのみ gfx900 向けの HSACO が生成される。ROCm 7.2 パッケージに gfx900 向け HSACO が含まれることは、積極的なビルドパイプラインの証拠。</p>
       <p class="term-def" data-lang="en">A compiled kernel binary format for AMD GPUs (.hsaco extension). A gfx900-targeted HSACO is only generated if explicitly compiled with --offload-arch=gfx900. The presence of gfx900 HSACOs in ROCm 7.2 packages is evidence of an active build pipeline.</p>
       <div class="term-key" data-lang="ja"><strong>逆アセンブル:</strong> llvm-objdump で読める。この調査では <code>v_dot4_*</code> 命令の有無を確認した。</div>
