@@ -534,8 +534,8 @@
 		<section class="flow-section">
 			<h3 class="flow-title" data-lang="ja">3. さらに研究向けの根拠へ進む</h3>
 			<h3 class="flow-title" data-lang="en">3. Go deeper into the research evidence</h3>
-			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、gfx900 仮説ページ、そこから一段引いた ROCm 全体像ページ、release block・retired/deprecated repo・late-phase layout 再編まで含めた GitHub 履歴タイムライン、そして code / solver trace 資料へ進めます。</p>
-			<p class="flow-lead" data-lang="en">For deeper research evidence, you can move from the gfx900 hypothesis page to the broader ROCm design-model page, then into the GitHub history timeline with release blocks, retired/deprecated repos, and late-phase layout reorganization, and finally to the code / solver trace reference decks.</p>
+			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、gfx900 仮説ページ、そこから一段引いた ROCm 全体像ページ、GitHub 一次資料から ROCm 一般の構造を読む独立ページ、release block・retired/deprecated repo・late-phase layout 再編まで含めた GitHub 履歴タイムライン、そして code / solver trace 資料へ進めます。</p>
+			<p class="flow-lead" data-lang="en">For deeper research evidence, you can move from the gfx900 hypothesis page to the broader ROCm design-model page, then into a standalone page on ROCm-wide structure read from GitHub primary sources, then the GitHub history timeline with release blocks, retired/deprecated repos, and late-phase layout reorganization, and finally the code / solver trace reference decks.</p>
 			<div class="card-grid">
 				<article class="card">
 					<span class="card-type type-hypothesis">Hypothesis</span>
@@ -572,6 +572,25 @@
 					<div class="actions">
 						<a class="button button-primary" href="reveal-hypothesis.html">Open</a>
 						<a class="button button-secondary" href="./reveal-hypothesis.html">Direct URL</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-hypothesis" style="background:#1565C0;">Structure</span>
+					<h3 data-lang="ja">ROCm の構造と貢献レイヤ</h3>
+					<h3 data-lang="en">ROCm Structure and Contribution Layers</h3>
+					<p class="filename">rocm-structure.html</p>
+					<p data-lang="ja">ROCm 全体を、GitHub 側の一次資料から layered stack、support の意味の分離、repo topology の統合、AMD と community の寄与レイヤという観点で整理した独立ページです。gfx900 個別事例から一段引いて、ROCm 一般の構造を public 向けに読みやすくまとめています。</p>
+					<p data-lang="en">A standalone page that reads ROCm-wide structure from GitHub-side primary material: layered stack organization, split meanings of support, repository-topology consolidation, and the contribution layers of AMD and the community. It steps back from the gfx900 case and summarizes the broader ROCm structure for public readers.</p>
+					<ul>
+						<li data-lang="ja">Fact / Interpretation / Open Question を分離</li>
+						<li data-lang="en">Separates facts, interpretations, and open questions</li>
+						<li data-lang="ja">TheRock / rocm-systems / retired repo / public issue・PR を横断</li>
+						<li data-lang="en">Cross-reads TheRock, rocm-systems, retired repos, and public issues/PRs</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="rocm-structure.html">Open</a>
+						<a class="button button-secondary" href="./rocm-structure.html">Direct URL</a>
 					</div>
 				</article>
 

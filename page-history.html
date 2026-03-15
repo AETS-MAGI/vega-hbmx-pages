@@ -410,6 +410,63 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">ROCm 全体の構造を読む独立ページを追加</h2>
+        <h2 data-lang="en">Added a standalone page for ROCm-wide structure</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">`gfx900` を起点に見えてきた ROCm 一般の構造は、仮説ページや履歴ページに少しずつ散らすより、独立した public page としてまとめたほうが責務が明確だと判断した。GitHub 側の一次資料から読める layered stack / support の多層性 / repo topology の統合 / contribution layers を、専用ページとして公開した。</p>
+      <p class="entry-lead" data-lang="en">The ROCm-wide structure that became visible through the <code>gfx900</code> investigation was clearer as a standalone public page than as fragments scattered across the hypothesis and history pages. A dedicated page now presents the layered stack, split meanings of support, repository-topology consolidation, and contribution layers visible from GitHub-side primary material.</p>
+      <div class="file-list">
+        <span class="file-tag">rocm-structure.html</span>
+        <span class="file-tag">index.html</span>
+        <span class="file-tag">reveal-hypothesis.html</span>
+        <span class="file-tag">rocm-history.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>rocm-structure.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">ROCm 全体の構造に関する説明は、主に <code>reveal-hypothesis.html</code> の仮説要約と <code>rocm-history.html</code> の年表のあいだに分散しており、GitHub 側の evidence をまとめて読む専用ページはなかった。</p>
+            <p data-lang="en">ROCm-wide structural explanation was distributed across the hypothesis summary and the history timeline, and there was no dedicated page for reading the GitHub-side evidence as one coherent structure.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">新規ページ <code>rocm-structure.html</code> を追加し、layered stack、support の意味の分離、repo consolidation、AMD と community の寄与レイヤを、<code>Fact / Interpretation / Open Question</code> を分けた public summary として表示できるようにした。</p>
+            <p data-lang="en">A new page, <code>rocm-structure.html</code>, now presents layered stack boundaries, split meanings of support, repository consolidation, and AMD/community contribution layers as a public summary separated into <code>Fact / Interpretation / Open Question</code>.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> investigation note <code>rocm-common-investigate_github.md</code> が、ROCm 一般の構造を GitHub 側の一次資料からまとめて読める段階まで育ったため。AGENTS.md に合わせ、断定しすぎずに public へ出せる材料が揃った。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The investigation note <code>rocm-common-investigate_github.md</code> matured enough to support a ROCm-wide structural reading from GitHub-side primary evidence. This provided material that could be published in AGENTS.md-compatible, non-overstated wording.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>index.html</code> / <code>reveal-hypothesis.html</code> / <code>rocm-history.html</code> / <code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">トップ導線は <code>hypothesis → reveal-hypothesis → rocm-history</code> を中心に組まれており、ROCm 一般の構造を独立して読む入口は見えにくかった。</p>
+            <p data-lang="en">The top-level route centered on <code>hypothesis → reveal-hypothesis → rocm-history</code>, and there was no clearly visible entry point for ROCm-wide structure as its own topic.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">index に <code>Structure</code> カードを追加し、<code>reveal-hypothesis.html</code> と <code>rocm-history.html</code> の action からも新ページへ移動できるようにした。README でも収録ファイルと閲覧順に <code>rocm-structure.html</code> を明記した。</p>
+            <p data-lang="en">The index now includes a <code>Structure</code> card, both <code>reveal-hypothesis.html</code> and <code>rocm-history.html</code> now link into the new page, and the README now lists <code>rocm-structure.html</code> in both the file inventory and suggested reading order.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">Markdown 側の整理に合わせて実験年表も 2026-03-15 フェーズまで拡張</h2>
         <h2 data-lang="en">Extended the experiment timeline through the 2026-03-15 GitHub-synthesis phase</h2>
         <span class="entry-date">2026-03-15</span>

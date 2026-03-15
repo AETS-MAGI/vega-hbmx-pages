@@ -44,7 +44,11 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - gfx900 個別調査を起点にしながら、ROCm 一般の設計思想を GitHub 側の一次資料で検証した要約ページです。
 - layered support、capability-based fallback、staged deprecation、repo-level consolidation、deprecated branch に残る legacy knowledge、support の層分解、AMD とコミュニティの役割分解を扱います。
 
-### 7. `rocm-history.html`
+### 7. `rocm-structure.html`
+- ROCm 全体を、GitHub 側の一次資料から layered stack、support の意味の分離、repo topology の統合、AMD と community の寄与レイヤという観点で整理した独立ページです。
+- `TheRock`、`rocm-systems`、retired repo README、public issue / PR のような複数の public source をまとめて読みたい人向けです。
+
+### 8. `rocm-history.html`
 - これまでに確定した commit、release block、issue trail をもとに、ROCm の変遷を public 向けの年表として整理したページです。
 - `gfx900` を入口にしつつ、component ごとの追加・後退・統合・fallback に加えて、retired/deprecated repo の再編と late-phase layout/docs 再編も時間軸で読めるようにしています。
 
@@ -96,6 +100,8 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
   - Audit-log page for public-site wording changes, including old wording, new wording, rationale, and affected pages.
 - `reveal-hypothesis.html`
   - Public summary page for the ROCm-wide design-model hypotheses revealed by the gfx900 investigation, including repo-level consolidation and legacy knowledge left in deprecated branches.
+- `rocm-structure.html`
+  - Standalone public page that reads ROCm-wide structure and contribution layers from GitHub-side primary evidence, including layered stack boundaries, support splitting, repository consolidation, and AMD/community role layering.
 - `rocm-history.html`
   - Public-facing ROCm chronology built from the already-confirmed GitHub-side timeline anchors, including retired/deprecated-repo reorganization and late layout/docs migration signals.
 - `code-tracing.html`
@@ -124,6 +130,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Use `media.html` for the audio commentary and poster PDF.
 - Read `experiment-history.html` for the investigation timeline (Steps 1–12, including the GitHub chronology / PR-context synthesis phase).
 - Open `reveal-hypothesis.html` for the ROCm-wide design-model interpretation revealed by the gfx900 investigation, including repo-level consolidation and legacy knowledge left in deprecated branches.
+- Open `rocm-structure.html` for a GitHub-grounded reading of ROCm-wide structure and contribution layers beyond the gfx900-specific case.
 - Open `rocm-history.html` for the public GitHub-side chronology of ROCm itself, including retired/deprecated-repo reorganization and late layout/docs migration.
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
 - Use `code-tracing.html` for the most technical evidence on `num_gpu` semantics.
