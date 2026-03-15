@@ -386,7 +386,7 @@
 			<div class="hero-meta">
 				<span class="badge">AMD Radeon RX Vega 64 / gfx900</span>
 				<span class="badge">ROCm Stack (MIOpen · rocBLAS · Tensile · CK)</span>
-				<span class="badge">2026-03-14</span>
+				<span class="badge">2026-03-15</span>
 			</div>
 		</section>
 
@@ -750,7 +750,7 @@
 				<tr><td>MLIR iGEMM 除外の投入者は誰か</td><td>AMD 社員 Zhuoran Yin</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>MLIR 除外の根拠 issue は公開か</td><td>非公開（<code>llvm-project-private</code>）</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>除外の性質（設計判断 vs バグ回避）</td><td>"Disable" はバグ回避寄り。確定不可</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
-				<tr><td>経路はコミュニティ実装で維持されているか</td><td>MLIR 除外は AMD 投入。他経路は未確定</td><td><span class="conf conf-speculative">要履歴調査</span></td></tr>
+				<tr><td>経路はコミュニティ実装で維持されているか</td><td>部分的に Yes。MLIR 除外は AMD 投入だが、Tensile の gfx900 残存性は外部 contributor PR（#1595/#1862）で補修</td><td><span class="conf conf-verified">history_verified</span></td></tr>
 				<tr><td>実際に実機で選ばれているか</td><td>FP32 solver 選択は確認済み</td><td><span class="conf conf-verified">runtime_verified</span></td></tr>
 				<tr><td>UDNA / 再統合との関係</td><td>意図は未確定、構造は観測できる</td><td><span class="conf conf-speculative">speculative</span></td></tr>
 			</tbody>
@@ -769,7 +769,7 @@
 				<tr><td>Who introduced MLIR iGEMM exclusion?</td><td>Zhuoran Yin (AMD)</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>Is the root issue public?</td><td>No (<code>llvm-project-private</code>)</td><td><span class="conf conf-verified">code_verified</span></td></tr>
 				<tr><td>Nature of exclusion (design vs bug workaround)?</td><td>"Disable" leans bug-workaround. Cannot confirm</td><td><span class="conf conf-hypothesis">hypothesis</span></td></tr>
-				<tr><td>Are paths community-maintained?</td><td>MLIR exclusion is AMD-authored. Others TBD</td><td><span class="conf conf-speculative">needs history analysis</span></td></tr>
+				<tr><td>Are paths community-maintained?</td><td>Partially yes. MLIR exclusion is AMD-authored, while Tensile gfx900 survivability was reinforced by external-contributor PRs (#1595/#1862)</td><td><span class="conf conf-verified">history_verified</span></td></tr>
 				<tr><td>Actually selected at runtime?</td><td>FP32 solver selection confirmed</td><td><span class="conf conf-verified">runtime_verified</span></td></tr>
 				<tr><td>Relation to UDNA / re-integration?</td><td>Intent undetermined; structure observable</td><td><span class="conf conf-speculative">speculative</span></td></tr>
 			</tbody>
@@ -950,6 +950,8 @@
 			<h3 data-lang="ja">完了済み</h3>
 			<h3 data-lang="en">Completed</h3>
 			<ul>
+				<li data-lang="ja">&#x2705; MIOpen PR #1328 のレビュー実データ取得（reviews: APPROVED x2、review thread comments: 0、issue comments: 2）</li>
+				<li data-lang="en">&#x2705; MIOpen PR #1328 review data collected (reviews: APPROVED x2, review-thread comments: 0, issue comments: 2)</li>
 				<li data-lang="ja">&#x2705; FP32 fallback 確認（Vega 64 で <code>ConvBinWinograd3x3U</code> / <code>ConvAsm1x1U</code> / <code>ConvHipImplicitGemmV4R1Fwd</code> を自然選択で確認）</li>
 				<li data-lang="en">&#x2705; FP32 fallback confirmed (Vega 64 naturally selected <code>ConvBinWinograd3x3U</code> / <code>ConvAsm1x1U</code> / <code>ConvHipImplicitGemmV4R1Fwd</code>)</li>
 				<li data-lang="ja">&#x2705; HSACO 逆アセンブル手順の確立</li>
@@ -967,12 +969,10 @@
 			<h3 data-lang="ja">未完了（優先度順）</h3>
 			<h3 data-lang="en">Remaining (by priority)</h3>
 			<ul>
-				<li data-lang="ja">&#x1F538; MIOpen PR #1328 のレビューコメントで追加背景情報を確認（<code>gh pr view 1328 --repo ROCm/MIOpen --comments</code>）</li>
-				<li data-lang="en">&#x1F538; Review MIOpen PR #1328 comments for background context (<code>gh pr view 1328 --repo ROCm/MIOpen --comments</code>)</li>
 				<li data-lang="ja">&#x1F538; 公開 <code>llvm-project</code> で gfx900 / MLIR 関連の commit / issue を再探索</li>
 				<li data-lang="en">&#x1F538; Search public <code>llvm-project</code> for gfx900 / MLIR related commits and issues</li>
-				<li data-lang="ja">&#x1F538; <code>MiirIsConfigApplicable</code> 内部の制約確認（MLIR ライブラリ側の直接制限）</li>
-				<li data-lang="en">&#x1F538; Verify <code>MiirIsConfigApplicable</code> internal constraints (MLIR library-side restrictions)</li>
+				<li data-lang="ja">&#x1F538; <code>MiirIsConfigApplicable</code> の返り値条件を Miir 側ソース（非公開）まで到達して確定</li>
+				<li data-lang="en">&#x1F538; Confirm exact return conditions of <code>MiirIsConfigApplicable</code> by reaching Miir-side source (private)</li>
 				<li data-lang="ja">&#x1F538; 他の gfx900 関連コミットへの AMD 社員 / 外部貢献の分類拡張</li>
 				<li data-lang="en">&#x1F538; Extend AMD employee vs external contributor classification to other gfx900 commits</li>
 				<li data-lang="ja">&#x1F538; Provenance map の作成</li>
@@ -993,8 +993,8 @@
 		</div>
 
 		<div class="footer">
-			<span data-lang="ja">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-14 | <a href="index.html">&#8592; トップへ戻る</a></span>
-			<span data-lang="en">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-14 | <a href="index.html">&#8592; Back to index</a></span>
+			<span data-lang="ja">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-15 | <a href="index.html">&#8592; トップへ戻る</a></span>
+			<span data-lang="en">vega-hbmx-pages | Hypothesis: gfx900 Structural Analysis | 2026-03-15 | <a href="index.html">&#8592; Back to index</a></span>
 		</div>
 	</div>
 
