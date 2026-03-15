@@ -410,6 +410,49 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">Mermaid 図のサイズ制御をページ横断で正規化</h2>
+        <h2 data-lang="en">Normalized Mermaid sizing across pages</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">複数ページで Mermaid 図が大きすぎたり小さすぎたりしていたため、各ページ固有の <code>min-width</code> ベース調整をやめ、共通 CSS と共通初期化スクリプトでサイズをそろえる方式へ切り替えた。</p>
+      <p class="entry-lead" data-lang="en">Because Mermaid diagrams were appearing too large on some pages and too small on others, the page-specific <code>min-width</code> tweaks were replaced with one shared CSS layer and one shared initialization script.</p>
+      <div class="file-list">
+        <span class="file-tag">glossary.html</span>
+        <span class="file-tag">code-tracing.html</span>
+        <span class="file-tag">hypothesis.html</span>
+        <span class="file-tag">reveal-hypothesis.html</span>
+        <span class="file-tag">rocm-ecosystem.html</span>
+        <span class="file-tag">rocm-history.html</span>
+        <span class="file-tag">rocm-structure.html</span>
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">linear-algebra-for-rocm.html</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>Mermaid pages</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">多くのページで <code>.mermaid svg { width: 100%; min-width: 700px; }</code> のような指定を個別に持っており、小さい図が不必要に拡大される一方、別の図はページごとに見え方が揺れていた。</p>
+            <p data-lang="en">Many pages carried their own rules such as <code>.mermaid svg { width: 100%; min-width: 700px; }</code>, which forced small diagrams to enlarge unnecessarily while leaving the overall sizing inconsistent from page to page.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">Mermaid を使うページを共通スタイル <code>styles/mermaid-layout.css</code> と共通初期化 <code>scripts/mermaid-page.js</code> に寄せ、レンダリング後に SVG の viewBox 比率を見て <code>wide / standard / tall</code> 相当の目標幅を自動調整するようにした。</p>
+            <p data-lang="en">Pages using Mermaid now share <code>styles/mermaid-layout.css</code> and <code>scripts/mermaid-page.js</code>, with the rendered SVG viewBox ratio used to auto-pick a target width closer to wide / standard / tall layouts.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> 図の内容は同じでも、固定 <code>min-width</code> によって可読性がページごとに揺れていたため。内容は変えず、表示レイヤだけを共通化した。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The diagram content stayed the same, but fixed <code>min-width</code> rules made readability unstable across pages. Only the presentation layer was unified.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">`solver-trace.html` の棒グラフを共通デザインへ統一</h2>
         <h2 data-lang="en">Unified the bar-chart design in `solver-trace.html`</h2>
         <span class="entry-date">2026-03-15</span>
