@@ -74,6 +74,10 @@
 		<p data-lang="ja"><strong>📘 対応する理論ページ:</strong> <a href="inference-flow.html">イメージでわかる推論の流れ</a> — 推論がなぜ高速か・KV Cache などを図解</p>
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="inference-flow.html">Visual Inference Flow</a> — Why inference is fast, KV Cache, and more</p>
 	</div>
+	<div class="fact-box">
+		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm では GPU デバイス名に "cuda" を使います。名前は CUDA 互換ですが、実行は HIP/ROCm 側で行われます。</p>
+		<p data-lang="en"><strong>Note:</strong> PyTorch ROCm uses "cuda" as the GPU device name. The name is CUDA-compatible, but execution runs on the HIP/ROCm side.</p>
+	</div>
 
 	<!-- ── 1 ── -->
 	<h2 class="section-title" data-lang="ja">1. なにをするか</h2>
@@ -91,12 +95,15 @@
 	<div class="code-block"><span class="kw">import</span> torch
 <span class="kw">import</span> torch.nn <span class="kw">as</span> nn
 
+<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This page expects PyTorch ROCm build"</span>
+DEVICE = torch.device(<span class="str">"cuda"</span>)
+
 <span class="comment"># 1. モデル作成 (学習済みと仮定)</span>
-model = nn.Linear(<span class="num">3</span>, <span class="num">1</span>).to(<span class="str">"cuda"</span>)
+model = nn.Linear(<span class="num">3</span>, <span class="num">1</span>).to(DEVICE)
 model.<span class="fn">eval</span>()  <span class="comment"># 推論モードに切り替え</span>
 
 <span class="comment"># 2. 入力</span>
-x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]]).to(<span class="str">"cuda"</span>)
+x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]]).to(DEVICE)
 
 <span class="comment"># 3. 推論: forward だけ、勾配は計算しない</span>
 <span class="kw">with</span> torch.no_grad():
@@ -146,7 +153,17 @@ grad 追跡中?: False</div>
 	<div class="prose">
 		<p data-lang="ja"><code>torch.no_grad()</code> は PyTorch に「勾配を追跡しない」と伝えるコンテキストマネージャです。推論時には必ず使います。LLM（Ollama など）が会話するとき、内部ではこの forward-only が繰り返されています。</p>
 		<p data-lang="en"><code>torch.no_grad()</code> tells PyTorch "don't track gradients." Always use it for inference. When an LLM (like Ollama) chats with you, this forward-only loop is what runs internally.</p>
+		<p data-lang="ja">ROCm観点では、推論の主計算は行列演算（Linear、Attention の QK<sup>T</sup> など）で、主に rocBLAS 系の計算経路に乗ります。学習時の backward/update がない点が、推論軽量化の中心です。</p>
+		<p data-lang="en">From a ROCm perspective, inference is dominated by matrix math (Linear, QK<sup>T</sup> in Attention, etc.), mostly along rocBLAS paths. The absence of backward/update is the core reason inference is lighter.</p>
 	</div>
+
+	<h2 class="section-title" data-lang="ja">5. ROCmで観測するポイント</h2>
+	<h2 class="section-title" data-lang="en">5. What to Observe on ROCm</h2>
+	<div class="code-block"><span class="comment"># ROCm ビルド確認</span>
+python -c <span class="str">"import torch; print('torch.version.hip =', torch.version.hip)"</span>
+
+<span class="comment"># 推論（forward only）の HIP 呼び出し観測</span>
+rocprof --hip-trace python inference_example.py</div>
 
 	<!-- ── next ── -->
 	<div class="next-links">

@@ -77,6 +77,10 @@
 		<p data-lang="ja"><strong>📘 対応する理論ページ:</strong> <a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — ベクトル・行列・行列積の意味を図で理解する</p>
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Understand vectors, matrices, and matrix multiply through diagrams</p>
 	</div>
+	<div class="fact-box">
+		<p data-lang="ja"><strong>注記:</strong> PyTorch の ROCm ビルドでは、GPU デバイス名に "cuda" 文字列を使います。これは NVIDIA 専用を意味せず、内部実行は HIP/ROCm 経路です。</p>
+		<p data-lang="en"><strong>Note:</strong> In PyTorch ROCm builds, GPU device selection still uses the string "cuda". This does not mean NVIDIA-only execution; the runtime path is HIP/ROCm.</p>
+	</div>
 
 	<!-- ── 1. なにをするか ── -->
 	<h2 class="section-title" data-lang="ja">1. なにをするか</h2>
@@ -97,6 +101,10 @@
 
 	<div class="code-block"><span class="kw">import</span> torch
 
+<span class="comment"># ROCm ビルド確認（None なら CUDA/NVIDIA 版や CPU 版）</span>
+<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This page expects PyTorch ROCm build"</span>
+DEVICE = torch.device(<span class="str">"cuda"</span>)  <span class="comment"># ROCm PyTorch でも GPU はこのデバイス名で公開される</span>
+
 <span class="comment"># 行列 A (2×3) と 行列 B (3×2) を作る</span>
 A = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>],
                   [<span class="num">4.0</span>, <span class="num">5.0</span>, <span class="num">6.0</span>]])
@@ -106,8 +114,8 @@ B = torch.tensor([[<span class="num">7.0</span>,  <span class="num">8.0</span>],
                   [<span class="num">11.0</span>, <span class="num">12.0</span>]])
 
 <span class="comment"># GPU に送る</span>
-A_gpu = A.to(<span class="str">"cuda"</span>)
-B_gpu = B.to(<span class="str">"cuda"</span>)
+A_gpu = A.to(DEVICE)
+B_gpu = B.to(DEVICE)
 
 <span class="comment"># 行列積 (GEMM)</span>
 C_gpu = torch.<span class="fn">matmul</span>(A_gpu, B_gpu)
@@ -157,18 +165,33 @@ tensor([[ 58.,  64.],
 		<p data-lang="en">A single line <code>torch.matmul</code> runs thousands of multiply-add operations in parallel on the GPU. The larger the matrices, the more GPU parallelism pays off.</p>
 	</div>
 
+	<h2 class="section-title" data-lang="ja">5. ROCmで観測するポイント</h2>
+	<h2 class="section-title" data-lang="en">5. What to Observe on ROCm</h2>
+	<div class="code-block"><span class="comment"># 1) ROCm ビルド確認</span>
+python -c <span class="str">"import torch; print('torch.version.hip =', torch.version.hip)"</span>
+
+<span class="comment"># 2) 実行デバイス確認</span>
+python -c <span class="str">"import torch; print(torch.cuda.get_device_name(0))"</span>
+
+<span class="comment"># 3) matmul 実行時の HIP 呼び出し観測（rocprof）</span>
+rocprof --hip-trace python matmul_example.py</div>
+	<div class="prose">
+		<p data-lang="ja">このページの主眼は「<code>torch.matmul</code> が ROCm 側では rocBLAS GEMM へ落ちる」ことです。まず <code>torch.version.hip</code> で ROCm ビルドを確認し、必要なら <code>rocprof</code> で HIP 呼び出しを観測します。</p>
+		<p data-lang="en">The key point here is that <code>torch.matmul</code> maps to rocBLAS GEMM on ROCm. Verify ROCm build with <code>torch.version.hip</code>, then observe HIP calls with <code>rocprof</code> if needed.</p>
+	</div>
+
 	<!-- ── next ── -->
 	<div class="next-links">
 		<strong data-lang="ja">📖 次に読むなら:</strong>
 		<strong data-lang="en">📖 Read next:</strong><br>
 		<span data-lang="ja">
 			<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 理論ページに戻る<br>
-			<a href="matrices-and-ai-rocm-example.html">ROCmで見る 行列と AI</a> — y = Wx + b が GPU でどう動くか<br>
+			<a href="matrices-and-ai.html">イメージでわかる 行列と AI</a> — y = Wx + b の考え方を補強<br>
 			<a href="deep-learning-rocm-example.html">ROCmで見る 深層学習</a> — ニューラルネットの最小例
 		</span>
 		<span data-lang="en">
 			<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Back to the theory page<br>
-			<a href="matrices-and-ai-rocm-example.html">See Matrices &amp; AI in ROCm</a> — How y = Wx + b runs on GPU<br>
+			<a href="matrices-and-ai.html">Visual Guide: Matrices &amp; AI</a> — Reinforce y = Wx + b intuition<br>
 			<a href="deep-learning-rocm-example.html">See Deep Learning in ROCm</a> — Minimal neural network example
 		</span>
 	</div>

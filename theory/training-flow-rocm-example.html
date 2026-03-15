@@ -75,6 +75,10 @@
 		<p data-lang="ja"><strong>📘 対応する理論ページ:</strong> <a href="training-flow.html">イメージでわかる学習の流れ</a> — forward / backward / optimizer を図解で解説</p>
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="training-flow.html">Visual Training Flow</a> — Forward / backward / optimizer explained with diagrams</p>
 	</div>
+	<div class="fact-box">
+		<p data-lang="ja"><strong>注記:</strong> このページの GPU 指定は "cuda" 表記ですが、ROCm版 PyTorch の互換 API 名です。実行経路は HIP/ROCm です。</p>
+		<p data-lang="en"><strong>Note:</strong> GPU selection appears as "cuda" in this page, but that is the compatibility API name used by PyTorch ROCm. Execution path is HIP/ROCm.</p>
+	</div>
 
 	<!-- ── 1 ── -->
 	<h2 class="section-title" data-lang="ja">1. なにをするか</h2>
@@ -92,12 +96,15 @@
 	<div class="code-block"><span class="kw">import</span> torch
 <span class="kw">import</span> torch.nn <span class="kw">as</span> nn
 
+<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This page expects PyTorch ROCm build"</span>
+DEVICE = torch.device(<span class="str">"cuda"</span>)
+
 <span class="comment"># 1. モデル: 入力3 → 出力1</span>
-model = nn.Linear(<span class="num">3</span>, <span class="num">1</span>).to(<span class="str">"cuda"</span>)
+model = nn.Linear(<span class="num">3</span>, <span class="num">1</span>).to(DEVICE)
 
 <span class="comment"># 2. 正解データ（ダミー）</span>
-x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]]).to(<span class="str">"cuda"</span>)
-target = torch.tensor([[<span class="num">7.0</span>]]).to(<span class="str">"cuda"</span>)
+x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]]).to(DEVICE)
+target = torch.tensor([[<span class="num">7.0</span>]]).to(DEVICE)
 
 <span class="comment"># 3. 損失関数とオプティマイザ</span>
 loss_fn = nn.MSELoss()
@@ -159,6 +166,20 @@ w_after = model.weight.data.clone().cpu()
 		<p data-lang="en"><strong>forward:</strong> rocBLAS GEMM executes the matrix multiply.<br>
 		<strong>backward:</strong> Traverses the autograd graph in reverse, computing gradients for each parameter — again mostly rocBLAS.<br>
 		<strong>optimizer.step():</strong> For SGD, a simple kernel: <code>w = w - lr × grad</code>.</p>
+		<p data-lang="ja">学習は推論より重く、forward だけでなく backward と update が追加されます。ROCm 観点では、行列演算回数と中間テンソル保持が増えるため、メモリ圧と計算時間が上がります。</p>
+		<p data-lang="en">Training is heavier than inference because it adds backward and update on top of forward. From a ROCm perspective, this increases matrix operations and intermediate tensor retention, raising memory pressure and compute time.</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">5. ROCmで観測するポイント</h2>
+	<h2 class="section-title" data-lang="en">5. What to Observe on ROCm</h2>
+	<div class="code-block"><span class="comment"># ROCm ビルド確認</span>
+python -c <span class="str">"import torch; print('torch.version.hip =', torch.version.hip)"</span>
+
+<span class="comment"># 学習ステップの HIP 呼び出し観測</span>
+rocprof --hip-trace python training_step_example.py</div>
+	<div class="prose">
+		<p data-lang="ja">同じモデルで <a href="inference-flow-rocm-example.html">推論ページ</a> の実行時間と比較すると、学習側が重いことを観測できます。理論ページの「学習は重い」を実測でつなぐ目的です。</p>
+		<p data-lang="en">Compare runtime with the same model on the <a href="inference-flow-rocm-example.html">inference page</a> to observe why training is heavier. This connects the theory claim to actual measurement.</p>
 	</div>
 
 	<div class="analogy">

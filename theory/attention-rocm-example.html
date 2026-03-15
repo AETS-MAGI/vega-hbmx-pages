@@ -71,8 +71,8 @@
 	</section>
 
 	<div class="mapping">
-		<p data-lang="ja"><strong>📘 対応する理論ページ:</strong> <a href="attention-for-rocm.html">イメージでわかる Attention</a> — Q / K / V の役割とスケーリングのしくみ</p>
-		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="attention-for-rocm.html">Visual Attention</a> — Roles of Q / K / V and how scaling works</p>
+		<p data-lang="ja"><strong>📘 対応する理論ページ:</strong> <a href="attention-for-llm.html">イメージでわかる Attention</a> — Q / K / V の役割とスケーリングのしくみ</p>
+		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="attention-for-llm.html">Visual Attention</a> — Roles of Q / K / V and how scaling works</p>
 	</div>
 
 	<!-- ── 1 ── -->
@@ -92,12 +92,15 @@
 <span class="kw">import</span> torch.nn.functional <span class="kw">as</span> F
 <span class="kw">import</span> math
 
+<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This page expects PyTorch ROCm build"</span>
+DEVICE = torch.device(<span class="str">"cuda"</span>)
+
 <span class="comment"># 3トークン, 次元4 のダミー入力</span>
 x = torch.tensor([
     [<span class="num">1.0</span>, <span class="num">0.0</span>, <span class="num">1.0</span>, <span class="num">0.0</span>],  <span class="comment"># トークン A</span>
     [<span class="num">0.0</span>, <span class="num">1.0</span>, <span class="num">0.0</span>, <span class="num">1.0</span>],  <span class="comment"># トークン B</span>
     [<span class="num">1.0</span>, <span class="num">1.0</span>, <span class="num">0.0</span>, <span class="num">0.0</span>],  <span class="comment"># トークン C</span>
-]).to(<span class="str">"cuda"</span>)
+]).to(DEVICE)
 
 <span class="comment"># Self-attention: Q = K = V = x (簡略版)</span>
 Q, K, V = x, x, x
@@ -159,7 +162,7 @@ tensor([[0.6780, 0.4114, 0.4219, 0.1553],
 <span class="comment"># MultiheadAttention: 1ヘッド, 次元4</span>
 mha = nn.MultiheadAttention(
     embed_dim=<span class="num">4</span>, num_heads=<span class="num">1</span>, batch_first=<span class="kw">True</span>
-).to(<span class="str">"cuda"</span>)
+).to(DEVICE)
 
 <span class="comment"># 入力を (batch=1, seq=3, dim=4) に</span>
 x_batch = x.unsqueeze(<span class="num">0</span>)
@@ -187,6 +190,14 @@ x_batch = x.unsqueeze(<span class="num">0</span>)
 		<p data-lang="en">Each Transformer layer has one or more Attention blocks, repeated across layers × heads. This is why LLMs require massive matrix computation.</p>
 	</div>
 
+	<h2 class="section-title" data-lang="ja">6. ROCmで観測するポイント</h2>
+	<h2 class="section-title" data-lang="en">6. What to Observe on ROCm</h2>
+	<div class="code-block"><span class="comment"># ROCm ビルド確認</span>
+python -c <span class="str">"import torch; print('torch.version.hip =', torch.version.hip)"</span>
+
+<span class="comment"># Attention 実行時の HIP 呼び出し観測</span>
+rocprof --hip-trace python attention_example.py</div>
+
 	<div class="analogy">
 		<p data-lang="ja"><strong>🏭 マルチヘッドの意味:</strong> 1 つの Attention は 1 種類の関係しか学べません。MultiheadAttention は複数の「視点」から同時に注目し、結果を結合します（理論ページでは「複数の虫眼鏡」に例えています）。</p>
 		<p data-lang="en"><strong>🏭 Why multiple heads?</strong> One Attention head can only learn one kind of relationship. MultiheadAttention attends from multiple "viewpoints" simultaneously and concatenates results (the theory page calls them "multiple magnifying glasses").</p>
@@ -197,12 +208,12 @@ x_batch = x.unsqueeze(<span class="num">0</span>)
 		<strong data-lang="ja">📖 次に読むなら:</strong>
 		<strong data-lang="en">📖 Read next:</strong><br>
 		<span data-lang="ja">
-			<a href="attention-for-rocm.html">イメージでわかる Attention</a> — 理論ページに戻る<br>
+			<a href="attention-for-llm.html">イメージでわかる Attention</a> — 理論ページに戻る<br>
 			<a href="inference-flow-rocm-example.html">ROCmで見る 推論の流れ</a> — Attention が推論の中で使われる場面<br>
 			<a href="linear-algebra-rocm-example.html">ROCmで見る 線形代数</a> — QK^T の根底にある行列積
 		</span>
 		<span data-lang="en">
-			<a href="attention-for-rocm.html">Visual Attention</a> — Back to the theory page<br>
+			<a href="attention-for-llm.html">Visual Attention</a> — Back to the theory page<br>
 			<a href="inference-flow-rocm-example.html">See Inference Flow in ROCm</a> — Where Attention is used during inference<br>
 			<a href="linear-algebra-rocm-example.html">See Linear Algebra in ROCm</a> — Matrix multiply underlying QK^T
 		</span>
