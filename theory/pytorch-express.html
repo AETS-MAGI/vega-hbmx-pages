@@ -156,7 +156,7 @@
 		<div class="prose">
 			<p data-lang="ja">PyTorch は、<strong>AI を作ったり動かしたりするための道具箱</strong>です。</p>
 			<p data-lang="en">PyTorch is a <strong>toolbox for building and running AI models</strong>.</p>
-			<p data-lang="ja">数字をまとめて持ち、部品をつなぎ、必要なら学習や推論まで進められます。</p>
+			<p data-lang="ja">数字をまとめて持ち、部品をつなぎ、必要なら学習や推論まで進められます。ここでいう「モデル」は、入力を受けて出力を返す仕組みのことです。</p>
 			<p data-lang="en">It lets you hold numbers, connect parts into a model, and then run training or inference.</p>
 			<p data-lang="ja"><strong>大事な一文:</strong> PyTorch は「AIそのもの」ではなく、AI モデルを作って動かすための道具です。</p>
 			<p data-lang="en"><strong>One important sentence:</strong> PyTorch is not "the AI itself." It is the tool used to build and run the model.</p>
@@ -180,7 +180,7 @@
 			</div>
 			<div class="term-card">
 				<h3>Module</h3>
-				<p data-lang="ja">モデルを作る部品です。線を引く部品、活性化の部品などを組み合わせてモデルを作ります。</p>
+				<p data-lang="ja">モデルを作る部品です。「数字を変換する部品」や「数字の通り方を少し変える部品」を組み合わせてモデルを作ります。</p>
 				<p data-lang="en">A building block for a model. You combine modules such as layers and activations to build the whole model.</p>
 			</div>
 			<div class="term-card">
@@ -223,9 +223,9 @@ y = model(x)
 				<li data-lang="en"><code>import torch</code> → Makes the main PyTorch package available.</li>
 				<li data-lang="ja"><code>import torch.nn as nn</code> → よく使う部品集を <code>nn</code> という短い名前で呼びます。</li>
 				<li data-lang="en"><code>import torch.nn as nn</code> → Gives the common neural-network parts the short name <code>nn</code>.</li>
-				<li data-lang="ja"><code>x = torch.randn(1, 4)</code> → 4 個の数字を 1 組作ります。ここでは入力データのつもりです。</li>
+				<li data-lang="ja"><code>x = torch.randn(1, 4)</code> → ランダムな数字を 4 個、1 組作ります。ここでは入力データのつもりです。</li>
 				<li data-lang="en"><code>x = torch.randn(1, 4)</code> → Creates one group of 4 numbers. Here it plays the role of input data.</li>
-				<li data-lang="ja"><code>nn.Sequential(...)</code> → 部品を順番につないで、1 つのモデルにします。</li>
+				<li data-lang="ja"><code>nn.Sequential(...)</code> → 部品を順番につないで、1 つのモデルにします。<code>Sequential</code> は「順番につなぐ」という意味です。</li>
 				<li data-lang="en"><code>nn.Sequential(...)</code> → Connects parts in order to make one model.</li>
 				<li data-lang="ja"><code>nn.Linear(4, 8)</code> → 4 個の数字を 8 個へ変換する部品です。</li>
 				<li data-lang="en"><code>nn.Linear(4, 8)</code> → A part that transforms 4 numbers into 8 numbers.</li>
@@ -235,7 +235,7 @@ y = model(x)
 				<li data-lang="en"><code>nn.Linear(8, 2)</code> → Transforms 8 numbers into 2 numbers for the final output.</li>
 				<li data-lang="ja"><code>y = model(x)</code> → 入力をモデルに通して出力を作ります。これが <strong>forward</strong> です。</li>
 				<li data-lang="en"><code>y = model(x)</code> → Sends the input through the model to create the output. This is the <strong>forward</strong> step.</li>
-				<li data-lang="ja"><code>x.shape</code> / <code>y.shape</code> → 数字の並び方を見ます。<code>shape</code> は「形」のことです。</li>
+				<li data-lang="ja"><code>x.shape</code> / <code>y.shape</code> → 数字の並び方を見ます。<code>shape</code> は「形」のことで、<code>(1, 4)</code> なら「1 組の中に 4 個ある」と読めます。</li>
 				<li data-lang="en"><code>x.shape</code> / <code>y.shape</code> → Shows how the numbers are arranged. <code>shape</code> means the form of the data.</li>
 			</ul>
 		</div>
@@ -261,8 +261,8 @@ y = model(x)
 					<li data-lang="en">You produce an answer with <code>model(x)</code>.</li>
 					<li data-lang="ja"><code>eval()</code> は推論向けの設定です。</li>
 					<li data-lang="en"><code>eval()</code> switches the model into inference mode.</li>
-					<li data-lang="ja"><code>no_grad()</code> は「勾配を記録しない」ため、少し軽くなります。</li>
-					<li data-lang="en"><code>no_grad()</code> means "do not record gradients," which makes inference lighter.</li>
+					<li data-lang="ja"><code>no_grad()</code> は、学習のための記録を取らないようにするので、少し軽くなります。</li>
+					<li data-lang="en"><code>no_grad()</code> skips training-related bookkeeping, which makes inference lighter.</li>
 				</ul>
 			</div>
 			<div class="mode-card train">
@@ -271,11 +271,11 @@ y = model(x)
 				<p data-lang="ja">答えのずれを見て、モデルを少しずつ直す場面です。</p>
 				<p data-lang="en">This is when you look at the error and gradually fix the model.</p>
 				<ul>
-					<li data-lang="ja"><code>loss</code> で「どれだけ外れたか」を見ます。</li>
+					<li data-lang="ja"><code>loss</code> で「どれだけ外れたか」を見ます。loss は「間違いの大きさ」です。</li>
 					<li data-lang="en"><code>loss</code> measures how far off the answer was.</li>
 					<li data-lang="ja"><code>backward()</code> で「どこを直すか」を計算します。</li>
 					<li data-lang="en"><code>backward()</code> computes "what should be fixed."</li>
-					<li data-lang="ja"><code>optimizer.step()</code> で、実際に重みを少し直します。</li>
+					<li data-lang="ja"><code>optimizer.step()</code> で、実際に重みを少し直します。重みは、モデルの中にある「調整つまみ」のようなものです。</li>
 					<li data-lang="en"><code>optimizer.step()</code> actually updates the weights a little.</li>
 				</ul>
 			</div>
@@ -284,6 +284,11 @@ y = model(x)
 		<div class="fact-box">
 			<p data-lang="ja"><strong>言葉の対応:</strong> <strong>forward</strong> は「前向きに答えを出す流れ」、<strong>backward</strong> は「どこを直すか逆向きに調べる流れ」です。</p>
 			<p data-lang="en"><strong>Meaning of the words:</strong> <strong>forward</strong> is the path that produces an answer, and <strong>backward</strong> is the path that figures out what to fix.</p>
+		</div>
+
+		<div class="fact-box">
+			<p data-lang="ja"><strong>もう 3 語だけ:</strong> <strong>loss</strong> は「どれだけ外したか」、<strong>weight</strong> は「モデルの中の調整つまみ」、<strong>gradient</strong> は「どちらへどれくらい直すとよさそうか」を表す手がかりです。</p>
+			<p data-lang="en"><strong>Three more words:</strong> <strong>loss</strong> means how wrong the answer was, <strong>weight</strong> is an adjustable value inside the model, and <strong>gradient</strong> is the hint about how to change it.</p>
 		</div>
 
 		<div class="prose">
@@ -299,7 +304,7 @@ y = model(x)
 		<div class="prose">
 			<p data-lang="ja">このサイトでは、PyTorch は<strong>モデルを書く場所</strong>として出てきます。ROCm は、その下で<strong>GPU で重い計算を動かす土台</strong>として出てきます。</p>
 			<p data-lang="en">On this site, PyTorch appears as the place where you <strong>write the model</strong>. ROCm appears underneath it as the <strong>foundation that runs heavy computation on the GPU</strong>.</p>
-			<p data-lang="ja">イメージとしては、PyTorch が窓口で、下のほうでは rocBLAS（行列計算）や MIOpen（AI の畳み込みなど）が実際の計算を担当します。</p>
+			<p data-lang="ja">イメージとしては、PyTorch が窓口で、下のほうでは rocBLAS（大きな表どうしの計算）や MIOpen（ニューラルネットでよく出る定番処理）が実際の計算を担当します。</p>
 			<p data-lang="en">You can think of PyTorch as the front desk. Underneath it, libraries such as rocBLAS (matrix math) and MIOpen (AI operations such as convolution) perform the actual work.</p>
 		</div>
 
@@ -340,7 +345,7 @@ y = model(x)
 		</div>
 
 		<div class="warn-box">
-			<p data-lang="ja"><strong>補足:</strong> ROCm 版 PyTorch でも、歴史的な理由で <code>"cuda"</code> という名前の API が残る場所があります。名前はそうでも、実行経路は HIP/ROCm 側です。</p>
+			<p data-lang="ja"><strong>補足:</strong> ROCm 版 PyTorch でも、歴史的な理由で <code>"cuda"</code> という名前の API が残る場所があります。つまり、画面に <code>"cuda"</code> と出ても、すぐに「ROCm ではない」とは限りません。名前はそうでも、実行経路は HIP/ROCm 側です。</p>
 			<p data-lang="en"><strong>Note:</strong> Even in ROCm builds of PyTorch, some APIs still use the name <code>"cuda"</code> for historical compatibility reasons. The actual execution path is still HIP/ROCm.</p>
 		</div>
 
