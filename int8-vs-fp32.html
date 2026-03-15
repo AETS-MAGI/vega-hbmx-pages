@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる INT8 と FP32 / Visual INT8 vs FP32 | vega-hbmx-pages</title>
+	<style>
+		:root { --navy: #0B3C5D; --teal: #00796B; --amber: #C56A00; --red: #B71C1C; --blue: #1565C0; --green: #2E7D32; --purple: #5B4B8A; --ink: #1F2933; --muted: #5F6C7B; --line: #D8E0E8; --bg: #F5F8FB; --card: #FFFFFF; }
+		* { box-sizing: border-box; }
+		body { margin: 0; font-family: 'Calibri', 'Arial', sans-serif; color: var(--ink); background: radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg); }
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero { background: linear-gradient(135deg, #BF360C 0%, #E64A19 55%, #FF7043 100%); color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px; }
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+		.section-title { font-size: 21px; font-weight: 700; color: var(--navy); border-left: 5px solid var(--amber); padding-left: 14px; margin: 44px 0 8px; }
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; } .prose p:last-child { margin-bottom: 0; }
+		.analogy { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.analogy strong { color: var(--amber); }
+		.highlight { background: #EDE7F6; border-left: 5px solid var(--purple); border-radius: 10px; padding: 16px 0 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+
+		/* Box comparison */
+		.box-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+		.num-box { border-radius: 12px; padding: 24px 20px; text-align: center; }
+		.num-box.fp32 { background: #E3F2FD; border: 2px solid var(--blue); }
+		.num-box.int8 { background: #FFF3E0; border: 2px solid var(--amber); }
+		.num-box .box-icon { font-size: 44px; margin-bottom: 8px; }
+		.num-box h3 { margin: 0 0 6px; font-size: 20px; }
+		.num-box.fp32 h3 { color: var(--blue); }
+		.num-box.int8 h3 { color: var(--amber); }
+		.num-box .bits { font-size: 14px; color: var(--muted); margin: 0 0 10px; }
+		.num-box .range { font-size: 13px; color: var(--ink); line-height: 1.6; }
+
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 32px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); } .next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		@media (max-width: 640px) { .page { padding: 20px 14px 40px; } .hero { padding: 28px 20px 24px; } .hero h1 { font-size: 24px; } .box-compare { grid-template-columns: 1fr; } }
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる INT8 と FP32</h1>
+			<h1 data-lang="en">Visual Guide: INT8 vs FP32</h1>
+			<p class="subtitle" data-lang="ja">Visual INT8 vs FP32</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">数字の持ち方の違いが、速さや得意不得意にどうつながるのかを、箱の大きさやメモの細かさで説明します。</p>
+			<p data-lang="en">How the way numbers are stored affects speed and capability — explained through box sizes and notebook detail.</p>
+		</section>
+
+		<!-- ──────── 1. 数字の「入れ物」 ──────── -->
+		<h2 class="section-title" data-lang="ja">1. 数字の「入れ物」がちがう</h2>
+		<h2 class="section-title" data-lang="en">1. Different "Containers" for Numbers</h2>
+		<p class="section-lead" data-lang="ja">コンピュータの中では、数字を「ビット」という 0/1 の列で表します。使うビット数が違えば、入れ物のサイズが変わります。</p>
+		<p class="section-lead" data-lang="en">Inside a computer, numbers are represented as sequences of 0s and 1s called "bits." Different bit counts mean different container sizes.</p>
+
+		<div class="box-compare">
+			<div class="num-box fp32">
+				<div class="box-icon">📦</div>
+				<h3>FP32</h3>
+				<div class="bits" data-lang="ja">32 ビット（大きな箱）</div>
+				<div class="bits" data-lang="en">32 bits (large box)</div>
+				<div class="range" data-lang="ja">小数も扱える<br>精度が高い<br>でも重い・遅い</div>
+				<div class="range" data-lang="en">Handles decimals<br>High precision<br>But heavy &amp; slow</div>
+			</div>
+			<div class="num-box int8">
+				<div class="box-icon">🗃️</div>
+				<h3>INT8</h3>
+				<div class="bits" data-lang="ja">8 ビット（小さな箱）</div>
+				<div class="bits" data-lang="en">8 bits (small box)</div>
+				<div class="range" data-lang="ja">整数だけ（−128〜127）<br>精度は低い<br>でも軽い・速い</div>
+				<div class="range" data-lang="en">Integers only (−128 to 127)<br>Lower precision<br>But light &amp; fast</div>
+			</div>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">📓 たとえ話:</strong>
+			<strong data-lang="en">📓 Analogy:</strong>
+			<span data-lang="ja">FP32 は「大きなノートにこまかく書く」。 INT8 は「付箋にザックリ書く」。ノートは正確だけど、書いたり読んだりに時間がかかる。付箋はあいまいだけど超速い。</span>
+			<span data-lang="en">FP32 is like "writing in fine detail in a large notebook." INT8 is like "jotting it roughly on a sticky note." The notebook is accurate but slow to read and write; sticky notes are imprecise but super fast.</span>
+		</div>
+
+		<!-- ──────── 2. なぜ小さい箱が注目される？ ──────── -->
+		<h2 class="section-title" data-lang="ja">2. なぜ小さい箱が注目されてるの？</h2>
+		<h2 class="section-title" data-lang="en">2. Why Is the Smaller Box Getting Attention?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">AI が推論（学習ずみモデルを使って答えを出すこと）をするとき、箱が小さいとこんなメリットがあります。</p>
+			<p data-lang="en">When AI runs inference (using an already-trained model to produce answers), smaller boxes have these advantages:</p>
+			<p data-lang="ja">① <strong>メモリが少なくてすむ</strong> — 同じ量の数字でも、入れ物が1/4のサイズなのでメモリ使用量も約1/4。<br>② <strong>計算が速い</strong> — GPU の中には「小さい整数専用の速い計算ユニット」を持つものがある。<br>③ <strong>消費電力が低い</strong> — 小さなデータを運ぶので電気も少なくてすむ。</p>
+			<p data-lang="en">① <strong>Less memory</strong> — same number of values, 1/4 the container size ≈ ~1/4 memory.<br>② <strong>Faster</strong> — some GPUs have dedicated fast compute units for small integers.<br>③ <strong>Lower power</strong> — moving smaller data uses less electricity.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">⚡ 数字でみると:</strong>
+			<strong data-lang="en">⚡ Numbers:</strong>
+			<span data-lang="ja">FP32 → INT8 に切り替えると、メモリ使用量は約 1/4 になり、推論速度は最大 2〜4 倍になるとされます（GPU やモデル構造により異なる）。</span>
+			<span data-lang="en">Switching from FP32 to INT8 can reduce memory use to ~1/4 and boost inference speed by 2–4× (varies by GPU and model architecture).</span>
+		</div>
+
+		<!-- ──────── 3. デメリットはないの？ ──────── -->
+		<h2 class="section-title" data-lang="ja">3. デメリットはないの？</h2>
+		<h2 class="section-title" data-lang="en">3. Are There Downsides?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">あります。箱を小さくすると、数字の「こまかさ」が失われます。</p>
+			<p data-lang="en">Yes. Shrinking the box loses numerical "precision."</p>
+			<p data-lang="ja">• 学習（トレーニング）には FP32 や FP16 の精度がほぼ必須<br>• 推論でも、モデルによっては INT8 にすると精度がガクッと落ちるものがある<br>• 「どこまで小さくして大丈夫か」はモデルごとに違う</p>
+			<p data-lang="en">• Training almost always needs FP32 or FP16 precision<br>• For inference, some models lose significant accuracy with INT8<br>• "How small is safe" varies from model to model</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🎨 たとえ話:</strong>
+			<strong data-lang="en">🎨 Analogy:</strong>
+			<span data-lang="ja">細かい色の絵を16色クレヨンで描き直すようなもの。全体の雰囲気は分かるけど、グラデーションはつぶれる。それが許せるタスクなら INT8 で十分。許せないなら FP32 が必要。</span>
+			<span data-lang="en">It's like repainting a detailed picture with only 16 crayons. The general feel is preserved, but gradients are lost. If that's acceptable for your task, INT8 is enough. If not, you need FP32.</span>
+		</div>
+
+		<!-- ──────── 4. Vega と数値精度 ──────── -->
+		<h2 class="section-title" data-lang="ja">4. Vega（gfx900）とデータ型</h2>
+		<h2 class="section-title" data-lang="en">4. Vega (gfx900) and Data Types</h2>
+
+		<div class="prose">
+			<p data-lang="ja">Vega 世代の GPU（gfx900）は、FP32 と FP16 の計算が得意です。しかし、最近の GPU が持つ「INT8 専用の高速ユニット」は搭載されていません。</p>
+			<p data-lang="en">Vega-generation GPUs (gfx900) are good at FP32 and FP16 computation. However, they lack the "dedicated fast INT8 units" found on newer GPUs.</p>
+			<p data-lang="ja">つまり、Vega で INT8 推論をしても、新世代 GPU ほどの速度向上は得られない場合があります。一方で、メモリ節約の効果はあるため、VRAM が限られる場面ではそれでも有用です。</p>
+			<p data-lang="en">So running INT8 inference on Vega may not give the same speed boost as on newer GPUs. However, the memory savings still apply, which is useful when VRAM is limited.</p>
+		</div>
+
+		<div class="highlight">
+			<span data-lang="ja">🔑 <strong>ポイント:</strong> データ型の選択は「精度と速さのトレードオフ」。GPU ごとにどのデータ型が速いかは違う。</span>
+			<span data-lang="en">🔑 <strong>Key point:</strong> Choosing a data type is a "precision vs speed trade-off." Which types are fastest depends on the GPU.</span>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="memory-and-bandwidth.html">イメージでわかるメモリと帯域幅</a> — メモリが大事な理由をもっと詳しく<br>
+				<a href="inference-flow.html">イメージでわかる推論の流れ</a> — 推論で何が起きているか全体像<br>
+				<a href="gpu-generations.html">イメージでわかる GPU の世代</a> — 世代でなにが変わるか
+			</span>
+			<span data-lang="en">
+				<a href="memory-and-bandwidth.html">Visual Guide to Memory &amp; Bandwidth</a> — Why memory matters in more detail<br>
+				<a href="inference-flow.html">Visual Guide to the Inference Flow</a> — The big picture of inference<br>
+				<a href="gpu-generations.html">Visual Guide to GPU Generations</a> — What changes with each generation
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
