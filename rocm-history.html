@@ -389,8 +389,8 @@
         <span class="badge">Updated: 2026-03-15</span>
       </div>
       <div class="summary">
-        <span data-lang="ja"><strong>要点:</strong> いま見えている範囲だけでも、ROCm の歴史は「対応 / 非対応」の単純な二値ではなく、component ごとの追加・後退・統合・fallback、さらに retired repo の再編がずれながら積み重なる履歴として読むほうが自然です。</span>
-        <span data-lang="en"><strong>Key point:</strong> Even with the limited evidence already fixed in the notebook, ROCm history reads less like a simple supported/unsupported binary and more like a layered record of component-specific expansion, retreat, consolidation, fallback, and repository reorganization.</span>
+        <span data-lang="ja"><strong>要点:</strong> いま見えている範囲だけでも、ROCm の歴史は「対応 / 非対応」の単純な二値ではなく、component ごとの追加・後退・統合・fallback、さらに retired/deprecated repo の再編と legacy knowledge の残存がずれながら積み重なる履歴として読むほうが自然です。</span>
+        <span data-lang="en"><strong>Key point:</strong> Even with the limited evidence already fixed in the notebook, ROCm history reads less like a simple supported/unsupported binary and more like a layered record of component-specific expansion, retreat, consolidation, fallback, repository reorganization, and lingering legacy knowledge in retired/deprecated trees.</span>
       </div>
     </section>
 
@@ -405,6 +405,22 @@
     <p class="section-lead" data-lang="en">The focus is on events that stand out in GitHub-side history as meaningful turning points. gfx900 is the entry point, but the larger subject is ROCm behavior in general.</p>
 
     <div class="timeline">
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-date">2021-10-21</span>
+          <span class="anchor anchor-date" data-lang="ja">exact commit</span>
+          <span class="anchor anchor-date" data-lang="en">exact commit</span>
+        </div>
+        <h3 data-lang="ja">MIOpen は先に <code>gfx900</code> 向け runtime workaround を強めていた</h3>
+        <h3 data-lang="en">MIOpen first strengthened a runtime workaround for <code>gfx900</code></h3>
+        <ul>
+          <li data-lang="ja">commit <code>8498875ae</code>（Artem Tamazov）が <code>WORKAROUND_ISSUE_1204</code> を導入し、<code>gfx900</code> の <code>sramecc-</code> 誤報を吸収する。</li>
+          <li data-lang="en">Commit <code>8498875ae</code> (Artem Tamazov) introduces <code>WORKAROUND_ISSUE_1204</code> to absorb incorrect <code>sramecc-</code> reporting on <code>gfx900</code>.</li>
+          <li data-lang="ja"><strong>意味:</strong> 同じ MIOpen の中でも、ある層では互換性 workaround を加えつつ、別の層では後に solver disable が起きる。後退は単線ではない。</li>
+          <li data-lang="en"><strong>Meaning:</strong> Even inside MIOpen, one layer can add compatibility workarounds while another later disables a solver path. Retreat is not a single straight line.</li>
+        </ul>
+      </div>
+
       <div class="step">
         <div class="anchor-row">
           <span class="anchor anchor-date">2021-12-22</span>
@@ -556,6 +572,25 @@
           <li data-lang="en"><strong>Meaning:</strong> Not only support policy but repository topology itself is being consolidated toward <code>rocm-libraries</code>, <code>rocm-systems</code>, and upstream projects.</li>
         </ul>
       </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-current" data-lang="ja">deprecated branch activity</span>
+          <span class="anchor anchor-current" data-lang="en">deprecated branch activity</span>
+        </div>
+        <h3 data-lang="ja">deprecated MIOpen branch の late change は主に layout / docs 再編として現れる</h3>
+        <h3 data-lang="en">Late changes on the deprecated MIOpen branch appear mostly as layout / docs reorganization</h3>
+        <ul>
+          <li data-lang="ja"><code>992a835c2</code> は docs cleanup で <code>find_and_immediate</code> / <code>embed</code> 文書を新配置へ移す。</li>
+          <li data-lang="en"><code>992a835c2</code> performs doc cleanup and relocates the <code>find_and_immediate</code> / <code>embed</code> material into new sections.</li>
+          <li data-lang="ja"><code>7b36cef67</code> は MLIR solver 群を含む convolution solver を <code>src/solver/conv/</code> へ <code>R100</code> rename する。</li>
+          <li data-lang="en"><code>7b36cef67</code> renames convolution solvers, including the MLIR group, into <code>src/solver/conv/</code> with <code>R100</code> moves.</li>
+          <li data-lang="ja"><code>5e791ce2c</code> は install docs を再整形するが、<code>gfx900_56</code> 例は残る。</li>
+          <li data-lang="en"><code>5e791ce2c</code> reformats install docs, but the <code>gfx900_56</code> examples remain.</li>
+          <li data-lang="ja"><strong>意味:</strong> deprecated 化の後半で目立つのは、policy の再判断よりも file layout と doc surface の整理である。</li>
+          <li data-lang="en"><strong>Meaning:</strong> In the late deprecated phase, the visible changes are more about file layout and doc-surface cleanup than fresh policy changes for <code>gfx900</code>.</li>
+        </ul>
+      </div>
     </div>
 
     <h2 class="section-title" data-lang="ja">並行して進んでいる別の流れ</h2>
@@ -587,6 +622,13 @@
         <h3 data-lang="en">Repository-topology consolidation</h3>
         <p data-lang="ja">retired notice は、単に古い repo を閉じるだけでなく、<code>rocm-libraries</code>、<code>rocm-systems</code>、upstream project へ責務を寄せ直す再編が進んでいることを示す。</p>
         <p data-lang="en">Retired notices show more than closure: responsibilities are being regrouped toward <code>rocm-libraries</code>, <code>rocm-systems</code>, and selected upstream projects.</p>
+      </div>
+
+      <div class="card">
+        <h3 data-lang="ja">deprecated branch に残る legacy knowledge</h3>
+        <h3 data-lang="en">Legacy knowledge preserved in deprecated branches</h3>
+        <p data-lang="ja">repo が deprecated になっても、arch-specific workaround、legacy docs、private issue 参照がすぐ消えるとは限らない。MIOpen はその具体例になっている。</p>
+        <p data-lang="en">A deprecated repo does not automatically lose its arch-specific workarounds, legacy docs, or private-issue references. MIOpen currently serves as a concrete example.</p>
       </div>
     </div>
 
@@ -633,18 +675,24 @@
             <td data-lang="ja">中程度</td>
             <td data-lang="en">Moderate</td>
           </tr>
+          <tr>
+            <td data-lang="ja">deprecated branch の late activity は再編中心で、policy 変更とは限らない</td>
+            <td data-lang="en">Late activity on deprecated branches is often reorganization rather than fresh policy change</td>
+            <td data-lang="ja">中程度</td>
+            <td data-lang="en">Moderate</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     <div class="note note-warn">
-      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言、そして legacy <code>MIOpen</code> clone の fully-expanded working tree。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
-      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, explicit maintainer statements of design intent, and a fully expanded working tree for the legacy <code>MIOpen</code> clone. This page re-assembles already-confirmed fragments for public use.</span>
+      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言、そして <code>#1328</code> / <code>#1231</code> のような判断点の議論文脈。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
+      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, explicit maintainer statements of design intent, and the discussion context behind decision points like <code>#1328</code> / <code>#1231</code>. This page re-assembles already-confirmed fragments for public use.</span>
     </div>
 
     <div class="note note-green">
-      <span data-lang="ja"><strong>暫定結論:</strong> ROCm の歴史は、単に「古いものを切って新しいものに置き換える」直線ではなく、追加・統合・選択的無効化・fallback 残存・repo 再編が層ごとにずれながら進む履歴として読める。</span>
-      <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm history is better read not as a straight line of replacing the old with the new, but as a layered record in which expansion, consolidation, selective disable, fallback survival, and repository reorganization proceed at different speeds.</span>
+      <span data-lang="ja"><strong>暫定結論:</strong> ROCm の歴史は、単に「古いものを切って新しいものに置き換える」直線ではなく、追加・統合・選択的無効化・fallback 残存・repo 再編・deprecated branch 上での legacy knowledge 温存が層ごとにずれながら進む履歴として読める。</span>
+      <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm history is better read not as a straight line of replacing the old with the new, but as a layered record in which expansion, consolidation, selective disable, fallback survival, repository reorganization, and legacy-knowledge preservation on deprecated branches proceed at different speeds.</span>
     </div>
 
     <div class="actions">

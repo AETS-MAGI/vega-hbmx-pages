@@ -534,8 +534,8 @@
 		<section class="flow-section">
 			<h3 class="flow-title" data-lang="ja">3. さらに研究向けの根拠へ進む</h3>
 			<h3 class="flow-title" data-lang="en">3. Go deeper into the research evidence</h3>
-			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、gfx900 仮説ページ、そこから一段引いた ROCm 全体像ページ、release block や retired repo notice まで含めた GitHub 履歴タイムライン、そして code / solver trace 資料へ進めます。</p>
-			<p class="flow-lead" data-lang="en">For deeper research evidence, you can move from the gfx900 hypothesis page to the broader ROCm design-model page, then into the GitHub history timeline with release blocks and retired-repo notices, and finally to the code / solver trace reference decks.</p>
+			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、gfx900 仮説ページ、そこから一段引いた ROCm 全体像ページ、release block・retired/deprecated repo・late-phase layout 再編まで含めた GitHub 履歴タイムライン、そして code / solver trace 資料へ進めます。</p>
+			<p class="flow-lead" data-lang="en">For deeper research evidence, you can move from the gfx900 hypothesis page to the broader ROCm design-model page, then into the GitHub history timeline with release blocks, retired/deprecated repos, and late-phase layout reorganization, and finally to the code / solver trace reference decks.</p>
 			<div class="card-grid">
 				<article class="card">
 					<span class="card-type type-hypothesis">Hypothesis</span>
@@ -561,8 +561,8 @@
 					<h3 data-lang="ja">gfx900 が明かした ROCm 全体像</h3>
 					<h3 data-lang="en">What gfx900 Revealed About ROCm</h3>
 					<p class="filename">reveal-hypothesis.html</p>
-					<p data-lang="ja">gfx900 個別調査を起点にしながら、ROCm 一般の設計思想を GitHub 側の一次資料で検証した要約ページです。layered support、capability-based fallback、staged deprecation、repo-level consolidation、AMD とコミュニティの役割分解を扱います。</p>
-					<p data-lang="en">A GitHub-grounded summary page that starts from the gfx900 investigation but expands into ROCm-wide design questions: layered support, capability-based fallback, staged deprecation, repository-level consolidation, and the split roles of AMD and the community.</p>
+					<p data-lang="ja">gfx900 個別調査を起点にしながら、ROCm 一般の設計思想を GitHub 側の一次資料で検証した要約ページです。layered support、capability-based fallback、staged deprecation、repo-level consolidation、deprecated branch 上に残る legacy knowledge、AMD とコミュニティの役割分解を扱います。</p>
+					<p data-lang="en">A GitHub-grounded summary page that starts from the gfx900 investigation but expands into ROCm-wide design questions: layered support, capability-based fallback, staged deprecation, repository-level consolidation, legacy knowledge preserved on deprecated branches, and the split roles of AMD and the community.</p>
 					<ul>
 						<li data-lang="ja">README・changelog・TheRock issue・runtime fallback 実装を横断</li>
 						<li data-lang="en">Cross-reads README, changelog, TheRock issues, and runtime fallback implementations</li>
@@ -580,8 +580,8 @@
 					<h3 data-lang="ja">ROCm GitHub 履歴タイムライン</h3>
 					<h3 data-lang="en">ROCm GitHub History Timeline</h3>
 					<p class="filename">rocm-history.html</p>
-					<p data-lang="ja">これまでの調査で確定した commit、release block、issue trail、retired repo notice を使って、ROCm の変遷を public 向けの年表として整理したページです。gfx900 を入口にしつつ、より広い ROCm の歴史を見渡せます。</p>
-					<p data-lang="en">A public-facing chronology built from the commits, release blocks, issue trails, and retired-repo notices already fixed in the investigation. It starts from gfx900, but opens onto a broader view of ROCm history.</p>
+					<p data-lang="ja">これまでの調査で確定した commit、release block、issue trail、retired/deprecated repo の痕跡を使って、ROCm の変遷を public 向けの年表として整理したページです。gfx900 を入口にしつつ、より広い ROCm の歴史を見渡せます。</p>
+					<p data-lang="en">A public-facing chronology built from the commits, release blocks, issue trails, and traces preserved in retired/deprecated repos. It starts from gfx900, but opens onto a broader view of ROCm history.</p>
 					<ul>
 						<li data-lang="ja">exact commit と release-note anchor を混在表示</li>
 						<li data-lang="en">Mixes exact commits with release-note anchors</li>

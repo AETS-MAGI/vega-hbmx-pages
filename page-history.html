@@ -410,6 +410,62 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">deprecated MIOpen branch の late-phase 読みを公開側へ反映</h2>
+        <h2 data-lang="en">Reflected the late-phase reading of the deprecated MIOpen branch</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">legacy `MIOpen` clone の展開後、deprecated branch でも `gfx900` 痕跡が残っていること、そして 2024-2025 の late change が主に layout / docs 再編として現れていることが確認できた。その読みを public 側へ移した。</p>
+      <p class="entry-lead" data-lang="en">After expanding the legacy <code>MIOpen</code> clone, we confirmed that <code>gfx900</code> traces still remain on the deprecated branch and that most 2024-2025 late changes appear as layout/docs reorganization. That reading was then propagated to the public pages.</p>
+      <div class="file-list">
+        <span class="file-tag">rocm-history.html</span>
+        <span class="file-tag">reveal-hypothesis.html</span>
+        <span class="file-tag">index.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>rocm-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">年表は retired/deprecated repo を repo topology の再編として扱っていたが、deprecated MIOpen branch で後年に見える activity が「中身変更」なのか「整理」なのかまでは切り分けていなかった。</p>
+            <p data-lang="en">The timeline treated retired/deprecated repos as repository-topology reorganization, but it did not yet separate whether late activity on the deprecated MIOpen branch reflected policy changes or mere cleanup.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>8498875ae</code> の `gfx900` workaround を年表に追加し、さらに deprecated branch activity の節で <code>992a835c2</code> / <code>7b36cef67</code> / <code>5e791ce2c</code> を layout/docs 再編として位置づけた。結論も「deprecated branch 上の legacy knowledge 温存」を含む形へ更新した。</p>
+            <p data-lang="en">The timeline now adds the <code>8498875ae</code> <code>gfx900</code> workaround and introduces a deprecated-branch activity step that frames <code>992a835c2</code>, <code>7b36cef67</code>, and <code>5e791ce2c</code> as layout/docs reorganization. The conclusion now also names legacy-knowledge preservation on deprecated branches.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> `git blame` と `git log --follow` により、`gfx900` 関連行の last-touch と file move / doc migration を分離できたため。</span>
+          <span data-lang="en"><strong>Rationale:</strong> <code>git blame</code> and <code>git log --follow</code> made it possible to separate the last semantic touches on <code>gfx900</code>-related lines from later file moves and doc migrations.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>reveal-hypothesis.html</code> / <code>index.html</code> / <code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">design-model 側は repo-level consolidation を扱っていたが、「deprecated になってもしばらく legacy knowledge が残る」という観察までは前面に出していなかった。</p>
+            <p data-lang="en">The design-model side already covered repo-level consolidation, but it did not yet foreground the observation that legacy knowledge can persist for a while even after a repo becomes deprecated.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">summary・staged retreat 仮説・index 導線・README を更新し、deprecated branch に残る workaround / docs / private-issue 参照も ROCm の staged retreat を読む材料だと分かるようにした。</p>
+            <p data-lang="en">The summary, staged-retreat hypothesis, index route, and README now make it clear that workarounds, docs, and private-issue references preserved on deprecated branches are also part of how ROCm's staged retreat should be read.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">legacy / retired repo の再編も公開側へ反映</h2>
         <h2 data-lang="en">Reflected legacy / retired-repo reorganization on the public pages</h2>
         <span class="entry-date">2026-03-15</span>

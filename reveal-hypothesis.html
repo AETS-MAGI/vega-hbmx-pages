@@ -322,8 +322,8 @@
         <span class="badge">Updated: 2026-03-15</span>
       </div>
       <div class="summary">
-        <span data-lang="ja"><strong>要点:</strong> gfx900 の出来事だけから一般論を言うのではなく、README・release block・TheRock issue・Tensile docs・rocBLAS runtime fallback・retired repo notice を合わせて読むと、ROCm は「単一の support policy」でなく「層ごと・component ごと・repo topology ごとにズレを持つ stack」として理解するのが自然になる。</span>
-        <span data-lang="en"><strong>Key point:</strong> Rather than generalizing from a single legacy GPU event, reading the README, release blocks, TheRock issues, Tensile docs, rocBLAS fallback logic, and retired-repo notices together suggests that ROCm is best understood as a stack with layer-specific, component-specific, and repository-topology-specific behavior, not a single binary policy.</span>
+        <span data-lang="ja"><strong>要点:</strong> gfx900 の出来事だけから一般論を言うのではなく、README・release block・TheRock issue・Tensile docs・rocBLAS runtime fallback・retired/deprecated repo の痕跡を合わせて読むと、ROCm は「単一の support policy」でなく「層ごと・component ごと・repo topology ごとにズレを持つ stack」として理解するのが自然になる。</span>
+        <span data-lang="en"><strong>Key point:</strong> Rather than generalizing from a single legacy GPU event, reading the README, release blocks, TheRock issues, Tensile docs, rocBLAS fallback logic, and traces left in retired/deprecated repos together suggests that ROCm is best understood as a stack with layer-specific, component-specific, and repository-topology-specific behavior, not a single binary policy.</span>
       </div>
     </section>
 
@@ -396,6 +396,8 @@
         <li data-lang="en">New architectures are added to default targets, while older ones retreat from default build and may then be selectively excluded in individual components.</li>
         <li data-lang="ja"><code>gfx900</code> はこの staged retreat を可視化しやすい例であり、即時削除ではなく段階的 legacy 化として理解できる。</li>
         <li data-lang="en"><code>gfx900</code> is a clear example of this staged retreat, where legacy status emerges gradually rather than through immediate removal.</li>
+        <li data-lang="ja">deprecated MIOpen branch の late change が主に layout / docs 再編だったことは、repo status の変化と arch-specific 痕跡の消滅が同期しないことを示す。</li>
+        <li data-lang="en">The fact that late changes on the deprecated MIOpen branch are mostly layout/docs reorganization shows that repo status changes and the disappearance of arch-specific traces do not happen in lockstep.</li>
       </ul>
     </div>
 
@@ -459,6 +461,8 @@
         <li data-lang="en">Public-facing entry points and build knobs are gradually unified.</li>
         <li data-lang="ja">standalone repo 群も、より大きい umbrella repo や upstream へ再配置されつつある。</li>
         <li data-lang="en">Standalone repositories are also being re-homed into larger umbrella repos or back to upstream.</li>
+        <li data-lang="ja">repo が deprecated になっても、legacy knowledge や arch-specific workaround はしばらく tree に残りうる。</li>
+        <li data-lang="en">Even after a repo becomes deprecated, legacy knowledge and arch-specific workarounds may remain in-tree for some time.</li>
         <li data-lang="ja">legacy は source から即死するのでなく、段階的に retreat する。</li>
         <li data-lang="en">Legacy support retreats in stages rather than dying at once in source.</li>
         <li data-lang="ja">保守主体は単一ではなく、投入・維持・運用・修正可能性に分解して考える必要がある。</li>
@@ -476,8 +480,8 @@
         <li data-lang="en">How far the community materially sustains the stack still requires more issue / PR / workaround analysis.</li>
         <li data-lang="ja">private backend issue が public gating に現れる例が一般的かどうかは未確定。</li>
         <li data-lang="en">It remains unclear whether private-backend-to-public-gating behavior is common or just a few notable cases.</li>
-        <li data-lang="ja">legacy <code>MIOpen</code> clone はまだ fully expanded ではなく、retired / current の厳密比較には追加展開が必要。</li>
-        <li data-lang="en">The legacy <code>MIOpen</code> clone is not yet fully expanded, so exact retired/current comparison still needs more local extraction.</li>
+        <li data-lang="ja"><code>#1328</code> と <code>#1231</code> の PR / review / issue 文脈をまだ public summary に織り込めていない。</li>
+        <li data-lang="en">The PR/review/issue context behind <code>#1328</code> and <code>#1231</code> has not yet been integrated into the public summary.</li>
       </ul>
     </div>
 
