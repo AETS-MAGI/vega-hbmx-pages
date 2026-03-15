@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+		onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 	<title>NumPy特急便 / NumPy Express | vega-hbmx-pages</title>
 	<style>
 		:root {
@@ -81,6 +85,12 @@
 		.term-card { background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 18px 18px 16px; }
 		.term-card h3 { margin: 0 0 6px; font-size: 18px; color: var(--navy); }
 		.term-card p { margin: 0; font-size: 15px; line-height: 1.7; }
+		.math-bridge { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0 18px; }
+		.math-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+		.math-card h3 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
+		.math-card p { margin: 0 0 10px; line-height: 1.7; }
+		.math-card p:last-child { margin-bottom: 0; }
+		.math-formula { border-top: 4px solid var(--blue); }
 		.quick-map { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 15px; }
 		.quick-map th, .quick-map td { border: 1px solid var(--line); padding: 11px 14px; text-align: left; }
 		.quick-map th { background: var(--navy); color: #fff; font-weight: 600; }
@@ -108,6 +118,7 @@
 			.page { padding: 20px 14px 40px; }
 			.code-block { font-size: 12px; }
 			.term-grid { grid-template-columns: 1fr; }
+			.math-bridge { grid-template-columns: 1fr; }
 		}
 	</style>
 </head>
@@ -270,6 +281,65 @@ print(a.shape)
 print(b.shape)
 print(c.shape)
 print(c)</div>
+
+	<div class="math-bridge">
+		<div class="math-card">
+			<h3 data-lang="ja">コードの表と数式の行列は同じもの</h3>
+			<h3 data-lang="en">The code table and the math matrix are the same thing</h3>
+			<p data-lang="ja"><code>a</code> の <code>[[1, 2, 3], [4, 5, 6]]</code> は、「1 行目が <code>[1, 2, 3]</code>、2 行目が <code>[4, 5, 6]</code> の表」です。</p>
+			<p data-lang="en"><code>a</code> as <code>[[1, 2, 3], [4, 5, 6]]</code> means “a table whose first row is <code>[1, 2, 3]</code> and second row is <code>[4, 5, 6]</code>.”</p>
+			<p data-lang="ja">数式では、その同じ表を横と縦にきれいに並べて行列として書きます。つまり、<code>a</code> は数式では $A$、<code>b</code> は $B$、<code>c</code> は $C$ と見るとつながりやすいです。</p>
+			<p data-lang="en">In math, we write that same table as a matrix. So it helps to read <code>a</code> as $A$, <code>b</code> as $B$, and <code>c</code> as $C$.</p>
+			<p data-lang="ja">shape も同じです。$A$ は 2 行 3 列だから <code>(2, 3)</code>、$B$ は 3 行 2 列だから <code>(3, 2)</code> です。</p>
+			<p data-lang="en">The shapes are the same idea too. $A$ has 2 rows and 3 columns, so its shape is <code>(2, 3)</code>, while $B$ has shape <code>(3, 2)</code>.</p>
+		</div>
+		<div class="math-card math-formula">
+			<h3 data-lang="ja">このコードを数式で書くと</h3>
+			<h3 data-lang="en">The same computation in math notation</h3>
+			<div data-lang="ja">$$
+A =
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{bmatrix},
+\quad
+B =
+\begin{bmatrix}
+7 & 8 \\
+9 & 10 \\
+11 & 12
+\end{bmatrix}
+$$
+$$
+C = AB =
+\begin{bmatrix}
+58 & 64 \\
+139 & 154
+\end{bmatrix}
+$$</div>
+			<div data-lang="en">$$
+A =
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{bmatrix},
+\quad
+B =
+\begin{bmatrix}
+7 & 8 \\
+9 & 10 \\
+11 & 12
+\end{bmatrix}
+$$
+$$
+C = AB =
+\begin{bmatrix}
+58 & 64 \\
+139 & 154
+\end{bmatrix}
+$$</div>
+		</div>
+	</div>
 
 	<div class="prose">
 		<p data-lang="ja">ここでは、表どうしのかけ算をしています。<code>@</code> は、このページでは「表どうしをかける記号」くらいに読めば十分です。</p>
