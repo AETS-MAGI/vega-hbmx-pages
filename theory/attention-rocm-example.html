@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+		onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 	<title>ROCmで見る Attention / See Attention in ROCm | vega-hbmx-pages</title>
 	<style>
 		:root {
@@ -33,6 +37,10 @@
 		.output-block { background:#F3E5F5; border-left:5px solid var(--purple); border-radius:10px; padding:16px 20px; margin:16px 0; font-family:monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; }
 		.mapping { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.mapping strong { color:var(--blue); }
+		.math-box { background:#EAF4FF; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0 18px; font-size:15px; line-height:1.7; }
+		.math-box strong { color:var(--blue); }
+		.math-box p { margin:0 0 10px; }
+		.math-box p:last-child { margin-bottom:0; }
 		.fact-box { background:#E8F5E9; border-left:5px solid var(--green); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.fact-box strong { color:var(--green); }
 		.analogy { background:#FFF8E1; border-left:5px solid var(--amber); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
@@ -128,6 +136,17 @@ output = torch.matmul(weights, V)
 <span class="fn">print</span>(weights.cpu())
 <span class="fn">print</span>(<span class="str">"出力:"</span>)
 <span class="fn">print</span>(output.cpu())</div>
+
+	<div class="math-box">
+		<p data-lang="ja"><strong>コードと式の対応:</strong> Attention の主役は「行列をかける → 割合にする → もう一度かける」の 3 段です。</p>
+		<p data-lang="en"><strong>Code-to-math link:</strong> The core of attention is a three-step pattern: “multiply matrices → turn the result into proportions → multiply once more.”</p>
+		<div data-lang="ja">$$X \in \mathbb{R}^{3 \times 4},\quad Q = K = V = X$$</div>
+		<div data-lang="en">$$X \in \mathbb{R}^{3 \times 4},\quad Q = K = V = X$$</div>
+		<div data-lang="ja">$$S = \frac{QK^T}{\sqrt{d_k}} \in \mathbb{R}^{3 \times 3},\quad W = \mathrm{softmax}(S) \in \mathbb{R}^{3 \times 3},\quad O = WV \in \mathbb{R}^{3 \times 4}$$</div>
+		<div data-lang="en">$$S = \frac{QK^T}{\sqrt{d_k}} \in \mathbb{R}^{3 \times 3},\quad W = \mathrm{softmax}(S) \in \mathbb{R}^{3 \times 3},\quad O = WV \in \mathbb{R}^{3 \times 4}$$</div>
+		<p data-lang="ja"><code>scores = torch.matmul(Q, K.T)</code> は $QK^T$、<code>weights = F.softmax(...)</code> は $W$、<code>output = torch.matmul(weights, V)</code> は $WV$ に対応します。shape だけ追っても、3×4 → 3×3 → 3×4 の流れが見えます。</p>
+		<p data-lang="en"><code>scores = torch.matmul(Q, K.T)</code> corresponds to $QK^T$, <code>weights = F.softmax(...)</code> to $W$, and <code>output = torch.matmul(weights, V)</code> to $WV$. Even if you only track shapes, you can see the flow 3×4 → 3×3 → 3×4.</p>
+	</div>
 
 	<div class="prose">
 		<p data-lang="ja">コードを全部いっぺんに理解しなくて大丈夫です。最初は次の 4 行だけ追えば十分です。</p>

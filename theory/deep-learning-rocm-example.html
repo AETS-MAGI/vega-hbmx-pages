@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+		onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 	<title>ROCmで見る 深層学習 / See Deep Learning in ROCm | vega-hbmx-pages</title>
 	<style>
 		:root {
@@ -34,6 +38,10 @@
 		.output-block { background:#F3E5F5; border-left:5px solid var(--purple); border-radius:10px; padding:16px 20px; margin:16px 0; font-family:monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; }
 		.mapping { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.mapping strong { color:var(--blue); }
+		.math-box { background:#EAF4FF; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0 18px; font-size:15px; line-height:1.7; }
+		.math-box strong { color:var(--blue); }
+		.math-box p { margin:0 0 10px; }
+		.math-box p:last-child { margin-bottom:0; }
 		.fact-box { background:#E8F5E9; border-left:5px solid var(--green); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.fact-box strong { color:var(--green); }
 		.analogy { background:#FFF8E1; border-left:5px solid var(--amber); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
@@ -122,6 +130,33 @@ y = model(x)
 <span class="fn">print</span>(<span class="str">"出力 shape:"</span>, y.shape)
 <span class="fn">print</span>(<span class="str">"モデル構造:"</span>)
 <span class="fn">print</span>(model)</div>
+
+	<div class="math-box">
+		<p data-lang="ja"><strong>コードと式の対応:</strong> このページは Conv を含みますが、まずは「形がどう流れるか」と「最後は行列計算になるか」を見れば十分です。</p>
+		<p data-lang="en"><strong>Code-to-math link:</strong> This page includes convolution, but at first it is enough to track “how the shapes flow” and “where the final matrix-style step appears.”</p>
+		<div data-lang="ja">$$x \in \mathbb{R}^{1 \times 1 \times 4 \times 4}
+\xrightarrow{\mathrm{Conv2d}}
+h \in \mathbb{R}^{1 \times 1 \times 4 \times 4}
+\xrightarrow{\mathrm{ReLU}}
+h'
+\xrightarrow{\mathrm{Flatten}}
+z \in \mathbb{R}^{1 \times 16}
+\xrightarrow{\mathrm{Linear}}
+y \in \mathbb{R}^{1 \times 2}$$</div>
+		<div data-lang="en">$$x \in \mathbb{R}^{1 \times 1 \times 4 \times 4}
+\xrightarrow{\mathrm{Conv2d}}
+h \in \mathbb{R}^{1 \times 1 \times 4 \times 4}
+\xrightarrow{\mathrm{ReLU}}
+h'
+\xrightarrow{\mathrm{Flatten}}
+z \in \mathbb{R}^{1 \times 16}
+\xrightarrow{\mathrm{Linear}}
+y \in \mathbb{R}^{1 \times 2}$$</div>
+		<div data-lang="ja">$$y = zW + b$$</div>
+		<div data-lang="en">$$y = zW + b$$</div>
+		<p data-lang="ja">ここでは <code>Conv2d</code> を無理に 1 つの大きな行列式へ押し込まず、最後の <code>Linear(16, 2)</code> が $zW+b$ という行列計算になる、と結びつけるのが入りやすいです。</p>
+		<p data-lang="en">Here we do not force <code>Conv2d</code> into one giant matrix formula. It is easier to connect the final <code>Linear(16, 2)</code> to the matrix-style expression $zW+b$.</p>
+	</div>
 
 	<div class="prose">
 		<p data-lang="ja">コードを全部いっぺんに追わなくても大丈夫です。最初は次の 4 つだけ見れば十分です。</p>

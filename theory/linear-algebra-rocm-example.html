@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+		onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 	<title>ROCmで見る 線形代数 / See Linear Algebra in ROCm | vega-hbmx-pages</title>
 	<style>
 		:root {
@@ -38,6 +42,10 @@
 		.output-block { background:#F3E5F5; border-left:5px solid var(--purple); border-radius:10px; padding:16px 20px; margin:16px 0; font-family:monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; }
 		.mapping { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.mapping strong { color:var(--blue); }
+		.math-box { background:#EAF4FF; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0 18px; font-size:15px; line-height:1.7; }
+		.math-box strong { color:var(--blue); }
+		.math-box p { margin:0 0 10px; }
+		.math-box p:last-child { margin-bottom:0; }
 		.fact-box { background:#E8F5E9; border-left:5px solid var(--green); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.fact-box strong { color:var(--green); }
 		.next-links { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin-top:32px; font-size:15px; line-height:1.7; }
@@ -133,6 +141,53 @@ C_gpu = torch.<span class="fn">matmul</span>(A_gpu, B_gpu)
 <span class="fn">print</span>(B)
 <span class="fn">print</span>(<span class="str">"C = A × B (2×2):"</span>)
 <span class="fn">print</span>(C_gpu.cpu())</div>
+
+	<div class="math-box">
+		<p data-lang="ja"><strong>コードと式の対応:</strong> この例の中心行 <code>C_gpu = torch.matmul(A_gpu, B_gpu)</code> は、そのまま $C = AB$ です。</p>
+		<p data-lang="en"><strong>Code-to-math link:</strong> The central line <code>C_gpu = torch.matmul(A_gpu, B_gpu)</code> is directly $C = AB$.</p>
+		<div data-lang="ja">$$
+A =
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{bmatrix},
+\quad
+B =
+\begin{bmatrix}
+7 & 8 \\
+9 & 10 \\
+11 & 12
+\end{bmatrix},
+\quad
+C = AB =
+\begin{bmatrix}
+58 & 64 \\
+139 & 154
+\end{bmatrix}
+$$</div>
+		<div data-lang="en">$$
+A =
+\begin{bmatrix}
+1 & 2 & 3 \\
+4 & 5 & 6
+\end{bmatrix},
+\quad
+B =
+\begin{bmatrix}
+7 & 8 \\
+9 & 10 \\
+11 & 12
+\end{bmatrix},
+\quad
+C = AB =
+\begin{bmatrix}
+58 & 64 \\
+139 & 154
+\end{bmatrix}
+$$</div>
+		<p data-lang="ja">shape で読むと、$A$ は $(2, 3)$、$B$ は $(3, 2)$ なので、内側の $3$ と $3$ がつながって、結果 $C$ は $(2, 2)$ になります。</p>
+		<p data-lang="en">In shape terms, $A$ is $(2, 3)$ and $B$ is $(3, 2)$, so the inner $3$ and $3$ match, and the result $C$ becomes $(2, 2)$.</p>
+	</div>
 
 	<div class="prose">
 		<p data-lang="ja">コードを全部いっぺんに読む必要はありません。最初は次の 4 行だけ見れば十分です。</p>

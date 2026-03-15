@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+		onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 	<title>ROCmで見る 推論の流れ / See Inference Flow in ROCm | vega-hbmx-pages</title>
 	<style>
 		:root {
@@ -33,6 +37,10 @@
 		.output-block { background:#F3E5F5; border-left:5px solid var(--purple); border-radius:10px; padding:16px 20px; margin:16px 0; font-family:monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; }
 		.mapping { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.mapping strong { color:var(--blue); }
+		.math-box { background:#EAF4FF; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0 18px; font-size:15px; line-height:1.7; }
+		.math-box strong { color:var(--blue); }
+		.math-box p { margin:0 0 10px; }
+		.math-box p:last-child { margin-bottom:0; }
 		.fact-box { background:#E8F5E9; border-left:5px solid var(--green); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.fact-box strong { color:var(--green); }
 		.analogy { background:#FFF8E1; border-left:5px solid var(--amber); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
@@ -134,6 +142,45 @@ w_after = model.weight.detach().clone()
 <span class="fn">print</span>(<span class="str">"prediction:"</span>, pred.cpu())
 <span class="fn">print</span>(<span class="str">"pred.requires_grad:"</span>, pred.requires_grad)
 <span class="fn">print</span>(<span class="str">"weight changed:"</span>, <span class="kw">not</span> torch.allclose(w_before, w_after))</div>
+
+	<div class="math-box">
+		<p data-lang="ja"><strong>コードと式の対応:</strong> この <code>nn.Linear(3, 1)</code> は、「1 行 3 列の入力に、3 個の重みをかけて、最後に bias を足す」です。</p>
+		<p data-lang="en"><strong>Code-to-math link:</strong> This <code>nn.Linear(3, 1)</code> means “take a 1-by-3 input, apply 3 weights, then add a bias.”</p>
+		<div data-lang="ja">$$
+x =
+\begin{bmatrix}
+1 & 2 & 3
+\end{bmatrix},
+\quad
+w =
+\begin{bmatrix}
+0.1 \\
+0.2 \\
+0.3
+\end{bmatrix},
+\quad
+b = 0.5
+$$</div>
+		<div data-lang="en">$$
+x =
+\begin{bmatrix}
+1 & 2 & 3
+\end{bmatrix},
+\quad
+w =
+\begin{bmatrix}
+0.1 \\
+0.2 \\
+0.3
+\end{bmatrix},
+\quad
+b = 0.5
+$$</div>
+		<div data-lang="ja">$$\hat{y} = xw + b = 1 \cdot 0.1 + 2 \cdot 0.2 + 3 \cdot 0.3 + 0.5 = 1.9$$</div>
+		<div data-lang="en">$$\hat{y} = xw + b = 1 \cdot 0.1 + 2 \cdot 0.2 + 3 \cdot 0.3 + 0.5 = 1.9$$</div>
+		<p data-lang="ja"><code>pred = model(x)</code> はこの $\hat{y}$ を計算しているだけで、推論ではそのあとに <code>backward()</code> も <code>optimizer.step()</code> も呼びません。</p>
+		<p data-lang="en"><code>pred = model(x)</code> is just computing this $\hat{y}$, and in inference we do not call <code>backward()</code> or <code>optimizer.step()</code> afterward.</p>
+	</div>
 
 	<div class="prose">
 		<p data-lang="ja">コードは長く見えますが、最初は次の 4 行だけ追えば十分です。</p>

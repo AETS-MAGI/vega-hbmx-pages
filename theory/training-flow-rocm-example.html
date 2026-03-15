@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+		onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 	<title>ROCmで見る 学習の流れ / See Training Flow in ROCm | vega-hbmx-pages</title>
 	<style>
 		:root {
@@ -34,6 +38,10 @@
 		.output-block { background:#F3E5F5; border-left:5px solid var(--purple); border-radius:10px; padding:16px 20px; margin:16px 0; font-family:monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; }
 		.mapping { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.mapping strong { color:var(--blue); }
+		.math-box { background:#EAF4FF; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0 18px; font-size:15px; line-height:1.7; }
+		.math-box strong { color:var(--blue); }
+		.math-box p { margin:0 0 10px; }
+		.math-box p:last-child { margin-bottom:0; }
 		.fact-box { background:#E8F5E9; border-left:5px solid var(--green); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
 		.fact-box strong { color:var(--green); }
 		.analogy { background:#FFF8E1; border-left:5px solid var(--amber); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
@@ -142,6 +150,27 @@ w_after = model.weight.detach().clone()
 <span class="fn">print</span>(<span class="str">"pred.requires_grad ="</span>, pred.requires_grad)
 <span class="fn">print</span>(<span class="str">"weight changed ="</span>, <span class="kw">not</span> torch.allclose(w_before, w_after))
 <span class="fn">print</span>(<span class="str">"weight.grad ="</span>, model.weight.grad.detach().cpu())</div>
+
+	<div class="math-box">
+		<p data-lang="ja"><strong>コードと式の対応:</strong> このページでは、forward の式と「そのずれを直す式」を 1 回だけ回しています。</p>
+		<p data-lang="en"><strong>Code-to-math link:</strong> This page runs one pass of the forward equation, then one pass of “the equation that fixes the error.”</p>
+		<div data-lang="ja">$$\hat{y} = xw + b = 1.9,\quad y_{\text{true}} = 2.5,\quad L = (\hat{y} - y_{\text{true}})^2 = (1.9 - 2.5)^2 = 0.36$$</div>
+		<div data-lang="en">$$\hat{y} = xw + b = 1.9,\quad y_{\text{true}} = 2.5,\quad L = (\hat{y} - y_{\text{true}})^2 = (1.9 - 2.5)^2 = 0.36$$</div>
+		<div data-lang="ja">$$\nabla_w L =
+\begin{bmatrix}
+-1.2 & -2.4 & -3.6
+\end{bmatrix},
+\quad
+w_{\text{new}} = w - \eta \nabla_w L$$</div>
+		<div data-lang="en">$$\nabla_w L =
+\begin{bmatrix}
+-1.2 & -2.4 & -3.6
+\end{bmatrix},
+\quad
+w_{\text{new}} = w - \eta \nabla_w L$$</div>
+		<p data-lang="ja"><code>loss.backward()</code> がこの勾配 $\nabla_w L$ を出し、<code>optimizer.step()</code> が $w_{\text{new}}$ へ進めます。出力の <code>weight.grad</code> は、その途中の値です。</p>
+		<p data-lang="en"><code>loss.backward()</code> produces this gradient $\nabla_w L$, and <code>optimizer.step()</code> moves the weights to $w_{\text{new}}$. The printed <code>weight.grad</code> is that intermediate value.</p>
+	</div>
 
 	<div class="prose">
 		<p data-lang="ja">コードは長く見えますが、最初は次の 4 行だけ追えば十分です。</p>

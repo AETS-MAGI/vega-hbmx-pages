@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css">
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.js"></script>
+	<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
+		onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
 	<title>PyTorch特急便 / PyTorch Express | vega-hbmx-pages</title>
 	<style>
 		:root {
@@ -63,6 +67,10 @@
 		.fact-box strong { color: var(--green); }
 		.warn-box { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
 		.warn-box strong { color: var(--amber); }
+		.math-box { background: #EAF4FF; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin: 16px 0 18px; font-size: 15px; line-height: 1.7; }
+		.math-box strong { color: var(--blue); }
+		.math-box p { margin: 0 0 10px; }
+		.math-box p:last-child { margin-bottom: 0; }
 		.code-block {
 			background: #263238;
 			color: #ECEFF1;
@@ -216,6 +224,15 @@ model = nn.Sequential(
 )
 y = model(x)
 <span class="fn">print</span>(x.shape, y.shape)</div>
+
+		<div class="math-box">
+			<p data-lang="ja"><strong>コードと式の対応:</strong> この 10 行は、教科書ふうに読むと「小さい行列計算を 2 回つなぐ」形です。</p>
+			<p data-lang="en"><strong>Code-to-math link:</strong> In textbook style, these 10 lines are “two small matrix steps connected in sequence.”</p>
+			<div data-lang="ja">$$x \in \mathbb{R}^{1 \times 4},\quad h_1 = xW_1 + b_1,\quad h_2 = \mathrm{ReLU}(h_1),\quad y = h_2W_2 + b_2$$</div>
+			<div data-lang="en">$$x \in \mathbb{R}^{1 \times 4},\quad h_1 = xW_1 + b_1,\quad h_2 = \mathrm{ReLU}(h_1),\quad y = h_2W_2 + b_2$$</div>
+			<p data-lang="ja"><code>nn.Linear(4, 8)</code> は $x \mapsto h_1$、<code>nn.ReLU()</code> は $h_1 \mapsto h_2$、<code>nn.Linear(8, 2)</code> は $h_2 \mapsto y$ に対応します。まずは「4 個の数字が 8 個になり、最後に 2 個になる」と読めれば十分です。</p>
+			<p data-lang="en"><code>nn.Linear(4, 8)</code> corresponds to $x \mapsto h_1$, <code>nn.ReLU()</code> to $h_1 \mapsto h_2$, and <code>nn.Linear(8, 2)</code> to $h_2 \mapsto y$. At first, it is enough to read this as “4 numbers become 8, then finally 2.”</p>
+		</div>
 
 		<div class="code-steps">
 			<ul>
