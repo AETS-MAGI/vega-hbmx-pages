@@ -482,6 +482,29 @@
         </ul>
         </span>
       </div>
+      <div class="mermaid">
+flowchart LR
+    subgraph ROLES["4-role provenance model — gfx900 survival paths"]
+        A["Insertion owner\n投入主体"]
+        B["Maintenance owner\n維持主体"]
+        C["Operational owner\n運用主体"]
+        D["Repair-capable\n修正可能主体"]
+    end
+    A --> E["AMD(M)\nMLIR disable\nrocMLIR gating"]
+    A --> F["ExtC / AMD(C)\nWinograd, ASM v4r1\nWORKAROUND_1204"]
+    B --> G["AMD active patches\nWinograd 2021–2025\nMP_bidir 2025-03"]
+    B --> H["Deletion-cost residual\nv4r1, WORKAROUND_1204\nno active maintainer"]
+    C --> I["Community\n-S solver forcing\nenv var workarounds\nforum knowledge"]
+    D --> J["AMD(M) only\nbackend / compiler\nllvm-project-private"]
+    D --> K["ExtC reachable\nPython-level\nTensile logic"]
+    style E fill:#ddeeff,stroke:#3366aa
+    style F fill:#eeffee,stroke:#44aa44
+    style G fill:#ddeeff,stroke:#3366aa
+    style H fill:#f5f5f5,stroke:#999
+    style I fill:#fff8dd,stroke:#aaaa44
+    style J fill:#ffeedd,stroke:#cc6600
+    style K fill:#eeffee,stroke:#44aa44
+      </div>
       <div class="table-wrap" data-lang="ja">
         <p><strong>P1–P7 経路別主体一覧（git blame ベース、2026-03-15）</strong></p>
         <table>
