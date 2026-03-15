@@ -343,38 +343,54 @@ flowchart LR
   <div class="conv-imgs">
     <figure class="conv-img-item">
       <img src="media/img/convolution-akatsuki-window.png"
-           alt="アカツキちゃん画像の輪郭付近を3×3の小さな窓で観察している図"
+           alt="アカツキちゃん画像の髪の輪郭付近に赤い3×3の観察枠を重ねた図"
            loading="lazy">
       <figcaption>
-        <span data-lang="ja">元の画像（観察枠つき）</span>
-        <span data-lang="en">Original image (with observation window)</span>
+        <span data-lang="ja">元の画像<br>（3×3 の窓で観察中）</span>
+        <span data-lang="en">Original image<br>(3×3 window scanning)</span>
       </figcaption>
     </figure>
 
-    <span class="conv-op" aria-hidden="true">×</span>
+    <div class="conv-flow" aria-hidden="true">
+      <span class="arrow">→</span>
+      <span class="flow-lbl">
+        <span data-lang="ja">Sobel フィルタをかける</span>
+        <span data-lang="en">apply Sobel filter</span>
+      </span>
+    </div>
 
     <figure class="conv-img-item">
       <img class="sobel" src="media/img/sobel-filter-3x3.png"
-           alt="縦方向の境界に反応するSobelフィルタの3×3行列"
+           alt="縦方向の境界に反応するSobelフィルタの3×3行列。左列が負、右列が正の値"
            loading="lazy">
       <figcaption>
-        <span data-lang="ja">Sobel フィルタ（3×3）</span>
-        <span data-lang="en">Sobel filter (3×3)</span>
+        <span data-lang="ja">Sobel フィルタ（x 方向）<br>左右の明るさの差を計算</span>
+        <span data-lang="en">Sobel filter (x-direction)<br>computes left–right brightness diff</span>
       </figcaption>
     </figure>
 
-    <span class="conv-op" aria-hidden="true">=</span>
+    <div class="conv-flow" aria-hidden="true">
+      <span class="arrow">→</span>
+      <span class="flow-lbl">
+        <span data-lang="ja">縦境界が<br>強く反応</span>
+        <span data-lang="en">vertical edges<br>respond strongly</span>
+      </span>
+    </div>
 
     <figure class="conv-img-item">
       <img src="media/img/convolution-feature-map-example.png"
-           alt="輪郭線の位置で強く反応した特徴マップの例。髪の線が明るく光っている"
+           alt="Sobelフィルタ適用後の特徴マップ。黒背景に髪の縦ラインが白く浮き上がっている"
            loading="lazy">
       <figcaption>
-        <span data-lang="ja">特徴マップ（縦境界に反応）</span>
-        <span data-lang="en">Feature map (vertical edges highlighted)</span>
+        <span data-lang="ja">特徴マップ<br>（境界線だけ白く残る）</span>
+        <span data-lang="en">Feature map<br>(only edges appear white)</span>
       </figcaption>
     </figure>
   </div>
+  <p style="text-align:center;margin:2px 0 6px;">
+    <span class="conv-sobel-note" data-lang="ja">左が暗く・右が明るい境界に強く反応 — 数字の符号（−/+）がその仕組みを決めている</span>
+    <span class="conv-sobel-note" data-lang="en">Responds strongly where left is dark and right is bright — the sign pattern (−/+) encodes this logic</span>
+  </p>
   <p class="conv-imgs-caption">
     <span data-lang="ja">Sobel フィルタ（x 方向）は、左右の明るさの差を計算して、縦方向の境界線を強調します。</span>
     <span data-lang="en">The x-direction Sobel filter computes left-right brightness differences and highlights vertical edges.</span>
