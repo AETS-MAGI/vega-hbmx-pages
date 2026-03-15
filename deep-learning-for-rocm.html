@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles/mermaid-layout.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$',  right: '$',  display: false}
+      ]
+    })"></script>
   <title>イメージでわかる深層学習 / Visual Deep Learning | vega-hbmx-pages</title>
   <style>
     :root {
@@ -65,7 +74,7 @@
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
       gap: 12px; margin-bottom: 8px;
     }
     .summary-item {
@@ -172,6 +181,7 @@
     html[data-language="ja"] h3[data-lang="ja"] { display: block; }
 
     @media (max-width: 680px) {
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
       .hero { padding: 26px 20px 22px; }
       .hero h1 { font-size: 22px; }
       .nav-cards { grid-template-columns: 1fr; }

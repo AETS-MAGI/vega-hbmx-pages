@@ -68,7 +68,7 @@
     /* summary card */
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
       gap: 12px; margin-bottom: 8px;
     }
     .summary-item {
@@ -176,6 +176,7 @@
     html[data-language="ja"] h3[data-lang="ja"] { display: block; }
 
     @media (max-width: 680px) {
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
       .hero { padding: 26px 20px 22px; }
       .hero h1 { font-size: 22px; }
       .compare-grid { grid-template-columns: 1fr; }
