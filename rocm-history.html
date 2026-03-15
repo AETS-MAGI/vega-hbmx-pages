@@ -647,23 +647,15 @@ timeline
 
     <div class="mermaid">
 flowchart LR
-    subgraph BUILD["Build layer — component by component"]
-        B_add["rocSOLVER\ngfx900 ADDED (ROCm 6.2)"]
-        B_rm["hipCUB\ngfx900 REMOVED (ROCm 7.0)"]
-        B_keep["rocBLAS / Tensile\ncontinues as target"]
-    end
-    subgraph SEL["Selection layer — MIOpen"]
-        S_dis["MLIR iGEMM\ngfx900 DISABLED (2021-12)"]
-        S_keep["Winograd / ASM v4r1\nstill passing"]
-    end
-    subgraph REPO["Repository layer"]
-        R1["ROCR-Runtime\n→ rocm-systems"]
-        R2["Tensile\n→ rocm-libraries"]
-    end
-    KEY{{"Same ROCm stack —\nexclusions and additions\nrun in parallel,\nat different layers"}}
-    BUILD --> KEY
-    SEL --> KEY
-    REPO --> KEY
+    B_add["Build: rocSOLVER\ngfx900 ADDED ROCm 6.2"]
+    B_rm["Build: hipCUB\ngfx900 REMOVED ROCm 7.0"]
+    B_keep["Build: rocBLAS/Tensile\ncontinues as target"]
+    S_dis["Selection: MLIR iGEMM\nDISABLED 2021-12"]
+    S_keep["Selection: Winograd/ASM\nstill passing"]
+    R1["Repo: ROCR-Runtime\n→ rocm-systems"]
+    R2["Repo: Tensile\n→ rocm-libraries"]
+    KEY{{"同一スタック内で\n追加・除外・統合が\n並行して進む"}}
+    B_add & B_rm & B_keep & S_dis & S_keep & R1 & R2 --> KEY
     style B_add fill:#ddffdd,stroke:#44aa44,color:#040
     style B_rm fill:#ffdddd,stroke:#cc4444,color:#600
     style B_keep fill:#ddeeff,stroke:#4466aa

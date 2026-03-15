@@ -623,19 +623,17 @@ flowchart LR
 
 			<div class="mermaid">
 flowchart LR
-    subgraph PATHS["gfx900 survival paths"]
-        P1["MLIR iGEMM\n(disabled)"]
-        P3["Winograd FP32\n(active)"]
-        P2["ASM v4r1\n(legacy)"]
-        P6["Tensile fallback\n(community-patched)"]
-    end
-    P1 --> I1["Insertion: AMD(M)\nZhuoran Yin, 2021-12"]
-    P3 --> I3["Insertion: ExtC\nArtem Tamazov, 2017+"]
-    P2 --> I2["Insertion: AMD(C)\ncarlushuang, 2020"]
-    P6 --> I6["Insertion: AMD(C)+ExtC\n2022–2024"]
-    I3 --> M3["Maintenance: AMD staff\npatches 2021–2025"]
-    I2 --> M2["Maintenance: deletion-cost\nresidual"]
-    I6 --> M6["Maintenance: external PR\nmerged then reverted (PR 1862→1879)"]
+    P1["MLIR iGEMM\n(disabled)"]
+    P3["Winograd FP32\n(active)"]
+    P2["ASM v4r1\n(legacy)"]
+    P6["Tensile fallback\n(community-patched)"]
+    P1 --> I1["AMD(M)\nZhuoran Yin 2021-12"]
+    P3 --> I3["ExtC\nTamazov 2017+"]
+    P2 --> I2["AMD(C)\ncarlushuang 2020"]
+    P6 --> I6["AMD(C)+ExtC\n2022–2024"]
+    I3 --> M3["AMD staff\npatches 2021–25"]
+    I2 --> M2["deletion-cost\nresidual"]
+    I6 --> M6["ext PR merged\nthen reverted #1862→#1879"]
     style I1 fill:#ddeeff,stroke:#3366aa
     style I3 fill:#eeffee,stroke:#44aa44
     style I2 fill:#eeffee,stroke:#44aa44
