@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<title>NumPy特急便 / NumPy Express | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D;
+			--teal: #00796B;
+			--amber: #C56A00;
+			--blue: #1565C0;
+			--green: #2E7D32;
+			--purple: #5B4B8A;
+			--ink: #1F2933;
+			--muted: #5F6C7B;
+			--line: #D8E0E8;
+			--bg: #F5F8FB;
+			--card: #FFFFFF;
+			--accent: #00695C;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--ink);
+			background: radial-gradient(circle at top right, rgba(0,105,92,0.08), transparent 28%),
+				radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg);
+		}
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero {
+			background: linear-gradient(135deg, #004D40 0%, #00695C 55%, #26A69A 100%);
+			color: #fff;
+			border-radius: 16px;
+			padding: 40px 36px 32px;
+			margin-bottom: 32px;
+		}
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.92; line-height: 1.7; }
+		.section-title {
+			font-size: 21px;
+			font-weight: 700;
+			color: var(--navy);
+			border-left: 5px solid var(--accent);
+			padding-left: 14px;
+			margin: 44px 0 8px;
+		}
+		.section-lead { color: var(--muted); margin: 0 0 18px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; }
+		.prose p:last-child { margin-bottom: 0; }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+		.warn-box { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.warn-box strong { color: var(--amber); }
+		.code-block {
+			background: #263238;
+			color: #ECEFF1;
+			border-radius: 10px;
+			padding: 18px 22px;
+			margin: 16px 0;
+			overflow-x: auto;
+			font-family: 'Fira Code', 'Consolas', monospace;
+			font-size: 14px;
+			line-height: 1.7;
+			white-space: pre;
+		}
+		.code-block .comment { color: #90A4AE; }
+		.code-block .kw { color: #82B1FF; }
+		.code-block .str { color: #FFCB6B; }
+		.code-block .fn { color: #C3E88D; }
+		.quick-map { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 15px; }
+		.quick-map th, .quick-map td { border: 1px solid var(--line); padding: 11px 14px; text-align: left; }
+		.quick-map th { background: var(--navy); color: #fff; font-weight: 600; }
+		.quick-map tr:nth-child(even) { background: #F5F8FB; }
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 28px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); }
+		.next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"], html[data-language="ja"] h3[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		html[data-language="en"] span[data-lang="en"], html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+		@media (max-width: 680px) {
+			.hero { padding: 28px 20px 24px; }
+			.hero h1 { font-size: 24px; }
+			.page { padding: 20px 14px 40px; }
+			.code-block { font-size: 12px; }
+		}
+	</style>
+</head>
+<body>
+<div class="page">
+	<div class="toolbar">
+		<a class="home-link" href="../index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+		<div>
+			<button class="lang-btn active" id="btn-ja" type="button">JP</button>
+			<button class="lang-btn" id="btn-en" type="button">EN</button>
+		</div>
+	</div>
+
+	<section class="hero">
+		<h1 data-lang="ja">NumPy特急便</h1>
+		<h1 data-lang="en">NumPy Express</h1>
+		<p class="subtitle" data-lang="ja">NumPy ってなあに？を 1 ページで</p>
+		<p class="subtitle" data-lang="en">What is NumPy? in one page</p>
+		<p data-lang="ja">このページは、PyTorch に入る前に NumPy を最短でつかむ導入です。「配列」「shape」「軸」「ベクトル化」がわかると、後続ページの理解がかなり楽になります。</p>
+		<p data-lang="en">This page is a fast NumPy introduction before PyTorch. Understanding arrays, shape, axes, and vectorization makes later pages much easier.</p>
+	</section>
+
+	<h2 class="section-title" data-lang="ja">1. NumPy は何か</h2>
+	<h2 class="section-title" data-lang="en">1. What NumPy Is</h2>
+	<p class="section-lead" data-lang="ja">ひとことで言うと、Python で高速に多次元配列を扱うための基盤ライブラリです。</p>
+	<p class="section-lead" data-lang="en">In one sentence: the foundational Python library for fast multi-dimensional array computing.</p>
+	<div class="prose">
+		<p data-lang="ja">NumPy は、リストより効率よく数値データを扱うための <strong>ndarray</strong> を提供します。線形代数、統計、前処理などの多くが NumPy で表現できます。</p>
+		<p data-lang="en">NumPy provides <strong>ndarray</strong> for efficient numeric data handling beyond Python lists. Many tasks in linear algebra, statistics, and preprocessing can be expressed with NumPy.</p>
+	</div>
+	<div class="fact-box">
+		<p data-lang="ja"><strong>覚える最小セット:</strong> ndarray / shape / dtype / axis / broadcasting</p>
+		<p data-lang="en"><strong>Minimal set to remember:</strong> ndarray / shape / dtype / axis / broadcasting</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">2. どこで使うか（このサイト内）</h2>
+	<h2 class="section-title" data-lang="en">2. Where It Appears (In This Site)</h2>
+	<table class="quick-map">
+		<thead>
+			<tr>
+				<th data-lang="ja">ページ</th>
+				<th data-lang="en">Page</th>
+				<th data-lang="ja">NumPyの役割</th>
+				<th data-lang="en">Role of NumPy</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td data-lang="ja">線形代数 / 行列とAI</td>
+				<td data-lang="en">Linear algebra / Matrices &amp; AI</td>
+				<td data-lang="ja">行列やベクトルの基本表現を理解する土台</td>
+				<td data-lang="en">Foundation for vectors and matrices representation</td>
+			</tr>
+			<tr>
+				<td data-lang="ja">PyTorch特急便</td>
+				<td data-lang="en">PyTorch Express</td>
+				<td data-lang="ja">テンソル理解の前段として shape/axis 感覚を作る</td>
+				<td data-lang="en">Build shape/axis intuition before tensors</td>
+			</tr>
+			<tr>
+				<td data-lang="ja">ROCmで見る 系</td>
+				<td data-lang="en">See in ROCm series</td>
+				<td data-lang="ja">入力データの形と計算結果を読む基礎</td>
+				<td data-lang="en">Basics for reading input/output data shapes</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2 class="section-title" data-lang="ja">3. 最短サンプル（10行）</h2>
+	<h2 class="section-title" data-lang="en">3. Shortest Sample (10 lines)</h2>
+	<div class="code-block"><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.array([[1, 2, 3],
+              [4, 5, 6]], dtype=np.float32)
+
+b = np.array([[7, 8],
+              [9, 10],
+              [11, 12]], dtype=np.float32)
+
+c = a @ b
+<span class="fn">print</span>(a.shape, b.shape, c.shape)
+<span class="fn">print</span>(c)</div>
+
+	<div class="prose">
+		<p data-lang="ja">この 10 行で「配列を作る」「shape を確認する」「行列積を計算する」ができます。PyTorch のテンソル計算と読み方がかなり近いので、先にここを通ると学習がスムーズです。</p>
+		<p data-lang="en">These 10 lines already cover array creation, shape inspection, and matrix multiplication. The reading style is close to PyTorch tensor math, making later learning smoother.</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">4. 初学者が詰まりやすい点</h2>
+	<h2 class="section-title" data-lang="en">4. Common Beginner Stumbles</h2>
+	<div class="warn-box">
+		<p data-lang="ja"><strong>よくある詰まり:</strong> 1) shape を見ないまま計算する 2) axis の意味を取り違える 3) list と ndarray を混同する</p>
+		<p data-lang="en"><strong>Common stumbles:</strong> 1) Computing without checking shape 2) Misreading axis semantics 3) Mixing list and ndarray mental models</p>
+	</div>
+
+	<h2 class="section-title" data-lang="ja">5. NumPyとPyTorchの関係</h2>
+	<h2 class="section-title" data-lang="en">5. NumPy and PyTorch Relationship</h2>
+	<div class="prose">
+		<p data-lang="ja">NumPy は CPU 側の配列計算基盤、PyTorch はそれを拡張して自動微分や GPU 実行を持つ学習向け基盤、と考えると把握しやすいです。つまり、NumPy は PyTorch を読むための語彙づくりに向いています。</p>
+		<p data-lang="en">A useful mental model: NumPy is the CPU-side array foundation, while PyTorch extends this style with autograd and GPU execution for learning workflows. NumPy builds vocabulary for reading PyTorch code.</p>
+	</div>
+
+	<div class="next-links">
+		<strong data-lang="ja">📖 次に読むなら:</strong>
+		<strong data-lang="en">📖 Read next:</strong><br>
+		<span data-lang="ja">
+			<a href="pytorch-express.html">PyTorch特急便</a> — NumPy からテンソルへ進む<br>
+			<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 行列計算の意味を図で補強
+		</span>
+		<span data-lang="en">
+			<a href="pytorch-express.html">PyTorch Express</a> — Move from NumPy to tensors
+			<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Reinforce matrix intuition with diagrams
+		</span>
+	</div>
+
+	<div class="footer">
+		<span data-lang="ja">vega-hbmx-pages · NumPy特急便 · 2026-03-16</span>
+		<span data-lang="en">vega-hbmx-pages · NumPy Express · 2026-03-16</span>
+	</div>
+</div>
+
+<script>
+	const html = document.documentElement;
+	const btnJa = document.getElementById('btn-ja');
+	const btnEn = document.getElementById('btn-en');
+	function setLang(l) {
+		html.setAttribute('data-language', l);
+		html.lang = l;
+		btnJa.classList.toggle('active', l === 'ja');
+		btnEn.classList.toggle('active', l === 'en');
+		localStorage.setItem('vega-hbmx-pages-lang', l);
+	}
+	btnJa.addEventListener('click', () => setLang('ja'));
+	btnEn.addEventListener('click', () => setLang('en'));
+	setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+</script>
+</body>
+</html>
