@@ -300,6 +300,104 @@
     }
   .mermaid { background:#fafafa; border:1px solid #ccd; border-radius:8px; padding:1em 1.2em; margin:1.5em 0; overflow-x:auto; text-align:center; }
   .mermaid svg { min-width: 600px; height:auto; }
+
+  .bar-chart {
+    margin: 16px 0 20px;
+    padding: 18px 20px 16px;
+    border: 1px solid #D7E0EA;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #F8FBFE 100%);
+    box-shadow: 1px 2px 10px rgba(0,0,0,0.05);
+  }
+  .bar-chart h3 {
+    margin: 0 0 6px;
+    font-family: 'Arial Black', sans-serif;
+    font-size: 21px;
+    line-height: 1.25;
+    color: #0D47A1;
+  }
+  .bar-chart-subtitle {
+    margin: 0 0 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #546E7A;
+  }
+  .bar-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #455A64;
+  }
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .legend-swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .legend-focus { background: linear-gradient(90deg, #1E88E5, #0D47A1); }
+  .legend-compare { background: linear-gradient(90deg, #607D8B, #455A64); }
+  .legend-zero {
+    background: repeating-linear-gradient(45deg, #FFF5F5 0, #FFF5F5 6px, #FAD4D4 6px, #FAD4D4 12px);
+    border: 1px solid #D84343;
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: minmax(150px, 220px) minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-label {
+    font-size: 15px;
+    font-weight: bold;
+    color: #263238;
+  }
+  .bar-track {
+    height: 26px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid #D3DDE7;
+    background: #E9EEF3;
+  }
+  .bar-fill {
+    width: var(--bar-pct, 0%);
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #607D8B, #455A64);
+  }
+  .bar-row-focus .bar-fill {
+    background: linear-gradient(90deg, #1E88E5, #0D47A1);
+  }
+  .bar-row-zero .bar-track {
+    background: repeating-linear-gradient(45deg, #FFF5F5 0, #FFF5F5 8px, #FDE0E0 8px, #FDE0E0 16px);
+    border-color: #E57373;
+  }
+  .bar-row-zero .bar-fill {
+    width: 0;
+    background: transparent;
+  }
+  .bar-value {
+    min-width: 54px;
+    text-align: right;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: bold;
+    color: #37474F;
+  }
+  .bar-axis-note {
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #607D8B;
+  }
   </style>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
@@ -418,33 +516,99 @@
     </div>
 
     <!-- Shipped Artifacts Visual Comparison -->
-    <div class="mermaid">
----
-config:
-  theme: base
-  themeVariables:
-    xyChart:
-      backgroundColor: "#fafafa"
----
-xychart-beta
-    title "rocBLAS Pre-compiled Files by Architecture (ROCm 7.2)"
-    x-axis ["gfx942\n(MI300X)", "gfx906\n(Vega20)", "gfx900\n(Vega)", "gfx1100\n(RDNA3)", "gfx1030\n(RDNA2)"]
-    y-axis "File count" 0 --> 260
-    bar [242, 156, 128, 96, 88]
+    <div class="bar-chart">
+      <h3>
+        <span data-lang="en">rocBLAS Pre-compiled Files by Architecture (ROCm 7.2)</span>
+        <span data-lang="ja">rocBLAS プリコンパイル済みファイル数（ROCm 7.2）</span>
+      </h3>
+      <p class="bar-chart-subtitle">
+        <span data-lang="en">Blue marks the gfx900 row, slate marks comparison architectures, and striped rows indicate zero shipped data.</span>
+        <span data-lang="ja">青は gfx900 行、スレートは比較対象、ストライプは出荷データ 0 を示す。</span>
+      </p>
+      <div class="bar-chart-legend">
+        <span class="legend-item"><span class="legend-swatch legend-focus"></span><span data-lang="en">gfx900 focus</span><span data-lang="ja">gfx900 注目行</span></span>
+        <span class="legend-item"><span class="legend-swatch legend-compare"></span><span data-lang="en">comparison arch</span><span data-lang="ja">比較対象</span></span>
+        <span class="legend-item"><span class="legend-swatch legend-zero"></span><span data-lang="en">zero shipped data</span><span data-lang="ja">出荷データ 0</span></span>
+      </div>
+      <div class="bar-row bar-row-focus">
+        <div class="bar-label">gfx900 (Vega)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:49.2%;"></div></div>
+        <div class="bar-value">128</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">gfx906 (Vega20)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:60.0%;"></div></div>
+        <div class="bar-value">156</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">gfx1030 (RDNA2)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:33.8%;"></div></div>
+        <div class="bar-value">88</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">gfx1100 (RDNA3)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:36.9%;"></div></div>
+        <div class="bar-value">96</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">gfx942 (MI300X)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:93.1%;"></div></div>
+        <div class="bar-value">242</div>
+      </div>
+      <div class="bar-axis-note">
+        <span data-lang="en">Scale: 0–260 files. Values are the shipped <code>rocblas/library</code> pre-compiled file counts observed in the ROCm 7.2 package.</span>
+        <span data-lang="ja">スケール: 0–260 ファイル。値は ROCm 7.2 パッケージ中の <code>rocblas/library</code> に観測されたプリコンパイル済みファイル数。</span>
+      </div>
     </div>
-    <div class="mermaid">
----
-config:
-  theme: base
-  themeVariables:
-    xyChart:
-      backgroundColor: "#fafafa"
----
-xychart-beta
-    title "MIOpen Perf DB Lines — gfx900 vs RDNA (ROCm 7.2)"
-    x-axis ["gfx942", "gfx908", "gfx90a", "gfx906", "gfx1030", "gfx900_56", "gfx900_64", "gfx1100", "gfx1200"]
-    y-axis "Lines (×1000)" 0 --> 480
-    bar [470, 372, 328, 235, 111, 108, 61, 0, 0]
+
+    <div class="bar-chart">
+      <h3>
+        <span data-lang="en">MIOpen Perf DB Lines by Architecture (ROCm 7.2)</span>
+        <span data-lang="ja">MIOpen Perf DB 行数（ROCm 7.2）</span>
+      </h3>
+      <p class="bar-chart-subtitle">
+        <span data-lang="en">Same color convention: blue = gfx900 focus, stripe = zero shipped data.</span>
+        <span data-lang="ja">同じ配色: 青 = gfx900 注目行、ストライプ = 出荷データ 0。</span>
+      </p>
+      <div class="bar-chart-legend">
+        <span class="legend-item"><span class="legend-swatch legend-focus"></span><span data-lang="en">gfx900 focus</span><span data-lang="ja">gfx900 注目行</span></span>
+        <span class="legend-item"><span class="legend-swatch legend-compare"></span><span data-lang="en">comparison arch</span><span data-lang="ja">比較対象</span></span>
+        <span class="legend-item"><span class="legend-swatch legend-zero"></span><span data-lang="en">zero shipped data</span><span data-lang="ja">出荷データ 0</span></span>
+      </div>
+      <div class="bar-row bar-row-focus">
+        <div class="bar-label">gfx900 (Vega)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:33.8%;"></div></div>
+        <div class="bar-value">169k</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">gfx906 (MI50)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:47.0%;"></div></div>
+        <div class="bar-value">235k</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">gfx1030 (RDNA2)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:22.2%;"></div></div>
+        <div class="bar-value">111k</div>
+      </div>
+      <div class="bar-row bar-row-zero">
+        <div class="bar-label">gfx1100 (RDNA3)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:0%;"></div></div>
+        <div class="bar-value">0</div>
+      </div>
+      <div class="bar-row bar-row-zero">
+        <div class="bar-label">gfx1200 (RDNA4)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:0%;"></div></div>
+        <div class="bar-value">0</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">gfx942 (MI300X)</div>
+        <div class="bar-track"><div class="bar-fill" style="--bar-pct:94.0%;"></div></div>
+        <div class="bar-value">470k</div>
+      </div>
+      <div class="bar-axis-note">
+        <span data-lang="en">Scale: 0–500 thousand lines. Values are the top observed shipped Perf DB line counts per architecture in ROCm 7.2.</span>
+        <span data-lang="ja">スケール: 0–500 千行。値は ROCm 7.2 で観測したアーキテクチャごとの出荷 Perf DB 行数。</span>
+      </div>
     </div>
 
     <div class="card">
