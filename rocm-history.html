@@ -715,6 +715,11 @@
       <span data-lang="en"><strong>What is still missing:</strong> private-repository context, explicit maintainer statements of design intent, and especially primary evidence for what <code>llvm-project-private#389</code> actually identified as the problem. (This issue is not publicly accessible; its content cannot be verified from outside. What can be stated is limited to the observable reference relationship and gating pattern in the public codebase.) Note: the Miir-side gating mechanism implementation has been fully traced through public rocMLIR (2026-03-15), and the PR #1328 review log has also been retrieved. This page re-assembles already-confirmed fragments for public use.</span>
     </div>
 
+    <div class="note note-info">
+      <span data-lang="ja"><strong>2026-03-15 追記 — Provenance Map:</strong> 7つの gfx900 生存経路について、git blame ベースで投入・維持・運用・修正可能の4主体を整理した。新経路（MLIR, rocMLIR）は AMD(M) が投入し、旧経路（Winograd, ASM v4r1）は外部ドメイン contributor が投入。維持面では Winograd / MP_bidir は AMD 社員が 2021-2025 に補修しており、「放置されている」とは言い切れない。運用面では Community が回避策共有を担っている。</span>
+      <span data-lang="en"><strong>2026-03-15 addendum — Provenance Map:</strong> For 7 gfx900 survival paths, four ownership roles (insertion, maintenance, operation, repair-capability) were mapped using git blame. New paths (MLIR, rocMLIR) were inserted by AMD members, while legacy paths (Winograd, ASM v4r1) trace to external-domain contributors. On maintenance, Winograd / MP_bidir have been actively patched by AMD staff through 2021-2025, so "left abandoned" is not a precise characterization. On operation, the community drives workaround sharing.</span>
+    </div>
+
     <div class="note note-green">
       <span data-lang="ja"><strong>暫定結論:</strong> ROCm の歴史は、単に「古いものを切って新しいものに置き換える」直線ではなく、追加・統合・選択的無効化・fallback 残存・repo 再編・deprecated branch 上での legacy knowledge 温存が層ごとにずれながら進む履歴として読める。</span>
       <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm history is better read not as a straight line of replacing the old with the new, but as a layered record in which expansion, consolidation, selective disable, fallback survival, repository reorganization, and legacy-knowledge preservation on deprecated branches proceed at different speeds.</span>
