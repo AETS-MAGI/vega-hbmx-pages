@@ -52,6 +52,38 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - これまでに確定した commit、release block、issue trail をもとに、ROCm の変遷を public 向けの年表として整理したページです。
 - `gfx900` を入口にしつつ、component ごとの追加・後退・統合・fallback に加えて、retired/deprecated repo の再編と late-phase layout/docs 再編も時間軸で読めるようにしています。
 
+## 理論解説ページ（`theory/`）
+
+`theory/` ディレクトリには、GPU・ROCm・深層学習の基礎概念を「イメージでわかる」形式で解説した入門ページ群が収録されています。
+
+### `theory/index.html`（理論ページ総合案内）
+- 全 17 ページへのカード形式ナビゲーション。
+- 「はじめの一歩 → 気になるテーマ → 全体を見渡す資料」の 3 段階で構成。
+- おすすめ順路つき。
+
+### はじめの一歩（4 ページ）
+- `theory/gpu-basics.html` — GPU ってなに？
+- `theory/memory-and-bandwidth.html` — メモリと帯域
+- `theory/gpu-generations.html` — GPU の世代と進化
+- `theory/rocm-overview-for-beginners.html` — ROCm 入門
+
+### 気になるテーマを読む（11 ページ）
+- `theory/reading-math.html` — 数式の読み方ガイド
+- `theory/convolution-for-beginners.html` — 畳み込み入門
+- `theory/attention-for-llm.html` — Attention と LLM
+- `theory/linear-algebra-for-rocm.html` — 線形代数と ROCm
+- `theory/deep-learning-for-rocm.html` — 深層学習と ROCm
+- `theory/inference-flow.html` — 推論の流れ
+- `theory/training-flow.html` — 学習の流れ
+- `theory/int8-vs-fp32.html` — INT8 vs FP32
+- `theory/matrices-and-ai.html` — 行列と AI
+- `theory/fallback-explained.html` — フォールバックとは
+- `theory/what-support-means.html` — 「サポート」の意味
+
+### 全体を見渡す資料（2 ページ）
+- `theory/glossary.html` — 用語集
+- `theory/rocm-ecosystem.html` — ROCm エコシステム全体図
+
 ## 発表・補助資料
 
 ### `presentation_advanced_en-jp.html`
@@ -109,6 +141,25 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
   - Standalone supplementary deck for the exact meaning of `num_gpu`.
 - `solver-trace.html`
   - Technical reference: gfx900 computation paths in MIOpen / rocBLAS / CK / Tensile — code-verified and runtime-verified.
+- `theory/index.html`
+  - Theory page navigation hub with card grid and recommended reading path.
+- `theory/gpu-basics.html` — What is a GPU?
+- `theory/memory-and-bandwidth.html` — Memory and bandwidth basics.
+- `theory/gpu-generations.html` — GPU generations and evolution.
+- `theory/rocm-overview-for-beginners.html` — ROCm introduction for beginners.
+- `theory/reading-math.html` — How to read math notation.
+- `theory/convolution-for-beginners.html` — Convolution basics.
+- `theory/attention-for-llm.html` — Attention mechanism and LLMs.
+- `theory/linear-algebra-for-rocm.html` — Linear algebra and ROCm.
+- `theory/deep-learning-for-rocm.html` — Deep learning and ROCm.
+- `theory/inference-flow.html` — Inference pipeline walkthrough.
+- `theory/training-flow.html` — Training pipeline walkthrough.
+- `theory/int8-vs-fp32.html` — INT8 vs FP32 comparison.
+- `theory/matrices-and-ai.html` — Matrices and AI.
+- `theory/fallback-explained.html` — What is fallback?
+- `theory/what-support-means.html` — What "support" means in ROCm.
+- `theory/glossary.html` — Glossary of terms.
+- `theory/rocm-ecosystem.html` — ROCm ecosystem overview.
 
 ## Media assets
 
@@ -122,6 +173,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - ファイル名は公開用にそのまま維持しています。
 - `index.html` から各資料へ相対リンクで移動できます。
 - GitHub Pages の `/vega-hbmx-pages/` 配下でそのまま動作する構成です。
+- 理論解説ページは `theory/` サブディレクトリに格納されています。`theory/index.html` が案内ページです。
 - これらの HTML は、研究用ワークスペースで作成した資料を公開向けに整理したものです。
 
 ## Quick English guide
@@ -136,3 +188,4 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
 - Use `code-tracing.html` for the most technical evidence on `num_gpu` semantics.
 - Use `solver-trace.html` for gfx900 computation path tracing through the ROCm library stack (code + runtime verified).
+- Open `theory/index.html` for the theory page hub — beginner-friendly visual guides covering GPU basics, ROCm, deep learning, linear algebra, and more (17 pages in `theory/`).
