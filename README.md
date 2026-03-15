@@ -66,7 +66,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 
 ### `theory/index.html`（理論ページ総合案内）
 
-- 全 18 ページへのカード形式ナビゲーション。
+- 全 19 ページへのカード形式ナビゲーション。
 - 「はじめの一歩 → 気になるテーマ → 全体を見渡す資料」の 3 段階で構成。
 - おすすめ順路つき。
 - 一部テーマには「ROCmで見る」実コード例ページへのリンクあり。
@@ -78,8 +78,9 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `theory/gpu-generations.html` — GPU の世代と進化
 - `theory/rocm-overview-for-beginners.html` — ROCm 入門
 
-### 気になるテーマを読む（12 ページ）
+### 気になるテーマを読む（13 ページ）
 
+- `theory/pytorch-express.html` — PyTorch特急便（超入門）
 - `theory/reading-math.html` — 数式の読み方ガイド
 - `theory/convolution-for-beginners.html` — 畳み込み入門
 - `theory/attention-for-llm.html` — Attention と LLM
@@ -174,6 +175,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `theory/memory-and-bandwidth.html` — Memory and bandwidth basics.
 - `theory/gpu-generations.html` — GPU generations and evolution.
 - `theory/rocm-overview-for-beginners.html` — ROCm introduction for beginners.
+- `theory/pytorch-express.html` — PyTorch Express quickstart page.
 - `theory/reading-math.html` — How to read math notation.
 - `theory/convolution-for-beginners.html` — Convolution basics.
 - `theory/attention-for-llm.html` — Attention mechanism and LLMs.
@@ -220,4 +222,4 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
 - Use `code-tracing.html` for the most technical evidence on `num_gpu` semantics.
 - Use `solver-trace.html` for gfx900 computation path tracing through the ROCm library stack (code + runtime verified).
-- Open `theory/index.html` for the theory page hub — beginner-friendly visual guides covering GPU basics, ROCm, deep learning, linear algebra, and more (18 pages in `theory/`, plus 5 "See in ROCm" code example pages).
+- Open `theory/index.html` for the theory page hub — beginner-friendly visual guides covering GPU basics, ROCm, deep learning, linear algebra, and more (19 pages in `theory/`, plus 5 "See in ROCm" code example pages).
