@@ -109,17 +109,29 @@
 		<h2 class="section-title" data-lang="ja">2. なぜ小さい箱が注目されてるの？</h2>
 		<h2 class="section-title" data-lang="en">2. Why Is the Smaller Box Getting Attention?</h2>
 
-		<div class="prose">
-			<p data-lang="ja">AI が推論（学習ずみモデルを使って答えを出すこと）をするとき、箱が小さいとこんなメリットがあります。</p>
-			<p data-lang="en">When AI runs inference (using an already-trained model to produce answers), smaller boxes have these advantages:</p>
-			<p data-lang="ja">① <strong>メモリが少なくてすむ</strong> — 同じ量の数字でも、入れ物が1/4のサイズなのでメモリ使用量も約1/4。<br>② <strong>計算が速い</strong> — GPU の中には「小さい整数専用の速い計算ユニット」を持つものがある。<br>③ <strong>消費電力が低い</strong> — 小さなデータを運ぶので電気も少なくてすむ。</p>
-			<p data-lang="en">① <strong>Less memory</strong> — same number of values, 1/4 the container size ≈ ~1/4 memory.<br>② <strong>Faster</strong> — some GPUs have dedicated fast compute units for small integers.<br>③ <strong>Lower power</strong> — moving smaller data uses less electricity.</p>
-		</div>
+			<div class="prose">
+				<p data-lang="ja">AI が推論（学習ずみモデルを使って答えを出すこと）をするとき、箱が小さいとこんなメリットがあります。</p>
+				<p data-lang="en">When AI runs inference (using an already-trained model to produce answers), smaller boxes have these advantages:</p>
+				<p data-lang="ja">① <strong>メモリが少なくてすむ</strong> — 同じ量の数字でも、入れ物が1/4のサイズなのでメモリ使用量も約1/4。<br>② <strong>計算が速い</strong> — GPU の中には「小さい整数専用の速い計算ユニット」を持つものがある。<br>③ <strong>消費電力が低い</strong> — 小さなデータを運ぶので電気も少なくてすむ。</p>
+				<p data-lang="en">① <strong>Less memory</strong> — same number of values, 1/4 the container size ≈ ~1/4 memory.<br>② <strong>Faster</strong> — some GPUs have dedicated fast compute units for small integers.<br>③ <strong>Lower power</strong> — moving smaller data uses less electricity.</p>
+			</div>
 
-		<div class="fact-box">
-			<strong data-lang="ja">⚡ 数字でみると:</strong>
-			<strong data-lang="en">⚡ Numbers:</strong>
-			<span data-lang="ja">FP32 → INT8 に切り替えると、メモリ使用量は約 1/4 になり、推論速度は最大 2〜4 倍になるとされます（GPU やモデル構造により異なる）。</span>
+			<div class="highlight">
+				<span data-lang="ja">🤔 <strong>ここが引っかかりやすい:</strong> 「INT8 のほうが雑で小さいなら、むしろ昔からありそう。なんで最新機能なの？」と思いやすいです。答えは、<strong>INT8 という数字の種類が新しいのではなく、INT8 をまとめて高速化する専用回路のほうが新しい</strong>からです。</span>
+				<span data-lang="en">🤔 <strong>This is the easy place to get stuck:</strong> "If INT8 is smaller and rougher, shouldn't it be older and simpler? Why is it treated like a newer feature?" The key is that <strong>INT8 as a number format is not the new part; the newer part is the dedicated hardware that accelerates INT8 in bulk</strong>.</span>
+			</div>
+
+			<div class="analogy">
+				<strong data-lang="ja">🧮 たとえ話:</strong>
+				<strong data-lang="en">🧮 Analogy:</strong>
+				<span data-lang="ja">足し算そのものは昔からあります。でも、最近できたスーパーの自動レジは「小銭をまとめて一気に数える機械」を積んでいます。INT8 もこれに近くて、<strong>計算そのものが新しいのではなく、それ専用の近道が後から増えた</strong>と考えると自然です。</span>
+				<span data-lang="en">Addition itself has existed forever. But a modern self-checkout may include a machine that counts many coins at once. INT8 is similar: <strong>the math itself is not the new part; the dedicated shortcut built for it came later</strong>.</span>
+			</div>
+
+			<div class="fact-box">
+				<strong data-lang="ja">⚡ 数字でみると:</strong>
+				<strong data-lang="en">⚡ Numbers:</strong>
+				<span data-lang="ja">FP32 → INT8 に切り替えると、メモリ使用量は約 1/4 になり、推論速度は最大 2〜4 倍になるとされます（GPU やモデル構造により異なる）。</span>
 			<span data-lang="en">Switching from FP32 to INT8 can reduce memory use to ~1/4 and boost inference speed by 2–4× (varies by GPU and model architecture).</span>
 		</div>
 
@@ -145,12 +157,14 @@
 		<h2 class="section-title" data-lang="ja">4. Vega（gfx900）とデータ型</h2>
 		<h2 class="section-title" data-lang="en">4. Vega (gfx900) and Data Types</h2>
 
-		<div class="prose">
-			<p data-lang="ja">Vega 世代の GPU（gfx900）は、FP32 と FP16 の計算が得意です。しかし、最近の GPU が持つ「INT8 専用の高速ユニット」は搭載されていません。</p>
-			<p data-lang="en">Vega-generation GPUs (gfx900) are good at FP32 and FP16 computation. However, they lack the "dedicated fast INT8 units" found on newer GPUs.</p>
-			<p data-lang="ja">つまり、Vega で INT8 推論をしても、新世代 GPU ほどの速度向上は得られない場合があります。一方で、メモリ節約の効果はあるため、VRAM が限られる場面ではそれでも有用です。</p>
-			<p data-lang="en">So running INT8 inference on Vega may not give the same speed boost as on newer GPUs. However, the memory savings still apply, which is useful when VRAM is limited.</p>
-		</div>
+			<div class="prose">
+				<p data-lang="ja">Vega 世代の GPU（gfx900）は、FP32 と FP16 の計算が得意です。しかし、最近の GPU が持つ「INT8 専用の高速ユニット」は搭載されていません。</p>
+				<p data-lang="en">Vega-generation GPUs (gfx900) are good at FP32 and FP16 computation. However, they lack the "dedicated fast INT8 units" found on newer GPUs.</p>
+				<p data-lang="ja">ここで言う「最新機能」は、INT8 という数字そのものではなく、<strong>INT8 をまとめて高速処理する専用命令</strong>のことです。ROCm の調査では、これが <strong>dot4</strong> のような命令として現れます。</p>
+				<p data-lang="en">Here, the "new feature" is not INT8 as a number format itself, but the <strong>dedicated instructions that process many INT8 values quickly</strong>. In ROCm-oriented investigation, this appears as instructions such as <strong>dot4</strong>.</p>
+				<p data-lang="ja">つまり、Vega で INT8 推論をしても、新世代 GPU ほどの速度向上は得られない場合があります。一方で、メモリ節約の効果はあるため、VRAM が限られる場面ではそれでも有用です。</p>
+				<p data-lang="en">So running INT8 inference on Vega may not give the same speed boost as on newer GPUs. However, the memory savings still apply, which is useful when VRAM is limited.</p>
+			</div>
 
 		<div class="highlight">
 			<span data-lang="ja">🔑 <strong>ポイント:</strong> データ型の選択は「精度と速さのトレードオフ」。GPU ごとにどのデータ型が速いかは違う。</span>
@@ -163,12 +177,14 @@
 		<p class="section-lead" data-lang="ja">ROCm では、「その数字の入れ物に対して、その GPU に速い計算経路があるか」がとても大事です。</p>
 		<p class="section-lead" data-lang="en">In ROCm, an important question is whether that number format has a fast execution path on the GPU you are using.</p>
 
-		<div class="prose">
-			<p data-lang="ja">同じ INT8 でも、GPU 世代によって意味が少し変わります。新しい世代では「INT8 を速く回す専用の道」がありますが、Vega（gfx900）ではその道が細い、またはありません。</p>
-			<p data-lang="en">The meaning of INT8 changes a little across GPU generations. On newer generations there may be special fast paths for INT8, while on Vega (gfx900) those paths are narrow or missing.</p>
-			<p data-lang="ja">そのため ROCm では、INT8 を見るときに <strong>1. VRAM をどれだけ減らせるか</strong> と <strong>2. その GPU に速いカーネルがあるか</strong> を分けて考えます。小さくなることと、速くなることは、同じではありません。</p>
-			<p data-lang="en">So in ROCm it helps to separate <strong>1. how much VRAM you save</strong> from <strong>2. whether the GPU has a fast kernel for that type</strong>. Becoming smaller and becoming faster are not always the same thing.</p>
-		</div>
+			<div class="prose">
+				<p data-lang="ja">同じ INT8 でも、GPU 世代によって意味が少し変わります。新しい世代では「INT8 を速く回す専用の道」がありますが、Vega（gfx900）ではその道が細い、またはありません。</p>
+				<p data-lang="en">The meaning of INT8 changes a little across GPU generations. On newer generations there may be special fast paths for INT8, while on Vega (gfx900) those paths are narrow or missing.</p>
+				<p data-lang="ja">だから ROCm では、INT8 を見たときに「8ビットだから簡単」とは考えません。代わりに、<strong>その GPU に INT8 専用命令や高速カーネルがあるか</strong>を見ます。ここが、日常感覚と ROCm の見方が少しずれるところです。</p>
+				<p data-lang="en">So ROCm does not simply think "8-bit means easy." Instead, it asks <strong>whether that GPU has dedicated INT8 instructions or fast kernels</strong>. This is where everyday intuition and the ROCm viewpoint can differ.</p>
+				<p data-lang="ja">そのため ROCm では、INT8 を見るときに <strong>1. VRAM をどれだけ減らせるか</strong> と <strong>2. その GPU に速いカーネルがあるか</strong> を分けて考えます。小さくなることと、速くなることは、同じではありません。</p>
+				<p data-lang="en">So in ROCm it helps to separate <strong>1. how much VRAM you save</strong> from <strong>2. whether the GPU has a fast kernel for that type</strong>. Becoming smaller and becoming faster are not always the same thing.</p>
+			</div>
 
 		<div class="fact-box">
 			<strong data-lang="ja">💡 gfx900 を ROCm で見ると:</strong>
