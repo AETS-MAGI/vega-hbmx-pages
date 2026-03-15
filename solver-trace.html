@@ -342,7 +342,7 @@
 
 	<div class="mermaid">
 flowchart LR
-    REQ([/"Convolution Request"/]) --> SEL["MIOpen\nIsApplicable() filter"]
+    REQ(["Convolution Request"]) --> SEL["MIOpen\nIsApplicable() filter"]
     SEL --> M1["MLIR iGEMM\nconv_mlir_igemm_*.cpp"]
     SEL --> M2["XDLops family\nIsXdlopsSupport()"]
     SEL --> M3["ASM v4r1 dynamic\ngfx900 / gfx906 whitelist"]
