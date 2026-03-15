@@ -315,16 +315,17 @@
 				<span class="badge badge-ver">Updated: 2026-03-14</span>
 			</div>
 		</div>
-		<div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:1em 1.4em;margin:1.2em 0;font-size:0.95em;line-height:1.6;">
-		  <strong>Note / 注記</strong><br>
-		  This document organizes observations from publicly available sources and local repository clones only.
-		  It does not assert the contents of private issues or internal decision-making processes.<br>
-		  本文書は、公開一次資料およびローカル clone から観測可能な範囲を整理したものであり、非公開 issue や社内意思決定の内容を断定するものではない。
-		</div>
 		<div class="lang-toggle" aria-label="Language switch">
 			<button id="btn-en" class="lang-btn active" type="button">EN</button>
 			<button id="btn-ja" class="lang-btn" type="button">JP</button>
 		</div>
+	</div>
+
+	<div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:1em 1.4em;margin:1.2em 0;font-size:0.95em;line-height:1.6;">
+	  <strong>Note / 注記</strong><br>
+	  This document organizes observations from publicly available sources and local repository clones only.
+	  It does not assert the contents of private issues or internal decision-making processes.<br>
+	  本文書は、公開一次資料およびローカル clone から観測可能な範囲を整理したものであり、非公開 issue や社内意思決定の内容を断定するものではない。
 	</div>
 
 	<!-- ── Summary ── -->
@@ -706,6 +707,17 @@ log(<span class="hi-orange">"No Tensile solution found for XF32, fall back to FP
 	</div>
 
 </div>
+
+<section style="background:#fafafa;border:1px solid #ddd;padding:1.2em 1.6em;margin:2em 0;">
+  <h3 style="margin-top:0;">本文書が主張しないこと / This document does not claim that...</h3>
+  <ul>
+    <li>AMD の社内意思決定過程を断定するものではない / Internal decision-making processes are asserted.</li>
+    <li><code>llvm-project-private#389</code> の内容を推定で補完するものではない / The content of the private issue has been inferred.</li>
+    <li>本文書の事例が ROCm 全体の一般法則として確定しているとするものではない / A single case is generalized into a universal rule.</li>
+    <li>AMD の support policy 全体を完全に代表するものではない / AMD's support policy as a whole is fully represented.</li>
+    <li>AMD または特定個人への批判を意図するものではない / Any specific organization is being criticized.</li>
+  </ul>
+</section>
 
 <script>
 	const html  = document.documentElement;
