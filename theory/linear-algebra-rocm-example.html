@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<title>ROCmで見る 線形代数 / See Linear Algebra in ROCm | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D; --teal: #00796B; --amber: #C56A00; --blue: #1565C0;
+			--green: #2E7D32; --purple: #5B4B8A; --ink: #1F2933; --muted: #5F6C7B;
+			--line: #D8E0E8; --bg: #F5F8FB; --card: #FFFFFF; --accent: #1565C0;
+		}
+		* { box-sizing: border-box; }
+		body { margin: 0; font-family: 'Calibri','Arial',sans-serif; color: var(--ink);
+			background: radial-gradient(circle at top right,rgba(21,101,192,0.08),transparent 28%),
+			radial-gradient(circle at bottom left,rgba(91,75,138,0.07),transparent 26%),var(--bg); }
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px; }
+		.home-link { display:inline-flex; align-items:center; gap:6px; text-decoration:none; color:var(--navy); font-size:14px; font-weight:600; }
+		.home-link:hover { text-decoration:underline; }
+		.lang-btn { padding:5px 14px; border-radius:20px; font-size:13px; font-weight:600; cursor:pointer; border:2px solid var(--navy); background:transparent; color:var(--navy); transition:all .2s; }
+		.lang-btn.active { background:var(--navy); color:#fff; }
+		.hero { background:linear-gradient(135deg,#0D47A1 0%,#1565C0 55%,#42A5F5 100%); color:#fff; border-radius:16px; padding:40px 36px 32px; margin-bottom:32px; }
+		.hero h1 { margin:0 0 10px; font-size:28px; font-weight:700; line-height:1.3; }
+		.hero .subtitle { margin:0 0 14px; font-size:16px; opacity:.82; }
+		.hero p { margin:0; font-size:16px; opacity:.9; line-height:1.65; }
+		.section-title { font-size:21px; font-weight:700; color:var(--navy); border-left:5px solid var(--accent); padding-left:14px; margin:44px 0 8px; }
+		.section-lead { color:var(--muted); margin:0 0 20px; font-size:15px; line-height:1.6; }
+		.prose { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin-bottom:18px; font-size:16px; line-height:1.75; }
+		.prose p { margin:0 0 12px; } .prose p:last-child { margin-bottom:0; }
+		.code-block { background:#263238; color:#ECEFF1; border-radius:10px; padding:18px 22px; margin:16px 0; overflow-x:auto; font-family:'Fira Code','Consolas',monospace; font-size:14px; line-height:1.7; white-space:pre; }
+		.code-block .comment { color:#78909C; }
+		.code-block .kw { color:#82B1FF; }
+		.code-block .fn { color:#C3E88D; }
+		.code-block .str { color:#FFCB6B; }
+		.code-block .num { color:#F78C6C; }
+		.output-block { background:#F3E5F5; border-left:5px solid var(--purple); border-radius:10px; padding:16px 20px; margin:16px 0; font-family:monospace; font-size:14px; line-height:1.6; white-space:pre-wrap; }
+		.mapping { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
+		.mapping strong { color:var(--blue); }
+		.fact-box { background:#E8F5E9; border-left:5px solid var(--green); border-radius:10px; padding:16px 20px; margin:16px 0; font-size:15px; line-height:1.65; }
+		.fact-box strong { color:var(--green); }
+		.next-links { background:#E3F2FD; border-left:5px solid var(--blue); border-radius:10px; padding:16px 20px; margin-top:32px; font-size:15px; line-height:1.7; }
+		.next-links strong { color:var(--blue); } .next-links a { color:var(--blue); font-weight:600; }
+		.footer { margin-top:28px; color:var(--muted); font-size:13px; text-align:center; }
+		[data-lang] { display:none; }
+		html[data-language="en"] [data-lang="en"] { display:initial; }
+		html[data-language="ja"] [data-lang="ja"] { display:initial; }
+		html[data-language="en"] div[data-lang="en"],html[data-language="ja"] div[data-lang="ja"] { display:block; }
+		html[data-language="en"] p[data-lang="en"],html[data-language="ja"] p[data-lang="ja"] { display:block; }
+		html[data-language="en"] li[data-lang="en"],html[data-language="ja"] li[data-lang="ja"] { display:list-item; }
+		html[data-language="en"] h1[data-lang="en"],html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],html[data-language="ja"] h3[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"],html[data-language="ja"] h4[data-lang="ja"] { display:block; }
+		html[data-language="en"] span[data-lang="en"],html[data-language="ja"] span[data-lang="ja"] { display:inline; }
+		@media(max-width:640px){ .page{padding:20px 14px 40px;} .hero{padding:28px 20px 24px;} .hero h1{font-size:24px;} .code-block{font-size:12px;padding:14px 16px;} }
+	</style>
+</head>
+<body>
+<div class="page">
+	<div class="toolbar">
+		<a class="home-link" href="../index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+		<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+	</div>
+
+	<section class="hero">
+		<h1 data-lang="ja">ROCmで見る 線形代数</h1>
+		<h1 data-lang="en">See Linear Algebra in ROCm</h1>
+		<p class="subtitle" data-lang="ja">See Linear Algebra in ROCm</p>
+		<p class="subtitle" data-lang="en">ROCm で見るシリーズ</p>
+		<p data-lang="ja">理論ページで学んだ「行列のかけ算」が、ROCm の上では PyTorch のたった数行でどう動くかを見ます。</p>
+		<p data-lang="en">See how the "matrix multiplication" from the theory page runs on ROCm in just a few lines of PyTorch.</p>
+	</section>
+
+	<div class="mapping">
+		<p data-lang="ja"><strong>📘 対応する理論ページ:</strong> <a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — ベクトル・行列・行列積の意味を図で理解する</p>
+		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Understand vectors, matrices, and matrix multiply through diagrams</p>
+	</div>
+
+	<!-- ── 1. なにをするか ── -->
+	<h2 class="section-title" data-lang="ja">1. なにをするか</h2>
+	<h2 class="section-title" data-lang="en">1. What We'll Do</h2>
+	<p class="section-lead" data-lang="ja">2つの行列をかけ算して、結果がどう出るかを見ます。</p>
+	<p class="section-lead" data-lang="en">Multiply two matrices and see what comes out.</p>
+
+	<div class="prose">
+		<p data-lang="ja">理論ページでは「行列 A × 行列 B = 行列 C」を図で見ました。ここでは同じ計算を、PyTorch で GPU に投げて実際に動かします。</p>
+		<p data-lang="en">The theory page showed "Matrix A × Matrix B = Matrix C" as diagrams. Here we run the same calculation on GPU through PyTorch.</p>
+	</div>
+
+	<!-- ── 2. 最小コード ── -->
+	<h2 class="section-title" data-lang="ja">2. 最小コード</h2>
+	<h2 class="section-title" data-lang="en">2. Minimal Code</h2>
+	<p class="section-lead" data-lang="ja">GPU で行列積を実行する最小の例です。</p>
+	<p class="section-lead" data-lang="en">The smallest example that runs a matrix multiplication on GPU.</p>
+
+	<div class="code-block"><span class="kw">import</span> torch
+
+<span class="comment"># 行列 A (2×3) と 行列 B (3×2) を作る</span>
+A = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>],
+                  [<span class="num">4.0</span>, <span class="num">5.0</span>, <span class="num">6.0</span>]])
+
+B = torch.tensor([[<span class="num">7.0</span>,  <span class="num">8.0</span>],
+                  [<span class="num">9.0</span>, <span class="num">10.0</span>],
+                  [<span class="num">11.0</span>, <span class="num">12.0</span>]])
+
+<span class="comment"># GPU に送る</span>
+A_gpu = A.to(<span class="str">"cuda"</span>)
+B_gpu = B.to(<span class="str">"cuda"</span>)
+
+<span class="comment"># 行列積 (GEMM)</span>
+C_gpu = torch.<span class="fn">matmul</span>(A_gpu, B_gpu)
+
+<span class="fn">print</span>(<span class="str">"A (2×3):"</span>)
+<span class="fn">print</span>(A)
+<span class="fn">print</span>(<span class="str">"B (3×2):"</span>)
+<span class="fn">print</span>(B)
+<span class="fn">print</span>(<span class="str">"C = A × B (2×2):"</span>)
+<span class="fn">print</span>(C_gpu.cpu())</div>
+
+	<!-- ── 3. 実行するとどうなるか ── -->
+	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
+	<h2 class="section-title" data-lang="en">3. What Happens When You Run It</h2>
+
+	<div class="output-block">A (2×3):
+tensor([[1., 2., 3.],
+        [4., 5., 6.]])
+B (3×2):
+tensor([[ 7.,  8.],
+        [ 9., 10.],
+        [11., 12.]])
+C = A × B (2×2):
+tensor([[ 58.,  64.],
+        [139., 154.]])</div>
+
+	<div class="prose">
+		<p data-lang="ja"><strong>C の 1行1列目 = 58</strong> は、A の 1行目 <code>[1, 2, 3]</code> と B の 1列目 <code>[7, 9, 11]</code> の内積です: 1×7 + 2×9 + 3×11 = 7 + 18 + 33 = 58。理論ページで見た「行と列をペアにして足す」が、そのまま GPU で実行されています。</p>
+		<p data-lang="en"><strong>C[0,0] = 58</strong> is the dot product of A's row 0 <code>[1, 2, 3]</code> and B's column 0 <code>[7, 9, 11]</code>: 1×7 + 2×9 + 3×11 = 58. The "pair rows and columns and add up" from the theory page is running on GPU exactly as described.</p>
+	</div>
+
+	<!-- ── 4. 裏では何が起きているか ── -->
+	<h2 class="section-title" data-lang="ja">4. 裏では何が起きているか</h2>
+	<h2 class="section-title" data-lang="en">4. What's Happening Under the Hood</h2>
+
+	<div class="prose">
+		<p data-lang="ja"><code>torch.matmul</code> は内部で <strong>rocBLAS の GEMM（General Matrix Multiply）</strong>を呼び出しています。「行列積」という数学の操作を GPU 向けに最適化したのが GEMM で、AI の計算はほとんどがこの GEMM の組み合わせです。</p>
+		<p data-lang="en"><code>torch.matmul</code> internally calls <strong>rocBLAS GEMM (General Matrix Multiply)</strong>. GEMM is the GPU-optimized implementation of matrix multiplication, and nearly all AI computations are built from combinations of GEMM.</p>
+		<p data-lang="ja">この流れをまとめると:</p>
+		<p data-lang="en">The flow looks like:</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>Python コード</strong> → <strong>PyTorch</strong> → <strong>HIP</strong> → <strong>rocBLAS GEMM</strong> → <strong>GPU で並列計算</strong></p>
+		<p data-lang="en"><strong>Python code</strong> → <strong>PyTorch</strong> → <strong>HIP</strong> → <strong>rocBLAS GEMM</strong> → <strong>Parallel computation on GPU</strong></p>
+		<p data-lang="ja">たった1行の <code>torch.matmul</code> が、GPU 上で何千もの積和を並列に実行しています。行列が大きくなるほど GPU の並列性が活きます。</p>
+		<p data-lang="en">A single line <code>torch.matmul</code> runs thousands of multiply-add operations in parallel on the GPU. The larger the matrices, the more GPU parallelism pays off.</p>
+	</div>
+
+	<!-- ── next ── -->
+	<div class="next-links">
+		<strong data-lang="ja">📖 次に読むなら:</strong>
+		<strong data-lang="en">📖 Read next:</strong><br>
+		<span data-lang="ja">
+			<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 理論ページに戻る<br>
+			<a href="matrices-and-ai-rocm-example.html">ROCmで見る 行列と AI</a> — y = Wx + b が GPU でどう動くか<br>
+			<a href="deep-learning-rocm-example.html">ROCmで見る 深層学習</a> — ニューラルネットの最小例
+		</span>
+		<span data-lang="en">
+			<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Back to the theory page<br>
+			<a href="matrices-and-ai-rocm-example.html">See Matrices &amp; AI in ROCm</a> — How y = Wx + b runs on GPU<br>
+			<a href="deep-learning-rocm-example.html">See Deep Learning in ROCm</a> — Minimal neural network example
+		</span>
+	</div>
+
+	<div class="footer">
+		<span data-lang="ja">vega-hbmx-pages · ROCmで見るシリーズ · 2026-03-16</span>
+		<span data-lang="en">vega-hbmx-pages · See it in ROCm series · 2026-03-16</span>
+	</div>
+</div>
+
+<script>
+	const html = document.documentElement;
+	const btnJa = document.getElementById('btn-ja');
+	const btnEn = document.getElementById('btn-en');
+	function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+	btnJa.addEventListener('click', () => setLang('ja'));
+	btnEn.addEventListener('click', () => setLang('en'));
+	setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+</script>
+</body>
+</html>
