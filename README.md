@@ -2,7 +2,7 @@
 
 GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 investigation.
 
-公開先: https://aets-magi.github.io/vega-hbmx-pages/
+公開先: [https://aets-magi.github.io/vega-hbmx-pages/](https://aets-magi.github.io/vega-hbmx-pages/)
 
 ## はじめに
 
@@ -19,36 +19,44 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 ## 一般向けのおすすめ閲覧順
 
 ### 1. `index.html`
+
 - 公開トップページです。
 - 全資料への入口になっています。
 
 ### 2. `general-audience.html`
+
 - 「未来の道具を、みんなの手に。」— 理念と思想を伝える宣言ページです。
 - 技術の説明ではなく、「なぜやるのか」「誰のためか」を、専門知識なしで読める構成にしています。
 - 1画面1テーマのスクロール構成で、読み物として気持ちが入るデザインです。
 
 ### 3. `media.html`
+
 - NotebookLM による解説音声と、ポスター PDF を見られるページです。
 - 最初に雰囲気をつかみたい人向けです。
 
 ### 4. `experiment-history.html`
+
 - 調査がどう進んだかを時系列で追えるページです。
 - runtime / code tracing だけでなく、2026-03-15 時点の GitHub chronology / PR-context synthesis まで含みます。
 - 非専門向けの説明や凡例も入っています。
 
 ### 5. `page-history.html`
+
 - 公開ページ側の更新内容を残す監査ログです。
 - 「旧記述 → 新記述 → 根拠 → 影響ページ」の順で、何をどう差し替えたかを共有できます。
 
 ### 6. `reveal-hypothesis.html`
+
 - gfx900 個別調査を起点にしながら、ROCm 一般の設計思想を GitHub 側の一次資料で検証した要約ページです。
 - layered support、capability-based fallback、staged deprecation、repo-level consolidation、deprecated branch に残る legacy knowledge、support の層分解、AMD とコミュニティの役割分解を扱います。
 
 ### 7. `rocm-structure.html`
+
 - ROCm 全体を、GitHub 側の一次資料から layered stack、support の意味の分離、repo topology の統合、AMD と community の寄与レイヤという観点で整理した独立ページです。
 - `TheRock`、`rocm-systems`、retired repo README、public issue / PR のような複数の public source をまとめて読みたい人向けです。
 
 ### 8. `rocm-history.html`
+
 - これまでに確定した commit、release block、issue trail をもとに、ROCm の変遷を public 向けの年表として整理したページです。
 - `gfx900` を入口にしつつ、component ごとの追加・後退・統合・fallback に加えて、retired/deprecated repo の再編と late-phase layout/docs 再編も時間軸で読めるようにしています。
 
@@ -57,18 +65,21 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 `theory/` ディレクトリには、GPU・ROCm・深層学習の基礎概念を「イメージでわかる」形式で解説した入門ページ群が収録されています。
 
 ### `theory/index.html`（理論ページ総合案内）
+
 - 全 18 ページへのカード形式ナビゲーション。
 - 「はじめの一歩 → 気になるテーマ → 全体を見渡す資料」の 3 段階で構成。
 - おすすめ順路つき。
 - 一部テーマには「ROCmで見る」実コード例ページへのリンクあり。
 
 ### はじめの一歩（4 ページ）
+
 - `theory/gpu-basics.html` — GPU ってなに？
 - `theory/memory-and-bandwidth.html` — メモリと帯域
 - `theory/gpu-generations.html` — GPU の世代と進化
 - `theory/rocm-overview-for-beginners.html` — ROCm 入門
 
 ### 気になるテーマを読む（12 ページ）
+
 - `theory/reading-math.html` — 数式の読み方ガイド
 - `theory/convolution-for-beginners.html` — 畳み込み入門
 - `theory/attention-for-llm.html` — Attention と LLM
@@ -83,11 +94,14 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `theory/what-support-means.html` — 「サポート」の意味
 
 ### 全体を見渡す資料（2 ページ）
+
 - `theory/glossary.html` — 用語集
 - `theory/rocm-ecosystem.html` — ROCm エコシステム全体図
 
 ### 「ROCmで見る」実コード例ページ（5 ページ）
+
 理論ページの概念を 10〜30 行の最小 PyTorch コードで確認する実例ページです。
+
 - `theory/linear-algebra-rocm-example.html` — 行列積を GPU で実行
 - `theory/deep-learning-rocm-example.html` — 小さなニューラルネットの forward
 - `theory/training-flow-rocm-example.html` — 1 ステップの学習（forward → loss → backward → step）
@@ -97,6 +111,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 ## 発表・補助資料
 
 ### `presentation_advanced_en-jp.html`
+
 - 日英切替つきの発表・補助スライドです。
 - 実験設定、matched backend comparison、crash localization、follow-up tests をまとめています。
 - 会場でそのまま表示することを想定した HTML です。
@@ -104,11 +119,13 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 ## 研究向け資料
 
 ### `code-tracing.html`
+
 - `num_gpu` の意味を client → server → runner → llama.cpp まで、厳密な行番号つきで追う単体資料です。
 - 「`num_gpu` は GPU 枚数ではなく offload 層数である」という点を、ソースコードから順に確認できます。
 - 発表中の質疑や、実装上の意味を厳密に確認したい場合に向いています。
 
 ### `solver-trace.html` ★ 2026-03-15 更新
+
 - MIOpen・rocBLAS・CK・Tensile における gfx900（Vega10）計算経路を、ソース行番号と実機ログで対応づけた技術参照資料です。
 - 静的コード監査（code_verified）と実機 Vega64 での動的検証（runtime_verified）の両方を収録。
 - 2026-03-15 追記として、shipped artifact 比較の棒グラフを共通デザインへ置き換え、gfx900 注目行・比較対象・ゼロ値が視覚的に区別しやすい形へ整理しました。
