@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="../styles/mermaid-layout.css">
+	<title>イメージでわかる 学習と推論のちがい / Training vs Inference, Visually Explained | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D;
+			--teal: #00796B;
+			--amber: #C56A00;
+			--red: #B71C1C;
+			--blue: #1565C0;
+			--green: #2E7D32;
+			--purple: #5B4B8A;
+			--ink: #1F2933;
+			--muted: #5F6C7B;
+			--line: #D8E0E8;
+			--bg: #F5F8FB;
+			--card: #FFFFFF;
+			--accent: #00695C;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0; font-family: 'Calibri', 'Arial', sans-serif; color: var(--ink);
+			background: radial-gradient(circle at top right, rgba(0,105,92,0.08), transparent 28%),
+				radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg);
+		}
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero { background: linear-gradient(135deg, #004D40 0%, #00695C 55%, #26A69A 100%); color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px; }
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+		.section-title { font-size: 21px; font-weight: 700; color: var(--navy); border-left: 5px solid var(--accent); padding-left: 14px; margin: 44px 0 8px; }
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; }
+		.prose p:last-child { margin-bottom: 0; }
+		.analogy { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.analogy strong { color: var(--amber); }
+		.highlight { background: #EDE7F6; border-left: 5px solid var(--purple); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.highlight strong { color: var(--purple); }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+		.warn-box { background: #FFF3E0; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.warn-box strong { color: var(--amber); }
+
+		.key-message { background: linear-gradient(135deg, #E0F2F1, #B2DFDB); border: 2px solid #009688; border-radius: 14px; padding: 24px 28px; margin: 28px 0; font-size: 17px; line-height: 1.75; font-weight: 500; text-align: center; }
+		.key-message strong { color: #004D40; }
+
+		/* Compare table */
+		.compare-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 15px; }
+		.compare-table th, .compare-table td { border: 1px solid var(--line); padding: 12px 16px; text-align: left; }
+		.compare-table th { background: var(--navy); color: #fff; font-weight: 600; }
+		.compare-table tr:nth-child(even) { background: #F5F8FB; }
+		.compare-table td:first-child { font-weight: 600; }
+		.col-train { background: #FFF3E0; }
+		.col-infer { background: #E3F2FD; }
+
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 32px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); }
+		.next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"], html[data-language="ja"] h3[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		html[data-language="en"] span[data-lang="en"], html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+		html[data-language="en"] td[data-lang="en"], html[data-language="ja"] td[data-lang="ja"],
+		html[data-language="en"] th[data-lang="en"], html[data-language="ja"] th[data-lang="ja"] { display: table-cell; }
+		@media (max-width: 640px) { .page { padding: 20px 14px 40px; } .hero { padding: 28px 20px 24px; } .hero h1 { font-size: 24px; } .compare-table { font-size: 13px; } .compare-table th, .compare-table td { padding: 8px 10px; } }
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="../index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる 学習と推論のちがい</h1>
+			<h1 data-lang="en">Training vs Inference, Visually Explained</h1>
+			<p class="subtitle" data-lang="ja">Training vs Inference, Visually Explained</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">「モデルを育てる時間」と「育ったモデルを使う時間」はまったく別のものです。LLM が会話中に勝手に賢くなっているわけではないことも、このページでやさしく整理します。</p>
+			<p data-lang="en">The time spent "raising a model" and the time spent "using a raised model" are completely different things. This page gently clarifies why normal LLM use does not mean the model is learning on the fly.</p>
+		</section>
+
+		<!-- ──────── 1. 学習と推論は、同じではない ──────── -->
+		<h2 class="section-title" data-lang="ja">1. 学習と推論は、同じではない</h2>
+		<h2 class="section-title" data-lang="en">1. Training and Inference Are Not the Same</h2>
+		<p class="section-lead" data-lang="ja">AI には大きく分けて2つの時間があります。</p>
+		<p class="section-lead" data-lang="en">AI operates in two fundamentally different modes.</p>
+
+		<div class="prose">
+			<p data-lang="ja">ひとつは、まちがいを見ながら中身を直していく<strong>学習（training）</strong>。</p>
+			<p data-lang="en">One is <strong>training</strong> — fixing internal parameters by looking at mistakes.</p>
+			<p data-lang="ja">もうひとつは、できあがったモデルを使って答えを出す<strong>推論（inference）</strong>です。</p>
+			<p data-lang="en">The other is <strong>inference</strong> — using a finished model to produce answers.</p>
+		</div>
+
+		<div class="analogy">
+			<p data-lang="ja"><strong>🎓 たとえ:</strong> テスト勉強をしている時間が<strong>学習</strong>、テスト本番で答案を書いている時間が<strong>推論</strong>です。勉強しているときはノートを書き直しますが、テスト本番ではノートを書き直しません。</p>
+			<p data-lang="en"><strong>🎓 Analogy:</strong> <strong>Training</strong> is studying for an exam — you rewrite your notes. <strong>Inference</strong> is sitting the exam — you write answers but don't rewrite your notes.</p>
+		</div>
+
+		<!-- ──────── 2. いちばん大きな違い：中身が変わるかどうか ──────── -->
+		<h2 class="section-title" data-lang="ja">2. いちばん大きな違い：中身が変わるかどうか</h2>
+		<h2 class="section-title" data-lang="en">2. The Biggest Difference: Do the Internals Change?</h2>
+		<p class="section-lead" data-lang="ja">核心は「重みが書き換わるかどうか」です。</p>
+		<p class="section-lead" data-lang="en">The crux is whether the model's weights get rewritten.</p>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>学習中</strong>は、モデルの中の<strong>重み（weight）</strong>が少しずつ変わります。正解と比べて「どれくらいずれていたか」を計算し、その分だけ重みを修正します。</p>
+			<p data-lang="en">During <strong>training</strong>, the model's <strong>weights</strong> change step by step. The system computes how far off the prediction was from the correct answer, then adjusts the weights accordingly.</p>
+			<p data-lang="ja"><strong>推論中</strong>は、重みは基本的に変わりません。すでに覚えたことを使って、入力に対する答えを計算するだけです。</p>
+			<p data-lang="en">During <strong>inference</strong>, the weights essentially stay fixed. The model simply uses what it already knows to compute an answer for the given input.</p>
+		</div>
+
+		<div class="fact-box">
+			<p data-lang="ja"><strong>✅ ポイント:</strong> 推論は「すでに覚えたことを使う時間」です。新しいことを覚え直す時間ではありません。</p>
+			<p data-lang="en"><strong>✅ Key point:</strong> Inference is "using what was already learned." It is not the time for learning new things.</p>
+		</div>
+
+		<!-- ──────── 3. 正解を使うのはどっち？ ──────── -->
+		<h2 class="section-title" data-lang="ja">3. 正解を使うのはどっち？</h2>
+		<h2 class="section-title" data-lang="en">3. Which One Uses Correct Answers?</h2>
+		<p class="section-lead" data-lang="ja">もうひとつわかりやすい違いがあります。</p>
+		<p class="section-lead" data-lang="en">There's another clear-cut difference.</p>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>学習</strong>では、「正解」と比べて、どれだけ外れたかを見ます。正解があるからこそ、直す方向がわかります。</p>
+			<p data-lang="en">During <strong>training</strong>, predictions are compared against correct answers. Having the right answer is what tells the model which direction to adjust.</p>
+			<p data-lang="ja"><strong>推論</strong>では、正解は一緒に渡されません。その場で答えを出すだけです。合っているかどうかは、推論の仕組みそのものには含まれていません。</p>
+			<p data-lang="en">During <strong>inference</strong>, no correct answer is provided. The model just produces its best guess. Whether it's right or wrong is outside the inference mechanism itself.</p>
+		</div>
+
+		<div class="analogy">
+			<p data-lang="ja"><strong>📝 たとえ:</strong> 学習は「赤ペン先生が答え合わせしてくれる練習問題」、推論は「答え合わせなしの本番」みたいなものです。</p>
+			<p data-lang="en"><strong>📝 Analogy:</strong> Training is like "practice problems graded by a teacher." Inference is like "the real test with no answer key."</p>
+		</div>
+
+		<!-- ──────── 4. LLM を使っていると勝手に賢くなるの？ ──────── -->
+		<h2 class="section-title" data-lang="ja">4. LLM を使っていると勝手に賢くなるの？</h2>
+		<h2 class="section-title" data-lang="en">4. Does Using an LLM Make It Smarter?</h2>
+		<p class="section-lead" data-lang="ja">よくある誤解を、ここではっきりさせます。</p>
+		<p class="section-lead" data-lang="en">Let's clear up a common misconception.</p>
+
+		<div class="key-message">
+			<p data-lang="ja"><strong>会話中の LLM は、ふつうは「学習」しているのではなく「推論」しています。</strong><br>その場の文脈を使って答えを変えることはあっても、モデルの重みが毎回書き換わっているわけではありません。</p>
+			<p data-lang="en"><strong>During a conversation, an LLM is normally performing inference, not training.</strong><br>It may adjust its answers using the conversation context, but its weights are not being rewritten with every message.</p>
+		</div>
+
+		<div class="prose">
+			<p data-lang="ja">ふつうのチャット利用では、LLM は会話のたびに自分の重みを学習し直しているわけではありません。会話中にやっているのは、入力文を読んで次の語を予測する<strong>推論</strong>です。</p>
+			<p data-lang="en">In normal chat use, an LLM does not retrain its weights with each conversation. What it's doing is reading the input and predicting the next token — that's <strong>inference</strong>.</p>
+			<p data-lang="ja">ただし、会話の文脈を一時的に覚えて答え方を変えることはあります。これは<strong>その場の参照</strong>であって、モデル全体が学習し直されているわけではありません。</p>
+			<p data-lang="en">However, it can temporarily hold the conversation context and adjust its responses. This is <strong>in-context referencing</strong>, not retraining the entire model.</p>
+		</div>
+
+		<div class="warn-box">
+			<p data-lang="ja"><strong>⚠ よくある勘違い:</strong>「ChatGPT に教えたから次から覚えてくれる」→ 多くの場合、それは文脈ウィンドウ内で参照しているだけで、モデルの重みは変わっていません。</p>
+			<p data-lang="en"><strong>⚠ Common misconception:</strong> "I taught ChatGPT something, so it'll remember next time" → In most cases, it's just referencing within the context window; the model's weights haven't changed.</p>
+		</div>
+
+		<!-- ──────── 5. メモリと学習は同じ？ ──────── -->
+		<h2 class="section-title" data-lang="ja">5. 「メモリ」と「学習」は同じ？</h2>
+		<h2 class="section-title" data-lang="en">5. Are "Memory" and "Learning" the Same?</h2>
+		<p class="section-lead" data-lang="ja">似て見えますが、同じではありません。</p>
+		<p class="section-lead" data-lang="en">They look similar, but they're not the same.</p>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>メモリ</strong>は「あとで参照するために情報を残すこと」です。会話の履歴をウィンドウに入れたり、外部のデータベースに保存したりする仕組みがこれにあたります。</p>
+			<p data-lang="en"><strong>Memory</strong> means "saving information for later reference." This includes keeping conversation history in the context window, or storing data in an external database.</p>
+			<p data-lang="ja"><strong>学習</strong>は「モデルの中の重みそのものを変えること」です。メモリに入れた情報をどれだけ使っても、重みが書き換わらなければ学習ではありません。</p>
+			<p data-lang="en"><strong>Learning (training)</strong> means "changing the model's weights themselves." No matter how much information you put into memory, if the weights don't change, it's not learning.</p>
+		</div>
+
+		<div class="analogy">
+			<p data-lang="ja"><strong>📎 たとえ:</strong> メモリは「付箋を机に貼ること」。学習は「教科書の中身を書き換えること」。付箋を何枚貼っても、教科書の本文は変わりません。</p>
+			<p data-lang="en"><strong>📎 Analogy:</strong> Memory is "sticking a Post-it on your desk." Learning is "rewriting the textbook itself." No matter how many Post-its you add, the textbook text stays the same.</p>
+		</div>
+
+		<!-- ──────── 6. GPU では何が違うの？ ──────── -->
+		<h2 class="section-title" data-lang="ja">6. GPU では何が違うの？</h2>
+		<h2 class="section-title" data-lang="en">6. What's Different on the GPU Side?</h2>
+		<p class="section-lead" data-lang="ja">計算の重さがまるで違います。</p>
+		<p class="section-lead" data-lang="en">The computational load is completely different.</p>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>推論</strong>では、入力データを「前向き（forward）」に通して結果を得るだけです。</p>
+			<p data-lang="en"><strong>Inference</strong> only needs a single <strong>forward pass</strong> — feed data in, get a result out.</p>
+			<p data-lang="ja"><strong>学習</strong>では、まず前向きに計算して答えを出し、次に「どこを直せばよいか」を<strong>逆向き（backward）</strong>にたどって計算し、さらに重みを<strong>更新</strong>します。</p>
+			<p data-lang="en"><strong>Training</strong> requires a forward pass to produce a prediction, then a <strong>backward pass</strong> to trace which weights need fixing, and finally a weight <strong>update</strong> step.</p>
+			<p data-lang="ja">そのため、学習は推論よりもずっと重く、時間も VRAM も多く使います。</p>
+			<p data-lang="en">This makes training much heavier than inference, consuming more time and VRAM.</p>
+		</div>
+
+		<div class="highlight">
+			<p data-lang="ja"><strong>🔧 ROCm では:</strong> 推論でも学習でも、行列計算は rocBLAS や MIOpen が受け持ちます。ただし学習時は backward 計算が加わるため、GPU の仕事量が大幅に増えます。gfx900（Vega）は推論には十分使える場面が多いですが、大規模な学習には VRAM やサポート面で制約があります。</p>
+			<p data-lang="en"><strong>🔧 In ROCm:</strong> Both inference and training rely on rocBLAS and MIOpen for matrix operations. But training adds backward computation, significantly increasing GPU workload. gfx900 (Vega) is often sufficient for inference, but large-scale training faces VRAM and support constraints.</p>
+		</div>
+
+		<!-- ──────── 7. まとめて比べる ──────── -->
+		<h2 class="section-title" data-lang="ja">7. まとめて比べる</h2>
+		<h2 class="section-title" data-lang="en">7. Side-by-Side Comparison</h2>
+		<p class="section-lead" data-lang="ja">学習と推論の違いを、ひと目で整理します。</p>
+		<p class="section-lead" data-lang="en">A quick comparison table to see the differences at a glance.</p>
+
+		<table class="compare-table">
+			<thead>
+				<tr>
+					<th data-lang="ja">観点</th>
+					<th data-lang="en">Aspect</th>
+					<th data-lang="ja">学習 (Training)</th>
+					<th data-lang="en">Training</th>
+					<th data-lang="ja">推論 (Inference)</th>
+					<th data-lang="en">Inference</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-lang="ja">目的</td>
+					<td data-lang="en">Purpose</td>
+					<td data-lang="ja" class="col-train">モデルを育てる</td>
+					<td data-lang="en" class="col-train">Raise/improve the model</td>
+					<td data-lang="ja" class="col-infer">答えを出す</td>
+					<td data-lang="en" class="col-infer">Produce answers</td>
+				</tr>
+				<tr>
+					<td data-lang="ja">正解データ</td>
+					<td data-lang="en">Correct answers</td>
+					<td data-lang="ja" class="col-train">使う</td>
+					<td data-lang="en" class="col-train">Used</td>
+					<td data-lang="ja" class="col-infer">使わない</td>
+					<td data-lang="en" class="col-infer">Not used</td>
+				</tr>
+				<tr>
+					<td data-lang="ja">重み</td>
+					<td data-lang="en">Weights</td>
+					<td data-lang="ja" class="col-train">変わる</td>
+					<td data-lang="en" class="col-train">Change</td>
+					<td data-lang="ja" class="col-infer">基本変わらない</td>
+					<td data-lang="en" class="col-infer">Stay fixed</td>
+				</tr>
+				<tr>
+					<td data-lang="ja">計算の流れ</td>
+					<td data-lang="en">Computation</td>
+					<td data-lang="ja" class="col-train">forward + backward + 更新</td>
+					<td data-lang="en" class="col-train">Forward + backward + update</td>
+					<td data-lang="ja" class="col-infer">forward のみ</td>
+					<td data-lang="en" class="col-infer">Forward only</td>
+				</tr>
+				<tr>
+					<td data-lang="ja">計算の重さ</td>
+					<td data-lang="en">Load</td>
+					<td data-lang="ja" class="col-train">重い（時間・VRAM 大）</td>
+					<td data-lang="en" class="col-train">Heavy (time &amp; VRAM)</td>
+					<td data-lang="ja" class="col-infer">比較的軽い</td>
+					<td data-lang="en" class="col-infer">Relatively light</td>
+				</tr>
+				<tr>
+					<td data-lang="ja">LLM チャット中</td>
+					<td data-lang="en">During LLM chat</td>
+					<td data-lang="ja" class="col-train">通常ここではない</td>
+					<td data-lang="en" class="col-train">Usually not happening</td>
+					<td data-lang="ja" class="col-infer">← ここ</td>
+					<td data-lang="en" class="col-infer">← This one</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 次に読むなら:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="training-flow.html">イメージでわかる 学習の流れ</a> — 学習の5ステップを詳しく見る<br>
+				<a href="inference-flow.html">イメージでわかる 推論の流れ</a> — 推論の5ステップを詳しく見る<br>
+				<a href="deep-learning-for-rocm.html">イメージでわかる深層学習</a> — フィルタ・solver・MIOpen の詳細
+			</span>
+			<span data-lang="en">
+				<a href="training-flow.html">Visual Guide to the Training Flow</a> — 5 training steps in detail<br>
+				<a href="inference-flow.html">Visual Guide to the Inference Flow</a> — 5 inference steps in detail<br>
+				<a href="deep-learning-for-rocm.html">Visual Deep Learning</a> — Filters, solvers, and MIOpen
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ · 2026-03-16</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series · 2026-03-16</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
