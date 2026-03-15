@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles/mermaid-layout.css">
+  <link rel="stylesheet" href="../styles/mermaid-layout.css">
   <title>イメージでわかる線形代数 / Visual Linear Algebra | vega-hbmx-pages</title>
   <style>
     :root {
@@ -213,7 +213,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/contrib/auto-render.min.js"
     onload="renderMathInElement(document.body, {delimiters: [{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
   <script type="module">
-    import { initMermaidPage } from './scripts/mermaid-page.js';
+    import { initMermaidPage } from '../scripts/mermaid-page.js';
     initMermaidPage();
   </script>
 </head>
@@ -221,7 +221,7 @@
 <div class="page">
 
   <div class="toolbar">
-    <a class="home-link" href="index.html">&#8592; <span data-lang="ja">トップへ</span><span data-lang="en">Back to index</span></a>
+    <a class="home-link" href="../index.html">&#8592; <span data-lang="ja">トップへ</span><span data-lang="en">Back to index</span></a>
     <div style="display:flex;gap:6px;">
       <button id="btn-ja" class="lang-btn active" type="button">JP</button>
       <button id="btn-en" class="lang-btn" type="button">EN</button>
@@ -358,7 +358,7 @@
 
   <!-- 行列積の手順図 -->
   <figure class="matmul-fig">
-    <img src="media/img/matmul-how-it-works.png"
+    <img src="../media/img/matmul-how-it-works.png"
          alt="行列Wの行1（オレンジ）で全科目を合計するとy1=240、行2（紫）で数学+英語だけを合計するとy2=160になる計算図"
          loading="lazy">
     <figcaption>
