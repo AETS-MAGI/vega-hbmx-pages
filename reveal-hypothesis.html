@@ -415,6 +415,36 @@
       </div>
     </div>
 
+    <!-- Shipped Artifacts Visual Comparison -->
+    <div class="mermaid">
+---
+config:
+  theme: base
+  themeVariables:
+    xyChart:
+      backgroundColor: "#fafafa"
+---
+xychart-beta
+    title "rocBLAS Pre-compiled Files by Architecture (ROCm 7.2)"
+    x-axis ["gfx942\n(MI300X)", "gfx906\n(Vega20)", "gfx900\n(Vega)", "gfx1100\n(RDNA3)", "gfx1030\n(RDNA2)"]
+    y-axis "File count" 0 --> 260
+    bar [242, 156, 128, 96, 88]
+    </div>
+    <div class="mermaid">
+---
+config:
+  theme: base
+  themeVariables:
+    xyChart:
+      backgroundColor: "#fafafa"
+---
+xychart-beta
+    title "MIOpen Perf DB Lines — gfx900 vs RDNA (ROCm 7.2)"
+    x-axis ["gfx942", "gfx908", "gfx90a", "gfx906", "gfx1030", "gfx900_56", "gfx900_64", "gfx1100", "gfx1200"]
+    y-axis "Lines (×1000)" 0 --> 480
+    bar [470, 372, 328, 235, 111, 108, 61, 0, 0]
+    </div>
+
     <div class="card">
       <h3 data-lang="ja">仮説3: capability-based selection と fallback は ROCm の中心設計である <span class="conf conf-strong">strongly supported（公開一次資料の範囲で）</span></h3>
       <h3 data-lang="en">Hypothesis 3: capability-based selection and fallback are central ROCm design patterns <span class="conf conf-strong">strongly supported (within the scope of public sources)</span></h3>

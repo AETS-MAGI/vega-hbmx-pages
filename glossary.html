@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用語解説 / Glossary | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --navy: #0B3C5D;
+      --teal: #00796B;
+      --amber: #C56A00;
+      --red: #B71C1C;
+      --purple: #5B4B8A;
+      --ink: #1F2933;
+      --muted: #5F6C7B;
+      --line: #D8E0E8;
+      --bg: #F5F8FB;
+      --card: #FFFFFF;
+      --hw-bg: #E3F2FD;
+      --hw-border: #1565C0;
+      --stack-bg: #E8F5E9;
+      --stack-border: #2E7D32;
+      --concept-bg: #FFF3E0;
+      --concept-border: #E65100;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(0,121,107,0.08), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(11,60,93,0.08), transparent 24%),
+        var(--bg);
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px 56px; }
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 18px;
+    }
+    .home-link {
+      display: inline-flex; align-items: center; text-decoration: none;
+      color: var(--navy); font-size: 14px; font-weight: 600; gap: 6px;
+    }
+    .home-link:hover { text-decoration: underline; }
+    .lang-btn {
+      padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 2px solid var(--navy); background: transparent;
+      color: var(--navy); transition: all 0.2s;
+    }
+    .lang-btn.active { background: var(--navy); color: #fff; }
+    .hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1A5276 100%);
+      color: #fff; border-radius: 16px; padding: 40px 36px 32px;
+      margin-bottom: 32px;
+    }
+    .hero h1 { margin: 0 0 12px; font-size: 32px; font-weight: 700; }
+    .hero p { margin: 0; font-size: 17px; opacity: 0.88; line-height: 1.6; }
+    .section-title {
+      font-size: 22px; font-weight: 700; color: var(--navy);
+      border-left: 5px solid var(--teal); padding-left: 14px;
+      margin: 36px 0 16px;
+    }
+    .section-lead { color: var(--muted); margin: -8px 0 20px; font-size: 15px; }
+    .term-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    .term-card {
+      background: var(--card);
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      padding: 18px 20px;
+      border-top: 4px solid var(--line);
+    }
+    .term-card.hw { border-top-color: var(--hw-border); background: #fafeff; }
+    .term-card.stack { border-top-color: var(--stack-border); background: #fafffa; }
+    .term-card.concept { border-top-color: var(--concept-border); background: #fffdf8; }
+    .cat-badge {
+      display: inline-block; font-size: 11px; font-weight: 700;
+      padding: 2px 9px; border-radius: 12px; margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .cat-badge.hw { background: var(--hw-bg); color: var(--hw-border); }
+    .cat-badge.stack { background: var(--stack-bg); color: var(--stack-border); }
+    .cat-badge.concept { background: var(--concept-bg); color: var(--concept-border); }
+    .term-name {
+      font-size: 18px; font-weight: 700; color: var(--navy);
+      margin: 0 0 4px; font-family: 'Consolas', 'Courier New', monospace;
+    }
+    .term-aka { font-size: 12px; color: var(--muted); margin: 0 0 10px; }
+    .term-def { font-size: 14px; line-height: 1.6; margin: 0 0 8px; }
+    .term-key {
+      font-size: 12px; background: #f0f4f8; border-radius: 6px;
+      padding: 6px 10px; color: var(--muted); margin-top: 8px;
+      border-left: 3px solid var(--line);
+    }
+    .term-key strong { color: var(--ink); }
+    .note {
+      border-radius: 8px; padding: 12px 16px; margin: 20px 0;
+      font-size: 14px; line-height: 1.6;
+    }
+    .note-info { background: #E3F2FD; border-left: 4px solid #1565C0; }
+    .mermaid {
+      background: #fafafa; border: 1px solid #ccd;
+      border-radius: 8px; padding: 1em 1.2em; margin: 1.5em 0;
+      overflow-x: auto; text-align: center;
+    }
+    .mermaid svg { max-width: 100%; height: auto; }
+    [data-lang="ja"], [data-lang="en"] { display: none; }
+    html[data-language="ja"] [data-lang="ja"] { display: unset; }
+    html[data-language="en"] [data-lang="en"] { display: unset; }
+    html[data-language="ja"] .term-card [data-lang="ja"],
+    html[data-language="en"] .term-card [data-lang="en"] { display: block; }
+    footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); }
+    @media (max-width: 640px) {
+      .hero { padding: 28px 20px 24px; }
+      .hero h1 { font-size: 24px; }
+      .term-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' } });
+  </script>
+</head>
+<body>
+<div class="page">
+
+  <div class="toolbar">
+    <a class="home-link" href="index.html">← <span data-lang="ja">ホームへ</span><span data-lang="en">Home</span></a>
+    <div>
+      <button id="btn-ja" class="lang-btn active" type="button">日本語</button>
+      <button id="btn-en" class="lang-btn" type="button">English</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1><span data-lang="ja">用語解説</span><span data-lang="en">Glossary</span></h1>
+    <p data-lang="ja">ROCm・GPU アーキテクチャ・ソフトウェアスタックに登場する用語を、専門外の方でも読めるように整理しました。3カテゴリ（ハードウェア・スタック・概念）に分類しています。</p>
+    <p data-lang="en">Key terms from ROCm, GPU architecture, and the software stack, written to be accessible to non-specialists. Terms are organized into three categories: hardware, stack, and concepts.</p>
+  </div>
+
+  <!-- GPU generation timeline -->
+  <h2 class="section-title" data-lang="ja">GPU アーキテクチャ世代の概観</h2>
+  <h2 class="section-title" data-lang="en">GPU architecture generations at a glance</h2>
+  <p class="section-lead" data-lang="ja">gfx番号はチップコード。ROCm では GPU を名前ではなくこのコードで識別します。</p>
+  <p class="section-lead" data-lang="en">gfx numbers are chip codes. ROCm identifies GPUs by these codes, not marketing names.</p>
+
+  <div class="mermaid">
+timeline
+    title AMD GPU Generations in ROCm context
+    section GCN (Graphics Core Next)
+        2017 : gfx900 — Vega10, Radeon RX Vega 56/64
+        2018 : gfx906 — Vega20, Radeon VII, adds FP16 + dot4
+    section CDNA (datacenter compute)
+        2020 : gfx908 — MI100, first xdlops matrix units
+        2021 : gfx90a — MI200 (CDNA2)
+        2023 : gfx942 — MI300X (CDNA3)
+    section RDNA (gaming / workstation)
+        2021 : gfx1030 — RDNA2, Radeon RX 6000 series
+        2022 : gfx1100 — RDNA3, Radeon RX 7000 series
+        2024 : gfx1200 — RDNA4, Radeon RX 9000 series
+  </div>
+
+  <div class="note note-info">
+    <span data-lang="ja"><strong>この調査の主役</strong>: <strong>gfx900</strong> は GCN 世代（2017年）の GPU で、ROCm では公式非サポートですが、ソースコードを読むと多くの経路でまだ動作することが確認できます。</span>
+    <span data-lang="en"><strong>The subject of this investigation:</strong> <strong>gfx900</strong> is a GCN-era (2017) GPU. While officially unsupported in ROCm, the source code shows it still works across many paths.</span>
+  </div>
+
+  <!-- ── Hardware terms ── -->
+  <h2 class="section-title" data-lang="ja">ハードウェア用語</h2>
+  <h2 class="section-title" data-lang="en">Hardware terms</h2>
+
+  <div class="term-grid">
+
+    <div class="term-card hw">
+      <span class="cat-badge hw">Hardware</span>
+      <p class="term-name">gfx900</p>
+      <p class="term-aka" data-lang="ja">別名: Vega10 / Radeon RX Vega 56・64</p>
+      <p class="term-aka" data-lang="en">Also: Vega10 / Radeon RX Vega 56, 64</p>
+      <p class="term-def" data-lang="ja">AMD GCN（グラフィックスコアネクスト）第5世代のアーキテクチャコード。2017年発売の Radeon RX Vega シリーズが代表。ROCm 5.x 以降は公式非サポートだが、能力ベース設計の副産物として多くの経路が今も動作する。</p>
+      <p class="term-def" data-lang="en">Architecture code for AMD's 5th-gen GCN (Graphics Core Next). The 2017 Radeon RX Vega series is the main representative. Officially unsupported since ROCm 5.x, but many paths still work as a side effect of capability-based design.</p>
+      <div class="term-key" data-lang="ja"><strong>特徴:</strong> FP32 OK / FP16 部分的 / dot4 (INT8) なし / xdlops なし</div>
+      <div class="term-key" data-lang="en"><strong>Capabilities:</strong> FP32 ✓ / FP16 partial / dot4 (INT8) ✗ / xdlops ✗</div>
+    </div>
+
+    <div class="term-card hw">
+      <span class="cat-badge hw">Hardware</span>
+      <p class="term-name">gfx906</p>
+      <p class="term-aka" data-lang="ja">別名: Vega20 / Radeon VII / Instinct MI50</p>
+      <p class="term-aka" data-lang="en">Also: Vega20 / Radeon VII / Instinct MI50</p>
+      <p class="term-def" data-lang="ja">gfx900 の後継で、FP16 精度が強化され dot4（INT8 内積）命令が追加された。MIOpen の ASM v4r1 ソルバーは gfx900 と gfx906 をペアで明示的に許可している。</p>
+      <p class="term-def" data-lang="en">The successor to gfx900, with improved FP16 precision and added dot4 (INT8 dot-product) instructions. MIOpen's ASM v4r1 solver explicitly allows gfx900 and gfx906 as a pair.</p>
+      <div class="term-key" data-lang="ja"><strong>追加機能:</strong> dot4 / dp4a (INT8), FP16 強化</div>
+      <div class="term-key" data-lang="en"><strong>Additions over gfx900:</strong> dot4 / dp4a (INT8), better FP16</div>
+    </div>
+
+    <div class="term-card hw">
+      <span class="cat-badge hw">Hardware</span>
+      <p class="term-name">gfx908</p>
+      <p class="term-aka" data-lang="ja">別名: CDNA1 / Instinct MI100</p>
+      <p class="term-aka" data-lang="en">Also: CDNA1 / Instinct MI100</p>
+      <p class="term-def" data-lang="ja">AMD がデータセンター向けに新設した CDNA アーキテクチャの第1世代。行列積演算を高速化する xdlops（MFMA命令）を初搭載。ROCm の多くの最適化パスがここから始まる。</p>
+      <p class="term-def" data-lang="en">The first CDNA (Compute DNA) architecture AMD created for datacenter compute. Introduced xdlops (MFMA matrix-fused-multiply-accumulate instructions) for the first time. Many ROCm optimization paths target gfx908 and later.</p>
+      <div class="term-key" data-lang="ja"><strong>重要点:</strong> xdlops (MFMA) 初搭載 — MIOpen の MLIR/XDLops 系ソルバーはここから対象</div>
+      <div class="term-key" data-lang="en"><strong>Key:</strong> First xdlops (MFMA) — MIOpen's MLIR/XDLops solver families target gfx908+</div>
+    </div>
+
+    <div class="term-card hw">
+      <span class="cat-badge hw">Hardware</span>
+      <p class="term-name">xdlops</p>
+      <p class="term-aka" data-lang="ja">別名: MFMA (Matrix Fused Multiply-Accumulate)</p>
+      <p class="term-aka" data-lang="en">Also: MFMA (Matrix Fused Multiply-Accumulate)</p>
+      <p class="term-def" data-lang="ja">行列積演算を1命令で実行できる AMD GPU の特殊命令。深層学習の大規模行列演算を大幅に高速化する。gfx908 (MI100) 以降の CDNA アーキテクチャのみに搭載。</p>
+      <p class="term-def" data-lang="en">A specialized AMD GPU instruction that executes matrix multiplication in a single operation, massively accelerating deep learning workloads. Only available on CDNA architectures from gfx908 (MI100) onward.</p>
+      <div class="term-key" data-lang="ja"><strong>gfx900 との関係:</strong> gfx900 には非搭載。MIOpen の XDLops 系ソルバーが全て非適用になる主因。</div>
+      <div class="term-key" data-lang="en"><strong>Relation to gfx900:</strong> Not present on gfx900. This is why all XDLops-family solvers are non-applicable on gfx900.</div>
+    </div>
+
+    <div class="term-card hw">
+      <span class="cat-badge hw">Hardware</span>
+      <p class="term-name">dot4 / dp4a</p>
+      <p class="term-aka" data-lang="ja">別名: INT8 内積命令</p>
+      <p class="term-aka" data-lang="en">Also: INT8 dot-product instruction</p>
+      <p class="term-def" data-lang="ja">4つの 8-bit 整数値の内積を1命令で計算する命令。INT8 推論の高速化に使われる。gfx906 (Vega20) 以降に搭載。gfx900 には非搭載のため、INT8 は DirectNaive（最低速）にしか自然選択されない。</p>
+      <p class="term-def" data-lang="en">An instruction computing the dot product of four 8-bit integers in one step. Used for accelerating INT8 inference. Available from gfx906 (Vega20) onward. Absent on gfx900, which is why INT8 natural selection always falls to DirectNaive on gfx900.</p>
+      <div class="term-key" data-lang="ja"><strong>調査結果:</strong> gfx900 での INT8 自然選択は全件 ConvDirectNaiveConvFwd のみ（runtime_verified）</div>
+      <div class="term-key" data-lang="en"><strong>Finding:</strong> INT8 natural selection on gfx900 always yields ConvDirectNaiveConvFwd only (runtime_verified)</div>
+    </div>
+
+  </div>
+
+  <!-- ── Stack terms ── -->
+  <h2 class="section-title" data-lang="ja">ROCm スタック用語</h2>
+  <h2 class="section-title" data-lang="en">ROCm stack terms</h2>
+
+  <div class="mermaid">
+flowchart TD
+    USER["User code\n(PyTorch / ONNX / custom)"]
+    USER --> FW["ML Framework\n(PyTorch-ROCm, etc.)"]
+    FW --> MIOPEN["MIOpen\nconv / pool / BN"]
+    FW --> ROCBLAS["rocBLAS / hipBLASLt\nmatrix multiply"]
+    MIOPEN --> HIP["HIP\nportability layer"]
+    ROCBLAS --> HIP
+    HIP --> ROCR["ROCr (HSA runtime)"]
+    ROCR --> GPU["GPU Hardware\n(gfx900, gfx908, ...)"]
+    ROCBLAS -.->|"uses"| TENSILE["Tensile\nGEMM kernel tuner"]
+    MIOPEN -.->|"optional"| ROCMLIR["rocMLIR\nMLIR backend"]
+    MIOPEN -.->|"optional"| CK["Composable Kernel\nhigh-perf templates"]
+    style USER fill:#ddeeff,stroke:#3366aa
+    style GPU fill:#ffeecc,stroke:#cc6600
+  </div>
+
+  <div class="term-grid">
+
+    <div class="term-card stack">
+      <span class="cat-badge stack">Stack</span>
+      <p class="term-name">ROCm</p>
+      <p class="term-aka" data-lang="ja">Radeon Open Compute Platform</p>
+      <p class="term-aka" data-lang="en">Radeon Open Compute Platform</p>
+      <p class="term-def" data-lang="ja">AMD の GPU 向けオープンソースソフトウェアスタック全体の総称。ドライバ・ランタイム・ライブラリ・コンパイラツールチェーンをまとめた「エコシステム」。単一のリポジトリではなく、多数のリポジトリのマニフェスト（管理ファイル）が「ROCm リポジトリ」。</p>
+      <p class="term-def" data-lang="en">The umbrella name for AMD's open-source GPU software stack: drivers, runtimes, libraries, and compiler toolchains. Not a single repository but a manifest coordinating many repos.</p>
+      <div class="term-key" data-lang="ja"><strong>構成:</strong> drivers / HIP / MIOpen / rocBLAS / Tensile / CK / rocMLIR / ROCr など</div>
+      <div class="term-key" data-lang="en"><strong>Includes:</strong> drivers / HIP / MIOpen / rocBLAS / Tensile / CK / rocMLIR / ROCr, etc.</div>
+    </div>
+
+    <div class="term-card stack">
+      <span class="cat-badge stack">Stack</span>
+      <p class="term-name">HIP</p>
+      <p class="term-aka" data-lang="ja">Heterogeneous-computing Interface for Portability</p>
+      <p class="term-aka" data-lang="en">Heterogeneous-computing Interface for Portability</p>
+      <p class="term-def" data-lang="ja">CUDA に似た API で AMD GPU をプログラムするための移植性レイヤ。CUDA コードを HIP に変換するツールもある。GPU の種類を抽象化し、上位ライブラリが特定 GPU に縛られないようにする役割を持つ。</p>
+      <p class="term-def" data-lang="en">A CUDA-like API portability layer for AMD GPUs. Tools exist to translate CUDA code to HIP. Abstracts away specific GPU details so higher-level libraries don't depend on particular hardware.</p>
+      <div class="term-key" data-lang="ja"><strong>役割:</strong> 上位コードと GPU 世代の差を吸収する「翻訳層」</div>
+      <div class="term-key" data-lang="en"><strong>Role:</strong> A "translation layer" bridging user code and GPU generations</div>
+    </div>
+
+    <div class="term-card stack">
+      <span class="cat-badge stack">Stack</span>
+      <p class="term-name">MIOpen</p>
+      <p class="term-aka" data-lang="ja">Machine Intelligence Open library</p>
+      <p class="term-aka" data-lang="en">Machine Intelligence Open library</p>
+      <p class="term-def" data-lang="ja">深層学習のプリミティブ演算（畳み込み・プーリング・バッチ正規化など）を GPU 上で高速実行するライブラリ。PyTorch-ROCm が内部で使う。この調査の主要な解析対象。</p>
+      <p class="term-def" data-lang="en">A library for high-performance execution of deep learning primitives (convolution, pooling, batch normalization, etc.) on GPU. Used internally by PyTorch-ROCm. The primary target of this investigation.</p>
+      <div class="term-key" data-lang="ja"><strong>重要点:</strong> 同一演算に複数の「ソルバー」を持ち、実行時に GPU 能力で選別する</div>
+      <div class="term-key" data-lang="en"><strong>Key:</strong> Maintains multiple "solvers" for each operation; selects at runtime based on GPU capabilities</div>
+    </div>
+
+    <div class="term-card stack">
+      <span class="cat-badge stack">Stack</span>
+      <p class="term-name">rocBLAS</p>
+      <p class="term-aka" data-lang="ja">ROCm Basic Linear Algebra Subprograms</p>
+      <p class="term-aka" data-lang="en">ROCm Basic Linear Algebra Subprograms</p>
+      <p class="term-def" data-lang="ja">行列・ベクトル演算（GEMM など）の GPU 実装ライブラリ。内部では Tensile が生成したカーネルを使う。gfx900 向けのプリコンパイル済みカーネルが ROCm 7.2 で 128 ファイル配布されていることが確認されている。</p>
+      <p class="term-def" data-lang="en">GPU-accelerated matrix/vector (BLAS) library. Uses Tensile-generated kernels internally. The ROCm 7.2 package ships 128 pre-compiled kernel files targeting gfx900.</p>
+      <div class="term-key" data-lang="ja"><strong>確認済み:</strong> gfx900 向けプリコンパイル済みファイル 128 個（ROCm 7.2）</div>
+      <div class="term-key" data-lang="en"><strong>Confirmed:</strong> 128 pre-compiled files for gfx900 shipped in ROCm 7.2</div>
+    </div>
+
+    <div class="term-card stack">
+      <span class="cat-badge stack">Stack</span>
+      <p class="term-name">Tensile</p>
+      <p class="term-aka" data-lang="ja">rocBLAS のカーネル自動チューニングシステム</p>
+      <p class="term-aka" data-lang="en">Auto-tuning system for rocBLAS kernels</p>
+      <p class="term-def" data-lang="ja">行列積（GEMM）カーネルを GPU アーキテクチャごとに最適化し、rocBLAS に収録するためのシステム。Python で書かれており、community contributor が gfx900 向けの arch parsing を追加した経緯がある。</p>
+      <p class="term-def" data-lang="en">A system that generates and tunes matrix multiplication (GEMM) kernels per GPU architecture for inclusion in rocBLAS. Written in Python; community contributors have added gfx900-specific arch parsing.</p>
+      <div class="term-key" data-lang="ja"><strong>調査との関係:</strong> 外部 contributor が fallback 拡張を追加 → AMD 関連が revert した経緯あり (PR#1862→#1879)</div>
+      <div class="term-key" data-lang="en"><strong>Investigation note:</strong> External contributor added fallback extension, later reverted by AMD-affiliated contributor (PR#1862→#1879)</div>
+    </div>
+
+    <div class="term-card stack">
+      <span class="cat-badge stack">Stack</span>
+      <p class="term-name">rocMLIR</p>
+      <p class="term-aka" data-lang="ja">MLIR ベースの AMD GPU コンパイラバックエンド</p>
+      <p class="term-aka" data-lang="en">MLIR-based AMD GPU compiler backend</p>
+      <p class="term-def" data-lang="ja">MLIR（Multi-Level Intermediate Representation）を使って GPU カーネルをコンパイルするバックエンド。MIOpen の MLIR iGEMM ソルバーが使用する。gfx900 は IsApplicable で除外されており、このバックエンドは到達しない。</p>
+      <p class="term-def" data-lang="en">A compiler backend using MLIR (Multi-Level Intermediate Representation) to compile GPU kernels. Used by MIOpen's MLIR iGEMM solvers. gfx900 is excluded at the IsApplicable gate and never reaches this backend.</p>
+      <div class="term-key" data-lang="ja"><strong>gfx900 との関係:</strong> gfx900 は明示除外済み。MIOpen PR #1328 (commit 2407d2f) が起点。</div>
+      <div class="term-key" data-lang="en"><strong>gfx900 relation:</strong> Explicitly excluded. MIOpen PR #1328 (commit 2407d2f) is the origin.</div>
+    </div>
+
+  </div>
+
+  <!-- ── Concept terms ── -->
+  <h2 class="section-title" data-lang="ja">概念・仕組み用語</h2>
+  <h2 class="section-title" data-lang="en">Concept and mechanism terms</h2>
+
+  <div class="term-grid">
+
+    <div class="term-card concept">
+      <span class="cat-badge concept">Concept</span>
+      <p class="term-name">solver</p>
+      <p class="term-aka" data-lang="ja">MIOpen での「解法戦略」</p>
+      <p class="term-aka" data-lang="en">a "solution strategy" in MIOpen</p>
+      <p class="term-def" data-lang="ja">MIOpen が convolution などの演算を実行するための実装戦略。同じ「FP32 畳み込み」に対して Winograd、ASM v4r1、MLIR iGEMM、DirectNaive など複数のソルバーが登録されており、GPU・dtype・形状の組み合わせで最適なものが選ばれる。</p>
+      <p class="term-def" data-lang="en">An implementation strategy in MIOpen for executing operations like convolution. For a single "FP32 convolution" operation, multiple solvers (Winograd, ASM v4r1, MLIR iGEMM, DirectNaive, etc.) are registered and the best one is selected based on GPU, dtype, and shape.</p>
+      <div class="term-key" data-lang="ja"><strong>選択方法:</strong> IsApplicable() でフィルタし、最速のものを Perf DB で決定</div>
+      <div class="term-key" data-lang="en"><strong>Selection:</strong> Filtered by IsApplicable(), then fastest chosen using Perf DB</div>
+    </div>
+
+    <div class="term-card concept">
+      <span class="cat-badge concept">Concept</span>
+      <p class="term-name">IsApplicable()</p>
+      <p class="term-aka" data-lang="ja">ソルバーの適用可能性チェック関数</p>
+      <p class="term-aka" data-lang="en">solver applicability check function</p>
+      <p class="term-def" data-lang="ja">各ソルバーが「今の GPU・dtype・形状の組み合わせに使えるか」を判定する関数。gfx900 では MLIR iGEMM ソルバーが明示的に false を返す（= 使えない）実装になっている。</p>
+      <p class="term-def" data-lang="en">A function each solver implements to answer "can I handle this GPU + dtype + shape combination?" For gfx900, the MLIR iGEMM solver explicitly returns false (not applicable).</p>
+      <div class="term-key" data-lang="ja"><strong>重要な実装:</strong> <code>if(StartsWith(device_name, "gfx900")) return false;</code> — conv_mlir_igemm_fwd.cpp より</div>
+      <div class="term-key" data-lang="en"><strong>Key code:</strong> <code>if(StartsWith(device_name, "gfx900")) return false;</code> — from conv_mlir_igemm_fwd.cpp</div>
+    </div>
+
+    <div class="term-card concept">
+      <span class="cat-badge concept">Concept</span>
+      <p class="term-name">capability-based selection</p>
+      <p class="term-aka" data-lang="ja">能力ベース選択</p>
+      <p class="term-aka" data-lang="en">capability-based selection</p>
+      <p class="term-def" data-lang="ja">「この GPU モデルだから使える / 使えない」ではなく、「このGPUが持つ能力（xdlops があるか、dot4 があるかなど）で判断する」設計方針。ROCm がこの設計を採用していることで、gfx900 のような旧世代 GPU でも能力の範囲内では動作する。</p>
+      <p class="term-def" data-lang="en">A design philosophy of selecting paths based on GPU capabilities (does it have xdlops? dot4? etc.) rather than GPU model names. Because ROCm adopts this approach, older GPUs like gfx900 still work within the limits of their capabilities.</p>
+      <div class="term-key" data-lang="ja"><strong>調査仮説 B の根拠:</strong> gfx900 生存は capability-based 設計の「自然な副産物」と読める</div>
+      <div class="term-key" data-lang="en"><strong>Basis for Hypothesis B:</strong> gfx900 survival reads as a natural by-product of capability-based design</div>
+    </div>
+
+    <div class="term-card concept">
+      <span class="cat-badge concept">Concept</span>
+      <p class="term-name">fallback</p>
+      <p class="term-aka" data-lang="ja">代替経路・フォールバック</p>
+      <p class="term-aka" data-lang="en">fallback path</p>
+      <p class="term-def" data-lang="ja">高速な経路が使えないとき、より汎用的（だが遅い）経路に自動的に切り替える仕組み。rocBLAS では hipBLASLt → Tensile → FP32 の多段フォールバックがある。gfx900 のような旧世代 GPU は多くの場合この経路で計算を完了できる。</p>
+      <p class="term-def" data-lang="en">The automatic switch to a more general (but slower) path when a faster one is unavailable. rocBLAS has a multi-stage fallback: hipBLASLt → Tensile → FP32. Legacy GPUs like gfx900 can typically complete computations through these fallback paths.</p>
+      <div class="term-key" data-lang="ja"><strong>確認例:</strong> gfx900 FP32 conv → ConvBinWinograd3x3U, ConvAsm1x1U が自然選択（runtime_verified）</div>
+      <div class="term-key" data-lang="en"><strong>Confirmed:</strong> gfx900 FP32 conv → ConvBinWinograd3x3U, ConvAsm1x1U selected naturally (runtime_verified)</div>
+    </div>
+
+    <div class="term-card concept">
+      <span class="cat-badge concept">Concept</span>
+      <p class="term-name">Perf DB</p>
+      <p class="term-aka" data-lang="ja">Performance Database / パフォーマンスデータベース</p>
+      <p class="term-aka" data-lang="en">Performance Database</p>
+      <p class="term-def" data-lang="ja">MIOpen が GPU × 演算形状の組み合わせごとに、最適なチューニングパラメータを保存したデータベース。ROCm パッケージに同梱されて配布される。gfx900 向けは ROCm 7.2 で 169,182 行が確認されており、RDNA3 (gfx1100) の Perf DB が存在しない一方 gfx900 は RDNA2 (gfx1030) を超える行数を持つ。</p>
+      <p class="term-def" data-lang="en">A database storing optimal tuning parameters per GPU × operation-shape combination, shipped with ROCm packages. gfx900's Perf DB in ROCm 7.2 contains 169,182 lines — more than RDNA2 (gfx1030: 111,296), while RDNA3 (gfx1100) has none at all.</p>
+      <div class="term-key" data-lang="ja"><strong>意味:</strong> Perf DB が存在 = AMD のビルド・チューニングパイプラインに組み込まれている証拠</div>
+      <div class="term-key" data-lang="en"><strong>Implication:</strong> Perf DB presence = evidence of inclusion in AMD's build and tuning pipeline</div>
+    </div>
+
+    <div class="term-card concept">
+      <span class="cat-badge concept">Concept</span>
+      <p class="term-name">staged retreat</p>
+      <p class="term-aka" data-lang="ja">段階的な撤退・縮退</p>
+      <p class="term-aka" data-lang="en">staged retreat</p>
+      <p class="term-def" data-lang="ja">旧世代サポートを一括で打ち切らず、コンポーネントごと・層ごとに少しずつサポートを縮小していく過程。ROCm では hipCUB が gfx900 を default build から除外した一方、rocBLAS は継続しており、MIOpen の Winograd 系は 2025年にも補修が入っている。</p>
+      <p class="term-def" data-lang="en">The process of reducing support for old hardware gradually, component by component and layer by layer, rather than cutting everything at once. In ROCm: hipCUB removed gfx900 from its default build while rocBLAS continues, and MIOpen Winograd paths received patches as recently as 2025.</p>
+      <div class="term-key" data-lang="ja"><strong>調査仮説 5 の根拠:</strong> 年表を読むと「一括除外」ではなく「層状の後退」として見える</div>
+      <div class="term-key" data-lang="en"><strong>Basis for Hypothesis 5:</strong> The timeline reads as "layered retreat," not a single cutoff</div>
+    </div>
+
+    <div class="term-card concept">
+      <span class="cat-badge concept">Concept</span>
+      <p class="term-name">HSACO</p>
+      <p class="term-aka" data-lang="ja">HSA Code Object / AMD GPU 実行バイナリ</p>
+      <p class="term-aka" data-lang="en">HSA Code Object / AMD GPU executable binary</p>
+      <p class="term-def" data-lang="ja">AMD GPU 向けのコンパイル済みカーネルバイナリ形式（拡張子 .hsaco）。`--offload-arch=gfx900` を指定してコンパイルした場合にのみ gfx900 向けの HSACO が生成される。ROCm 7.2 パッケージに gfx900 向け HSACO が含まれることは、積極的なビルドパイプラインの証拠。</p>
+      <p class="term-def" data-lang="en">A compiled kernel binary format for AMD GPUs (.hsaco extension). A gfx900-targeted HSACO is only generated if explicitly compiled with --offload-arch=gfx900. The presence of gfx900 HSACOs in ROCm 7.2 packages is evidence of an active build pipeline.</p>
+      <div class="term-key" data-lang="ja"><strong>逆アセンブル:</strong> llvm-objdump で読める。この調査では <code>v_dot4_*</code> 命令の有無を確認した。</div>
+      <div class="term-key" data-lang="en"><strong>Disassembly:</strong> Readable via llvm-objdump. This investigation checked for the presence/absence of <code>v_dot4_*</code> instructions.</div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p data-lang="ja">vega-hbmx-pages — gfx900 / ROCm 調査ノート | <a href="index.html">ホームへ戻る</a></p>
+    <p data-lang="en">vega-hbmx-pages — gfx900 / ROCm investigation notes | <a href="index.html">Back to home</a></p>
+  </footer>
+
+</div>
+<script>
+  const html = document.documentElement;
+  document.getElementById('btn-ja').addEventListener('click', () => {
+    html.setAttribute('data-language', 'ja'); html.setAttribute('lang', 'ja');
+    document.getElementById('btn-ja').classList.add('active');
+    document.getElementById('btn-en').classList.remove('active');
+  });
+  document.getElementById('btn-en').addEventListener('click', () => {
+    html.setAttribute('data-language', 'en'); html.setAttribute('lang', 'en');
+    document.getElementById('btn-en').classList.add('active');
+    document.getElementById('btn-ja').classList.remove('active');
+  });
+</script>
+</body>
+</html>
