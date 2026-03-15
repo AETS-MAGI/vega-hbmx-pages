@@ -80,6 +80,8 @@
 	<div class="fact-box">
 		<p data-lang="ja"><strong>注記:</strong> PyTorch の ROCm ビルドでは、GPU デバイス名に "cuda" 文字列を使います。これは NVIDIA 専用を意味せず、内部実行は HIP/ROCm 経路です。</p>
 		<p data-lang="en"><strong>Note:</strong> In PyTorch ROCm builds, GPU device selection still uses the string "cuda". This does not mean NVIDIA-only execution; the runtime path is HIP/ROCm.</p>
+		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① 実行スタックは CUDA/cuBLAS/cuDNN ではなく HIP/rocBLAS/MIOpen ② 観測ツールは nsys ではなく rocprof ③ GPU の対応境界や最適経路はアーキテクチャや solver 条件で変わります。</p>
+		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Execution stack is HIP/rocBLAS/MIOpen rather than CUDA/cuBLAS/cuDNN 2) Observation tool is rocprof rather than nsys 3) Support boundaries and optimal paths vary by architecture and solver conditions.</p>
 	</div>
 
 	<!-- ── 1. なにをするか ── -->

@@ -78,6 +78,8 @@
 	<div class="fact-box">
 		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm では GPU 指定に "cuda" 文字列を使います。名称互換の都合であり、実体は HIP/ROCm バックエンドです。</p>
 		<p data-lang="en"><strong>Note:</strong> PyTorch ROCm uses the string "cuda" for GPU selection due to API compatibility naming. Actual execution is on the HIP/ROCm backend.</p>
+		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① Conv は MIOpen、行列系は rocBLAS が主担当 ② 観測は rocprof を使う ③ solver 選択は形状・アーキテクチャで変化します。</p>
+		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Conv is mainly handled by MIOpen and matrix math by rocBLAS 2) Profiling/observation uses rocprof 3) Solver selection changes with tensor shapes and architecture.</p>
 	</div>
 
 	<!-- ── 1 ── -->
