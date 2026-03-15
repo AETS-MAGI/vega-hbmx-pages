@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/mermaid-layout.css">
   <title>What gfx900 Reveals About ROCm | vega-hbmx-pages</title>
   <style>
     :root {
@@ -298,9 +299,6 @@
       .hero p { font-size: 18px; }
       .summary { font-size: 17px; }
     }
-  .mermaid { background:#fafafa; border:1px solid #ccd; border-radius:8px; padding:1em 1.2em; margin:1.5em 0; overflow-x:auto; display: flex; justify-content: center; }
-  .mermaid svg { width: 100% !important; min-width: 700px; height: auto !important; }
-
   .bar-chart {
     margin: 16px 0 20px;
     padding: 18px 20px 16px;
@@ -400,10 +398,8 @@
   }
   </style>
   <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, useMaxWidth: false,
-      flowchart: { useMaxWidth: false, nodeSpacing: 30, rankSpacing: 40, curve: "basis" },
-      timeline:   { useMaxWidth: false }, theme: 'base', themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' } });
+    import { initMermaidPage } from './scripts/mermaid-page.js';
+    initMermaidPage();
   </script>
 </head>
 <body>

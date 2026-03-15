@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/mermaid-layout.css">
   <title>ROCm エコシステム図解 / ROCm Ecosystem Map | vega-hbmx-pages</title>
   <style>
     :root {
@@ -77,10 +78,6 @@
     .diagram-caption {
       font-size: 13px; color: var(--muted); margin-top: 12px; text-align: center;
     }
-    .mermaid svg { width: 100% !important; min-width: 700px; height: auto !important; }
-    .mermaid { display: flex; justify-content: center;   overflow-x: auto;
-    }
-
     /* ── repo topology cards ── */
     .repo-grid {
       display: grid;
@@ -163,13 +160,17 @@
     }
   </style>
   <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, useMaxWidth: false,
-      flowchart: { useMaxWidth: false, nodeSpacing: 30, rankSpacing: 40, curve: "basis" },
-      timeline:   { useMaxWidth: false }, theme: 'base',
-      themeVariables: { primaryColor: '#E3F2FD', primaryTextColor: '#1F2933',
-                        primaryBorderColor: '#1565C0', lineColor: '#607D8B',
-                        secondaryColor: '#EDE7F6', tertiaryColor: '#E8F5E9' } });
+    import { initMermaidPage } from './scripts/mermaid-page.js';
+    initMermaidPage({
+      themeVariables: {
+        primaryColor: '#E3F2FD',
+        primaryTextColor: '#1F2933',
+        primaryBorderColor: '#1565C0',
+        lineColor: '#607D8B',
+        secondaryColor: '#EDE7F6',
+        tertiaryColor: '#E8F5E9'
+      }
+    });
   </script>
 </head>
 <body>
