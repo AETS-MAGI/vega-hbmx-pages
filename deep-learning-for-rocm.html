@@ -65,6 +65,13 @@
     .hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
     .hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
 
+    /* prereq */
+    .prereq-box {
+      background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px;
+      padding: 12px 16px; margin: 0 0 28px; font-size: 14px; color: #4E3600;
+    }
+    .prereq-box strong { color: #E65100; }
+
     .section-title {
       font-size: 21px; font-weight: 700; color: var(--navy);
       border-left: 5px solid var(--blue); padding-left: 14px;
@@ -310,6 +317,11 @@
     <p data-lang="ja">「AI が画像を認識する」とき、内部では何が起きているのでしょうか。このページでは、<strong>ニューラルネット・畳み込み・フィルタ</strong> をイメージで説明し、そこから <strong>MIOpen</strong> が何をしているのか、なぜ solver が複数存在するのかをつなげます。</p>
     <p data-lang="en">What actually happens inside AI when it recognises an image? This page explains <strong>neural networks, convolution, and filters</strong> through images and analogies, then connects them to what <strong>MIOpen</strong> does and why multiple solvers exist.</p>
   </section>
+
+  <div class="prereq-box">
+    <span data-lang="ja">&#128209; このページでは数式が登場します。記号の読み方が不安な方は <a href="reading-math.html">数式の読み方ガイド</a> を先にどうぞ。</span>
+    <span data-lang="en">&#128209; This page contains mathematical notation. If you're unsure how to read the symbols, see <a href="reading-math.html">How to Read Math Notation</a> first.</span>
+  </div>
 
   <!-- まずこれだけ -->
   <h2 class="section-title" data-lang="ja">まずこれだけ</h2>

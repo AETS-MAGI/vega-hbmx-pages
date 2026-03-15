@@ -57,6 +57,13 @@
     .hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
     .hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
 
+    /* prereq */
+    .prereq-box {
+      background: #FFF8E1; border: 1px solid #FFE082; border-radius: 8px;
+      padding: 12px 16px; margin: 0 0 28px; font-size: 14px; color: #4E3600;
+    }
+    .prereq-box strong { color: #E65100; }
+
     /* section */
     .section-title {
       font-size: 21px; font-weight: 700; color: var(--navy);
@@ -230,6 +237,11 @@
     <p data-lang="ja">「線形代数」と聞くとむずかしく聞こえますが、AI や GPU の世界では「数をまとめて変換する道具」として活躍しています。このページでは、ベクトル・行列・行列積を、できるだけイメージで説明します。その先に <strong>rocBLAS</strong> が何をしているのか、なぜ GPU が強いのかをつなげます。</p>
     <p data-lang="en">Linear algebra sounds intimidating, but in the world of AI and GPUs it is simply a tool for transforming groups of numbers together. This page explains vectors, matrices, and matrix multiplication through images and analogies, then connects them to what <strong>rocBLAS</strong> does and why GPUs excel at this work.</p>
   </section>
+
+  <div class="prereq-box">
+    <span data-lang="ja">&#128209; このページでは数式が登場します。記号の読み方が不安な方は <a href="reading-math.html">数式の読み方ガイド</a> を先にどうぞ。</span>
+    <span data-lang="en">&#128209; This page contains mathematical notation. If you're unsure how to read the symbols, see <a href="reading-math.html">How to Read Math Notation</a> first.</span>
+  </div>
 
   <!-- まずこれだけ -->
   <h2 class="section-title" data-lang="ja">まずこれだけ</h2>
