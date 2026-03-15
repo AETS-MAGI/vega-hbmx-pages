@@ -416,6 +416,10 @@
         <ul>
           <li data-lang="ja">commit <code>8498875ae</code>（Artem Tamazov）が <code>WORKAROUND_ISSUE_1204</code> を導入し、<code>gfx900</code> の <code>sramecc-</code> 誤報を吸収する。</li>
           <li data-lang="en">Commit <code>8498875ae</code> (Artem Tamazov) introduces <code>WORKAROUND_ISSUE_1204</code> to absorb incorrect <code>sramecc-</code> reporting on <code>gfx900</code>.</li>
+          <li data-lang="ja">public PR <code>#1231</code> は issue <code>#1204</code> を明示参照しており、COMGR が <code>gfx900:sramecc-:xnack-</code> を reject する user-visible failure を受けた defensive workaround だったことが公開側からも読める。</li>
+          <li data-lang="en">Public PR <code>#1231</code> explicitly references issue <code>#1204</code>, making it visible from the public side that this was a defensive workaround for a user-facing failure where COMGR rejects <code>gfx900:sramecc-:xnack-</code>.</li>
+          <li data-lang="ja">PR comment では legacy ASIC を使う community user への影響が言及され、複数 release branch への cherry-pick も志向されていた。</li>
+          <li data-lang="en">The PR comments explicitly mention impact on community users with legacy ASICs, and the fix was pushed toward cherry-picks across multiple release branches.</li>
           <li data-lang="ja"><strong>意味:</strong> 同じ MIOpen の中でも、ある層では互換性 workaround を加えつつ、別の層では後に solver disable が起きる。後退は単線ではない。</li>
           <li data-lang="en"><strong>Meaning:</strong> Even inside MIOpen, one layer can add compatibility workarounds while another later disables a solver path. Retreat is not a single straight line.</li>
         </ul>
@@ -434,6 +438,10 @@
           <li data-lang="en">Commit <code>2407d2f</code> (Zhuoran Yin, AMD) excludes <code>gfx900</code> from forward, backward, and wrw MLIR solvers.</li>
           <li data-lang="ja">根拠コメントは <code>llvm-project-private#389</code> を参照しており、公開側からは理由の核心が読めない。</li>
           <li data-lang="en">The explanatory comment points to <code>llvm-project-private#389</code>, so the core rationale is not visible from the public side.</li>
+          <li data-lang="ja">ただし public PR <code>#1328</code> 本文とコメントからは、<code>gfx900</code> を solver だけでなく ctest と tuning surface からも切り離し、ROCm 5.1 向け MLIR solver tuning の前提整理として入れられたことまでは確認できる。</li>
+          <li data-lang="en">But the public body and comments of PR <code>#1328</code> still show that <code>gfx900</code> was removed not only from the solver path but also from ctest and the tuning surface, as preparatory cleanup before ROCm 5.1 MLIR solver tuning.</li>
+          <li data-lang="ja">つまり公開側だけでも、これは単なる局所ガードではなく、release-engineering 上の計画的な切り離しだったことが見える。</li>
+          <li data-lang="en">So even from the public side alone, this reads less like a local guard and more like a planned release-engineering separation.</li>
           <li data-lang="ja"><strong>意味:</strong> public product code が private backend constraint を吸収している可能性を示す強い観測点。</li>
           <li data-lang="en"><strong>Meaning:</strong> A strong observation point suggesting that public product code may absorb private backend constraints.</li>
         </ul>
@@ -681,13 +689,19 @@
             <td data-lang="ja">中程度</td>
             <td data-lang="en">Moderate</td>
           </tr>
+          <tr>
+            <td data-lang="ja">同一 component 内でも public issue-driven workaround と private-rooted release gating が併存しうる</td>
+            <td data-lang="en">Even within one component, public issue-driven workarounds and private-rooted release gating can coexist</td>
+            <td data-lang="ja">強い</td>
+            <td data-lang="en">Strong</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     <div class="note note-warn">
-      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言、そして <code>#1328</code> / <code>#1231</code> のような判断点の議論文脈。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
-      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, explicit maintainer statements of design intent, and the discussion context behind decision points like <code>#1328</code> / <code>#1231</code>. This page re-assembles already-confirmed fragments for public use.</span>
+      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言、そして特に <code>llvm-project-private#389</code> が何を問題視していたかの一次資料。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
+      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, explicit maintainer statements of design intent, and especially primary evidence for what <code>llvm-project-private#389</code> actually identified as the problem. This page re-assembles already-confirmed fragments for public use.</span>
     </div>
 
     <div class="note note-green">

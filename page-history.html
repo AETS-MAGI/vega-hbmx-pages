@@ -410,6 +410,60 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">`#1231` と `#1328` の public 文脈を公開年表へ戻した</h2>
+        <h2 data-lang="en">Fed the public context of `#1231` and `#1328` back into the public timeline</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">GitHub 上の public PR / issue 文脈を回収したことで、2021 年の 2 つの判断点を「どちらも gfx900 の後退」と雑にまとめるのではなく、性質の違う判断として公開側でも書き分けられるようになった。</p>
+      <p class="entry-lead" data-lang="en">Once the public PR/issue context was recovered from GitHub, the two 2021 decision points could be described on the public side not as one undifferentiated retreat, but as two different kinds of decisions.</p>
+      <div class="file-list">
+        <span class="file-tag">rocm-history.html</span>
+        <span class="file-tag">reveal-hypothesis.html</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>rocm-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja"><code>8498875ae</code> は runtime workaround、<code>2407d2f</code> は MLIR disable として載せていたが、それぞれの PR / issue が public に何を示していたかまでは年表へ戻していなかった。</p>
+            <p data-lang="en"><code>8498875ae</code> appeared as a runtime workaround and <code>2407d2f</code> as an MLIR disable, but the timeline did not yet feed back what their public PR/issue trails actually showed.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>#1231</code> は public issue <code>#1204</code> 由来の COMGR target-name failure に対する defensive workaround、<code>#1328</code> は private issue を根に持ちながらも public 側では ROCm 5.1 MLIR の test / tuning surface から <code>gfx900</code> を外す release-engineering 判断として明示した。</p>
+            <p data-lang="en"><code>#1231</code> is now framed as a defensive workaround for a COMGR target-name failure exposed in public issue <code>#1204</code>, while <code>#1328</code> is framed as a release-engineering decision that removed <code>gfx900</code> from the ROCm 5.1 MLIR test/tuning surface even though its root rationale still points to a private issue.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> <code>gh pr view ROCm/MIOpen#1231</code>、<code>gh pr view ROCm/MIOpen#1328</code>、<code>gh issue view ROCm/MIOpen#1204</code> で、body / comments / files / commits を確認したため。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The bodies, comments, files, and commits of <code>ROCm/MIOpen#1231</code>, <code>ROCm/MIOpen#1328</code>, and issue <code>ROCm/MIOpen#1204</code> were verified through GitHub CLI.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>reveal-hypothesis.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">design-model 側では <code>#1231</code> / <code>#1328</code> の違いをまだ unresolved として残しており、「public summary へ未統合」と書いていた。</p>
+            <p data-lang="en">On the design-model page, the difference between <code>#1231</code> and <code>#1328</code> was still left unresolved, with a note saying that the public summary had not yet integrated their PR/issue context.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">補足 note と設計モデルの箇条書きを追加し、同一 component 内でも public issue-driven workaround と private-rooted release gating が併存しうることを前面に出した。未解決欄も「未統合」ではなく「private root cause は未公開」に更新した。</p>
+            <p data-lang="en">An addendum note and a new design-model bullet now foreground that one component can contain both public issue-driven workarounds and private-rooted release gating. The unresolved section was updated from “not yet integrated” to “the private root cause remains non-public.”</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">deprecated MIOpen branch の late-phase 読みを公開側へ反映</h2>
         <h2 data-lang="en">Reflected the late-phase reading of the deprecated MIOpen branch</h2>
         <span class="entry-date">2026-03-15</span>
