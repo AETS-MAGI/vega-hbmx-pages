@@ -455,7 +455,7 @@ flowchart LR
   <div class="prose">
     <p data-lang="ja"><strong>BLAS</strong>（Basic Linear Algebra Subprograms）は、ベクトルや行列の基本計算をまとめた「関数の仕様セット」です。何十年も前から使われてきた標準です。</p>
     <p data-lang="en"><strong>BLAS</strong> (Basic Linear Algebra Subprograms) is a set of standard function interfaces for vector and matrix arithmetic that has been in use for decades.</p>
-    <p data-lang="ja"><strong>rocBLAS</strong> は、その AMD GPU 向け実装です。$C = \alpha A B + \beta C$（GEMM = General Matrix Multiply）のような行列演算を、GPU の能力を最大限に活かして高速に実行します。</p>
+    <p data-lang="ja"><strong>rocBLAS</strong> は、その AMD GPU 向け実装です。$C = \alpha A B + \beta C$ のような行列演算を高速に実行します。ここでいう <strong>GEMM</strong> は、むずかしい名前に見えますが、要するに「大きな表どうしの掛け算」です。</p>
     <p data-lang="en"><strong>rocBLAS</strong> is AMD's GPU implementation of those interfaces. It runs operations like $C = \alpha A B + \beta C$ (GEMM = General Matrix Multiply) at full GPU speed.</p>
     <p data-lang="ja">PyTorch や TensorFlow などの AI フレームワークは、内部で rocBLAS を呼び出してこの計算をこなしています。</p>
     <p data-lang="en">AI frameworks like PyTorch and TensorFlow call rocBLAS internally to handle this computation.</p>
@@ -482,7 +482,7 @@ flowchart LR
   <h2 class="section-title" data-lang="en">How does this connect to gfx900?</h2>
 
   <div class="prose">
-    <p data-lang="ja">gfx900 は Vega 世代（2017年）の GPU です。最近の GPU が持っている、行列計算を一気に速くする専用命令の一部を持っていません。名前で言うと xdlops や dot4 です。</p>
+    <p data-lang="ja">gfx900 は Vega 世代（2017年）の GPU です。最近の GPU が持っている、行列計算を一気に速くする専用の近道を一部持っていません。名前で言うと xdlops や dot4 です。</p>
     <p data-lang="en">gfx900 is the Vega-generation GPU from 2017. It does not have the dedicated matrix arithmetic instructions (xdlops / dot4) that newer GPUs have.</p>
     <p data-lang="ja">そのため、最新の高速パスは使えませんが、ROCm の「能力確認＋フォールバック」設計により、<strong>汎用的な行列計算は今もちゃんと動きます</strong>。rocBLAS には gfx900 向けにコンパイル済みの行列カーネルが 128 本収録されており、ROCm 7.2 に同梱されています。</p>
     <p data-lang="en">The newest fast paths are therefore unavailable, but thanks to ROCm's "capability check + fallback" design, <strong>general-purpose matrix computation still works correctly</strong>. rocBLAS ships 128 pre-compiled matrix kernels for gfx900 with ROCm 7.2.</p>

@@ -163,7 +163,7 @@
     <span data-lang="ja">
       <strong>まずこれだけ:</strong>
       この調査で一番大事なのは、
-      <strong>「gfx900 は新しい高速機能を使えないことが多いが、ROCm の capability-based selection と fallback のおかげで、古い経路では今も計算できることがある」</strong>
+      <strong>「gfx900 は新しい高速機能を使えないことが多いが、ROCm の能力ベース選択と fallback（予備ルート）のおかげで、古い経路では今も計算できることがある」</strong>
       という点です。<br>
       つまり、「完全に生きている」でも「完全に死んでいる」でもなく、
       <strong>使える道だけが残っている</strong> 状態だと考えるとわかりやすいです。
@@ -561,6 +561,7 @@ flowchart TD
       <p class="term-name">solver</p>
       <p class="term-aka" data-lang="ja">MIOpen での「解法戦略」</p>
       <p class="term-aka" data-lang="en">a "solution strategy" in MIOpen</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>MIOpen の中にある「計算のやり方メニュー」です。同じ畳み込みでも、GPU やデータの形に応じて、向いているやり方が変わります。</div>
       <p class="term-def" data-lang="ja">MIOpen が convolution などの演算を実行するための実装戦略。同じ「FP32 畳み込み」に対して Winograd、ASM v4r1、MLIR iGEMM、DirectNaive など複数のソルバーが登録されており、GPU・dtype・形状の組み合わせで最適なものが選ばれる。</p>
       <p class="term-def" data-lang="en">An implementation strategy in MIOpen for executing operations like convolution. For a single "FP32 convolution" operation, multiple solvers (Winograd, ASM v4r1, MLIR iGEMM, DirectNaive, etc.) are registered and the best one is selected based on GPU, dtype, and shape.</p>
       <div class="term-key" data-lang="ja"><strong>選択方法:</strong> IsApplicable() でフィルタし、最速のものを Perf DB で決定</div>
@@ -584,9 +585,10 @@ flowchart TD
       <p class="term-name">capability-based selection</p>
       <p class="term-aka" data-lang="ja">能力ベース選択</p>
       <p class="term-aka" data-lang="en">capability-based selection</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>「この GPU は新しいか古いか」より、「この GPU にその機能があるか」を見て道を選ぶ考え方です。</div>
       <p class="term-def" data-lang="ja">「この GPU モデルだから使える / 使えない」ではなく、「このGPUが持つ能力（xdlops があるか、dot4 があるかなど）で判断する」設計方針。ROCm がこの設計を採用していることで、gfx900 のような旧世代 GPU でも能力の範囲内では動作する。</p>
       <p class="term-def" data-lang="en">A design philosophy of selecting paths based on GPU capabilities (does it have xdlops? dot4? etc.) rather than GPU model names. Because ROCm adopts this approach, older GPUs like gfx900 still work within the limits of their capabilities.</p>
-      <div class="term-key" data-lang="ja"><strong>調査仮説 B の根拠:</strong> gfx900 生存は capability-based 設計の「自然な副産物」と読める</div>
+      <div class="term-key" data-lang="ja"><strong>この調査での見方:</strong> gfx900 が今も一部で動くのは、この設計の結果として読むことができます。</div>
       <div class="term-key" data-lang="en"><strong>Basis for Hypothesis B:</strong> gfx900 survival reads as a natural by-product of capability-based design</div>
     </div>
 
@@ -595,6 +597,7 @@ flowchart TD
       <p class="term-name">fallback</p>
       <p class="term-aka" data-lang="ja">代替経路・フォールバック</p>
       <p class="term-aka" data-lang="en">fallback path</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>速い専用道路が使えないときに、少し遅い一般道へ回ることです。結果は出せるけれど、時間は余分にかかりやすいです。</div>
       <p class="term-def" data-lang="ja">高速な経路が使えないとき、より汎用的（だが遅い）経路に自動的に切り替える仕組み。rocBLAS では hipBLASLt → Tensile → FP32 の多段フォールバックがある。gfx900 のような旧世代 GPU は多くの場合この経路で計算を完了できる。</p>
       <p class="term-def" data-lang="en">The automatic switch to a more general (but slower) path when a faster one is unavailable. rocBLAS has a multi-stage fallback: hipBLASLt → Tensile → FP32. Legacy GPUs like gfx900 can typically complete computations through these fallback paths.</p>
       <div class="term-key" data-lang="ja"><strong>確認例:</strong> gfx900 FP32 conv → ConvBinWinograd3x3U, ConvAsm1x1U が自然選択（runtime_verified）</div>
@@ -606,6 +609,7 @@ flowchart TD
       <p class="term-name">Perf DB</p>
       <p class="term-aka" data-lang="ja">Performance Database / パフォーマンスデータベース</p>
       <p class="term-aka" data-lang="en">Performance Database</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>「この GPU とこの形なら、このやり方が速い」と覚えておく成績表のようなデータです。</div>
       <p class="term-def" data-lang="ja">MIOpen が GPU × 演算形状の組み合わせごとに、最適なチューニングパラメータを保存したデータベース。ROCm パッケージに同梱されて配布される。gfx900 向けは ROCm 7.2 で 169,182 行が確認されており、RDNA3 (gfx1100) の Perf DB が存在しない一方 gfx900 は RDNA2 (gfx1030) を超える行数を持つ。</p>
       <p class="term-def" data-lang="en">A database storing optimal tuning parameters per GPU × operation-shape combination, shipped with ROCm packages. gfx900's Perf DB in ROCm 7.2 contains 169,182 lines — more than RDNA2 (gfx1030: 111,296), while RDNA3 (gfx1100) has none at all.</p>
       <div class="term-key" data-lang="ja"><strong>意味:</strong> Perf DB が存在 = AMD のビルド・チューニングパイプラインに組み込まれている証拠</div>
@@ -617,9 +621,10 @@ flowchart TD
       <p class="term-name">staged retreat</p>
       <p class="term-aka" data-lang="ja">段階的な撤退・縮退</p>
       <p class="term-aka" data-lang="en">staged retreat</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>古い GPU の道が、ある日いきなり全部消えるのではなく、年ごとに少しずつ減っていくことです。</div>
       <p class="term-def" data-lang="ja">旧世代サポートを一括で打ち切らず、コンポーネントごと・層ごとに少しずつサポートを縮小していく過程。ROCm では hipCUB が gfx900 を default build から除外した一方、rocBLAS は継続しており、MIOpen の Winograd 系は 2025年にも補修が入っている。</p>
       <p class="term-def" data-lang="en">The process of reducing support for old hardware gradually, component by component and layer by layer, rather than cutting everything at once. In ROCm: hipCUB removed gfx900 from its default build while rocBLAS continues, and MIOpen Winograd paths received patches as recently as 2025.</p>
-      <div class="term-key" data-lang="ja"><strong>調査仮説 5 の根拠:</strong> 年表を読むと「一括除外」ではなく「層状の後退」として見える</div>
+      <div class="term-key" data-lang="ja"><strong>この調査での見方:</strong> 年表を読むと、「一括除外」ではなく「少しずつ道が減る流れ」として見えます。</div>
       <div class="term-key" data-lang="en"><strong>Basis for Hypothesis 5:</strong> The timeline reads as "layered retreat," not a single cutoff</div>
     </div>
 

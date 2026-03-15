@@ -273,28 +273,28 @@ flowchart TD
       <span class="badge-repo lib" data-lang="ja">推論ライブラリ</span>
       <span class="badge-repo lib" data-lang="en">Inference lib</span>
       <h4>MIOpen</h4>
-      <p data-lang="ja">畳み込み・行列演算などのDNNカーネルを提供。ソルバ登録制でGPUごとに最適カーネルを選択。</p>
+      <p data-lang="ja">AI でよく使う畳み込みや行列計算の担当です。計算のやり方の候補をいくつも持ち、GPU ごとに使える中から速そうなものを選びます。</p>
       <p data-lang="en">Provides DNN kernels (convolution, GEMM, etc.) via a solver registry that selects the optimal kernel per GPU.</p>
     </div>
     <div class="repo-card lib">
       <span class="badge-repo lib" data-lang="ja">数学ライブラリ</span>
       <span class="badge-repo lib" data-lang="en">Math library</span>
       <h4>rocBLAS</h4>
-      <p data-lang="ja">GPU向けBLAS実装。行列乗算（GEMM）などを担う。Tensile でGPU世代ごとのアセンブリコードを生成。</p>
+      <p data-lang="ja">GPU 向けの行列計算ライブラリです。大きな表どうしの掛け算（GEMM）などを担当し、Tensile が GPU 世代ごとの計算プログラムを用意します。</p>
       <p data-lang="en">GPU BLAS implementation. Handles GEMM etc. Uses Tensile to generate per-generation assembly code.</p>
     </div>
     <div class="repo-card lib">
       <span class="badge-repo lib" data-lang="ja">コード生成</span>
       <span class="badge-repo lib" data-lang="en">Code generation</span>
       <h4>Tensile</h4>
-      <p data-lang="ja">GEMMカーネルのコード生成ツール。GPU世代ごとに最適なアセンブリを生成し、rocBLAS に同梱される。</p>
+      <p data-lang="ja">rocBLAS 用の「計算プログラム工場」です。GPU 世代ごとに合った行列計算カーネルを作り、rocBLAS に入ります。</p>
       <p data-lang="en">GEMM kernel code-generation tool. Produces per-GPU-generation optimized assembly bundled into rocBLAS.</p>
     </div>
     <div class="repo-card lib">
       <span class="badge-repo lib" data-lang="ja">カーネルライブラリ</span>
       <span class="badge-repo lib" data-lang="en">Kernel library</span>
       <h4>composable_kernel (CK)</h4>
-      <p data-lang="ja">タイルベースのGPUカーネルを汎用テンプレートで表現するライブラリ。MIOpen で利用。</p>
+      <p data-lang="ja">GPU 計算の部品集です。小さな計算ブロックを組み合わせる形でカーネルを作り、MIOpen などが利用します。</p>
       <p data-lang="en">A tile-based GPU kernel library using generic templates. Used by MIOpen for efficient solver backends.</p>
     </div>
     <div class="repo-card tool">
@@ -322,7 +322,7 @@ flowchart TD
   <p class="section-lead" data-lang="en">Shows the layers a computation passes through from user code (e.g. PyTorch) down to GPU execution.</p>
 
   <div class="highlight-box">
-    <span data-lang="ja"><strong>この図の読み方:</strong> <strong>solver</strong> は「計算のやり方の候補」、<strong>fallback</strong> は「速い道が使えないときの予備ルート」です。<strong>HSA</strong> は、GPU に仕事を並べて渡すための土台、くらいの理解で十分です。</span>
+    <span data-lang="ja"><strong>この図の読み方:</strong> <strong>solver</strong> は「計算のやり方の候補」、<strong>fallback</strong> は「速い道が使えないときの予備ルート」です。<strong>HSA</strong> は、GPU に仕事を順番に渡すための土台、くらいの理解で十分です。</span>
     <span data-lang="en"><strong>How to read this diagram:</strong> a <strong>solver</strong> is one candidate way to do the computation, a <strong>fallback</strong> is the backup route when the fast path is unavailable, and <strong>HSA</strong> can be thought of simply as the underlying system for queuing work to the GPU.</span>
   </div>
 
@@ -367,7 +367,7 @@ flowchart TD
     style DRIVER fill:#FFEBEE,stroke:#B71C1C
     style GPU_HW fill:#FFEBEE,stroke:#B71C1C
     </div>
-    <p class="diagram-caption" data-lang="ja">solver registry で GPU の能力を確認し、最適なカーネルパスが選択される</p>
+    <p class="diagram-caption" data-lang="ja">まず「この GPU で使えるやり方」を確かめて、その中から計算ルートを選ぶ</p>
     <p class="diagram-caption" data-lang="en">The solver registry checks GPU capabilities and selects the optimal kernel path</p>
   </div>
 
@@ -380,7 +380,7 @@ flowchart TD
   <p class="section-lead" data-lang="en">gfx900 (the Vega / RX Vega generation) is handled differently at each layer of the ROCm stack.</p>
 
   <div class="highlight-box">
-    <span data-lang="ja"><strong>ポイント：</strong> gfx900 は「公式にサポートされていない」GPUですが、コードベース上では能力ベースのフォールバック設計により多くのパスが機能し続けています。完全削除ではなく、<strong>少しずつ速い道や新しい道が減っていく形</strong>です。</span>
+    <span data-lang="ja"><strong>ポイント：</strong> gfx900 は公式サポート外の GPU ですが、コードベース上では能力ベースのフォールバック設計により多くの経路が残っています。突然すべて消えるというより、<strong>使える道が少しずつ減っていく形</strong>です。</span>
     <span data-lang="en"><strong>Key point:</strong> gfx900 is not "officially supported," yet capability-based fallback design in the codebase keeps many paths alive. Rather than a hard removal, support has faded by <strong>gradually losing newer and faster routes</strong>.</span>
   </div>
 
@@ -571,12 +571,12 @@ flowchart LR
     style RESULT fill:#FFEBEE,stroke:#B71C1C
     style WHY fill:#F5F8FB,stroke:#D8E0E8
     </div>
-    <p class="diagram-caption" data-lang="ja">4 つの要因が重なって、gfx900 は「段階的に後退しながらも動き続ける」状態を維持している</p>
+    <p class="diagram-caption" data-lang="ja">4 つの要因が重なって、gfx900 は「全部は残らないが、使える道は残る」状態になっている</p>
     <p class="diagram-caption" data-lang="en">Four overlapping factors keep gfx900 in a "staged retreat but still functional" state</p>
   </div>
 
   <div class="highlight-box">
-    <span data-lang="ja"><strong>まとめ：</strong> ROCm のエコシステムは、「公式サポート」と「実際に動くかどうか」が一致しない設計になっています。gfx900 は公式サポート外ですが、capability-based フォールバックと削除コストの重さにより、コードベース上は機能するパスが維持されています。これは「放置」ではなく、設計原則の副産物です。</span>
+    <span data-lang="ja"><strong>まとめ：</strong> ROCm では、「公式サポート」と「実際に動くか」がいつも同じではありません。gfx900 は公式サポート外ですが、能力ベースの分岐とフォールバックの仕組みにより、コードベース上では今も動く道が残っています。ROCm 的には、「GPU 名」より「その GPU に何ができるか」を見るのが大事です。</span>
     <span data-lang="en"><strong>Summary:</strong> ROCm's ecosystem is designed such that "officially supported" and "actually works" do not always align. gfx900 is outside official support, yet capability-based fallback and the cost of active removal keep functional paths alive in the codebase. This is not neglect — it is a side-effect of the design principles.</span>
   </div>
 
