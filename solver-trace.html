@@ -500,6 +500,10 @@
 				<span data-lang="en"><strong>Runtime confirmation:</strong> On Vega64, natural solver selection yielded <code>ConvBinWinograd3x3U</code> (3×3 s1 FP32), <code>ConvAsm1x1U</code> (1×1 s1 FP32), and <code>ConvBinWinogradRxSf2x3</code> (3×3 grouped FP32) — all verified OK.</span>
 				<span data-lang="ja"><strong>実機確認:</strong> Vega64 での自然選択では <code>ConvBinWinograd3x3U</code>（3×3 s1 FP32）・<code>ConvAsm1x1U</code>（1×1 s1 FP32）・<code>ConvBinWinogradRxSf2x3</code>（3×3 group FP32）が選択され、いずれも verify OK。</span>
 			</div>
+		<div class="note note-info">
+			<span data-lang="en"><strong>Maintainer timeline (git blame):</strong> The Winograd solvers were largely introduced by Artem Tamazov (<code>artem.tamazov@gmail.com</code>) starting from 2017. AMD-affiliated staff have continued patching them: Gleb Larochkin (<code>glarochk@amd.com</code>) patched <code>conv_bin_wino3x3U.cpp</code> in September 2021; Evgenii Averin added an explicit gfx9 instruction-limit comment to <code>conv_MP_bidirectional_winograd.cpp</code> on 2025-03-11. These paths are not simply abandoned code — AMD attention was observed as recently as early 2025.</span>
+			<span data-lang="ja"><strong>維持者時系列（git blame）:</strong> Winograd solver 群は主に Artem Tamazov（<code>artem.tamazov@gmail.com</code>）が 2017 年以降に投入した。その後も AMD 関連スタッフが補修を続けており、Gleb Larochkin（<code>glarochk@amd.com</code>）が 2021-09 に <code>conv_bin_wino3x3U.cpp</code> を補修。Evgenii Averin は 2025-03-11 に <code>conv_MP_bidirectional_winograd.cpp</code> へ gfx9 命令制限の明示コメントを追加している。これらの経路は「放置されたコード」ではなく、2025 年初頭時点でも AMD 側から作業が入っている。</span>
+		</div>
 		</article>
 
 		<!-- ── 5: XDLops systematic exclusion ── -->
