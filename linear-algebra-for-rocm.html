@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>イメージでわかる線形代数 / Visual Linear Algebra | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --navy: #0B3C5D;
+      --teal: #00796B;
+      --amber: #C56A00;
+      --red: #B71C1C;
+      --blue: #1565C0;
+      --green: #2E7D32;
+      --ink: #1F2933;
+      --muted: #5F6C7B;
+      --line: #D8E0E8;
+      --bg: #F5F8FB;
+      --card: #FFFFFF;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(0,121,107,0.07), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(21,101,192,0.07), transparent 26%),
+        var(--bg);
+    }
+    .page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    /* toolbar */
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 18px;
+    }
+    .home-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600;
+    }
+    .home-link:hover { text-decoration: underline; }
+    .lang-btn {
+      padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 2px solid var(--navy); background: transparent;
+      color: var(--navy); transition: all 0.2s;
+    }
+    .lang-btn.active { background: var(--navy); color: #fff; }
+
+    /* hero */
+    .hero {
+      background: linear-gradient(135deg, #004D40 0%, #00796B 55%, #00897B 100%);
+      color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px;
+    }
+    .hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+    .hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+    .hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+
+    /* section */
+    .section-title {
+      font-size: 21px; font-weight: 700; color: var(--navy);
+      border-left: 5px solid var(--teal); padding-left: 14px;
+      margin: 44px 0 8px;
+    }
+    .section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+
+    /* summary card */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px; margin-bottom: 8px;
+    }
+    .summary-item {
+      background: var(--card); border: 1px solid var(--line);
+      border-top: 4px solid var(--teal);
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .summary-item .icon { font-size: 22px; margin-bottom: 6px; }
+    .summary-item strong { display: block; font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+    .summary-item p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* prose blocks */
+    .prose {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 22px 24px; margin-bottom: 18px;
+      font-size: 16px; line-height: 1.75;
+    }
+    .prose h3 { margin: 0 0 12px; font-size: 17px; color: var(--navy); }
+    .prose p { margin: 0 0 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    /* analogy box */
+    .analogy {
+      background: #FFF8E1; border-left: 5px solid var(--amber);
+      border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+      font-size: 15px; line-height: 1.65;
+    }
+    .analogy strong { color: var(--amber); }
+
+    /* highlight box */
+    .highlight {
+      background: #E3F2FD; border-left: 5px solid var(--blue);
+      border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+      font-size: 15px; line-height: 1.65;
+    }
+
+    /* vector-matrix visual */
+    .vm-visual {
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 20px 24px; margin-bottom: 18px;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    .vm-box {
+      background: #E3F2FD; border: 2px solid var(--blue);
+      border-radius: 8px; padding: 10px 14px; text-align: center;
+      min-width: 100px;
+    }
+    .vm-box.matrix { background: #E8F5E9; border-color: var(--green); }
+    .vm-box.result { background: #FFF3E0; border-color: var(--amber); }
+    .vm-box .label { font-size: 11px; color: var(--muted); margin-bottom: 4px; font-family: 'Calibri', sans-serif; }
+    .vm-box .value { font-size: 14px; font-weight: 700; color: var(--ink); white-space: pre; }
+    .vm-arrow { font-size: 24px; color: var(--muted); }
+
+    /* GPU comparison */
+    .compare-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;
+    }
+    .compare-card {
+      background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+      padding: 16px 18px;
+    }
+    .compare-card h4 { margin: 0 0 8px; font-size: 15px; color: var(--navy); }
+    .compare-card p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
+    .compare-card.cpu { border-top: 4px solid var(--amber); }
+    .compare-card.gpu { border-top: 4px solid var(--blue); }
+
+    /* Mermaid */
+    .diagram-box {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 20px 16px; margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .diagram-caption { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+    .mermaid { display: flex; justify-content: center; }
+    .mermaid svg { width: 100% !important; min-width: 560px; height: auto !important; }
+
+    /* next-page link */
+    .next-card {
+      background: linear-gradient(135deg, #1A237E 0%, #283593 100%);
+      color: #fff; border-radius: 14px; padding: 24px 28px; margin-top: 36px;
+    }
+    .next-card p { margin: 0 0 14px; font-size: 16px; opacity: 0.88; line-height: 1.6; }
+    .next-card a {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); color: #fff;
+      text-decoration: none; padding: 10px 18px; border-radius: 8px;
+      font-weight: 700; font-size: 15px; border: 1px solid rgba(255,255,255,0.25);
+    }
+    .next-card a:hover { background: rgba(255,255,255,0.25); }
+
+    /* lang */
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] li[data-lang="en"],
+    html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"],
+    html[data-language="en"] h3[data-lang="en"],
+    html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+    @media (max-width: 680px) {
+      .hero { padding: 26px 20px 22px; }
+      .hero h1 { font-size: 22px; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .vm-visual { flex-direction: column; align-items: flex-start; }
+      .vm-arrow { transform: rotate(90deg); align-self: center; }
+    }
+  </style>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true, useMaxWidth: false,
+      flowchart: { useMaxWidth: false, nodeSpacing: 30, rankSpacing: 40, curve: 'basis' },
+      timeline: { useMaxWidth: false },
+      theme: 'base',
+      themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' }
+    });
+  </script>
+</head>
+<body>
+<div class="page">
+
+  <div class="toolbar">
+    <a class="home-link" href="index.html">&#8592; <span data-lang="ja">トップへ</span><span data-lang="en">Back to index</span></a>
+    <div style="display:flex;gap:6px;">
+      <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+      <button id="btn-en" class="lang-btn" type="button">EN</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="subtitle" data-lang="ja">rocBLAS につながるやさしい入門</p>
+    <p class="subtitle" data-lang="en">A gentle introduction connected to rocBLAS</p>
+    <h1 data-lang="ja">イメージでわかる線形代数</h1>
+    <h1 data-lang="en">Visual Linear Algebra</h1>
+    <p data-lang="ja">「線形代数」と聞くとむずかしく聞こえますが、AI や GPU の世界では「数をまとめて変換する道具」として活躍しています。このページでは、ベクトル・行列・行列積を、できるだけイメージで説明します。その先に <strong>rocBLAS</strong> が何をしているのか、なぜ GPU が強いのかをつなげます。</p>
+    <p data-lang="en">Linear algebra sounds intimidating, but in the world of AI and GPUs it is simply a tool for transforming groups of numbers together. This page explains vectors, matrices, and matrix multiplication through images and analogies, then connects them to what <strong>rocBLAS</strong> does and why GPUs excel at this work.</p>
+  </section>
+
+  <!-- まずこれだけ -->
+  <h2 class="section-title" data-lang="ja">まずこれだけ</h2>
+  <h2 class="section-title" data-lang="en">The essentials</h2>
+  <p class="section-lead" data-lang="ja">このページで伝えたいことは、5行でまとめられます。</p>
+  <p class="section-lead" data-lang="en">Everything this page wants to convey fits in five points.</p>
+
+  <div class="summary-grid">
+    <div class="summary-item">
+      <div class="icon">📋</div>
+      <strong data-lang="ja">ベクトル</strong>
+      <strong data-lang="en">Vector</strong>
+      <p data-lang="ja">数字を一列にならべたもの</p>
+      <p data-lang="en">A row of numbers</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">📊</div>
+      <strong data-lang="ja">行列</strong>
+      <strong data-lang="en">Matrix</strong>
+      <p data-lang="ja">変換ルールを書いた表</p>
+      <p data-lang="en">A table of transformation rules</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">🔀</div>
+      <strong data-lang="ja">行列積</strong>
+      <strong data-lang="en">Matrix multiply</strong>
+      <p data-lang="ja">数字の並びを別の形に変えること</p>
+      <p data-lang="en">Changing one arrangement of numbers into another</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">🏭</div>
+      <strong data-lang="ja">GPU</strong>
+      <strong data-lang="en">GPU</strong>
+      <p data-lang="ja">この計算を大量に並列でこなす</p>
+      <p data-lang="en">Runs masses of this computation in parallel</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">⚡</div>
+      <strong data-lang="ja">rocBLAS</strong>
+      <strong data-lang="en">rocBLAS</strong>
+      <p data-lang="ja">AMD GPU で行列計算を高速化するライブラリ</p>
+      <p data-lang="en">The library that accelerates matrix computation on AMD GPUs</p>
+    </div>
+  </div>
+
+  <!-- ベクトル -->
+  <h2 class="section-title" data-lang="ja">ベクトルってなに？</h2>
+  <h2 class="section-title" data-lang="en">What is a vector?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">ベクトルは、<strong>数字を一列にならべたもの</strong>です。</p>
+    <p data-lang="en">A vector is simply <strong>a row of numbers</strong>.</p>
+    <p data-lang="ja">たとえば、ある生徒のテスト結果を「国語80・数学70・英語90」とするとき、これを <code>[80, 70, 90]</code> と書きます。これがひとつのベクトルです。</p>
+    <p data-lang="en">For example, a student's test scores — Japanese 80, Math 70, English 90 — can be written as <code>[80, 70, 90]</code>. That is one vector.</p>
+    <p data-lang="ja">AI の世界では、画像・音・文章の特徴も最終的には数字の並びとして扱います。ベクトルはその基本単位です。</p>
+    <p data-lang="en">In AI, the features of images, sounds, and text are all ultimately treated as rows of numbers. The vector is the basic building block.</p>
+  </div>
+
+  <!-- 行列 -->
+  <h2 class="section-title" data-lang="ja">行列ってなに？</h2>
+  <h2 class="section-title" data-lang="en">What is a matrix?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">行列は、<strong>数字を表の形にしたもの</strong>です。ただの数の羅列ではなく、「変換のルールを書いた表」として使います。</p>
+    <p data-lang="en">A matrix is <strong>numbers arranged in a table</strong>. Think of it not as a random collection of numbers, but as a table of transformation rules.</p>
+    <p data-lang="ja">たとえば、テストの点数に「各科目の重み」をかけて「文系評価」と「理系評価」を出すとき、その重みの組み合わせが行列になります。</p>
+    <p data-lang="en">For example, if you weight test scores differently to produce a "humanities score" and a "science score," those weighting combinations form a matrix.</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">たとえるなら：</strong>
+    <strong data-lang="en">Analogy:</strong>
+    <ul>
+      <li data-lang="ja"><strong>ベクトル</strong> ＝ 材料（小麦粉・卵・砂糖…）</li>
+      <li data-lang="ja"><strong>行列</strong> ＝ レシピ（材料をどう混ぜるかのルール表）</li>
+      <li data-lang="ja"><strong>行列をかけた結果</strong> ＝ できあがり（ケーキ・クッキー・パン…）</li>
+      <li data-lang="en"><strong>Vector</strong> = ingredients (flour, eggs, sugar…)</li>
+      <li data-lang="en"><strong>Matrix</strong> = recipe (the table of rules for mixing them)</li>
+      <li data-lang="en"><strong>Result of multiplying</strong> = the finished product (cake, cookies, bread…)</li>
+    </ul>
+    <p data-lang="ja" style="margin:8px 0 0;">同じ材料でも、レシピが違えば違うものができます。行列の「中身」が変われば、変換の意味も変わります。</p>
+    <p data-lang="en" style="margin:8px 0 0;">The same ingredients make different things depending on the recipe. Change the numbers in the matrix and the transformation changes meaning.</p>
+  </div>
+
+  <!-- 行列積のビジュアル -->
+  <h2 class="section-title" data-lang="ja">行列をかけるってどういうこと？</h2>
+  <h2 class="section-title" data-lang="en">What does multiplying a matrix mean?</h2>
+
+  <p class="section-lead" data-lang="ja">「行列をかける」とは、入力の数字の並びを別の形に変えることです。</p>
+  <p class="section-lead" data-lang="en">Multiplying by a matrix means changing one arrangement of numbers into a different arrangement.</p>
+
+  <div class="vm-visual">
+    <div class="vm-box">
+      <div class="label" data-lang="ja">入力ベクトル</div>
+      <div class="label" data-lang="en">Input vector</div>
+      <div class="value">[80]
+[70]
+[90]</div>
+    </div>
+    <div class="vm-arrow">×</div>
+    <div class="vm-box matrix">
+      <div class="label" data-lang="ja">行列（変換ルール）</div>
+      <div class="label" data-lang="en">Matrix (rules)</div>
+      <div class="value">0.5  0.1
+0.2  0.7
+0.3  0.2</div>
+    </div>
+    <div class="vm-arrow">=</div>
+    <div class="vm-box result">
+      <div class="label" data-lang="ja">出力ベクトル</div>
+      <div class="label" data-lang="en">Output vector</div>
+      <div class="value">[79]
+[75]</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin:-8px 0 20px;">
+    <span data-lang="ja">3つの点数が「文系寄り評価 79」「理系寄り評価 75」に変換された。同じ入力でも行列が変われば結果が変わる。</span>
+    <span data-lang="en">Three scores transformed into "humanities-leaning 79" and "science-leaning 75." Change the matrix and the output changes, even with the same input.</span>
+  </p>
+
+  <!-- AI との関係 -->
+  <h2 class="section-title" data-lang="ja">なんで AI で大事なの？</h2>
+  <h2 class="section-title" data-lang="en">Why does AI need this?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">ニューラルネットワーク（AI のよくある形）は、大ざっぱに言うと <strong>「行列で変換する」をひたすら繰り返す機械</strong>です。</p>
+    <p data-lang="en">A neural network — the most common form of AI — is, roughly speaking, <strong>a machine that applies matrix transformations over and over again</strong>.</p>
+    <p data-lang="ja">たとえば画像認識の場合、</p>
+    <p data-lang="en">For example, in image recognition:</p>
+    <ul>
+      <li data-lang="ja">最初はただのピクセルの数字の並び</li>
+      <li data-lang="ja">行列変換 → 「線っぽい特徴」に</li>
+      <li data-lang="ja">もう一度変換 → 「目や口っぽい特徴」に</li>
+      <li data-lang="ja">さらに変換 → 「猫っぽい」という判断に</li>
+      <li data-lang="en">It starts as a raw row of pixel values</li>
+      <li data-lang="en">Matrix transform → "edge-like features"</li>
+      <li data-lang="en">Another transform → "eye- or mouth-like features"</li>
+      <li data-lang="en">Another transform → the judgment "cat-like"</li>
+    </ul>
+    <p data-lang="ja">この「少しずつ見方を変えていく」作業が、行列積のくり返しです。だから線形代数は AI の土台です。</p>
+    <p data-lang="en">This process of gradually shifting perspective is repeated matrix multiplication. That is why linear algebra is the foundation of AI.</p>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    IN["入力データ\n(ピクセル / 音 / 文字)"]
+    M1["行列変換 1\n低レベル特徴"]
+    M2["行列変換 2\n中レベル特徴"]
+    M3["行列変換 N\n高レベル判断"]
+    OUT["出力\n(猫 / 犬 / …)"]
+    IN --> M1 --> M2 --> M3 --> OUT
+    style IN fill:#E8F5E9,stroke:#2E7D32
+    style OUT fill:#E3F2FD,stroke:#1565C0
+    </div>
+    <p class="diagram-caption" data-lang="ja">行列変換を何段も重ねることで、ピクセルが「猫か犬か」という判断に変わる</p>
+    <p class="diagram-caption" data-lang="en">Stacking many matrix transforms turns raw pixels into a "cat vs dog" judgment</p>
+  </div>
+
+  <!-- GPU -->
+  <h2 class="section-title" data-lang="ja">なんで GPU が活躍するの？</h2>
+  <h2 class="section-title" data-lang="en">Why do GPUs excel at this?</h2>
+
+  <p class="section-lead" data-lang="ja">行列計算は「同じような計算を膨大な数くり返す」作業です。GPU はその並列処理が得意です。</p>
+  <p class="section-lead" data-lang="en">Matrix computation means repeating very similar arithmetic an enormous number of times. GPUs are built exactly for that kind of parallel work.</p>
+
+  <div class="compare-grid">
+    <div class="compare-card cpu">
+      <h4 data-lang="ja">CPU — 少人数の器用な職人</h4>
+      <h4 data-lang="en">CPU — a small team of skilled craftspeople</h4>
+      <p data-lang="ja">複雑な判断が得意。でも同じ計算を何万回も繰り返すのは向いていない。</p>
+      <p data-lang="en">Good at complex decisions and varied tasks. But repeating the same calculation tens of thousands of times is not its strength.</p>
+    </div>
+    <div class="compare-card gpu">
+      <h4 data-lang="ja">GPU — 同じ作業をこなす大きな工場</h4>
+      <h4 data-lang="en">GPU — a large factory doing the same job in bulk</h4>
+      <p data-lang="ja">シンプルな計算を何千個も一度に並べる。行列積はまさにこの形。</p>
+      <p data-lang="en">Runs thousands of simple calculations simultaneously. Matrix multiplication is exactly this shape of work.</p>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <span data-lang="ja">行列 A（1000×1000）と行列 B（1000×1000）をかけるには、約 10 億回の掛け算と足し算が必要です。GPU はこれを並列で一気に処理します。</span>
+    <span data-lang="en">Multiplying a 1000×1000 matrix by another 1000×1000 matrix requires roughly one billion multiplications and additions. A GPU processes these in parallel all at once.</span>
+  </div>
+
+  <!-- rocBLAS -->
+  <h2 class="section-title" data-lang="ja">rocBLAS ってなに？</h2>
+  <h2 class="section-title" data-lang="en">What is rocBLAS?</h2>
+
+  <div class="prose">
+    <p data-lang="ja"><strong>BLAS</strong>（Basic Linear Algebra Subprograms）は、ベクトルや行列の基本計算をまとめた「関数の仕様セット」です。何十年も前から使われてきた標準です。</p>
+    <p data-lang="en"><strong>BLAS</strong> (Basic Linear Algebra Subprograms) is a set of standard function interfaces for vector and matrix arithmetic that has been in use for decades.</p>
+    <p data-lang="ja"><strong>rocBLAS</strong> は、その AMD GPU 向け実装です。「行列×行列」「行列×ベクトル」などの計算を、GPU の能力を最大限に活かして高速に実行します。</p>
+    <p data-lang="en"><strong>rocBLAS</strong> is AMD's GPU implementation of those interfaces. It runs "matrix × matrix" and "matrix × vector" computations at full GPU speed.</p>
+    <p data-lang="ja">PyTorch や TensorFlow などの AI フレームワークは、内部で rocBLAS を呼び出してこの計算をこなしています。</p>
+    <p data-lang="en">AI frameworks like PyTorch and TensorFlow call rocBLAS internally to handle this computation.</p>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    APP["AI / 科学計算\n(PyTorch / NumPy)"]
+    ROCM["ROCm スタック"]
+    ROCBLAS["rocBLAS\n行列計算担当"]
+    GPU["AMD GPU\n(gfx900〜gfx942)"]
+    APP --> ROCM --> ROCBLAS --> GPU
+    style APP fill:#E8F5E9,stroke:#2E7D32
+    style ROCBLAS fill:#E3F2FD,stroke:#1565C0
+    style GPU fill:#FFF3E0,stroke:#E65100
+    </div>
+    <p class="diagram-caption" data-lang="ja">アプリが行列計算をリクエストすると、ROCm を通じて rocBLAS が GPU に仕事を渡す</p>
+    <p class="diagram-caption" data-lang="en">When an application requests matrix computation, rocBLAS receives it through ROCm and hands it to the GPU</p>
+  </div>
+
+  <!-- gfx900 -->
+  <h2 class="section-title" data-lang="ja">gfx900 と何が関係あるの？</h2>
+  <h2 class="section-title" data-lang="en">How does this connect to gfx900?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">gfx900 は Vega 世代（2017年）の GPU です。最近の GPU が持っている行列演算の専用命令（xdlops / dot4）を持っていません。</p>
+    <p data-lang="en">gfx900 is the Vega-generation GPU from 2017. It does not have the dedicated matrix arithmetic instructions (xdlops / dot4) that newer GPUs have.</p>
+    <p data-lang="ja">そのため、最新の高速パスは使えませんが、ROCm の「能力確認＋フォールバック」設計により、<strong>汎用的な行列計算は今もちゃんと動きます</strong>。rocBLAS には gfx900 向けにコンパイル済みの行列カーネルが 128 本収録されており、ROCm 7.2 に同梱されています。</p>
+    <p data-lang="en">The newest fast paths are therefore unavailable, but thanks to ROCm's "capability check + fallback" design, <strong>general-purpose matrix computation still works correctly</strong>. rocBLAS ships 128 pre-compiled matrix kernels for gfx900 with ROCm 7.2.</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">たとえるなら：</strong>
+    <strong data-lang="en">Analogy:</strong>
+    <p data-lang="ja" style="margin:6px 0 0;">最新の工場には「超高速の専用機械」がありますが、gfx900 にはありません。でも「汎用の手順」で同じ仕事はできます。少し遅くなりますが、結果は正しく出ます。これが「staged retreat（段階的後退）」の意味です。</p>
+    <p data-lang="en" style="margin:6px 0 0;">The newest factories have ultra-fast specialized machines that gfx900 lacks. But the work can still be done using general-purpose methods — somewhat slower, but with correct results. This is what "staged retreat" means.</p>
+  </div>
+
+  <!-- まとめ -->
+  <h2 class="section-title" data-lang="ja">まとめ</h2>
+  <h2 class="section-title" data-lang="en">Summary</h2>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    VEC["ベクトル\n数字の並び"]
+    MAT["行列\n変換ルール"]
+    MATMUL["行列積\n変換の実行"]
+    AI["AI / DNN\n変換の積み重ね"]
+    GPU["GPU\n大量並列で高速化"]
+    ROCBLAS["rocBLAS\nAMD GPU 向け実装"]
+    VEC & MAT --> MATMUL --> AI --> GPU --> ROCBLAS
+    style VEC fill:#E8F5E9,stroke:#2E7D32
+    style MAT fill:#E8F5E9,stroke:#2E7D32
+    style AI fill:#E3F2FD,stroke:#1565C0
+    style GPU fill:#FFF3E0,stroke:#E65100
+    style ROCBLAS fill:#EDE7F6,stroke:#5B4B8A
+    </div>
+    <p class="diagram-caption" data-lang="ja">線形代数の基本概念から rocBLAS までのつながり</p>
+    <p class="diagram-caption" data-lang="en">The chain from basic linear algebra concepts to rocBLAS</p>
+  </div>
+
+  <ul style="font-size:16px;line-height:2;padding-left:22px;margin:0 0 20px;">
+    <li data-lang="ja">線形代数は AI の土台で、「数をまとめて変換する道具」</li>
+    <li data-lang="ja">AI は行列変換を何段も重ねることで動いている</li>
+    <li data-lang="ja">GPU は同じ計算の大量並列が得意なため AI に活躍する</li>
+    <li data-lang="ja">rocBLAS は AMD GPU で行列計算を担当するライブラリ</li>
+    <li data-lang="ja">gfx900 は専用命令は持たないが、汎用パスで行列計算が今も動く</li>
+    <li data-lang="en">Linear algebra is the foundation of AI — a tool for transforming batches of numbers</li>
+    <li data-lang="en">AI works by stacking many matrix transformations in sequence</li>
+    <li data-lang="en">GPUs excel at AI because they run massive amounts of identical arithmetic in parallel</li>
+    <li data-lang="en">rocBLAS is the library responsible for matrix computation on AMD GPUs</li>
+    <li data-lang="en">gfx900 lacks dedicated instructions but general-purpose matrix paths still work today</li>
+  </ul>
+
+  <!-- Next page -->
+  <div class="next-card">
+    <p data-lang="ja">次のページでは、AI の「畳み込み」とは何かを説明します。そこから <strong>MIOpen</strong> が何をしているのか、なぜ solver が複数存在するのかをつなげます。</p>
+    <p data-lang="en">The next page explains what AI "convolution" is, then connects that to what <strong>MIOpen</strong> does and why multiple solvers exist.</p>
+    <a href="deep-learning-for-rocm.html">
+      <span data-lang="ja">イメージでわかる深層学習 →</span>
+      <span data-lang="en">Visual Deep Learning →</span>
+    </a>
+  </div>
+
+  <div style="margin-top:28px;color:var(--muted);font-size:13px;text-align:center;">
+    <span data-lang="ja">vega-hbmx-pages — イメージでわかる線形代数 | 2026-03-15</span>
+    <span data-lang="en">vega-hbmx-pages — Visual Linear Algebra | 2026-03-15</span>
+  </div>
+</div>
+
+<script>
+  const html = document.documentElement;
+  const btnJa = document.getElementById('btn-ja');
+  const btnEn = document.getElementById('btn-en');
+  function setLanguage(lang) {
+    html.setAttribute('data-language', lang);
+    html.setAttribute('lang', lang);
+    btnJa.classList.toggle('active', lang === 'ja');
+    btnEn.classList.toggle('active', lang === 'en');
+    localStorage.setItem('vega-hbmx-pages-lang', lang);
+  }
+  btnJa.addEventListener('click', () => setLanguage('ja'));
+  btnEn.addEventListener('click', () => setLanguage('en'));
+  setLanguage(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+</script>
+</body>
+</html>

@@ -114,6 +114,15 @@
     html[data-language="en"] [data-lang="en"] { display: unset; }
     html[data-language="ja"] .term-card [data-lang="ja"],
     html[data-language="en"] .term-card [data-lang="en"] { display: block; }
+    .term-card.essential { border-top-color: #F57F17; background: #FFFDF5; }
+    .cat-badge.essential { background: #FFF8E1; color: #E65100; font-weight: 800; }
+    .layer-heading {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--teal); margin: 48px 0 4px;
+      padding-top: 16px; border-top: 2px solid var(--line);
+    }
+    .term-card.deep { border-top-color: var(--purple); background: #FAFAFF; }
+    .cat-badge.deep { background: #EDE7F6; color: #5B4B8A; }
     footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line); }
     @media (max-width: 640px) {
       .hero { padding: 28px 20px 24px; }
@@ -141,9 +150,215 @@
 
   <div class="hero">
     <h1><span data-lang="ja">用語解説</span><span data-lang="en">Glossary</span></h1>
-    <p data-lang="ja">ROCm・GPU アーキテクチャ・ソフトウェアスタックに登場する用語を、専門外の方でも読めるように整理しました。3カテゴリ（ハードウェア・スタック・概念）に分類しています。</p>
-    <p data-lang="en">Key terms from ROCm, GPU architecture, and the software stack, written to be accessible to non-specialists. Terms are organized into three categories: hardware, stack, and concepts.</p>
+    <p data-lang="ja">ROCm・GPU アーキテクチャ・ソフトウェアスタックの用語を、専門外の方でも読めるように整理しました。<br>まず要点 → 重要 8 語 → 詳しい辞書 → 深掘り用語、の順に読めます。</p>
+    <p data-lang="en">Key terms from ROCm, GPU architecture, and the software stack, organized for accessibility.<br>Read in order: key point → 8 essential terms → detailed dictionary → deep-dive terms.</p>
   </div>
+
+  <!-- ═══════════ Layer 1: まずこれだけ / Start Here ═══════════ -->
+  <p class="layer-heading" data-lang="ja">STEP 1 — まずこれだけ</p>
+  <p class="layer-heading" data-lang="en">STEP 1 — Start here</p>
+
+  <div class="note note-info" style="margin-top: 4px;">
+    <span data-lang="ja">
+      <strong>まずこれだけ:</strong>
+      この調査で一番大事なのは、
+      <strong>「gfx900 は新しい高速機能を使えないことが多いが、ROCm の capability-based selection と fallback のおかげで、古い経路では今も計算できることがある」</strong>
+      という点です。<br>
+      つまり、「完全に生きている」でも「完全に死んでいる」でもなく、
+      <strong>使える道だけが残っている</strong> 状態だと考えるとわかりやすいです。
+    </span>
+    <span data-lang="en">
+      <strong>Start here:</strong>
+      The most important point of this investigation is this:
+      <strong>gfx900 often cannot use newer fast paths, but ROCm's capability-based selection and fallback mechanisms can still keep older paths working.</strong><br>
+      In other words, gfx900 is neither "fully alive" nor "fully dead" —
+      <strong>only some usable paths remain.</strong>
+    </span>
+  </div>
+
+  <!-- ═══════════ Layer 2: 一番大事な 8 語 ═══════════ -->
+  <p class="layer-heading" data-lang="ja">STEP 2 — 一番大事な 8 語</p>
+  <p class="layer-heading" data-lang="en">STEP 2 — The 8 essential terms</p>
+
+  <h2 class="section-title" data-lang="ja">このページで一番大事な 8 語</h2>
+  <h2 class="section-title" data-lang="en">The 8 most important terms</h2>
+  <p class="section-lead" data-lang="ja">この 8 語がわかれば、調査の骨格はほぼ見えます。</p>
+  <p class="section-lead" data-lang="en">Understanding these 8 terms gives you the backbone of the investigation.</p>
+
+  <div class="term-grid">
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">ROCm</p>
+      <p class="term-aka" data-lang="ja">AMD GPU を動かすための大きな道具箱</p>
+      <p class="term-aka" data-lang="en">The big toolbox for running AMD GPUs</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> AMD GPU 向けのソフトウェア一式です。<br>
+        ドライバ、ランタイム、ライブラリ、コンパイラなどがまとめて含まれています。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> ROCm is the software stack for AMD GPUs.<br>
+        It includes drivers, runtimes, libraries, and compiler tools.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>この調査との関係:</strong> gfx900 が「ROCm のどの部分で今も動くか」を調べています。</div>
+      <div class="term-key" data-lang="en"><strong>Relation to this investigation:</strong> We are studying which parts of ROCm still work for gfx900.</div>
+    </div>
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">gfx900</p>
+      <p class="term-aka" data-lang="ja">Radeon RX Vega 56 / 64 のチップコード</p>
+      <p class="term-aka" data-lang="en">The chip code for Radeon RX Vega 56 / 64</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> この調査の主人公である、少し古い AMD GPU です。<br>
+        ROCm では「Vega」ではなく <code>gfx900</code> というコードで扱われます。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> The older AMD GPU at the center of this investigation.<br>
+        In ROCm it is identified as <code>gfx900</code>, not by the product name "Vega."
+      </p>
+      <div class="term-key" data-lang="ja"><strong>大事な点:</strong> 新しい高速機能は持たないが、古い経路では今も動くことがあります。</div>
+      <div class="term-key" data-lang="en"><strong>Key point:</strong> It lacks newer fast features, but some older execution paths still work.</div>
+    </div>
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">MIOpen</p>
+      <p class="term-aka" data-lang="ja">深層学習の「畳み込み担当」</p>
+      <p class="term-aka" data-lang="en">The deep-learning "convolution engine"</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 深層学習でよく使う演算を GPU で速く実行するライブラリです。<br>
+        特に畳み込み（convolution）の実装がこの調査の中心です。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> A library for accelerating deep-learning operations on GPUs.<br>
+        Its convolution implementations are central to this investigation.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>gfx900 との関係:</strong> gfx900 では使える solver と使えない solver が分かれます。</div>
+      <div class="term-key" data-lang="en"><strong>Relation to gfx900:</strong> Some solvers still work on gfx900, while others do not.</div>
+    </div>
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">rocBLAS</p>
+      <p class="term-aka" data-lang="ja">行列計算の担当</p>
+      <p class="term-aka" data-lang="en">The matrix-computation engine</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 行列やベクトルの計算を GPU で高速化するライブラリです。<br>
+        AI や科学計算でたくさん使われます。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> A GPU library for fast matrix and vector operations.<br>
+        Heavily used in AI and scientific computing.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>gfx900 との関係:</strong> gfx900 向けのプリコンパイル済みファイルが ROCm 7.2 に同梱されています。</div>
+      <div class="term-key" data-lang="en"><strong>Relation to gfx900:</strong> ROCm 7.2 ships precompiled files for gfx900.</div>
+    </div>
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">solver</p>
+      <p class="term-aka" data-lang="ja">演算を実行するための「解き方」</p>
+      <p class="term-aka" data-lang="en">A "way of solving" an operation</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 同じ演算でも、実装のしかたは1つではありません。<br>
+        MIOpen は複数の solver を持ち、その中から今の GPU に合うものを選びます。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> The same operation can be implemented in multiple ways.<br>
+        MIOpen keeps several solvers and picks the one that fits the current GPU.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>例:</strong> Winograd / ASM / MLIR iGEMM / DirectNaive — gfx900 では Winograd と ASM が主力</div>
+      <div class="term-key" data-lang="en"><strong>Examples:</strong> Winograd / ASM / MLIR iGEMM / DirectNaive — Winograd and ASM are the workhorses on gfx900</div>
+    </div>
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">capability-based selection</p>
+      <p class="term-aka" data-lang="ja">GPU の名前より「できること」で選ぶ仕組み</p>
+      <p class="term-aka" data-lang="en">Choosing by what the GPU can do, not just its name</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 「この GPU は Vega だからダメ」ではなく、<br>
+        「xdlops があるか」「dot4 があるか」など、持っている能力で使える経路を選ぶ考え方です。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> Instead of saying "this GPU is Vega so it fails,"<br>
+        ROCm often decides based on capabilities such as whether xdlops or dot4 are present.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>大事な点:</strong> この設計のおかげで、gfx900 でも使える道が残りやすくなります。</div>
+      <div class="term-key" data-lang="en"><strong>Key point:</strong> This design makes it easier for some paths to remain usable on gfx900.</div>
+    </div>
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">fallback</p>
+      <p class="term-aka" data-lang="ja">速い道がだめなときの予備の道</p>
+      <p class="term-aka" data-lang="en">The backup path when the fast one is unavailable</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 新しい高速経路が使えないときに、もっと汎用的な経路へ落ちる仕組みです。<br>
+        速くはないけれど、計算を続けるために大事です。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> When a newer fast path is unavailable, ROCm falls back to a more general one.<br>
+        It may be slower, but it keeps the computation running.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>gfx900 との関係:</strong> gfx900 はこの fallback に助けられて生き残っている面があります。</div>
+      <div class="term-key" data-lang="en"><strong>Relation to gfx900:</strong> gfx900 survives in part because these fallback paths still exist.</div>
+    </div>
+
+    <div class="term-card essential">
+      <span class="cat-badge essential">Essential</span>
+      <p class="term-name">Perf DB</p>
+      <p class="term-aka" data-lang="ja">「どの解き方が速いか」を覚えておく表</p>
+      <p class="term-aka" data-lang="en">A table remembering which solver is fastest</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> GPU と演算形状の組み合わせごとに、最適な solver を保存したデータです。<br>
+        MIOpen はこれを見て速い solver を選びます。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> A database storing which solver works best per GPU and operation shape.<br>
+        MIOpen uses it to select fast implementations.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>大事な点:</strong> gfx900 向け Perf DB が ROCm パッケージに残っているのは、とても強い証拠です。</div>
+      <div class="term-key" data-lang="en"><strong>Key point:</strong> The fact that gfx900 Perf DB entries still ship in ROCm packages is very strong evidence.</div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════ Understanding diagram ═══════════ -->
+  <h2 class="section-title" data-lang="ja">速い経路と fallback — かんたんな見取り図</h2>
+  <h2 class="section-title" data-lang="en">Fast path vs. fallback — a simple map</h2>
+
+  <div class="mermaid">
+flowchart LR
+  A["Your code"] --> B["ROCm stack"]
+  B --> C["Fast modern path"]
+  B --> D["Older fallback path"]
+  C --> E["Needs newer GPU features\n(xdlops, dot4 …)"]
+  D --> F["Can still work on gfx900"]
+  style A fill:#ddeeff,stroke:#3366aa
+  style C fill:#E3F2FD,stroke:#1565C0
+  style D fill:#FFF3E0,stroke:#E65100
+  style E fill:#BBDEFB,stroke:#1565C0
+  style F fill:#C8E6C9,stroke:#2E7D32
+  </div>
+
+  <div class="note note-info">
+    <span data-lang="ja">
+      <strong>この図の意味:</strong>
+      ROCm には「速いけれど新しいGPU向けの道」と、「遅いけれど古いGPUでも通りやすい道」の両方があります。
+      gfx900 は前者では止まりやすいですが、後者では今も動くことがあります。
+    </span>
+    <span data-lang="en">
+      <strong>What this means:</strong>
+      ROCm often has both a fast path for newer GPUs and a slower, more general fallback path.
+      gfx900 often fails on the former, but can still work on the latter.
+    </span>
+  </div>
+
+  <!-- ═══════════ Layer 3: 詳しい辞書 ═══════════ -->
+  <p class="layer-heading" data-lang="ja">STEP 3 — 詳しい辞書</p>
+  <p class="layer-heading" data-lang="en">STEP 3 — Detailed dictionary</p>
 
   <!-- GPU generation timeline -->
   <h2 class="section-title" data-lang="ja">GPU アーキテクチャ世代の概観</h2>
