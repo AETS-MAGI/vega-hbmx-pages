@@ -420,6 +420,7 @@ timeline
       <p class="term-name">gfx908</p>
       <p class="term-aka" data-lang="ja">別名: CDNA1 / Instinct MI100</p>
       <p class="term-aka" data-lang="en">Also: CDNA1 / Instinct MI100</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>AI 専用の「行列計算エンジン」を初めて積んだ GPU です。gfx900 にはない <strong>xdlops</strong> という特別な回路が入っており、AI の学習で重要な行列の掛け算を一気に大量処理できます。ROCm の高速化はここを起点に設計されたものが多いです。</div>
       <p class="term-def" data-lang="ja">AMD がデータセンター向けに新設した CDNA アーキテクチャの第1世代。行列積演算を高速化する xdlops（MFMA命令）を初搭載。ROCm の多くの最適化パスがここから始まる。</p>
       <p class="term-def" data-lang="en">The first CDNA (Compute DNA) architecture AMD created for datacenter compute. Introduced xdlops (MFMA matrix-fused-multiply-accumulate instructions) for the first time. Many ROCm optimization paths target gfx908 and later.</p>
       <div class="term-key" data-lang="ja"><strong>重要点:</strong> xdlops (MFMA) 初搭載 — MIOpen の MLIR/XDLops 系ソルバーはここから対象</div>
