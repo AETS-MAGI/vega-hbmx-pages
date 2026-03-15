@@ -502,8 +502,14 @@
 				<h2 class="c2" data-lang="ja">理論を学ぶ</h2>
 				<h2 class="c2" data-lang="en">Learn the concepts</h2>
 			</div>
-			<p class="section-lead" data-lang="ja">数式最小限・比喩中心の入門ページと、ROCm のエコシステム・用語を図で整理したページ群です。発表資料の前に読むと理解が深まります。</p>
-			<p class="section-lead" data-lang="en">Concept introductions using analogy over equations, plus visual maps of the ROCm ecosystem and glossary. Best read before the presentation materials.</p>
+			<p class="section-lead" data-lang="ja">比喩中心の入門ページと、ROCm のエコシステム・用語を図で整理したページ群です。「はじめの一歩」から順に読むか、気になるテーマだけ拾い読みできます。</p>
+			<p class="section-lead" data-lang="en">Analogy-driven introductions and visual maps of the ROCm ecosystem. Read "First steps" in order, or dip into any topic that interests you.</p>
+
+			<!-- ── 2-1 はじめの一歩 ── -->
+			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="ja">▸ はじめの一歩</h4>
+			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="en">▸ First steps</h4>
+			<p class="section-lead" data-lang="ja">この 4 ページを順番に読むと、GPU → 数学の道具 → AI の学習 → ROCm の全体像がつながります。</p>
+			<p class="section-lead" data-lang="en">Read these four pages in order to connect GPU → mathematical tools → AI training → the ROCm stack.</p>
 			<div class="card-grid">
 
 				<article class="card">
@@ -519,38 +525,6 @@
 					</ul>
 					<div class="actions">
 						<a class="button button-teal" href="gpu-basics.html">Open</a>
-					</div>
-				</article>
-
-				<article class="card">
-					<span class="card-type type-theory">Theory</span>
-					<h3 data-lang="ja">イメージでわかる ROCm の全体構造</h3>
-					<h3 data-lang="en">Visual ROCm Overview for Beginners</h3>
-					<p class="filename">rocm-overview-for-beginners.html</p>
-					<p data-lang="ja">ROCm を「5階建てビル」にたとえ、各階（GPU→ドライバ→HIP→ライブラリ→アプリ）の役割を図で解説。gfx900 がどこに住んでいるかも紹介。</p>
-					<p data-lang="en">ROCm as a 5-floor building — GPU → Driver → HIP → Libraries → App. See where gfx900 lives in the stack.</p>
-					<ul>
-						<li data-lang="ja">5階建てビルの視覚的な比喩</li>
-						<li data-lang="en">5-floor building visual metaphor</li>
-					</ul>
-					<div class="actions">
-						<a class="button button-teal" href="rocm-overview-for-beginners.html">Open</a>
-					</div>
-				</article>
-
-				<article class="card">
-					<span class="card-type type-theory">Theory</span>
-					<h3 data-lang="ja">イメージでわかる「対応している」の意味</h3>
-					<h3 data-lang="en">Visual Guide: What "Supported" Really Means</h3>
-					<p class="filename">what-support-means.html</p>
-					<p data-lang="ja">「対応=使える」ではない。5段階のサポートレベルを、レストランや駅のたとえで解説し、gfx900 が各レイヤでどの段階にあるか整理。</p>
-					<p data-lang="en">"Supported" ≠ "works perfectly." Five support levels explained via restaurant and station analogies, with gfx900 mapped to each layer.</p>
-					<ul>
-						<li data-lang="ja">5段階サポートモデル図</li>
-						<li data-lang="en">5-level support model diagram</li>
-					</ul>
-					<div class="actions">
-						<a class="button button-teal" href="what-support-means.html">Open</a>
 					</div>
 				</article>
 
@@ -591,77 +565,51 @@
 				</article>
 
 				<article class="card">
-					<span class="card-type type-intro">入門</span>
-					<h3 data-lang="ja">イメージでわかる Attention</h3>
-					<h3 data-lang="en">Visual Attention for Beginners</h3>
-					<p class="filename">attention-for-llm.html</p>
-					<p data-lang="ja">LLM の中心にある Attention を、遠くの単語どうしの関係を見る仕組みとしてやさしく解説。深層学習ページを先に読むとより理解が深まります。</p>
-					<p data-lang="en">A gentle introduction to Attention — the core of LLMs — explained as a mechanism for relating distant words. Best read after Visual Deep Learning.</p>
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる ROCm の全体構造</h3>
+					<h3 data-lang="en">Visual ROCm Overview for Beginners</h3>
+					<p class="filename">rocm-overview-for-beginners.html</p>
+					<p data-lang="ja">ROCm を「5階建てビル」にたとえ、各階（GPU→ドライバ→HIP→ライブラリ→アプリ）の役割を図で解説。gfx900 がどこに住んでいるかも紹介。</p>
+					<p data-lang="en">ROCm as a 5-floor building — GPU → Driver → HIP → Libraries → App. See where gfx900 lives in the stack.</p>
 					<ul>
-						<li data-lang="ja">Query / Key / Value の役割を比喩で解説</li>
-						<li data-lang="en">Q / K / V roles explained through analogy</li>
-						<li data-lang="ja">softmax の意味・Transformer のしくみ</li>
-						<li data-lang="en">What softmax does and how Transformer works</li>
-						<li data-lang="ja">MIOpen / rocBLAS との接続（GEMM が核心）</li>
-						<li data-lang="en">Connection to MIOpen / rocBLAS via GEMM</li>
+						<li data-lang="ja">5階建てビルの視覚的な比喩</li>
+						<li data-lang="en">5-floor building visual metaphor</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-teal" href="attention-for-llm.html">Open</a>
-					</div>
-				</article>
-
-				<article class="card">
-					<span class="card-type type-glossary">Glossary</span>
-					<h3 data-lang="ja">用語解説</h3>
-					<h3 data-lang="en">Glossary</h3>
-					<p class="filename">glossary.html</p>
-					<p data-lang="ja">ROCm・GPU アーキテクチャ・MIOpen ソルバに関わる専門用語を、カードと図で解説するページ。</p>
-					<p data-lang="en">Card-and-diagram explanations of ROCm, GPU architecture, and MIOpen solver terminology.</p>
-					<ul>
-						<li data-lang="ja">ハードウェア・スタック・概念の 3 カテゴリ</li>
-						<li data-lang="en">Three categories: hardware, stack, concepts</li>
-						<li data-lang="ja">GPU 世代タイムライン図・スタック実行フロー図付き</li>
-						<li data-lang="en">GPU generation timeline and stack execution flow diagrams</li>
-					</ul>
-					<div class="actions">
-						<a class="button button-teal" href="glossary.html">Open</a>
-					</div>
-				</article>
-
-				<article class="card">
-					<span class="card-type type-ecosystem">Ecosystem</span>
-					<h3 data-lang="ja">ROCm エコシステム図解</h3>
-					<h3 data-lang="en">ROCm Ecosystem Map</h3>
-					<p class="filename">rocm-ecosystem.html</p>
-					<p data-lang="ja">ROCm のリポジトリ構成・ライブラリスタック・GPU 世代対応を Mermaid 図とカードで整理したページ。gfx900 の各レイヤ対応状況を一覧できます。</p>
-					<p data-lang="en">Visual map of ROCm repository topology, library stack execution flow, and per-generation support — including a per-layer gfx900 status table.</p>
-					<ul>
-						<li data-lang="ja">リポジトリ依存図・スタック実行フロー・世代タイムラインを収録</li>
-						<li data-lang="en">Repository dependency graph, stack execution flow, GPU generation timeline</li>
-					</ul>
-					<div class="actions">
-						<a class="button button-teal" href="rocm-ecosystem.html">Open</a>
+						<a class="button button-teal" href="rocm-overview-for-beginners.html">Open</a>
 					</div>
 				</article>
 
 			</div>
 
-			<!-- 理論をさらに深める (sub-section) -->
-			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="ja">▸ 理論をさらに深める</h4>
-			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="en">▸ Dig deeper into the theory</h4>
-			<p class="section-lead" data-lang="ja">個別トピックをもう一歩掘り下げる補助ページ群です。気になるテーマから読んでください。</p>
-			<p class="section-lead" data-lang="en">Supplementary pages that go one step deeper into specific topics. Pick whatever interests you.</p>
+			<!-- ── 2-2 気になるテーマを読む ── -->
+			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="ja">▸ 気になるテーマを読む</h4>
+			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="en">▸ Pick a topic</h4>
+			<p class="section-lead" data-lang="ja">辞書のようにつまみ読みできるページ群です。興味のあるテーマからどうぞ。</p>
+			<p class="section-lead" data-lang="en">Browse like a dictionary — pick whatever topic catches your eye.</p>
 			<div class="card-grid">
 
 				<article class="card-compact">
 					<span class="card-type type-theory">Theory</span>
-					<h3 data-lang="ja">イメージでわかる fallback</h3>
-					<h3 data-lang="en">Visual Guide to Fallback</h3>
-					<p class="filename">fallback-explained.html</p>
-					<p data-lang="ja">「速い道」が通れないとき自動で「遅い道」に切り替わる仕組み。高速道路と一般道の比喩で解説。</p>
-					<p data-lang="en">When the "fast road" is blocked, the system auto-switches to the "slow road." Explained via highway vs local road.</p>
+					<h3 data-lang="ja">イメージでわかる たたみこみ</h3>
+					<h3 data-lang="en">Visual Convolution for Beginners</h3>
+					<p class="filename">convolution-for-beginners.html</p>
+					<p data-lang="ja">画像の上を小さな窓でなぞりながら特徴を見つける、畳み込みのしくみを虫眼鏡のたとえで解説。</p>
+					<p data-lang="en">How a small window slides over an image to detect features — the magnifying-glass analogy for convolution.</p>
 					<div class="actions">
-						<a class="button button-teal" href="fallback-explained.html">Open</a>
+						<a class="button button-teal" href="convolution-for-beginners.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card-compact">
+					<span class="card-type type-intro">入門</span>
+					<h3 data-lang="ja">イメージでわかる Attention</h3>
+					<h3 data-lang="en">Visual Attention for Beginners</h3>
+					<p class="filename">attention-for-llm.html</p>
+					<p data-lang="ja">LLM の中心にある Attention を、Q / K / V の役割から softmax・Transformer のしくみまでやさしく解説。</p>
+					<p data-lang="en">Attention — the core of LLMs — from Q / K / V roles through softmax to Transformer architecture.</p>
+					<div class="actions">
+						<a class="button button-teal" href="attention-for-llm.html">Open</a>
 					</div>
 				</article>
 
@@ -674,18 +622,6 @@
 					<p data-lang="en">Five steps of "a trained model producing an answer" as a factory line. Roles of rocBLAS, MIOpen, and HIP mapped.</p>
 					<div class="actions">
 						<a class="button button-teal" href="inference-flow.html">Open</a>
-					</div>
-				</article>
-
-				<article class="card-compact">
-					<span class="card-type type-theory">Theory</span>
-					<h3 data-lang="ja">イメージでわかる たたみこみ</h3>
-					<h3 data-lang="en">Visual Convolution for Beginners</h3>
-					<p class="filename">convolution-for-beginners.html</p>
-					<p data-lang="ja">画像の上を小さな窓でなぞりながら特徴を見つける、畳み込みのしくみを虫眼鏡のたとえで解説。</p>
-					<p data-lang="en">How a small window slides over an image to detect features — the magnifying-glass analogy for convolution.</p>
-					<div class="actions">
-						<a class="button button-teal" href="convolution-for-beginners.html">Open</a>
 					</div>
 				</article>
 
@@ -734,6 +670,73 @@
 					<p data-lang="en">Why matrix multiplication is AI's core computation — transformation lenses and Excel-sheet analogies.</p>
 					<div class="actions">
 						<a class="button button-teal" href="matrices-and-ai.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card-compact">
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる fallback</h3>
+					<h3 data-lang="en">Visual Guide to Fallback</h3>
+					<p class="filename">fallback-explained.html</p>
+					<p data-lang="ja">「速い道」が通れないとき自動で「遅い道」に切り替わる仕組み。高速道路と一般道の比喩で解説。</p>
+					<p data-lang="en">When the "fast road" is blocked, the system auto-switches to the "slow road." Explained via highway vs local road.</p>
+					<div class="actions">
+						<a class="button button-teal" href="fallback-explained.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card-compact">
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる「対応している」の意味</h3>
+					<h3 data-lang="en">Visual Guide: What "Supported" Really Means</h3>
+					<p class="filename">what-support-means.html</p>
+					<p data-lang="ja">「対応=使える」ではない。5段階のサポートレベルをレストランや駅のたとえで解説。</p>
+					<p data-lang="en">"Supported" ≠ "works perfectly." Five support levels explained via restaurant and station analogies.</p>
+					<div class="actions">
+						<a class="button button-teal" href="what-support-means.html">Open</a>
+					</div>
+				</article>
+
+			</div>
+
+			<!-- ── 2-3 全体を見渡す資料 ── -->
+			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="ja">▸ 全体を見渡す資料</h4>
+			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="en">▸ Reference maps</h4>
+			<p class="section-lead" data-lang="ja">用語の図鑑とエコシステムの地図。迷ったときに開くページです。</p>
+			<p class="section-lead" data-lang="en">A glossary atlas and an ecosystem map — go-to pages when you need your bearings.</p>
+			<div class="card-grid">
+
+				<article class="card">
+					<span class="card-type type-glossary">Glossary</span>
+					<h3 data-lang="ja">用語解説</h3>
+					<h3 data-lang="en">Glossary</h3>
+					<p class="filename">glossary.html</p>
+					<p data-lang="ja">ROCm・GPU アーキテクチャ・MIOpen ソルバに関わる専門用語を、カードと図で解説するページ。</p>
+					<p data-lang="en">Card-and-diagram explanations of ROCm, GPU architecture, and MIOpen solver terminology.</p>
+					<ul>
+						<li data-lang="ja">ハードウェア・スタック・概念の 3 カテゴリ</li>
+						<li data-lang="en">Three categories: hardware, stack, concepts</li>
+						<li data-lang="ja">GPU 世代タイムライン図・スタック実行フロー図付き</li>
+						<li data-lang="en">GPU generation timeline and stack execution flow diagrams</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-teal" href="glossary.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-ecosystem">Ecosystem</span>
+					<h3 data-lang="ja">ROCm エコシステム図解</h3>
+					<h3 data-lang="en">ROCm Ecosystem Map</h3>
+					<p class="filename">rocm-ecosystem.html</p>
+					<p data-lang="ja">ROCm のリポジトリ構成・ライブラリスタック・GPU 世代対応を Mermaid 図とカードで整理したページ。gfx900 の各レイヤ対応状況を一覧できます。</p>
+					<p data-lang="en">Visual map of ROCm repository topology, library stack execution flow, and per-generation support — including a per-layer gfx900 status table.</p>
+					<ul>
+						<li data-lang="ja">リポジトリ依存図・スタック実行フロー・世代タイムラインを収録</li>
+						<li data-lang="en">Repository dependency graph, stack execution flow, GPU generation timeline</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-teal" href="rocm-ecosystem.html">Open</a>
 					</div>
 				</article>
 
