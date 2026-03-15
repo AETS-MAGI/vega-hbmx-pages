@@ -736,6 +736,7 @@ HH(28) ZZ(17) CC(17) SS(16) HS(16) DD(16) I8I(4) BS(4) BB(4) 4xi8I(4)
 				<span data-lang="ja"><strong>含意:</strong> これは「たまたままだコンパイルが通る」残留コードでは<em>ない</em>。Perf DB はアーキテクチャ固有のチューニング実行の結果である。プリコンパイル済み <code>.hsaco</code> / <code>.co</code> ファイルは明示的な <code>--offload-arch=gfx900</code> コンパイル工程を必要とする。出荷パッケージへの収録は、gfx900 が AMD のビルド・パッケージングパイプラインに組み込まれていることを示す。これが意図的なサポートなのかターゲットリストの慣性なのかは外部からは判別できないが、実際の効果としてユーザは箱から出してすぐ使える gfx900 成果物を受け取っている。</span>
 			</div>
 		<div class="mermaid">
+%%{init: { 'theme': 'base', 'themeVariables': { 'xyChart': { 'plotColorPalette': '#1565C0,#78909C,#78909C,#78909C', 'backgroundColor': '#ffffff' } } } }%%
 xychart-beta
     title "rocBLAS pre-compiled files by architecture — ROCm 7.2"
     x-axis ["gfx900 (Vega)", "gfx1030 (RDNA2)", "gfx1100 (RDNA3)", "gfx942 (MI300X)"]
@@ -743,6 +744,7 @@ xychart-beta
     bar [128, 88, 96, 242]
 		</div>
 		<div class="mermaid">
+%%{init: { 'theme': 'base', 'themeVariables': { 'xyChart': { 'plotColorPalette': '#1565C0,#78909C,#B71C1C,#78909C', 'backgroundColor': '#ffffff' } } } }%%
 xychart-beta
     title "MIOpen Perf DB lines — ROCm 7.2 (thousands)"
     x-axis ["gfx900 (Vega)", "gfx1030 (RDNA2)", "gfx1100 (RDNA3)", "gfx942 (MI300X)"]
