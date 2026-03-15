@@ -342,6 +342,58 @@
 			<span data-lang="en">Backpropagation roughly <strong>doubles or triples the computation</strong>, and storing intermediate results demands <strong>more memory</strong>. That's why "training requires high-end GPUs."</span>
 		</div>
 
+		<!-- ──────── 7. ROCm と学習 ──────── -->
+		<h2 class="section-title" data-lang="ja">7. ROCm だとどう動く？</h2>
+		<h2 class="section-title" data-lang="en">7. How Does This Work on ROCm?</h2>
+		<p class="section-lead" data-lang="ja">学習の5ステップは、ROCm 上ではそれぞれ専用のライブラリが担当します。</p>
+		<p class="section-lead" data-lang="en">Each of the 5 training steps maps to a specific ROCm library.</p>
+
+		<div class="flow-steps">
+			<div class="flow-step">
+				<div class="step-num" style="background:var(--blue);">→</div>
+				<div class="step-body">
+					<h4 data-lang="ja">rocBLAS — 行列計算の主役</h4>
+					<h4 data-lang="en">rocBLAS — The Matrix Workhorse</h4>
+					<p data-lang="ja">ステップ2（フォワードパス）で重み行列と入力の掛け算を担当。学習でも推論でも、いちばん時間がかかる計算をここが引き受けます。</p>
+					<p data-lang="en">Handles weight × input matrix multiplications in Step 2 (forward pass). This is the most time-consuming computation in both training and inference.</p>
+				</div>
+			</div>
+			<div class="flow-step">
+				<div class="step-num" style="background:var(--teal);">→</div>
+				<div class="step-body">
+					<h4 data-lang="ja">MIOpen — 畳み込み・活性化関数</h4>
+					<h4 data-lang="en">MIOpen — Convolution & Activation</h4>
+					<p data-lang="ja">ステップ2で畳み込みや活性化を実行し、ステップ4（バックプロパゲーション）では勾配計算用の畳み込みも担当します。GPU ごとに最速の solver を選んでくれます。</p>
+					<p data-lang="en">Runs convolution and activation in Step 2, and also handles gradient convolutions in Step 4 (backpropagation). Selects the fastest solver for each GPU.</p>
+				</div>
+			</div>
+			<div class="flow-step">
+				<div class="step-num" style="background:var(--purple);">→</div>
+				<div class="step-body">
+					<h4 data-lang="ja">HIP ランタイム — GPU メモリ管理</h4>
+					<h4 data-lang="en">HIP Runtime — GPU Memory Management</h4>
+					<p data-lang="ja">学習では中間結果（勾配・活性値）を大量に保存するため、メモリ確保・転送を HIP が管理します。学習時は推論時よりもずっと多くの VRAM を使います。</p>
+					<p data-lang="en">Training stores massive intermediate results (gradients, activations), so HIP manages memory allocation and transfers. Training uses far more VRAM than inference.</p>
+				</div>
+			</div>
+			<div class="flow-step">
+				<div class="step-num" style="background:var(--green);">→</div>
+				<div class="step-body">
+					<h4 data-lang="ja">PyTorch (ROCm 版) — 全体の指揮者</h4>
+					<h4 data-lang="en">PyTorch (ROCm build) — The Conductor</h4>
+					<p data-lang="ja">5ステップの流れ全体を制御するフレームワーク。loss 計算、バックプロパゲーション、optimizer の呼び出しはすべて PyTorch が取りまとめ、裏で rocBLAS・MIOpen・HIP を呼び分けます。</p>
+					<p data-lang="en">The framework that orchestrates the entire 5-step loop. Loss computation, backpropagation, and optimizer calls are all coordinated by PyTorch, which delegates to rocBLAS, MIOpen, and HIP behind the scenes.</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="warn-box">
+			<strong data-lang="ja">⚠️ gfx900（Vega）での学習:</strong>
+			<strong data-lang="en">⚠️ Training on gfx900 (Vega):</strong>
+			<span data-lang="ja">学習は推論より計算量・メモリ使用量が大きいため、VRAM 8 GB の Vega 56/64 では大規模モデルの学習は現実的ではありません。ただし、小規模モデルのファインチューニングや実験レベルの学習は動作可能です。gfx900 で使える solver が限られる点は <a href="fallback-explained.html" style="color:var(--train);font-weight:600;">fallback 解説ページ</a>を参照してください。</span>
+			<span data-lang="en">Training demands more compute and memory than inference, so large-model training is impractical on Vega 56/64 with 8 GB VRAM. However, fine-tuning small models or running experiments is feasible. For solver limitations on gfx900, see the <a href="fallback-explained.html" style="color:var(--train);font-weight:600;">fallback explanation page</a>.</span>
+		</div>
+
 		<!-- ──────── 他ページへの接続 ──────── -->
 		<h2 class="section-title" data-lang="ja">他のページとのつながり</h2>
 		<h2 class="section-title" data-lang="en">How This Connects to Other Pages</h2>
