@@ -972,27 +972,11 @@ HH(28) ZZ(17) CC(17) SS(16) HS(16) DD(16) I8I(4) BS(4) BB(4) 4xi8I(4)
 		<span data-lang="ja">4 層観測モデル</span>
 	</h2>
 	<div class="mermaid">
-graph TB
-    subgraph L1["<b>Layer 1 — Maintain (Build)</b>"]
-        L1A["rocBLAS CMake targets\ninclude gfx900"]
-        L1B["Tensile shared lib\nbuilt with gfx900"]
-        L1C["MIOpen solver code\nretains gfx900 paths"]
-    end
-    subgraph L2["<b>Layer 2 — Manage (Selection)</b>"]
-        L2A["IsApplicable filters:\nMLIR/XDLops → blocked"]
-        L2B["Winograd / v4r1 / Legacy\n→ allowed"]
-        L2C["dtype routing:\nFP32 ≠ FP16 ≠ INT8"]
-    end
-    subgraph L3["<b>Layer 3 — Supplement (Fallback)</b>"]
-        L3A["rocBLAS multi-stage\nruntime fallback"]
-        L3B["CK dot4-absent\nsequential path"]
-        L3C["Tensile per-ISA\nlazy-load catalog"]
-    end
-    subgraph L4["<b>Layer 4 — Distribute (Shipped Artifacts)</b>"]
-        L4A["MIOpen Perf DB\n169K lines"]
-        L4B["rocBLAS kernels\n128 files"]
-        L4C["Firmware\n16× vega10 blobs"]
-    end
+flowchart LR
+    L1["Layer 1\nMaintain / Build\nrocBLAS targets · Tensile\nMIOpen solver code"]
+    L2["Layer 2\nManage / Selection\nIsApplicable() · MLIR blocked\nWinograd / v4r1 pass"]
+    L3["Layer 3\nSupplement / Fallback\nrocBLAS multi-stage\nCK fallback · Naive"]
+    L4["Layer 4\nDistribute / Ship\n169K Perf DB\n128 rocBLAS · firmware"]
     L1 --> L2 --> L3 --> L4
     style L1 fill:#e3f2fd,stroke:#0d47a1,color:#0d47a1
     style L2 fill:#fff3e0,stroke:#e65100,color:#e65100
