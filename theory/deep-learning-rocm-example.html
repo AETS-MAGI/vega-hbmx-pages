@@ -76,10 +76,10 @@
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="deep-learning-for-rocm.html">Visual Deep Learning</a> — Convolution, filters, and solvers through analogy</p>
 	</div>
 	<div class="fact-box">
-		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm では GPU 指定に "cuda" 文字列を使います。名称互換の都合であり、実体は HIP/ROCm バックエンドです。</p>
-		<p data-lang="en"><strong>Note:</strong> PyTorch ROCm uses the string "cuda" for GPU selection due to API compatibility naming. Actual execution is on the HIP/ROCm backend.</p>
-		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① Conv は MIOpen、行列系は rocBLAS が主担当 ② 観測は rocprof を使う ③ solver 選択は形状・アーキテクチャで変化します。</p>
-		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Conv is mainly handled by MIOpen and matrix math by rocBLAS 2) Profiling/observation uses rocprof 3) Solver selection changes with tensor shapes and architecture.</p>
+		<p data-lang="ja"><strong>このページの読み方:</strong> 1) まず入力 shape と出力 shape を見る 2) 次に <code>Conv2d → ReLU → Flatten → Linear</code> の順だけ読む 3) 最後に「Conv は MIOpen、Linear は rocBLAS」とつながれば十分です。</p>
+		<p data-lang="en"><strong>How to read this page:</strong> 1) Look at the input and output shapes first 2) Then just read the order <code>Conv2d → ReLU → Flatten → Linear</code> 3) Finally connect that to “Conv uses MIOpen, Linear uses rocBLAS.”</p>
+		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm では GPU 指定に <code>"cuda"</code> 文字列を使います。名称互換の都合であり、実体は HIP/ROCm バックエンドです。</p>
+		<p data-lang="en"><strong>Note:</strong> PyTorch ROCm uses the string <code>"cuda"</code> for GPU selection. This is only for API-name compatibility; actual execution is on the HIP/ROCm backend.</p>
 	</div>
 
 	<!-- ── 1 ── -->
@@ -89,6 +89,11 @@
 	<div class="prose">
 		<p data-lang="ja">Conv2d を 1 層含む最小ネット（Conv → ReLU → Flatten → Linear）を 1 回だけ forward します。理論ページの「フィルタで特徴抽出」に対応します。</p>
 		<p data-lang="en">Run a minimal net with one Conv2d layer (Conv → ReLU → Flatten → Linear) once. This maps directly to "feature extraction by filters" in the theory page.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>このページでまず見えれば OK:</strong> 小さな画像が入り、途中で特徴を取り出し、最後に 2 つのスコアが出ることです。</p>
+		<p data-lang="en"><strong>What is enough to see first:</strong> a small image goes in, features are extracted in the middle, and two scores come out at the end.</p>
 	</div>
 
 	<!-- ── 2 ── -->
@@ -117,6 +122,19 @@ y = model(x)
 <span class="fn">print</span>(<span class="str">"出力 shape:"</span>, y.shape)
 <span class="fn">print</span>(<span class="str">"モデル構造:"</span>)
 <span class="fn">print</span>(model)</div>
+
+	<div class="prose">
+		<p data-lang="ja">コードを全部いっぺんに追わなくても大丈夫です。最初は次の 4 つだけ見れば十分です。</p>
+		<p data-lang="en">You do not need to trace the whole code at once. At first, these four pieces are enough.</p>
+		<p data-lang="ja"><strong><code>nn.Conv2d(...)</code>:</strong> 画像の中から特徴を探す部品です。</p>
+		<p data-lang="en"><strong><code>nn.Conv2d(...)</code>:</strong> A part that searches for features in the image.</p>
+		<p data-lang="ja"><strong><code>nn.ReLU()</code>:</strong> マイナスを 0 にする、よく使う簡単な関数です。</p>
+		<p data-lang="en"><strong><code>nn.ReLU()</code>:</strong> A common simple function that turns negative values into 0.</p>
+		<p data-lang="ja"><strong><code>nn.Flatten()</code>:</strong> 表の形のデータを 1 列に並べ直します。</p>
+		<p data-lang="en"><strong><code>nn.Flatten()</code>:</strong> This rearranges table-shaped data into one long row.</p>
+		<p data-lang="ja"><strong><code>nn.Linear(16, 2)</code>:</strong> 最後に 2 つの答え候補のスコアを出します。</p>
+		<p data-lang="en"><strong><code>nn.Linear(16, 2)</code>:</strong> This produces the final scores for two answer candidates.</p>
+	</div>
 
 	<!-- ── 3 ── -->
 	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
@@ -159,8 +177,10 @@ Sequential(
 	<div class="prose">
 		<p data-lang="ja">この例では <strong>Conv2d は MIOpen</strong>、<strong>Linear は rocBLAS</strong> が主担当です。PyTorch ROCm は演算種別に応じてバックエンドを切り替えます。</p>
 		<p data-lang="en">In this example, <strong>Conv2d is mainly handled by MIOpen</strong>, while <strong>Linear is mainly handled by rocBLAS</strong>. PyTorch ROCm switches backend by operation type.</p>
-		<p data-lang="ja">MIOpen では GPU アーキテクチャや形状に応じて solver が選ばれます。形状や環境で最適 solver が変わる点が、ROCm実例として重要です。</p>
-		<p data-lang="en">MIOpen chooses solvers based on GPU architecture and tensor shapes. This shape/environment-dependent solver selection is a key ROCm-specific observation.</p>
+		<p data-lang="ja">やさしく言うと、PyTorch は「この部分は畳み込み」「この部分は行列計算」と見分けて、下の ROCm ライブラリへ仕事を振り分けています。</p>
+		<p data-lang="en">In simpler words, PyTorch tells whether a part is “convolution” or “matrix math,” then hands that work to the matching ROCm library.</p>
+		<p data-lang="ja">MIOpen の <code>solver</code> は、「この畳み込みをどういうやり方で計算するかを選ぶ係」くらいに読めば十分です。GPU や shape によって、選ばれるやり方が変わることがあります。</p>
+		<p data-lang="en">You can read the MIOpen <code>solver</code> as “the chooser for how to compute this convolution.” The chosen method can change with the GPU and the shape.</p>
 	</div>
 
 	<h2 class="section-title" data-lang="ja">5. ROCmで観測するポイント</h2>
@@ -170,6 +190,10 @@ python -c <span class="str">"import torch; print('torch.version.hip =', torch.ve
 
 <span class="comment"># Conv/Linear 実行時の HIP 呼び出し観測</span>
 rocprof --hip-trace python deep_learning_example.py</div>
+	<div class="prose">
+		<p data-lang="ja">このページの主眼は、「1 つのネットの中でも計算の種類ごとに下の ROCm ライブラリが変わる」と読むことです。細かい trace は、必要になってからで大丈夫です。</p>
+		<p data-lang="en">The key point here is that even inside one network, the underlying ROCm library changes with the kind of computation. Fine-grained traces can wait until you need them.</p>
+	</div>
 
 	<!-- ── next ── -->
 	<div class="next-links">
