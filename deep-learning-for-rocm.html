@@ -114,22 +114,34 @@
     }
     .fact-box strong { color: var(--green); }
 
-    /* conv visual */
-    .conv-visual {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
-      background: var(--card); border: 1px solid var(--line);
-      border-radius: 12px; padding: 20px 24px; margin-bottom: 18px;
+    /* conv images */
+    .conv-imgs {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; flex-wrap: wrap;
+      margin-bottom: 10px;
     }
-    .conv-box {
-      border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 90px;
+    .conv-img-item {
+      display: flex; flex-direction: column; align-items: center; gap: 7px;
+      margin: 0;
     }
-    .conv-box .label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-    .conv-box .val { font-size: 18px; }
-    .conv-box.input  { background: #E8F5E9; border: 2px solid var(--green); }
-    .conv-box.filter { background: #FFF3E0; border: 2px solid var(--amber); }
-    .conv-box.feat   { background: #E3F2FD; border: 2px solid var(--blue); }
-    .conv-box.judge  { background: #EDE7F6; border: 2px solid var(--purple); }
-    .conv-arr { font-size: 22px; color: var(--muted); }
+    .conv-img-item img {
+      display: block; border-radius: 8px;
+      border: 1px solid var(--line);
+      width: 200px; height: 200px; object-fit: cover;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .conv-img-item img.sobel {
+      width: auto; height: 160px; object-fit: contain;
+      background: #fafaf6;
+    }
+    .conv-img-item figcaption {
+      font-size: 12px; color: var(--muted); text-align: center; line-height: 1.3;
+    }
+    .conv-op { font-size: 26px; color: var(--muted); font-weight: 700; flex-shrink: 0; }
+    .conv-imgs-caption {
+      font-size: 13px; color: var(--muted); text-align: center; margin: 0 0 20px;
+      line-height: 1.55;
+    }
 
     /* solver table */
     .solver-table {
@@ -185,8 +197,9 @@
       .hero { padding: 26px 20px 22px; }
       .hero h1 { font-size: 22px; }
       .nav-cards { grid-template-columns: 1fr; }
-      .conv-visual { flex-direction: column; align-items: flex-start; }
-      .conv-arr { transform: rotate(90deg); align-self: center; }
+      .conv-imgs { gap: 10px; }
+      .conv-img-item img { width: 150px; height: 150px; }
+      .conv-img-item img.sobel { height: 120px; }
     }
   </style>
   <script type="module">
@@ -313,36 +326,44 @@ flowchart LR
   </div>
 
   <!-- フィルタのビジュアル -->
-  <div class="conv-visual">
-    <div class="conv-box input">
-      <div class="label" data-lang="ja">元の画像</div>
-      <div class="label" data-lang="en">Original image</div>
-      <div class="val">🖼️</div>
-    </div>
-    <div class="conv-arr">×</div>
-    <div class="conv-box filter">
-      <div class="label" data-lang="ja">フィルタ（3×3）</div>
-      <div class="label" data-lang="en">Filter (3×3)</div>
-      <div class="val" style="font-size:13px;font-family:monospace;">−1  0  1
-−2  0  2
-−1  0  1</div>
-    </div>
-    <div class="conv-arr">=</div>
-    <div class="conv-box feat">
-      <div class="label" data-lang="ja">特徴マップ</div>
-      <div class="label" data-lang="en">Feature map</div>
-      <div class="val">📊</div>
-    </div>
-    <div class="conv-arr">→</div>
-    <div class="conv-box judge">
-      <div class="label" data-lang="ja">判断へ</div>
-      <div class="label" data-lang="en">Toward judgment</div>
-      <div class="val">🎯</div>
-    </div>
+  <div class="conv-imgs">
+    <figure class="conv-img-item">
+      <img src="media/img/convolution-akatsuki-window.png"
+           alt="アカツキちゃん画像の輪郭付近を3×3の小さな窓で観察している図"
+           loading="lazy">
+      <figcaption>
+        <span data-lang="ja">元の画像（観察枠つき）</span>
+        <span data-lang="en">Original image (with observation window)</span>
+      </figcaption>
+    </figure>
+
+    <span class="conv-op" aria-hidden="true">×</span>
+
+    <figure class="conv-img-item">
+      <img class="sobel" src="media/img/sobel-filter-3x3.png"
+           alt="縦方向の境界に反応するSobelフィルタの3×3行列"
+           loading="lazy">
+      <figcaption>
+        <span data-lang="ja">Sobel フィルタ（3×3）</span>
+        <span data-lang="en">Sobel filter (3×3)</span>
+      </figcaption>
+    </figure>
+
+    <span class="conv-op" aria-hidden="true">=</span>
+
+    <figure class="conv-img-item">
+      <img src="media/img/convolution-feature-map-example.png"
+           alt="輪郭線の位置で強く反応した特徴マップの例。髪の線が明るく光っている"
+           loading="lazy">
+      <figcaption>
+        <span data-lang="ja">特徴マップ（縦境界に反応）</span>
+        <span data-lang="en">Feature map (vertical edges highlighted)</span>
+      </figcaption>
+    </figure>
   </div>
-  <p style="font-size:13px;color:var(--muted);margin:-8px 0 20px;">
-    <span data-lang="ja">このフィルタは「縦方向の境界線」を検出する Sobel フィルタ。右側の数字が大きいほど「右に向かって明るさが変わる縦線」の存在を示す。</span>
-    <span data-lang="en">This is a Sobel filter detecting vertical edges. Larger values in the output indicate "a vertical boundary where brightness changes toward the right."</span>
+  <p class="conv-imgs-caption">
+    <span data-lang="ja">Sobel フィルタ（x 方向）は、左右の明るさの差を計算して、縦方向の境界線を強調します。</span>
+    <span data-lang="en">The x-direction Sobel filter computes left-right brightness differences and highlights vertical edges.</span>
   </p>
 
   <!-- フィルタ -->
