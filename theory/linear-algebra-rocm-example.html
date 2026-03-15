@@ -108,7 +108,7 @@
 
 	<div class="code-block"><span class="kw">import</span> torch
 
-<span class="comment"># ROCm ビルド確認（None なら CUDA/NVIDIA 版や CPU 版）</span>
+<span class="comment"># ROCm ビルド確認（None なら ROCm 版ではない）</span>
 <span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This page expects PyTorch ROCm build"</span>
 DEVICE = torch.device(<span class="str">"cuda"</span>)  <span class="comment"># ROCm PyTorch でも GPU はこのデバイス名で公開される</span>
 
@@ -172,8 +172,8 @@ tensor([[ 58.,  64.],
 	<h2 class="section-title" data-lang="en">4. What's Happening Under the Hood</h2>
 
 	<div class="prose">
-		<p data-lang="ja"><code>torch.matmul</code> は内部で <strong>rocBLAS の GEMM（General Matrix Multiply）</strong>を呼び出しています。「行列積」という数学の操作を GPU 向けに最適化したのが GEMM で、AI の計算はほとんどがこの GEMM の組み合わせです。</p>
-		<p data-lang="en"><code>torch.matmul</code> internally calls <strong>rocBLAS GEMM (General Matrix Multiply)</strong>. GEMM is the GPU-optimized implementation of matrix multiplication, and nearly all AI computations are built from combinations of GEMM.</p>
+		<p data-lang="ja"><code>torch.matmul</code> は内部で <strong>rocBLAS の GEMM（General Matrix Multiply）</strong>を呼び出しています。「行列積」という数学の操作を GPU 向けに速くしたものが GEMM です。AI の計算でも、こうした行列積はとてもよく出てきます。</p>
+		<p data-lang="en"><code>torch.matmul</code> internally calls <strong>rocBLAS GEMM (General Matrix Multiply)</strong>. GEMM is matrix multiplication implemented in a GPU-friendly fast form. In AI work, this kind of matrix multiply appears very often.</p>
 		<p data-lang="ja">やさしく言うと、PyTorch が「この表をかけて」と受け取り、その仕事を ROCm 側の得意な計算ライブラリへ渡しています。</p>
 		<p data-lang="en">In simpler words, PyTorch receives “please multiply these tables,” then hands that job to a ROCm-side library that is good at this calculation.</p>
 		<p data-lang="ja">この流れをまとめると:</p>
