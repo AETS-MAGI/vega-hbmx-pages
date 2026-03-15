@@ -410,6 +410,61 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">Markdown 側の整理に合わせて実験年表も 2026-03-15 フェーズまで拡張</h2>
+        <h2 data-lang="en">Extended the experiment timeline through the 2026-03-15 GitHub-synthesis phase</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">investigation Markdown 側で GitHub chronology / PR context / legacy repo 再編の整理が進んだため、public timeline も runtime 追試だけで止めず、歴史調査フェーズまで時系列に含めるようにした。</p>
+      <p class="entry-lead" data-lang="en">Once the investigation-side Markdown was reorganized around GitHub chronology, PR context, and legacy-repo consolidation, the public experiment timeline was extended so it no longer stopped at runtime follow-ups alone.</p>
+      <div class="file-list">
+        <span class="file-tag">experiment-history.html</span>
+        <span class="file-tag">index.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>experiment-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">年表は 2026-03-14 の build / forced-MLIR 追試で止まっており、その後に確定した GitHub chronology と PR 文脈の整理は別ページでしか読めなかった。</p>
+            <p data-lang="en">The timeline stopped at the 2026-03-14 build/forced-MLIR follow-up, while the later GitHub chronology and PR-context synthesis could only be read on separate pages.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">Step 12 を追加し、<code>#1231</code> / <code>#1328</code> / <code>#1204</code> の public 文脈、retired / deprecated repo の再編、legacy knowledge の残存を、runtime / code tracing の次段として時系列に組み込んだ。footer verdict も 6 項目へ整理した。</p>
+            <p data-lang="en">A new Step 12 now folds in the public context of <code>#1231</code>, <code>#1328</code>, and <code>#1204</code>, together with retired/deprecated-repo consolidation and legacy-knowledge preservation, as the next phase after runtime/code tracing. The footer verdict was also expanded into six points.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> `rocm-github-investigate.md` と `reveal_hypothesis.md` の更新により、public 側でも AGENTS.md 準拠の中立表現で歴史フェーズを載せられるだけの根拠が揃ったため。</span>
+          <span data-lang="en"><strong>Rationale:</strong> The updated <code>rocm-github-investigate.md</code> and <code>reveal_hypothesis.md</code> provided enough grounded material to add the history phase in AGENTS.md-compatible neutral wording.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>index.html</code> / <code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja"><code>experiment-history.html</code> は Steps 1-11 の timeline として案内しており、トップ導線でも runtime follow-up 以降の history synthesis は見えにくかった。</p>
+            <p data-lang="en"><code>experiment-history.html</code> was described as a Steps 1-11 timeline, and the top-level route did not yet make the later history-synthesis phase visible.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">Steps 1-12 として更新し、runtime 追試に加えて GitHub chronology / PR-context synthesis まで含む timeline だと README と index の両方で分かる説明へ修正した。</p>
+            <p data-lang="en">It is now described in both the README and the index as a Steps 1-12 timeline that continues beyond runtime follow-ups into GitHub chronology / PR-context synthesis.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">`#1231` と `#1328` の public 文脈を公開年表へ戻した</h2>
         <h2 data-lang="en">Fed the public context of `#1231` and `#1328` back into the public timeline</h2>
         <span class="entry-date">2026-03-15</span>
@@ -636,7 +691,7 @@
         <h2 data-lang="en">Added the broader ROCm design-model investigation to the public pages</h2>
         <span class="entry-date">2026-03-15</span>
       </div>
-      <p class="entry-lead" data-lang="ja">内部ノート <code>reveal_hypothesis.md</code> と更新済み <code>hypothesis.md</code> を受けて、公開サイト側でも「gfx900 個別事件」から一段引いた ROCm 全体像を説明できるようにした。</p>
+      <p class="entry-lead" data-lang="ja">内部ノート <code>reveal_hypothesis.md</code> と更新済み <code>hypothesis.md</code> を受けて、公開サイト側でも「gfx900 個別事例」から一段引いた ROCm 全体像を説明できるようにした。</p>
       <p class="entry-lead" data-lang="en">After the internal note <code>reveal_hypothesis.md</code> and the updated <code>hypothesis.md</code>, the public site was expanded so it can explain not only the gfx900 incident itself, but also what it reveals about ROCm more broadly.</p>
       <div class="file-list">
         <span class="file-tag">reveal-hypothesis.html</span>

@@ -358,8 +358,8 @@
 
 	<!-- ── Summary ── -->
 	<div class="summary">
-		<span data-lang="en">Starting from uncertainty about legacy Vega56/64 executability, the workflow progressed step-by-step: environment isolation → build-gate analysis → API semantic verification → matched backend comparison → failure localization → reproducibility confirmation → model-dependency probe. Every claim is grounded in logged evidence.</span>
-		<span data-lang="ja">Vega56/64 の実行可否が不明な状態から出発し、環境統制→ビルドゲート解析→API意味検証→バックエンド比較実験→故障局在化→再現性確認→モデル依存性の探索、という段階を踏んだ。各主張は記録データに基づく。</span>
+		<span data-lang="en">Starting from uncertainty about legacy Vega56/64 executability, the workflow progressed step-by-step: environment isolation → build-gate analysis → API semantic verification → matched backend comparison → failure localization → reproducibility confirmation → model-dependency probe → ROCm library-stack audit → GitHub chronology synthesis. Every claim is grounded in logged evidence or repository-side sources.</span>
+		<span data-lang="ja">Vega56/64 の実行可否が不明な状態から出発し、環境統制→ビルドゲート解析→API意味検証→バックエンド比較実験→故障局在化→再現性確認→モデル依存性の探索→ROCm ライブラリスタック監査→GitHub 側年表整理、という段階を踏んだ。各主張はログまたは repository 側の根拠に基づく。</span>
 	</div>
 
 	<div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:1em 1.4em;margin:1.2em 0;font-size:0.95em;line-height:1.6;">
@@ -1069,12 +1069,47 @@ MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Asse
 			</div>
 		</article>
 
+		<!-- ── STEP 12 ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">12) 2026-03-15 follow-up — GitHub chronology, legacy repos, and PR-context synthesis <span class="step-date">2026-03-15</span></span>
+				<span data-lang="ja">12) 2026-03-15 追補 — GitHub 年表、legacy repo、PR 文脈の統合 <span class="step-date">2026-03-15</span></span>
+			</h2>
+			<ul>
+				<li>
+					<span class="do" data-lang="en">Did:</span><span class="do" data-lang="ja">実施:</span>
+					<span data-lang="en">Extended the investigation from runtime/code tracing into GitHub-side history. Cross-read current ROCm clones, retired/deprecated repos, and the public PR/issue context behind MIOpen decisions <code>#1231</code>, <code>#1328</code>, and issue <code>#1204</code>.</span>
+					<span data-lang="ja">runtime / code tracing から一段進み、GitHub 側の履歴調査へ拡張した。current ROCm clone、retired / deprecated repo、そして MIOpen の判断点 <code>#1231</code>・<code>#1328</code>・issue <code>#1204</code> の public PR / issue 文脈を照合した。</span>
+				</li>
+			</ul>
+
+			<div class="log-quote"><span class="hi-gray"># GitHub-side anchors recovered on 2026-03-15</span>
+<span class="hi-green">MIOpen #1231</span>  →  public issue <span class="hi-blue">#1204</span>  →  <span class="hi-yellow">gfx900:sramecc-:xnack-</span> target-name failure  →  <span class="hi-green">WORKAROUND_ISSUE_1204</span>
+<span class="hi-red">MIOpen #1328</span>  →  private <span class="hi-yellow">llvm-project-private#389</span>  →  <span class="hi-red">gfx900 MLIR non-xdlops disable</span> + ctest/test-surface split
+<span class="hi-blue">legacy repos</span>  →  <span class="hi-green">ROCR-Runtime -&gt; rocm-systems</span> / <span class="hi-green">Tensile -&gt; rocm-libraries</span> / <span class="hi-green">ROCm/vllm -&gt; upstream</span></div>
+
+			<div class="hbox green">
+				<span data-lang="en"><strong>Result:</strong> The public record now supports a more precise reading: <code>#1231</code> is a defensive userspace workaround for a user-visible failure, while <code>#1328</code> is a release/tuning-surface retreat whose core rationale remains private. In parallel, retired/deprecated repos show that repository topology and legacy knowledge can persist even while support visibility retreats.</span>
+				<span data-lang="ja"><strong>結果:</strong> public 記録だけでも、より精密な読み分けが可能になった。<code>#1231</code> は user-visible failure に対する defensive userspace workaround、<code>#1328</code> は core rationale が private に残るまま進んだ release / tuning surface 側の後退として読める。並行して、retired / deprecated repo は repo topology の再編と legacy knowledge の残存も観測できることを示した。</span>
+			</div>
+
+			<div class="hbox">
+				<span data-lang="en"><strong>Interpretation:</strong> At this point, <code>gfx900</code> is better read not as a simple yes/no support case but as an observation point for ROCm's layered support, staged retreat, and mixed ownership structure. The public side still cannot recover the private contents of <code>llvm-project-private#389</code>, so the deeper root cause remains outside the observable record.</span>
+				<span data-lang="ja"><strong>解釈:</strong> 現時点では、<code>gfx900</code> は単純な support yes/no の事例というより、ROCm の layered support、staged retreat、主体分離を観測しやすい地点として読むほうが自然である。ただし public 側からは <code>llvm-project-private#389</code> の本文を回収できず、より深い root cause は観測範囲の外に残る。</span>
+			</div>
+
+			<div class="hbox orange">
+				<span data-lang="en"><strong>Scope note:</strong> This step adds GitHub chronology and PR-context synthesis, but it does not reconstruct the contents of private issues or internal decision-making. The public pages <code>rocm-history.html</code> and <code>reveal-hypothesis.html</code> carry the detailed wording for this phase.</span>
+				<span data-lang="ja"><strong>範囲注記:</strong> この段階で GitHub 年表と PR 文脈の統合までは進んだが、private issue の本文や社内意思決定を再構成するものではない。詳細な文言整理は <code>rocm-history.html</code> と <code>reveal-hypothesis.html</code> に反映している。</span>
+			</div>
+		</article>
+
 		</section>
 
 	<!-- ── Footer ── -->
 	<div class="footer-note">
 		<span data-lang="en">
-			<strong>Four-tier verdict (based on collected evidence):</strong>
+			<strong>Six-point verdict (based on collected evidence):</strong>
 			(1) gfx900 is absent from the ROCm 7.2 official support matrix and the default CMake HIP filter —
 			<em>not officially supported</em>.
 			(2) Under override-assisted configuration (<code>HSA_OVERRIDE_GFX_VERSION=9.0.0</code>) and with a pre-built <code>libggml-hip.so</code>, ROCm/HIP executed all tested conditions —
@@ -1083,9 +1118,10 @@ MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Asse
 			<em>backend- and model-dependent stability</em>.
 			(4) Static code audit and real-hardware solver tracing confirm that a three-layer structure (maintain / manage / supplement) keeps gfx900 computation paths alive through MIOpen, rocBLAS, and Tensile — with FP32 paths runtime-verified and INT8 paths confirmed to operate via element-wise fallback arithmetic rather than dot-product instructions.
 			(5) The 2026-03-14 follow-up further showed that the biggest rebuild blocker was CIFS storage placement, not a blanket impossibility of building for Vega, and that forced MLIR can fall into missing-tuning states after bypassing the normal applicability guard.
+			(6) The 2026-03-15 GitHub chronology and PR-context follow-up showed that public issue-driven workarounds, private-rooted release gating, retired-repo consolidation, and legacy-knowledge preservation can coexist in the same historical record.
 		</span>
 		<span data-lang="ja">
-			<strong>4 段階評価（収集した証拠に基づく）:</strong>
+			<strong>6 項目評価（収集した証拠に基づく）:</strong>
 			(1) gfx900 は ROCm 7.2 公式サポート表および CMake デフォルト HIP フィルタに含まれない —
 			<em>公式サポート外</em>。
 			(2) override-assisted 構成（<code>HSA_OVERRIDE_GFX_VERSION=9.0.0</code>）と事前ビルド済み <code>libggml-hip.so</code> のもとで、ROCm/HIP は全テスト条件を完走 —
@@ -1094,6 +1130,7 @@ MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Asse
 			<em>バックエンド・モデル依存の安定性</em>。
 			(4) 静的コード監査と実機 solver トレースにより、「維持・管理・補充」の 3 層構造が MIOpen・rocBLAS・Tensile にわたって gfx900 計算経路を存続させていることをコードと実機の両面で確認 — FP32 経路は runtime_verified、INT8 経路は dot 系命令なしの逐次積和フォールバックで動作することが逆アセンブルで確認済み。
 			(5) 2026-03-14 の追試により、再ビルド最大の障害は Vega 一般論ではなく CIFS 上のソース配置だったこと、また MLIR 強制実行は通常ガードをバイパスした先で tuning 不在に落ちうることが分かった。
+			(6) 2026-03-15 の GitHub 年表・PR 文脈追補により、public issue-driven workaround、private root cause を伴う release gating、retired repo の再編、legacy knowledge の残存が同じ履歴の中で併存しうることが見えてきた。
 		</span>
 	</div>
 

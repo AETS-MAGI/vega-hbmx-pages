@@ -33,6 +33,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 
 ### 4. `experiment-history.html`
 - 調査がどう進んだかを時系列で追えるページです。
+- runtime / code tracing だけでなく、2026-03-15 時点の GitHub chronology / PR-context synthesis まで含みます。
 - 非専門向けの説明や凡例も入っています。
 
 ### 5. `page-history.html`
@@ -90,7 +91,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `presentation_advanced_en-jp.html`
   - Main bilingual slide deck (English/Japanese toggle).
 - `experiment-history.html`
-  - Timeline-style summary of the investigation flow (Steps 1–11 as of 2026-03-14).
+  - Timeline-style summary of the investigation flow (Steps 1–12 as of 2026-03-15), including the GitHub chronology / PR-context synthesis phase.
 - `page-history.html`
   - Audit-log page for public-site wording changes, including old wording, new wording, rationale, and affected pages.
 - `reveal-hypothesis.html`
@@ -121,7 +122,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Start with `index.html` for navigation.
 - Open `general-audience.html` for the vision and philosophy — why this work matters.
 - Use `media.html` for the audio commentary and poster PDF.
-- Read `experiment-history.html` for the investigation timeline (Steps 1–11).
+- Read `experiment-history.html` for the investigation timeline (Steps 1–12, including the GitHub chronology / PR-context synthesis phase).
 - Open `reveal-hypothesis.html` for the ROCm-wide design-model interpretation revealed by the gfx900 investigation, including repo-level consolidation and legacy knowledge left in deprecated branches.
 - Open `rocm-history.html` for the public GitHub-side chronology of ROCm itself, including retired/deprecated-repo reorganization and late layout/docs migration.
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
