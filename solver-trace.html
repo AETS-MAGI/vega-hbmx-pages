@@ -340,6 +340,26 @@
 		<span data-lang="ja">このページは、AMD Vega10／Radeon RX Vega（gfx900）の計算リクエストが ROCm ライブラリスタック内でどのソースコード経路を通るかをトレースしたものです。すべての主張は AMD ROCm ソースリポジトリで照合したファイルパスと行番号に基づいています。実機 Vega64 での動的実験により、どの経路が実際に動作するかを確認しています。</span>
 	</div>
 
+	<div class="mermaid">
+flowchart LR
+    REQ([/"Convolution Request"/]) --> SEL["MIOpen\nIsApplicable() filter"]
+    SEL --> M1["MLIR iGEMM\nconv_mlir_igemm_*.cpp"]
+    SEL --> M2["XDLops family\nIsXdlopsSupport()"]
+    SEL --> M3["ASM v4r1 dynamic\ngfx900 / gfx906 whitelist"]
+    SEL --> M4["Winograd / legacy ASM\ngfx900 permitted"]
+    SEL --> M5["DirectNaive\nfallback"]
+    M1 -- "return false\nllvm-project-private#389" --> X1["blocked"]
+    M2 -- "gfx908 / gfx90a only\ngfx900 absent" --> X2["blocked"]
+    M3 --> OK3["active\nruntime OK"]
+    M4 --> OK4["active\nruntime OK"]
+    M5 --> OK5["active\nalways passes"]
+    style X1 fill:#ffdddd,stroke:#cc4444,color:#600
+    style X2 fill:#ffdddd,stroke:#cc4444,color:#600
+    style OK3 fill:#ddffdd,stroke:#44aa44,color:#040
+    style OK4 fill:#ddffdd,stroke:#44aa44,color:#040
+    style OK5 fill:#ffffcc,stroke:#aaaa44,color:#440
+	</div>
+
 	<section class="timeline">
 
 		<!-- ── 1: MIOpen solver selection mechanism ── -->

@@ -403,6 +403,24 @@
     <h2 class="section-title" data-lang="ja">観測された構造</h2>
     <h2 class="section-title" data-lang="en">Observed structure</h2>
 
+    <div class="mermaid">
+flowchart TD
+    ROOT["ROCm\n(release manifest / default.xml)"]
+    ROOT --> TR["TheRock\nCMake super-project\nsource builds"]
+    ROOT --> RS["rocm-systems\nsystems monorepo\nROCR-Runtime migrated here"]
+    ROOT --> RL["rocm-libraries\nlibraries umbrella\nTensile migrated here"]
+    ROOT --> COMP["compiler / portability\nllvm-project / HIP"]
+    RL --> M["MIOpen\n(solver registry)"]
+    RL --> T["Tensile / rocBLAS\n(GEMM / linear algebra)"]
+    RL --> H["hipBLASLt / CK\n(optimized paths)"]
+    COMP --> R["rocMLIR\n(MLIR backend)"]
+    style ROOT fill:#e8f4f8,stroke:#0B3C5D
+    style TR fill:#e8f8ee,stroke:#1B7A3D
+    style RS fill:#e8f8ee,stroke:#1B7A3D
+    style RL fill:#e8f8ee,stroke:#1B7A3D
+    style COMP fill:#f0f0ff,stroke:#5B4B8A
+    </div>
+
     <div class="card">
       <div class="pill-row">
         <span class="pill pill-fact">Fact</span>
