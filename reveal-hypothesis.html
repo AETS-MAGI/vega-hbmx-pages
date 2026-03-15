@@ -476,6 +476,116 @@
         </ul>
         </span>
       </div>
+      <div class="table-wrap" data-lang="ja">
+        <p><strong>P1–P7 経路別主体一覧（git blame ベース、2026-03-15）</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>経路</th><th>投入主体</th><th>維持状況</th><th>修正可能主体</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>P1</td><td>MLIR iGEMM 除外</td>
+              <td>AMD(M) — Zhuoran Yin<br><code>2407d2f</code>, 2021-12-22</td>
+              <td>disable 済み（維持不要）</td>
+              <td>AMD(M)（<code>llvm-project-private#389</code> 解消が前提）</td>
+            </tr>
+            <tr>
+              <td>P2</td><td>ASM v4r1 dynamic (gfx900/gfx906 専用)</td>
+              <td>AMD(C) — carlushuang, PR #166, 2020-06</td>
+              <td>削除コスト由来残存。近年の積極補修は少ない</td>
+              <td>AMD(M)</td>
+            </tr>
+            <tr>
+              <td>P3</td><td>Winograd (FP32)</td>
+              <td>ExtC — Artem Tamazov<br><code>artem.tamazov@gmail.com</code>, 2017-11〜</td>
+              <td>AMD 社員が 2021–2025 に補修継続<br>（Larochkin 2021-09, Averin 2025-03-11）</td>
+              <td>AMD(M)</td>
+            </tr>
+            <tr>
+              <td>P4</td><td>WORKAROUND_ISSUE_1204 (sramecc 誤報)</td>
+              <td>ExtC — Artem Tamazov, PR #1231, 2021-10-21</td>
+              <td>削除コスト由来残存</td>
+              <td>AMD(M)（ROCm runtime 修正が根本対応）</td>
+            </tr>
+            <tr>
+              <td>P5</td><td>MP_bidir Winograd workspace 制限</td>
+              <td>ExtC — Kamil Nasyrov, PR #358, 2020-08-21</td>
+              <td>Averin が 2025-03-11 に gfx9 命令制限注記を追加</td>
+              <td>AMD(M)</td>
+            </tr>
+            <tr>
+              <td>P6</td><td>Tensile fallback / arch parsing</td>
+              <td>AMD(C) — Cory Bloor, PR #1595, 2022-09-17</td>
+              <td>外部補修 PR #1862 が merge 後に AMD 関連 contributor により PR #1879 で revert</td>
+              <td>AMD(M) + ExtC（Python レベル）</td>
+            </tr>
+            <tr>
+              <td>P7</td><td>rocMLIR gating (Miir C API)</td>
+              <td>AMD(M)</td>
+              <td>AMD(M) 積極維持</td>
+              <td>AMD(M)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.85em;color:#666;">ラベル: AMD(M) = org member / @amd.com メール, AMD(C) = @amd.com だが contributor ラベルまたは後に AMD メールで活動, ExtC = 非 AMD ドメイン。雇用関係を断定するものではない。</p>
+      </div>
+      <div class="table-wrap" data-lang="en">
+        <p><strong>P1–P7 per-path ownership table (git-blame basis, 2026-03-15)</strong></p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Path</th><th>Insertion owner</th><th>Maintenance status</th><th>Repair-capable</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>P1</td><td>MLIR iGEMM disable</td>
+              <td>AMD(M) — Zhuoran Yin<br><code>2407d2f</code>, 2021-12-22</td>
+              <td>Already disabled (no active maintenance needed)</td>
+              <td>AMD(M) (requires resolving <code>llvm-project-private#389</code>)</td>
+            </tr>
+            <tr>
+              <td>P2</td><td>ASM v4r1 dynamic (gfx900/gfx906 only)</td>
+              <td>AMD(C) — carlushuang, PR #166, 2020-06</td>
+              <td>Survives via deletion cost; few recent AMD patches</td>
+              <td>AMD(M)</td>
+            </tr>
+            <tr>
+              <td>P3</td><td>Winograd (FP32)</td>
+              <td>ExtC — Artem Tamazov<br><code>artem.tamazov@gmail.com</code>, from 2017-11</td>
+              <td>AMD staff patches through 2021–2025<br>(Larochkin 2021-09, Averin 2025-03-11)</td>
+              <td>AMD(M)</td>
+            </tr>
+            <tr>
+              <td>P4</td><td>WORKAROUND_ISSUE_1204 (sramecc false-report)</td>
+              <td>ExtC — Artem Tamazov, PR #1231, 2021-10-21</td>
+              <td>Survives via deletion cost</td>
+              <td>AMD(M) (ROCm runtime fix is the root fix)</td>
+            </tr>
+            <tr>
+              <td>P5</td><td>MP_bidir Winograd workspace limit</td>
+              <td>ExtC — Kamil Nasyrov, PR #358, 2020-08-21</td>
+              <td>Averin added gfx9 instruction-limit comment 2025-03-11</td>
+              <td>AMD(M)</td>
+            </tr>
+            <tr>
+              <td>P6</td><td>Tensile fallback / arch parsing</td>
+              <td>AMD(C) — Cory Bloor, PR #1595, 2022-09-17</td>
+              <td>External fix PR #1862 merged then reverted (PR #1879) by AMD-affiliated contributor</td>
+              <td>AMD(M) + ExtC (Python-level)</td>
+            </tr>
+            <tr>
+              <td>P7</td><td>rocMLIR gating (Miir C API)</td>
+              <td>AMD(M)</td>
+              <td>Actively maintained by AMD(M)</td>
+              <td>AMD(M)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:0.85em;color:#666;">Labels: AMD(M) = org member / @amd.com email; AMD(C) = @amd.com but contributor label, or later active with AMD email; ExtC = non-AMD domain. Employment relationships are not asserted.</p>
+      </div>
     </div>
 
     <h2 class="section-title" data-lang="ja">reveal された設計モデル</h2>
