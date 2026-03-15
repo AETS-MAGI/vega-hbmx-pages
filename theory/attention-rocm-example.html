@@ -74,6 +74,10 @@
 		<p data-lang="ja"><strong>📘 対応する理論ページ:</strong> <a href="attention-for-llm.html">イメージでわかる Attention</a> — Q / K / V の役割とスケーリングのしくみ</p>
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="attention-for-llm.html">Visual Attention</a> — Roles of Q / K / V and how scaling works</p>
 	</div>
+	<div class="fact-box">
+		<p data-lang="ja"><strong>注記:</strong> このページでも GPU 指定は "cuda" 表記ですが、PyTorch ROCm の互換 API 名です。Attention 計算の実行経路は HIP/ROCm です。</p>
+		<p data-lang="en"><strong>Note:</strong> GPU selection still appears as "cuda" here because of PyTorch ROCm compatibility naming. Attention math runs through HIP/ROCm execution paths.</p>
+	</div>
 
 	<!-- ── 1 ── -->
 	<h2 class="section-title" data-lang="ja">1. なにをするか</h2>
