@@ -416,6 +416,8 @@
         <li data-lang="en">The <code>MIOpen</code> <code>gfx900</code> MLIR disable is a public gating change whose comment points to <code>llvm-project-private#389</code>.</li>
         <li data-lang="ja">ただし今のところ、これを ROCm 全体の一般法則と断言するほど事例は集まっていない。</li>
         <li data-lang="en">At the moment, there are not yet enough examples to declare this a general ROCm-wide rule.</li>
+        <li data-lang="ja"><strong>2026-03-15 追補:</strong> 公開 <code>ROCm/rocMLIR</code> の <code>rocmlir-lib.cpp</code> から Miir C API 実装全体を追跡できることを確認。gating メカニズム自体は public だが、gating の根拠（<code>#389</code>）は private のままである。</li>
+        <li data-lang="en"><strong>2026-03-15 addendum:</strong> The full Miir C API implementation was confirmed to be traceable through public <code>ROCm/rocMLIR</code> (<code>rocmlir-lib.cpp</code>). The gating mechanism itself is public, but the root cause (<code>#389</code>) remains private.</li>
       </ul>
       <div class="note note-warn">
         <span data-lang="ja">（この issue は非公開であり、本文は外部から確認できない。公開側から確認できるのは参照関係と gating の痕跡のみ。）</span>
@@ -495,8 +497,8 @@
         <li data-lang="en">Primary materials where maintainers explicitly state this design philosophy are still limited.</li>
         <li data-lang="ja">community がどこまで実質的に支えているかは、issue / PR / workaround 文書の追加調査が必要。</li>
         <li data-lang="en">How far the community materially sustains the stack still requires more issue / PR / workaround analysis.</li>
-        <li data-lang="ja">private backend issue が public gating に現れる例が一般的かどうかは未確定。</li>
-        <li data-lang="en">It remains unclear whether private-backend-to-public-gating behavior is common or just a few notable cases.</li>
+        <li data-lang="ja">private backend issue が public gating に現れる例が一般的かどうかは未確定。ただし gating メカニズムの実装は public rocMLIR で追跡可能であることが 2026-03-15 に確認された。</li>
+        <li data-lang="en">It remains unclear whether private-backend-to-public-gating behavior is common or just a few notable cases. However, the gating mechanism implementation was confirmed traceable in public rocMLIR as of 2026-03-15.</li>
         <li data-lang="ja"><code>#1231</code> と <code>#1328</code> の public 文脈は回収できたが、後者の private root cause 自体はなお非公開のままである。</li>
         <li data-lang="en">The public context for <code>#1231</code> and <code>#1328</code> is now recovered, but the private root cause behind the latter remains inaccessible.</li>
       </ul>
