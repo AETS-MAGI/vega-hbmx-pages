@@ -479,6 +479,15 @@ flowchart LR
     <p data-lang="ja"><strong>具体的な数字で確かめてみましょう。</strong>窓の左側が暗い（輝度 10）、右側が明るい（輝度 200）場合：</p>
     <p data-lang="en"><strong>Let's verify with real numbers.</strong> Suppose the left side of the window is dark (brightness 10) and the right side is bright (brightness 200):</p>
 
+    <p style="background:#FFF8E1;border:1px solid #FFE082;border-radius:6px;padding:8px 12px;font-size:13px;color:#4E3600;margin:0 0 12px;" data-lang="ja">
+      ⚠️ ここでの「×」は、前のページで見た<strong>行列の掛け算（ヨコ×タテ）とは別の計算</strong>です。<br>
+      3×3 の画像とフィルタを<strong>ぴったり重ねて、同じ場所どうしを掛け算し、最後に全部足します。</strong>
+    </p>
+    <p style="background:#FFF8E1;border:1px solid #FFE082;border-radius:6px;padding:8px 12px;font-size:13px;color:#4E3600;margin:0 0 12px;" data-lang="en">
+      ⚠️ The "×" here is <strong>not regular matrix multiplication (row × column)</strong>.<br>
+      Instead, the 3×3 image patch and filter are <strong>laid on top of each other; matching positions are multiplied, then all nine products are summed.</strong>
+    </p>
+
     <div class="sobel-example-row">
       <div>
         <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="ja">画素の明るさ</div>
@@ -489,7 +498,11 @@ flowchart LR
           <tr><td class="px-dark">10</td><td class="px-dark">10</td><td class="px-bright">200</td></tr>
         </table>
       </div>
-      <div style="font-size:22px;color:#888;">×</div>
+      <div style="text-align:center;">
+        <div style="font-size:22px;color:#888;">×</div>
+        <div style="font-size:10px;color:#aaa;line-height:1.3;margin-top:2px;" data-lang="ja">同じ場所<br>どうし</div>
+        <div style="font-size:10px;color:#aaa;line-height:1.3;margin-top:2px;" data-lang="en">matching<br>positions</div>
+      </div>
       <div>
         <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="ja">Sobel フィルタ</div>
         <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="en">Sobel filter</div>
