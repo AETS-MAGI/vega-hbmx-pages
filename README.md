@@ -66,9 +66,10 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - 「`num_gpu` は GPU 枚数ではなく offload 層数である」という点を、ソースコードから順に確認できます。
 - 発表中の質疑や、実装上の意味を厳密に確認したい場合に向いています。
 
-### `solver-trace.html` ★ 2026-03-14 更新
+### `solver-trace.html` ★ 2026-03-15 更新
 - MIOpen・rocBLAS・CK・Tensile における gfx900（Vega10）計算経路を、ソース行番号と実機ログで対応づけた技術参照資料です。
 - 静的コード監査（code_verified）と実機 Vega64 での動的検証（runtime_verified）の両方を収録。
+- 2026-03-15 追記として、shipped artifact 比較の棒グラフを共通デザインへ置き換え、gfx900 注目行・比較対象・ゼロ値が視覚的に区別しやすい形へ整理しました。
 - 主な内容:
   - MLIR iGEMM の gfx900 除外コミット（2407d2f, 2021-12-22）とソースコード証跡
   - ASM implicit GEMM v4r1 dynamic の gfx900/gfx906 ホワイトリスト

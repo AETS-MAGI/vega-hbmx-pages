@@ -410,6 +410,42 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">`solver-trace.html` の棒グラフを共通デザインへ統一</h2>
+        <h2 data-lang="en">Unified the bar-chart design in `solver-trace.html`</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">shipped artifacts の比較図は、Mermaid の淡い色差に依存していたため、<code>gfx900</code> 行・比較対象・ゼロ値の読み分けがしづらかった。棒グラフを同一コンポーネントへ置き換え、ラベルと数値を常時読める形にした。</p>
+      <p class="entry-lead" data-lang="en">The shipped-artifact comparison figures relied on faint Mermaid palette shifts, which made it hard to distinguish the <code>gfx900</code> row, comparison rows, and zero-value rows. The charts were replaced with one shared component so labels and values remain readable at all times.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja"><code>rocBLAS pre-compiled files by architecture</code>、<code>Pre-compiled Artifacts by Architecture</code>、<code>MIOpen Perf DB Lines</code> の棒グラフは Mermaid の xychart を使っており、薄い色差だけでは系列の意味が追いづらかった。</p>
+            <p data-lang="en">The <code>rocBLAS pre-compiled files by architecture</code>, <code>Pre-compiled Artifacts by Architecture</code>, and <code>MIOpen Perf DB Lines</code> charts used Mermaid xychart, where faint color differences alone made the row semantics hard to follow.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">4 つの棒グラフを同一の HTML/CSS コンポーネントへ置き換え、<strong>青 = gfx900 注目行</strong>、<strong>濃いスレート = 比較対象</strong>、<strong>ストライプ = 出荷データ 0</strong> という共通ルールで統一した。各行にラベルと数値も固定表示した。</p>
+            <p data-lang="en">All four bar charts were replaced with one shared HTML/CSS component using a common rule: <strong>blue = gfx900 focus rows</strong>, <strong>dark slate = comparison rows</strong>, and <strong>striped tracks = zero shipped data</strong>. Each row now keeps its label and value visible.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> 棒グラフは証拠の要約表示であり、色差が弱いままだと public 側での読み取りを阻害するため。データ自体は変えず、可読性だけを改善した。</span>
+          <span data-lang="en"><strong>Rationale:</strong> These bar charts summarize evidence, so weak color contrast directly hurts public readability. The underlying values were not changed; only the presentation was clarified.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">ROCm 全体の構造を読む独立ページを追加</h2>
         <h2 data-lang="en">Added a standalone page for ROCm-wide structure</h2>
         <span class="entry-date">2026-03-15</span>
