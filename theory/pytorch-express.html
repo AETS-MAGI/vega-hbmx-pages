@@ -345,6 +345,23 @@ y = model(x)
 		</div>
 
 		<div class="warn-box">
+			<p data-lang="ja"><strong>インストールで大事な注意:</strong> ROCm 環境なら、<code>pip install torch</code> だけで済ませないほうが安全です。<a href="https://pytorch.org/get-started/locally/" target="_blank" rel="noopener noreferrer">PyTorch 公式の Start Locally</a> で <strong>Linux / Pip / Python / ROCm</strong> を選び、表示された ROCm 用コマンドで入れるのが基本です。</p>
+			<p data-lang="en"><strong>Important install note:</strong> On a ROCm system, it is safer not to stop at <code>pip install torch</code>. Use the command shown by the official <a href="https://pytorch.org/get-started/locally/" target="_blank" rel="noopener noreferrer">PyTorch Start Locally</a> selector with <strong>Linux / Pip / Python / ROCm</strong> chosen.</p>
+			<p data-lang="ja">たとえば ROCm 6.3 系なら、次のように ROCm 用 wheel index を明示します。使っている ROCm の major.minor に合わせて、公式ページが出す index を使うのが基本です。</p>
+			<p data-lang="en">For example, for a ROCm 6.3 build, you explicitly use the ROCm wheel index like this. In general, use the index shown by the official page for your ROCm major.minor version.</p>
+		</div>
+
+		<div class="code-block">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.3</div>
+
+		<div class="warn-box">
+			<p data-lang="ja"><strong>もし間違えて入れたら:</strong> いったんアンインストールしてから、ROCm 用コマンドで入れ直します。</p>
+			<p data-lang="en"><strong>If you installed the wrong build:</strong> uninstall first, then reinstall with the ROCm command.</p>
+		</div>
+
+		<div class="code-block">pip uninstall -y torch torchvision torchaudio
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.3</div>
+
+		<div class="warn-box">
 			<p data-lang="ja"><strong>補足:</strong> ROCm 版 PyTorch でも、歴史的な理由で <code>"cuda"</code> という名前の API が残る場所があります。つまり、画面に <code>"cuda"</code> と出ても、すぐに「ROCm ではない」とは限りません。名前はそうでも、実行経路は HIP/ROCm 側です。</p>
 			<p data-lang="en"><strong>Note:</strong> Even in ROCm builds of PyTorch, some APIs still use the name <code>"cuda"</code> for historical compatibility reasons. The actual execution path is still HIP/ROCm.</p>
 		</div>
@@ -357,8 +374,8 @@ y = model(x)
     <span class="fn">print</span>(<span class="str">"device:"</span>, torch.cuda.get_device_name(0))</div>
 
 		<div class="prose">
-			<p data-lang="ja">ここで見たいのは、<code>torch.version.hip</code> が出るか、GPU が見えているか、の 2 点です。</p>
-			<p data-lang="en">The main things to check here are whether <code>torch.version.hip</code> is present and whether a GPU is visible.</p>
+			<p data-lang="ja">インストールや入れ直しのあとで、ここで見たいのは <code>torch.version.hip</code> が出るか、GPU が見えているか、の 2 点です。</p>
+			<p data-lang="en">After installing or reinstalling, the main things to check here are whether <code>torch.version.hip</code> is present and whether a GPU is visible.</p>
 		</div>
 
 		<div class="fact-box">
