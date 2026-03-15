@@ -75,14 +75,32 @@
 			line-height: 1.7;
 			white-space: pre;
 		}
-		.code-block .comment { color: #90A4AE; }
-		.code-block .kw { color: #82B1FF; }
-		.code-block .str { color: #FFCB6B; }
-		.code-block .fn { color: #C3E88D; }
-		.quick-map { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 15px; }
-		.quick-map th, .quick-map td { border: 1px solid var(--line); padding: 11px 14px; text-align: left; }
-		.quick-map th { background: var(--navy); color: #fff; font-weight: 600; }
-		.quick-map tr:nth-child(even) { background: #F5F8FB; }
+			.code-block .comment { color: #90A4AE; }
+			.code-block .kw { color: #82B1FF; }
+			.code-block .str { color: #FFCB6B; }
+			.code-block .fn { color: #C3E88D; }
+			code { background: #F0F4F8; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 0.92em; }
+			.term-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 14px 0 18px; }
+			.term-card { background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--accent); border-radius: 12px; padding: 18px 18px 16px; }
+			.term-card h3 { margin: 0 0 6px; font-size: 18px; color: var(--navy); }
+			.term-card p { margin: 0; font-size: 15px; line-height: 1.7; }
+			.code-steps { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 22px; margin: 16px 0 18px; }
+			.code-steps ul { margin: 0; padding-left: 20px; }
+			.code-steps li { margin: 0 0 10px; line-height: 1.7; }
+			.code-steps li:last-child { margin-bottom: 0; }
+			.mode-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 16px 0 18px; }
+			.mode-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+			.mode-card.infer { border-top: 4px solid var(--blue); }
+			.mode-card.train { border-top: 4px solid var(--amber); }
+			.mode-card h3 { margin: 0 0 8px; font-size: 18px; color: var(--navy); }
+			.mode-card p { margin: 0 0 12px; line-height: 1.7; }
+			.mode-card ul { margin: 0; padding-left: 20px; }
+			.mode-card li { margin: 0 0 8px; line-height: 1.7; }
+			.mode-card li:last-child { margin-bottom: 0; }
+			.quick-map { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 15px; }
+			.quick-map th, .quick-map td { border: 1px solid var(--line); padding: 11px 14px; text-align: left; }
+			.quick-map th { background: var(--navy); color: #fff; font-weight: 600; }
+			.quick-map tr:nth-child(even) { background: #F5F8FB; }
 		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 28px; font-size: 15px; line-height: 1.7; }
 		.next-links strong { color: var(--blue); }
 		.next-links a { color: var(--blue); font-weight: 600; }
@@ -102,12 +120,13 @@
 		html[data-language="en"] th[data-lang="en"], html[data-language="ja"] th[data-lang="ja"],
 		html[data-language="en"] td[data-lang="en"], html[data-language="ja"] td[data-lang="ja"] { display: table-cell; }
 
-		@media (max-width: 680px) {
-			.hero { padding: 28px 20px 24px; }
-			.hero h1 { font-size: 24px; }
-			.page { padding: 20px 14px 40px; }
-			.code-block { font-size: 12px; }
-		}
+			@media (max-width: 680px) {
+				.hero { padding: 28px 20px 24px; }
+				.hero h1 { font-size: 24px; }
+				.page { padding: 20px 14px 40px; }
+				.code-block { font-size: 12px; }
+				.term-grid, .mode-grid { grid-template-columns: 1fr; }
+			}
 	</style>
 </head>
 <body>
@@ -129,57 +148,64 @@
 		<p data-lang="en">This page is a fast introduction to what PyTorch is. Use it as a bridge before deep learning, training flow, inference flow, and ROCm example pages.</p>
 	</section>
 
-	<h2 class="section-title" data-lang="ja">1. PyTorch は何か</h2>
-	<h2 class="section-title" data-lang="en">1. What PyTorch Is</h2>
-		<p class="section-lead" data-lang="ja">ひとことで言うと、テンソル計算 + 自動微分（勾配を自動で出す） + 深層学習部品のセットです。</p>
-	<p class="section-lead" data-lang="en">In one sentence: tensor math + autograd + deep-learning building blocks.</p>
+		<h2 class="section-title" data-lang="ja">1. PyTorch は何？</h2>
+		<h2 class="section-title" data-lang="en">1. What Is PyTorch?</h2>
+		<p class="section-lead" data-lang="ja">まずは一言でつかみます。</p>
+		<p class="section-lead" data-lang="en">Let's start with the shortest useful picture.</p>
 
-	<div class="prose">
-			<p data-lang="ja">PyTorch は、<strong>数値計算ライブラリ</strong>であり、同時に<strong>深層学習フレームワーク</strong>です。NumPy 風のテンソル操作でモデルを書き、必要な勾配（どちらへ直せばよいかの情報）を自動計算して学習まで進められます。</p>
-		<p data-lang="en">PyTorch is both a <strong>numerical computing library</strong> and a <strong>deep-learning framework</strong>. You write models with NumPy-like tensor operations, then autograd computes gradients for training.</p>
-	</div>
+		<div class="prose">
+			<p data-lang="ja">PyTorch は、<strong>AI を作ったり動かしたりするための道具箱</strong>です。</p>
+			<p data-lang="en">PyTorch is a <strong>toolbox for building and running AI models</strong>.</p>
+			<p data-lang="ja">数字をまとめて持ち、部品をつなぎ、必要なら学習や推論まで進められます。</p>
+			<p data-lang="en">It lets you hold numbers, connect parts into a model, and then run training or inference.</p>
+			<p data-lang="ja"><strong>大事な一文:</strong> PyTorch は「AIそのもの」ではなく、AI モデルを作って動かすための道具です。</p>
+			<p data-lang="en"><strong>One important sentence:</strong> PyTorch is not "the AI itself." It is the tool used to build and run the model.</p>
+		</div>
 
-	<div class="fact-box">
-			<p data-lang="ja"><strong>覚える最小セット:</strong> Tensor（データの箱） / Module（部品） / autograd（自動で勾配計算） / optimizer（直し方を決める係）</p>
-		<p data-lang="en"><strong>Minimal set to remember:</strong> Tensor / Module / autograd / optimizer</p>
-	</div>
+		<div class="fact-box">
+			<p data-lang="ja"><strong>このサイトでの見え方:</strong> PyTorch は「モデルを書く場所」で、ROCm は「GPU で動かす土台」として出てきます。</p>
+			<p data-lang="en"><strong>How this site uses the idea:</strong> PyTorch is where we write the model, and ROCm is the foundation that runs heavy work on the GPU.</p>
+		</div>
 
-	<h2 class="section-title" data-lang="ja">2. どこで使うか（このサイト内）</h2>
-	<h2 class="section-title" data-lang="en">2. Where It Appears (In This Site)</h2>
-	<table class="quick-map">
-		<thead>
-			<tr>
-				<th data-lang="ja">ページ</th>
-				<th data-lang="en">Page</th>
-				<th data-lang="ja">PyTorchの役割</th>
-				<th data-lang="en">Role of PyTorch</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td data-lang="ja">深層学習 / 学習 / 推論</td>
-				<td data-lang="en">Deep learning / Training / Inference</td>
-				<td data-lang="ja">モデル記述と forward/backward 実行</td>
-				<td data-lang="en">Model definition and forward/backward execution</td>
-			</tr>
-			<tr>
-				<td data-lang="ja">ROCmで見る 系</td>
-				<td data-lang="en">See in ROCm series</td>
-				<td data-lang="ja">1行コードを ROCm 側ライブラリに橋渡し</td>
-				<td data-lang="en">Bridge one-line code to ROCm-side libraries</td>
-			</tr>
-			<tr>
-				<td data-lang="ja">Attention 系</td>
-				<td data-lang="en">Attention pages</td>
-				<td data-lang="ja">QK^T・softmax・weights×V を実装で確認</td>
-				<td data-lang="en">Verify QK^T, softmax, and weights×V in code</td>
-			</tr>
-		</tbody>
-	</table>
+		<h2 class="section-title" data-lang="ja">2. まず覚える 4 語</h2>
+		<h2 class="section-title" data-lang="en">2. Four Words to Learn First</h2>
+		<p class="section-lead" data-lang="ja">この 4 つだけ押さえれば、次のページにかなり入りやすくなります。</p>
+		<p class="section-lead" data-lang="en">If you know these four words, the next pages become much easier.</p>
 
-	<h2 class="section-title" data-lang="ja">3. 最短サンプル（10行）</h2>
-	<h2 class="section-title" data-lang="en">3. Shortest Sample (10 lines)</h2>
-	<div class="code-block"><span class="kw">import</span> torch
+		<div class="term-grid">
+			<div class="term-card">
+				<h3>Tensor</h3>
+				<p data-lang="ja">数字の入れ物です。1個の数字でも、表でも、画像でも、PyTorch ではまず Tensor として持ちます。</p>
+				<p data-lang="en">A container for numbers. A single value, a table, or even an image is first represented as a tensor in PyTorch.</p>
+			</div>
+			<div class="term-card">
+				<h3>Module</h3>
+				<p data-lang="ja">モデルを作る部品です。線を引く部品、活性化の部品などを組み合わせてモデルを作ります。</p>
+				<p data-lang="en">A building block for a model. You combine modules such as layers and activations to build the whole model.</p>
+			</div>
+			<div class="term-card">
+				<h3>autograd</h3>
+				<p data-lang="ja">自動で「どこを直せばよいか」を計算する仕組みです。学習で重要になります。</p>
+				<p data-lang="en">The system that automatically computes "what should be fixed." This becomes important during training.</p>
+			</div>
+			<div class="term-card">
+				<h3>optimizer</h3>
+				<p data-lang="ja">autograd が出した情報を使って、実際に重みを少し直す係です。</p>
+				<p data-lang="en">The part that actually updates the weights a little, using the information from autograd.</p>
+			</div>
+		</div>
+
+		<div class="prose">
+			<p data-lang="ja">ひとまずは、<strong>Tensor = 数字の入れ物</strong>、<strong>Module = 部品</strong> と覚えるだけでも十分です。</p>
+			<p data-lang="en">At first, it is already enough to remember <strong>Tensor = box of numbers</strong> and <strong>Module = part</strong>.</p>
+		</div>
+
+		<h2 class="section-title" data-lang="ja">3. 10 行コードを 1 行ずつ読む</h2>
+		<h2 class="section-title" data-lang="en">3. Reading a 10-Line Example One Step at a Time</h2>
+		<p class="section-lead" data-lang="ja">いきなり全部わからなくても大丈夫です。何をしているかだけ拾います。</p>
+		<p class="section-lead" data-lang="en">You do not need to understand everything at once. Just follow what each line is doing.</p>
+
+		<div class="code-block"><span class="kw">import</span> torch
 <span class="kw">import</span> torch.nn <span class="kw">as</span> nn
 
 x = torch.randn(1, 4)
@@ -191,43 +217,169 @@ model = nn.Sequential(
 y = model(x)
 <span class="fn">print</span>(x.shape, y.shape)</div>
 
-	<div class="prose">
-		<p data-lang="ja">この10行に「テンソルを作る」「層を並べる」「forwardする」が入っています。学習を足す場合は loss / backward / optimizer.step を追加します。</p>
-		<p data-lang="en">These 10 lines already contain: create tensors, stack layers, run forward. To train, add loss / backward / optimizer.step.</p>
-	</div>
+		<div class="code-steps">
+			<ul>
+				<li data-lang="ja"><code>import torch</code> → PyTorch 本体を使えるようにします。</li>
+				<li data-lang="en"><code>import torch</code> → Makes the main PyTorch package available.</li>
+				<li data-lang="ja"><code>import torch.nn as nn</code> → よく使う部品集を <code>nn</code> という短い名前で呼びます。</li>
+				<li data-lang="en"><code>import torch.nn as nn</code> → Gives the common neural-network parts the short name <code>nn</code>.</li>
+				<li data-lang="ja"><code>x = torch.randn(1, 4)</code> → 4 個の数字を 1 組作ります。ここでは入力データのつもりです。</li>
+				<li data-lang="en"><code>x = torch.randn(1, 4)</code> → Creates one group of 4 numbers. Here it plays the role of input data.</li>
+				<li data-lang="ja"><code>nn.Sequential(...)</code> → 部品を順番につないで、1 つのモデルにします。</li>
+				<li data-lang="en"><code>nn.Sequential(...)</code> → Connects parts in order to make one model.</li>
+				<li data-lang="ja"><code>nn.Linear(4, 8)</code> → 4 個の数字を 8 個へ変換する部品です。</li>
+				<li data-lang="en"><code>nn.Linear(4, 8)</code> → A part that transforms 4 numbers into 8 numbers.</li>
+				<li data-lang="ja"><code>nn.ReLU()</code> → マイナスを 0 にする、よく使うシンプルな関数です。</li>
+				<li data-lang="en"><code>nn.ReLU()</code> → A simple, common function that turns negatives into 0.</li>
+				<li data-lang="ja"><code>nn.Linear(8, 2)</code> → 8 個の数字を 2 個へ変換して、最後の出力に近づけます。</li>
+				<li data-lang="en"><code>nn.Linear(8, 2)</code> → Transforms 8 numbers into 2 numbers for the final output.</li>
+				<li data-lang="ja"><code>y = model(x)</code> → 入力をモデルに通して出力を作ります。これが <strong>forward</strong> です。</li>
+				<li data-lang="en"><code>y = model(x)</code> → Sends the input through the model to create the output. This is the <strong>forward</strong> step.</li>
+				<li data-lang="ja"><code>x.shape</code> / <code>y.shape</code> → 数字の並び方を見ます。<code>shape</code> は「形」のことです。</li>
+				<li data-lang="en"><code>x.shape</code> / <code>y.shape</code> → Shows how the numbers are arranged. <code>shape</code> means the form of the data.</li>
+			</ul>
+		</div>
 
-	<h2 class="section-title" data-lang="ja">4. ROCm で使うときの最初の注意</h2>
-	<h2 class="section-title" data-lang="en">4. First ROCm Notes</h2>
-	<div class="warn-box">
-		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm ではデバイス指定に "cuda" 文字列を使う場合があります。これは API 互換上の名前で、実行経路は HIP/ROCm 側です。</p>
-		<p data-lang="en"><strong>Note:</strong> In PyTorch ROCm, device selection may still use the string "cuda". This is an API-compatibility name; execution paths are HIP/ROCm.</p>
-	</div>
-	<div class="code-block"><span class="kw">import</span> torch
+		<div class="prose">
+			<p data-lang="ja">この 10 行でやっていることは、<strong>入力を作る → 部品を並べる → 通してみる</strong> の 3 つです。</p>
+			<p data-lang="en">These 10 lines really do three things: <strong>make an input → line up parts → run the input through them</strong>.</p>
+		</div>
+
+		<h2 class="section-title" data-lang="ja">4. 学習と推論でどう使う？</h2>
+		<h2 class="section-title" data-lang="en">4. How Is It Used in Training and Inference?</h2>
+		<p class="section-lead" data-lang="ja">ここで出てくる言葉を先にやさしくつかみます。</p>
+		<p class="section-lead" data-lang="en">Let's make the common terms gentle before they get heavy.</p>
+
+		<div class="mode-grid">
+			<div class="mode-card infer">
+				<h3 data-lang="ja">推論</h3>
+				<h3 data-lang="en">Inference</h3>
+				<p data-lang="ja">すでにあるモデルで答えを出す場面です。</p>
+				<p data-lang="en">This is when you use an existing model to produce an answer.</p>
+				<ul>
+					<li data-lang="ja"><code>model(x)</code> で答えを出します。</li>
+					<li data-lang="en">You produce an answer with <code>model(x)</code>.</li>
+					<li data-lang="ja"><code>eval()</code> は推論向けの設定です。</li>
+					<li data-lang="en"><code>eval()</code> switches the model into inference mode.</li>
+					<li data-lang="ja"><code>no_grad()</code> は「勾配を記録しない」ため、少し軽くなります。</li>
+					<li data-lang="en"><code>no_grad()</code> means "do not record gradients," which makes inference lighter.</li>
+				</ul>
+			</div>
+			<div class="mode-card train">
+				<h3 data-lang="ja">学習</h3>
+				<h3 data-lang="en">Training</h3>
+				<p data-lang="ja">答えのずれを見て、モデルを少しずつ直す場面です。</p>
+				<p data-lang="en">This is when you look at the error and gradually fix the model.</p>
+				<ul>
+					<li data-lang="ja"><code>loss</code> で「どれだけ外れたか」を見ます。</li>
+					<li data-lang="en"><code>loss</code> measures how far off the answer was.</li>
+					<li data-lang="ja"><code>backward()</code> で「どこを直すか」を計算します。</li>
+					<li data-lang="en"><code>backward()</code> computes "what should be fixed."</li>
+					<li data-lang="ja"><code>optimizer.step()</code> で、実際に重みを少し直します。</li>
+					<li data-lang="en"><code>optimizer.step()</code> actually updates the weights a little.</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="fact-box">
+			<p data-lang="ja"><strong>言葉の対応:</strong> <strong>forward</strong> は「前向きに答えを出す流れ」、<strong>backward</strong> は「どこを直すか逆向きに調べる流れ」です。</p>
+			<p data-lang="en"><strong>Meaning of the words:</strong> <strong>forward</strong> is the path that produces an answer, and <strong>backward</strong> is the path that figures out what to fix.</p>
+		</div>
+
+		<div class="prose">
+			<p data-lang="ja">学習では <code>backward()</code> と <code>optimizer.step()</code> が増えます。推論では多くの場合、そこまではやりません。</p>
+			<p data-lang="en">Training adds <code>backward()</code> and <code>optimizer.step()</code>. In inference, you usually stop before those steps.</p>
+		</div>
+
+		<h2 class="section-title" data-lang="ja">5. ROCm ではどうつながる？</h2>
+		<h2 class="section-title" data-lang="en">5. How Does This Connect to ROCm?</h2>
+		<p class="section-lead" data-lang="ja">Python で書いたものが、どう GPU まで届くかをざっくり見ます。</p>
+		<p class="section-lead" data-lang="en">Here is the rough path from Python code down to the GPU.</p>
+
+		<div class="prose">
+			<p data-lang="ja">このサイトでは、PyTorch は<strong>モデルを書く場所</strong>として出てきます。ROCm は、その下で<strong>GPU で重い計算を動かす土台</strong>として出てきます。</p>
+			<p data-lang="en">On this site, PyTorch appears as the place where you <strong>write the model</strong>. ROCm appears underneath it as the <strong>foundation that runs heavy computation on the GPU</strong>.</p>
+			<p data-lang="ja">イメージとしては、PyTorch が窓口で、下のほうでは rocBLAS（行列計算）や MIOpen（AI の畳み込みなど）が実際の計算を担当します。</p>
+			<p data-lang="en">You can think of PyTorch as the front desk. Underneath it, libraries such as rocBLAS (matrix math) and MIOpen (AI operations such as convolution) perform the actual work.</p>
+		</div>
+
+		<table class="quick-map">
+			<thead>
+				<tr>
+					<th data-lang="ja">このサイトの場面</th>
+					<th data-lang="en">Where on This Site</th>
+					<th data-lang="ja">PyTorch の見え方</th>
+					<th data-lang="en">How PyTorch Appears</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td data-lang="ja">深層学習 / 学習 / 推論</td>
+					<td data-lang="en">Deep learning / Training / Inference</td>
+					<td data-lang="ja">モデルを書いて、入力を通して、必要なら学習まで進める場所</td>
+					<td data-lang="en">Where you write the model, run inputs through it, and train if needed</td>
+				</tr>
+				<tr>
+					<td data-lang="ja">ROCm で見る系ページ</td>
+					<td data-lang="en">"See in ROCm" pages</td>
+					<td data-lang="ja">PyTorch のコードが、下でどの ROCm ライブラリにつながるかを見る場所</td>
+					<td data-lang="en">Where you see which ROCm libraries are reached under PyTorch code</td>
+				</tr>
+				<tr>
+					<td data-lang="ja">実例ページ</td>
+					<td data-lang="en">Example pages</td>
+					<td data-lang="ja">短いコードと GPU 実行のつながりを確認する場所</td>
+					<td data-lang="en">Where short code examples are connected to GPU execution</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<div class="fact-box">
+			<p data-lang="ja">PyTorch は、同じ書き方で CPU や GPU を扱いやすくするように作られています。</p>
+			<p data-lang="en">PyTorch is designed so that CPU and GPU use feel as similar as possible from the user's side.</p>
+		</div>
+
+		<div class="warn-box">
+			<p data-lang="ja"><strong>補足:</strong> ROCm 版 PyTorch でも、歴史的な理由で <code>"cuda"</code> という名前の API が残る場所があります。名前はそうでも、実行経路は HIP/ROCm 側です。</p>
+			<p data-lang="en"><strong>Note:</strong> Even in ROCm builds of PyTorch, some APIs still use the name <code>"cuda"</code> for historical compatibility reasons. The actual execution path is still HIP/ROCm.</p>
+		</div>
+
+		<div class="code-block"><span class="kw">import</span> torch
 
 <span class="fn">print</span>(<span class="str">"torch.version.hip:"</span>, torch.version.hip)
 <span class="fn">print</span>(<span class="str">"cuda available:"</span>, torch.cuda.is_available())
 <span class="kw">if</span> torch.cuda.is_available():
     <span class="fn">print</span>(<span class="str">"device:"</span>, torch.cuda.get_device_name(0))</div>
 
-	<h2 class="section-title" data-lang="ja">5. ここで詰まりやすいポイント</h2>
-	<h2 class="section-title" data-lang="en">5. Common First Stumbles</h2>
-	<div class="prose">
-		<p data-lang="ja">1) Python バージョンと wheel の対応がずれる<br>2) GPU は見えていても PyTorch が未導入<br>3) 学習と推論の違い（重みが変わるか）を混同する</p>
-		<p data-lang="en">1) Python version and wheel compatibility mismatch<br>2) GPU visible but PyTorch not installed<br>3) Mixing up training vs inference (whether weights change)</p>
-	</div>
+		<div class="prose">
+			<p data-lang="ja">ここで見たいのは、<code>torch.version.hip</code> が出るか、GPU が見えているか、の 2 点です。</p>
+			<p data-lang="en">The main things to check here are whether <code>torch.version.hip</code> is present and whether a GPU is visible.</p>
+		</div>
 
-	<div class="next-links">
-		<strong data-lang="ja">📖 次に読むなら:</strong>
-		<strong data-lang="en">📖 Read next:</strong><br>
-		<span data-lang="ja">
-			<a href="deep-learning-for-rocm.html">イメージでわかる深層学習</a> — PyTorch が何を支えるかを見る<br>
-			<a href="training-flow.html">イメージでわかる学習の流れ</a> — backward と optimizer の位置づけ
-		</span>
-		<span data-lang="en">
-			<a href="deep-learning-for-rocm.html">Visual Deep Learning</a> — See what PyTorch supports
-			<a href="training-flow.html">Visual Training Flow</a> — Place backward and optimizer in context
-		</span>
-	</div>
+		<div class="fact-box">
+			<p data-lang="ja"><strong>よくある混乱:</strong> Python は言語、PyTorch は道具です。学習は「重みを直す」、推論は「答えを出す」です。この 2 組を分けて考えるとかなり楽になります。</p>
+			<p data-lang="en"><strong>Common confusion:</strong> Python is the language, and PyTorch is the tool. Training means "changing weights," while inference means "producing answers." Keeping these pairs separate helps a lot.</p>
+		</div>
+
+		<h2 class="section-title" data-lang="ja">6. 次に読むなら</h2>
+		<h2 class="section-title" data-lang="en">6. Read Next</h2>
+		<p class="section-lead" data-lang="ja">PyTorch の次は、部品の意味と計算の流れを見るとつながりやすいです。</p>
+		<p class="section-lead" data-lang="en">After this page, it helps to learn the parts and the flow of computation.</p>
+
+		<div class="next-links">
+			<strong data-lang="ja">📖 次に読むなら:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="deep-learning-for-rocm.html">イメージでわかる深層学習</a> — PyTorch の部品が何を支えるかを見る<br>
+				<a href="training-flow.html">イメージでわかる学習の流れ</a> — backward と optimizer がどこで出るかを見る<br>
+				<a href="inference-flow.html">イメージでわかる推論の流れ</a> — forward が何をしているかを見る
+			</span>
+			<span data-lang="en">
+				<a href="deep-learning-for-rocm.html">Visual Deep Learning</a> — See what PyTorch parts support<br>
+				<a href="training-flow.html">Visual Training Flow</a> — See where backward and optimizer appear<br>
+				<a href="inference-flow.html">Visual Inference Flow</a> — See what forward is doing
+			</span>
+		</div>
 
 	<div class="footer">
 		<span data-lang="ja">vega-hbmx-pages · PyTorch特急便 · 2026-03-16</span>
