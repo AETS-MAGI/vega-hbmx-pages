@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる メモリと帯域幅 / Visual Memory &amp; Bandwidth | vega-hbmx-pages</title>
+	<style>
+		:root { --navy: #0B3C5D; --teal: #00796B; --amber: #C56A00; --red: #B71C1C; --blue: #1565C0; --green: #2E7D32; --purple: #5B4B8A; --ink: #1F2933; --muted: #5F6C7B; --line: #D8E0E8; --bg: #F5F8FB; --card: #FFFFFF; }
+		* { box-sizing: border-box; }
+		body { margin: 0; font-family: 'Calibri', 'Arial', sans-serif; color: var(--ink); background: radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg); }
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero { background: linear-gradient(135deg, #00695C 0%, #00897B 55%, #26A69A 100%); color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px; }
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+		.section-title { font-size: 21px; font-weight: 700; color: var(--navy); border-left: 5px solid var(--teal); padding-left: 14px; margin: 44px 0 8px; }
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; } .prose p:last-child { margin-bottom: 0; }
+		.analogy { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.analogy strong { color: var(--amber); }
+		.highlight { background: #EDE7F6; border-left: 5px solid var(--purple); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+
+		/* Pipe diagram */
+		.pipe-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 18px; }
+		.pipe-card { border-radius: 12px; padding: 24px 20px; text-align: center; }
+		.pipe-card.capacity { background: #E3F2FD; border: 2px solid var(--blue); }
+		.pipe-card.bandwidth { background: #FFF3E0; border: 2px solid var(--amber); }
+		.pipe-card .pipe-icon { font-size: 44px; margin-bottom: 8px; }
+		.pipe-card h3 { margin: 0 0 6px; font-size: 18px; }
+		.pipe-card.capacity h3 { color: var(--blue); }
+		.pipe-card.bandwidth h3 { color: var(--amber); }
+		.pipe-card .pipe-desc { font-size: 14px; color: var(--ink); line-height: 1.6; }
+
+		/* Bar chart */
+		.bar-group { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-bottom: 18px; }
+		.bar-label { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+		.bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+		.bar-name { width: 120px; font-size: 13px; color: var(--muted); text-align: right; flex-shrink: 0; }
+		.bar-track { flex: 1; background: var(--line); border-radius: 6px; height: 24px; overflow: hidden; }
+		.bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 12px; color: #fff; font-weight: 600; }
+		.bar-fill.vega { background: var(--teal); }
+		.bar-fill.mi100 { background: var(--blue); }
+		.bar-fill.mi300 { background: var(--purple); }
+
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 32px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); } .next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		@media (max-width: 640px) { .page { padding: 20px 14px 40px; } .hero { padding: 28px 20px 24px; } .hero h1 { font-size: 24px; } .pipe-compare { grid-template-columns: 1fr; } .bar-name { width: 80px; } }
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる メモリと帯域幅</h1>
+			<h1 data-lang="en">Visual Guide: Memory &amp; Bandwidth</h1>
+			<p class="subtitle" data-lang="ja">Visual Memory &amp; Bandwidth</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">どれだけたくさん持てるかと、どれだけ速く運べるかの違いを、水道管や作業台のたとえでやさしく説明します。</p>
+			<p data-lang="en">The difference between "how much you can hold" and "how fast you can move it" — explained through water pipes and workbench analogies.</p>
+		</section>
+
+		<!-- ──────── 1. ふたつの「足りない」 ──────── -->
+		<h2 class="section-title" data-lang="ja">1. ふたつの「足りない」</h2>
+		<h2 class="section-title" data-lang="en">1. Two Kinds of "Not Enough"</h2>
+		<p class="section-lead" data-lang="ja">GPU には「容量」と「帯域幅」という2つの大事なメモリ指標があります。</p>
+		<p class="section-lead" data-lang="en">GPUs have two critical memory metrics: "capacity" and "bandwidth."</p>
+
+		<div class="pipe-compare">
+			<div class="pipe-card capacity">
+				<div class="pipe-icon">🪣</div>
+				<h3 data-lang="ja">容量（キャパシティ）</h3>
+				<h3 data-lang="en">Capacity</h3>
+				<div class="pipe-desc" data-lang="ja">バケツの大きさ。<br>何GB のデータを一度に置けるか。</div>
+				<div class="pipe-desc" data-lang="en">Size of the bucket.<br>How many GB of data you can hold at once.</div>
+			</div>
+			<div class="pipe-card bandwidth">
+				<div class="pipe-icon">🚿</div>
+				<h3 data-lang="ja">帯域幅（バンドウィズ）</h3>
+				<h3 data-lang="en">Bandwidth</h3>
+				<div class="pipe-desc" data-lang="ja">水道管の太さ。<br>1秒間にどれだけのデータを運べるか。</div>
+				<div class="pipe-desc" data-lang="en">Diameter of the water pipe.<br>How much data can flow per second.</div>
+			</div>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🚰 たとえ話:</strong>
+			<strong data-lang="en">🚰 Analogy:</strong>
+			<span data-lang="ja">お風呂をためることを想像してください。浴槽が大きい（＝容量が多い）のと、水道管が太い（＝帯域幅が広い）のは別の話です。浴槽が大きくても水道管が細ければ、なかなかたまりません。</span>
+			<span data-lang="en">Picture filling a bathtub. A big tub (= large capacity) and a thick water pipe (= high bandwidth) are two different things. Even with a huge tub, if the pipe is thin, it takes forever to fill.</span>
+		</div>
+
+		<!-- ──────── 2. AI にとってなぜ大事？ ──────── -->
+		<h2 class="section-title" data-lang="ja">2. AI にとってなぜ大事？</h2>
+		<h2 class="section-title" data-lang="en">2. Why Does It Matter for AI?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">大規模な AI モデル（たとえば ChatGPT や DeepSeek-R1）は、何十億もの数字を持っています。推論するとき、そのすべてを GPU のメモリに載せ、猛スピードで読み書きします。</p>
+			<p data-lang="en">Large AI models (like ChatGPT or DeepSeek-R1) contain billions of numbers. During inference, all of them must be loaded in GPU memory and read/written at extreme speed.</p>
+			<p data-lang="ja"><strong>容量が足りないと:</strong> そもそもモデルが載らない → 動かない<br><strong>帯域幅が足りないと:</strong> 載っていても読み出しが遅い → 出力が遅い</p>
+			<p data-lang="en"><strong>Not enough capacity:</strong> The model doesn't fit → it won't run at all<br><strong>Not enough bandwidth:</strong> The model fits but reads slowly → output is slow</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 HBM2 と Vega:</strong>
+			<strong data-lang="en">💡 HBM2 and Vega:</strong>
+			<span data-lang="ja">Vega 56 には 8 GB の HBM2 メモリが搭載されています。HBM2 は「帯域幅がとても太い」タイプのメモリで、同世代の GDDR5 より高速にデータを運べます。容量は控えめですが、帯域幅では有利です。</span>
+			<span data-lang="en">The Vega 56 has 8 GB of HBM2 memory. HBM2 is a type of memory with very high bandwidth — it can move data faster than contemporary GDDR5. Capacity is modest, but bandwidth is a strength.</span>
+		</div>
+
+		<!-- ──────── 3. 世代で見る比較 ──────── -->
+		<h2 class="section-title" data-lang="ja">3. 世代で見る比較</h2>
+		<h2 class="section-title" data-lang="en">3. Comparing Across Generations</h2>
+
+		<div class="bar-group">
+			<div class="bar-label" data-lang="ja">VRAM 容量</div>
+			<div class="bar-label" data-lang="en">VRAM Capacity</div>
+			<div class="bar-row"><div class="bar-name">Vega 56</div><div class="bar-track"><div class="bar-fill vega" style="width:5%">8 GB</div></div></div>
+			<div class="bar-row"><div class="bar-name">MI100</div><div class="bar-track"><div class="bar-fill mi100" style="width:21%">32 GB</div></div></div>
+			<div class="bar-row"><div class="bar-name">MI300X</div><div class="bar-track"><div class="bar-fill mi300" style="width:100%">192 GB</div></div></div>
+		</div>
+
+		<div class="bar-group">
+			<div class="bar-label" data-lang="ja">メモリ帯域幅</div>
+			<div class="bar-label" data-lang="en">Memory Bandwidth</div>
+			<div class="bar-row"><div class="bar-name">Vega 56</div><div class="bar-track"><div class="bar-fill vega" style="width:26%">484 GB/s</div></div></div>
+			<div class="bar-row"><div class="bar-name">MI100</div><div class="bar-track"><div class="bar-fill mi100" style="width:65%">1.2 TB/s</div></div></div>
+			<div class="bar-row"><div class="bar-name">MI300X</div><div class="bar-track"><div class="bar-fill mi300" style="width:100%">5.3 TB/s</div></div></div>
+		</div>
+
+		<div class="prose">
+			<p data-lang="ja">Vega の帯域幅は 484 GB/s。現在の最先端 MI300X の 1/10 以下ですが、同世代の GDDR5 搭載カードと比べるとかなり太い水道管です。</p>
+			<p data-lang="en">Vega's bandwidth is 484 GB/s — less than 1/10 of the latest MI300X, but much wider than GDDR5 cards from the same era.</p>
+		</div>
+
+		<!-- ──────── 4. まとめ ──────── -->
+		<h2 class="section-title" data-lang="ja">4. まとめ</h2>
+		<h2 class="section-title" data-lang="en">4. Summary</h2>
+
+		<div class="highlight">
+			<span data-lang="ja">🔑 <strong>容量</strong> = いくつ並べられるか。 <strong>帯域幅</strong> = どれだけ速く運べるか。AI は両方ないと困る。HBM2 は帯域幅が太いメモリで、Vega の強みのひとつ。</span>
+			<span data-lang="en">🔑 <strong>Capacity</strong> = how many things can sit there. <strong>Bandwidth</strong> = how fast they move. AI needs both. HBM2 excels at bandwidth, which is one of Vega's strengths.</span>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="gpu-basics.html">イメージでわかる GPU のしくみ</a> — GPU の全体像をおさらい<br>
+				<a href="int8-vs-fp32.html">イメージでわかる INT8 と FP32</a> — メモリを節約するデータ型の話<br>
+				<a href="gpu-generations.html">イメージでわかる GPU の世代</a> — 世代が変わると何が変わるか
+			</span>
+			<span data-lang="en">
+				<a href="gpu-basics.html">Visual Guide to GPU Basics</a> — Review the big picture of GPUs<br>
+				<a href="int8-vs-fp32.html">Visual Guide: INT8 vs FP32</a> — Data types that save memory<br>
+				<a href="gpu-generations.html">Visual Guide to GPU Generations</a> — What changes with each generation
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
