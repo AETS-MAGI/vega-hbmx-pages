@@ -573,6 +573,75 @@ flowchart LR
     <p class="diagram-caption" data-lang="en">Stacking convolutions handles increasingly abstract features (CNN = Convolutional Neural Network)</p>
   </div>
 
+  <!-- Attention -->
+  <h2 class="section-title" data-lang="ja">Attention ってなに？ — 遠くの単語を見る仕組み</h2>
+  <h2 class="section-title" data-lang="en">What is Attention? — looking at distant words</h2>
+
+  <div class="prose">
+    <p data-lang="ja">畳み込みは「小さい窓の範囲だけを見る」演算です。画像の隣のピクセル同士の関係は得意ですが、<strong>離れた位置どうしの関係</strong>を直接捉えることが苦手です。</p>
+    <p data-lang="en">Convolution looks only within a small window. It handles nearby pixels well, but it struggles to directly capture <strong>relationships between distant positions</strong>.</p>
+
+    <p data-lang="ja">文章では、この「遠距離の関係」がとても重要です。たとえば「<strong>その</strong>ケーキを食べた」の「その」が何を指すかは、ずっと前の文に出てきた名詞を参照しないとわかりません。</p>
+    <p data-lang="en">In language, these long-range relationships matter enormously. For example, knowing what "<strong>it</strong>" refers to in "she ate it" may require reaching back several sentences to find the noun.</p>
+
+    <p data-lang="ja"><strong>Attention（注意機構）</strong>はこの問題を解決します。「今この単語を処理するとき、文の中の<em>全ての</em>単語を同時に参照して、関係が深そうな単語ほど強く注目する」という仕組みです。</p>
+    <p data-lang="en"><strong>Attention</strong> solves this by letting each word look at <em>all other words at once</em> and pay more attention to the ones that seem most related.</p>
+  </div>
+
+  <div class="callout-box" style="background:#F3E5F5;border-left:4px solid #8E24AA;padding:14px 18px;margin:16px 0;border-radius:0 8px 8px 0;">
+    <p style="margin:0 0 8px;font-weight:700;color:#6A1B9A;" data-lang="ja">Attention のイメージ（Q・K・V）</p>
+    <p style="margin:0 0 8px;font-weight:700;color:#6A1B9A;" data-lang="en">The Q·K·V mental model</p>
+    <p data-lang="ja" style="margin:0 0 6px;font-size:14px;">各単語は3つの役割を持ちます：</p>
+    <p data-lang="en" style="margin:0 0 6px;font-size:14px;">Each word plays three roles:</p>
+    <ul style="margin:0;padding-left:20px;font-size:14px;line-height:1.9;">
+      <li data-lang="ja"><strong>Query（質問）</strong> — 「自分はどんな情報を欲しいか？」</li>
+      <li data-lang="en"><strong>Query</strong> — "What information am I looking for?"</li>
+      <li data-lang="ja"><strong>Key（目印）</strong> — 「自分はどんな情報を持っているか？」</li>
+      <li data-lang="en"><strong>Key</strong> — "What information do I hold?"</li>
+      <li data-lang="ja"><strong>Value（内容）</strong> — 「実際に渡す情報の中身」</li>
+      <li data-lang="en"><strong>Value</strong> — "The actual content to pass along."</li>
+    </ul>
+    <p data-lang="ja" style="margin:8px 0 0;font-size:14px;">Query と Key の内積（ドット積）でスコアをつけ、softmax で「どこにどれだけ注目するか」の割合に変換し、Value を加重平均します。式で書くと：<br>
+    <code style="font-size:13px;">Attention(Q,K,V) = softmax( Q·Kᵀ / √d ) · V</code></p>
+    <p data-lang="en" style="margin:8px 0 0;font-size:14px;">The dot product of Q and K gives a score; softmax converts it to an attention weight; then Value is weighted-averaged:<br>
+    <code style="font-size:13px;">Attention(Q,K,V) = softmax( Q·Kᵀ / √d ) · V</code></p>
+  </div>
+
+  <div class="prose">
+    <p data-lang="ja"><strong>Transformer</strong> は、この Attention を主な計算ブロックとして積み重ねたアーキテクチャです。CNN が畳み込み層を積み重ねるように、Transformer は Attention 層を積み重ねます。GPT・BERT・LLaMA など現在の大規模言語モデル（LLM）はほぼすべて Transformer です。</p>
+    <p data-lang="en"><strong>Transformer</strong> is an architecture that stacks Attention as its main building block — the way CNN stacks convolutions. GPT, BERT, LLaMA and almost all modern LLMs are Transformers.</p>
+
+    <p data-lang="ja">畳み込みとの最大の違いは、<strong>窓のサイズに関係なく文全体を一度に見られる</strong>点です。ただし全単語ペアのスコアを計算するため、系列が長くなるほど計算量が増えます（文長 n に対して O(n²)）。これを効率化したのが <strong>Flash Attention</strong> などの手法です。</p>
+    <p data-lang="en">The key difference from convolution is that Attention <strong>sees the whole sequence at once, regardless of distance</strong>. The cost is that computing all pairwise scores grows with sequence length (O(n²)), which techniques like <strong>Flash Attention</strong> address.</p>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    CONV["畳み込み\n（局所窓）\n隣同士だけ見る"]
+    ATTN["Attention\n（全対全）\n全位置ペアを比較"]
+    subgraph CNN_USE ["得意な場所"]
+        IM["画像・音声\n（空間的な局所パターン）"]
+    end
+    subgraph ATT_USE ["得意な場所"]
+        TX["文章・系列\n（長距離の依存関係）"]
+    end
+    CONV --- CNN_USE
+    ATTN --- ATT_USE
+    style CONV fill:#E3F2FD,stroke:#1565C0
+    style ATTN fill:#EDE7F6,stroke:#5B4B8A
+    style CNN_USE fill:#F1F8FF,stroke:#ccc
+    style ATT_USE fill:#F9F0FF,stroke:#ccc
+    </div>
+    <p class="diagram-caption" data-lang="ja">畳み込みは画像（局所）が得意、Attention は文章（長距離）が得意</p>
+    <p class="diagram-caption" data-lang="en">Convolution excels at images (local patterns); Attention excels at language (long-range dependencies)</p>
+  </div>
+
+  <div class="prose">
+    <p data-lang="ja"><strong>MIOpen との接続：</strong> Attention の核心計算は <code>Q·Kᵀ</code> と <code>·V</code> という2つの大きな行列積（GEMM）です。MIOpen（および rocBLAS）はまさにこの GEMM を高速実行するために設計されており、Transformer の学習・推論でも中心的な役割を担います。Flash Attention のような省メモリ手法も、内部ではやはり GPU の行列演算カーネルに依存しています。</p>
+    <p data-lang="en"><strong>Connection to MIOpen:</strong> The core of Attention is two large matrix multiplications (GEMMs): <code>Q·Kᵀ</code> and the weighted sum <code>·V</code>. MIOpen (and rocBLAS) are designed precisely to run these GEMMs at full GPU speed, so they're just as central to Transformer training and inference as to CNN convolution. Memory-efficient techniques like Flash Attention still rely on GPU matrix kernels underneath.</p>
+  </div>
+
   <!-- MIOpen -->
   <h2 class="section-title" data-lang="ja">MIOpen ってなに？</h2>
   <h2 class="section-title" data-lang="en">What is MIOpen?</h2>
