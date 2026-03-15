@@ -78,10 +78,10 @@
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Understand vectors, matrices, and matrix multiply through diagrams</p>
 	</div>
 	<div class="fact-box">
-		<p data-lang="ja"><strong>注記:</strong> PyTorch の ROCm ビルドでは、GPU デバイス名に "cuda" 文字列を使います。これは NVIDIA 専用を意味せず、内部実行は HIP/ROCm 経路です。</p>
-		<p data-lang="en"><strong>Note:</strong> In PyTorch ROCm builds, GPU device selection still uses the string "cuda". This does not mean NVIDIA-only execution; the runtime path is HIP/ROCm.</p>
-		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① 実行スタックは CUDA/cuBLAS/cuDNN ではなく HIP/rocBLAS/MIOpen ② 観測ツールは nsys ではなく rocprof ③ GPU の対応境界や最適経路はアーキテクチャや solver 条件で変わります。</p>
-		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Execution stack is HIP/rocBLAS/MIOpen rather than CUDA/cuBLAS/cuDNN 2) Observation tool is rocprof rather than nsys 3) Support boundaries and optimal paths vary by architecture and solver conditions.</p>
+		<p data-lang="ja"><strong>このページの読み方:</strong> 1) まず出力の <code>C</code> を見る 2) 次に <code>A</code> と <code>B</code> の shape を見る 3) 最後に <code>torch.matmul</code> が ROCm 側で <code>rocBLAS</code> へつながる、と読めば十分です。</p>
+		<p data-lang="en"><strong>How to read this page:</strong> 1) Look at the output <code>C</code> first 2) Then check the shapes of <code>A</code> and <code>B</code> 3) Finally read <code>torch.matmul</code> as something that connects to <code>rocBLAS</code> on ROCm.</p>
+		<p data-lang="ja"><strong>注記:</strong> PyTorch の ROCm ビルドでは、GPU デバイス名に <code>"cuda"</code> 文字列を使います。これは名前の互換性のためで、実行は HIP/ROCm 側です。</p>
+		<p data-lang="en"><strong>Note:</strong> In PyTorch ROCm builds, GPU device selection still uses the string <code>"cuda"</code>. This is for API-name compatibility; execution still goes through HIP/ROCm.</p>
 	</div>
 
 	<!-- ── 1. なにをするか ── -->
@@ -93,6 +93,11 @@
 	<div class="prose">
 		<p data-lang="ja">理論ページでは「行列 A × 行列 B = 行列 C」を図で見ました。ここでは同じ計算を、PyTorch で GPU に投げて実際に動かします。</p>
 		<p data-lang="en">The theory page showed "Matrix A × Matrix B = Matrix C" as diagrams. Here we run the same calculation on GPU through PyTorch.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>このページでまず見えれば OK:</strong> <code>A</code> は <code>(2, 3)</code>、<code>B</code> は <code>(3, 2)</code>、結果の <code>C</code> は <code>(2, 2)</code> です。</p>
+		<p data-lang="en"><strong>What is enough to see first:</strong> <code>A</code> has shape <code>(2, 3)</code>, <code>B</code> has shape <code>(3, 2)</code>, and the result <code>C</code> has shape <code>(2, 2)</code>.</p>
 	</div>
 
 	<!-- ── 2. 最小コード ── -->
@@ -129,6 +134,19 @@ C_gpu = torch.<span class="fn">matmul</span>(A_gpu, B_gpu)
 <span class="fn">print</span>(<span class="str">"C = A × B (2×2):"</span>)
 <span class="fn">print</span>(C_gpu.cpu())</div>
 
+	<div class="prose">
+		<p data-lang="ja">コードを全部いっぺんに読む必要はありません。最初は次の 4 行だけ見れば十分です。</p>
+		<p data-lang="en">You do not need to read the whole code at once. At first, these four lines are enough.</p>
+		<p data-lang="ja"><strong><code>DEVICE = torch.device("cuda")</code>:</strong> GPU を使う準備です。</p>
+		<p data-lang="en"><strong><code>DEVICE = torch.device("cuda")</code>:</strong> This prepares GPU use.</p>
+		<p data-lang="ja"><strong><code>A = ...</code> と <code>B = ...</code>:</strong> かけたい 2 つの表を作っています。</p>
+		<p data-lang="en"><strong><code>A = ...</code> and <code>B = ...</code>:</strong> These create the two tables we want to multiply.</p>
+		<p data-lang="ja"><strong><code>C_gpu = torch.matmul(A_gpu, B_gpu)</code>:</strong> ここが本体で、「表どうしをかける」です。</p>
+		<p data-lang="en"><strong><code>C_gpu = torch.matmul(A_gpu, B_gpu)</code>:</strong> This is the core line: “multiply the two tables.”</p>
+		<p data-lang="ja"><strong><code>C_gpu.cpu()</code>:</strong> GPU 上の結果を、表示しやすい場所へ戻しています。</p>
+		<p data-lang="en"><strong><code>C_gpu.cpu()</code>:</strong> This brings the GPU result back to a place where it can be printed easily.</p>
+	</div>
+
 	<!-- ── 3. 実行するとどうなるか ── -->
 	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
 	<h2 class="section-title" data-lang="en">3. What Happens When You Run It</h2>
@@ -156,6 +174,8 @@ tensor([[ 58.,  64.],
 	<div class="prose">
 		<p data-lang="ja"><code>torch.matmul</code> は内部で <strong>rocBLAS の GEMM（General Matrix Multiply）</strong>を呼び出しています。「行列積」という数学の操作を GPU 向けに最適化したのが GEMM で、AI の計算はほとんどがこの GEMM の組み合わせです。</p>
 		<p data-lang="en"><code>torch.matmul</code> internally calls <strong>rocBLAS GEMM (General Matrix Multiply)</strong>. GEMM is the GPU-optimized implementation of matrix multiplication, and nearly all AI computations are built from combinations of GEMM.</p>
+		<p data-lang="ja">やさしく言うと、PyTorch が「この表をかけて」と受け取り、その仕事を ROCm 側の得意な計算ライブラリへ渡しています。</p>
+		<p data-lang="en">In simpler words, PyTorch receives “please multiply these tables,” then hands that job to a ROCm-side library that is good at this calculation.</p>
 		<p data-lang="ja">この流れをまとめると:</p>
 		<p data-lang="en">The flow looks like:</p>
 	</div>
@@ -176,10 +196,10 @@ python -c <span class="str">"import torch; print('torch.version.hip =', torch.ve
 python -c <span class="str">"import torch; print(torch.cuda.get_device_name(0))"</span>
 
 <span class="comment"># 3) matmul 実行時の HIP 呼び出し観測（rocprof）</span>
-rocprof --hip-trace python matmul_example.py</div>
+rocprof --hip-trace python linear_algebra_example.py</div>
 	<div class="prose">
-		<p data-lang="ja">このページの主眼は「<code>torch.matmul</code> が ROCm 側では rocBLAS GEMM へ落ちる」ことです。まず <code>torch.version.hip</code> で ROCm ビルドを確認し、必要なら <code>rocprof</code> で HIP 呼び出しを観測します。</p>
-		<p data-lang="en">The key point here is that <code>torch.matmul</code> maps to rocBLAS GEMM on ROCm. Verify ROCm build with <code>torch.version.hip</code>, then observe HIP calls with <code>rocprof</code> if needed.</p>
+		<p data-lang="ja">このページの主眼は「<code>torch.matmul</code> が ROCm 側では rocBLAS の行列積へつながる」と読むことです。まず <code>torch.version.hip</code> で ROCm ビルドを確認し、必要なら <code>rocprof</code> で実行の様子を観測します。</p>
+		<p data-lang="en">The key point here is to read <code>torch.matmul</code> as something that connects to rocBLAS matrix multiplication on ROCm. First confirm the ROCm build with <code>torch.version.hip</code>, then observe the run with <code>rocprof</code> if needed.</p>
 	</div>
 
 	<!-- ── next ── -->
