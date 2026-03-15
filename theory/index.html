@@ -70,6 +70,7 @@
 			font-weight: 600; text-decoration: none; color: #fff; background: var(--teal);
 		}
 		.card .btn:hover { opacity: 0.9; }
+		.card .btn-example { background: var(--blue); }
 		.card .filename { font-size: 12px; color: #90A4AE; margin: 0; font-family: monospace; }
 
 		/* ── recommended path ── */
@@ -141,6 +142,22 @@
 			<a href="training-vs-inference.html">Training vs Inference</a> →
 			<a href="training-flow.html">Training Flow</a> →
 			<a href="inference-flow.html">Inference Flow</a>
+		</span>
+	</div>
+
+	<!-- ════════════ 3層の読み方ガイド ════════════ -->
+	<div class="path-box" style="background:#E3F2FD; border-color:#90CAF9;">
+		<strong data-lang="ja">📚 3つの読み方:</strong>
+		<strong data-lang="en">📚 Three ways to learn:</strong><br>
+		<span data-lang="ja">
+			<strong>読む</strong>（意味をつかむ）— 理論ページで概念を比喩と図で理解する<br>
+			<strong>ROCmで見る</strong>（実際のコードで確認する）— 10〜30行の最小 PyTorch コードで GPU 上の動きを確認する<br>
+			<strong>ためす</strong>（小さな演習で手を動かす）— 準備中 🚧
+		</span>
+		<span data-lang="en">
+			<strong>Read</strong> (grasp the meaning) — Understand concepts through analogies and diagrams<br>
+			<strong>See in ROCm</strong> (verify with real code) — Confirm GPU behavior with 10–30 line PyTorch examples<br>
+			<strong>Try it</strong> (hands-on exercises) — Coming soon 🚧
 		</span>
 	</div>
 
@@ -234,6 +251,7 @@
 			<p data-lang="ja">LLM の中心にある Attention を、Q / K / V → softmax → Transformer までやさしく解説。</p>
 			<p data-lang="en">Attention — LLM's core — from Q / K / V through softmax to Transformer architecture.</p>
 			<div class="actions"><a class="btn" href="attention-for-llm.html"><span data-lang="ja">読む</span><span data-lang="en">Read</span></a></div>
+			<div class="actions"><a class="btn btn-example" href="attention-rocm-example.html"><span data-lang="ja">ROCmで見る</span><span data-lang="en">See in ROCm</span></a></div>
 		</div>
 
 		<div class="card">
@@ -245,6 +263,7 @@
 			<p data-lang="ja">ベクトル・行列・行列積をやさしく解説し、rocBLAS・gfx900 へつなぐ入門。</p>
 			<p data-lang="en">Vectors, matrices, and matrix multiply — gently connected to rocBLAS and gfx900.</p>
 			<div class="actions"><a class="btn" href="linear-algebra-for-rocm.html"><span data-lang="ja">読む</span><span data-lang="en">Read</span></a></div>
+			<div class="actions"><a class="btn btn-example" href="linear-algebra-rocm-example.html"><span data-lang="ja">ROCmで見る</span><span data-lang="en">See in ROCm</span></a></div>
 		</div>
 
 		<div class="card">
@@ -256,6 +275,7 @@
 			<p data-lang="ja">畳み込み・フィルタ・MIOpen solver を比喩で解説。gfx900 の solver 対応表つき。</p>
 			<p data-lang="en">Convolution, filters, MIOpen solvers through analogy — with a gfx900 solver table.</p>
 			<div class="actions"><a class="btn" href="deep-learning-for-rocm.html"><span data-lang="ja">読む</span><span data-lang="en">Read</span></a></div>
+			<div class="actions"><a class="btn btn-example" href="deep-learning-rocm-example.html"><span data-lang="ja">ROCmで見る</span><span data-lang="en">See in ROCm</span></a></div>
 		</div>
 
 		<div class="card">
@@ -278,6 +298,7 @@
 			<p data-lang="ja">モデルが答え合わせしながら賢くなる5ステップ。loss・重み・ROCm ライブラリの役割も。</p>
 			<p data-lang="en">Five steps of learning — loss, weights, and which ROCm library does what.</p>
 			<div class="actions"><a class="btn" href="training-flow.html"><span data-lang="ja">読む</span><span data-lang="en">Read</span></a></div>
+			<div class="actions"><a class="btn btn-example" href="training-flow-rocm-example.html"><span data-lang="ja">ROCmで見る</span><span data-lang="en">See in ROCm</span></a></div>
 		</div>
 
 		<div class="card">
@@ -289,6 +310,7 @@
 			<p data-lang="ja">学習ずみモデルが答えを出す5ステップを工場のラインで図解。</p>
 			<p data-lang="en">Five inference steps as a factory line — rocBLAS, MIOpen, HIP roles mapped.</p>
 			<div class="actions"><a class="btn" href="inference-flow.html"><span data-lang="ja">読む</span><span data-lang="en">Read</span></a></div>
+			<div class="actions"><a class="btn btn-example" href="inference-flow-rocm-example.html"><span data-lang="ja">ROCmで見る</span><span data-lang="en">See in ROCm</span></a></div>
 		</div>
 
 		<div class="card">
