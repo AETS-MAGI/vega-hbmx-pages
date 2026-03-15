@@ -110,7 +110,7 @@
         <tr><td><strong>Runtime execution</strong></td><td>In the matched runs, ROCm/HIP (override-assisted): all tested num_gpu values OK. Vulkan: SIGSEGV for num_gpu &gt;= 1.</td><td class="orange"><strong>Backend-dependent (tested scope)</strong></td></tr>
       </table>
       <p class="dim" style="font-size:16px; margin-top:8px;">Source: work_log/investigations/2026-03-07_gfx900_gate_matrix.md | ollama/CMakeLists.txt:127 | ggml-cuda/common.cuh:65</p>
-      <div class="takeaway">Five of six examined layers retained paths allowing execution in this environment. Official non-listing ≠ immediate impossibility — but scope is restricted to this setup.</div>
+      <div class="takeaway">Six of seven examined layers retained paths allowing execution in this environment. Official non-listing ≠ immediate impossibility — but scope is restricted to this setup.</div>
     </div>
 
     <!-- 4: CMake Filter -->
@@ -524,12 +524,13 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
         <tr><td><strong>公式表 (ROCm 7.2)</strong></td><td>GPU target list に gfx900 は載っていない</td><td class="red"><strong>遮断（公式範囲）</strong></td></tr>
         <tr><td><strong>CMake filter (ollama)</strong></td><td>CMakeLists.txt:127 の既定 regex <code>^gfx(94[012]|101[02]|1030|110[012]|120[01])$</code> から gfx900 は除外。<code>AMDGPU_TARGETS=gfx900</code> なら手動 override 可</td><td class="orange"><strong>既定では遮断 / 手動で許容</strong></td></tr>
         <tr><td><strong>rocBLAS artifacts</strong></td><td>/usr/lib/ollama/rocblas/library/ に Kernels.so-000-gfx900.hsaco を確認</td><td class="green"><strong>許容（この環境）</strong></td></tr>
+        <tr><td><strong>ROCm 7.2 パッケージ</strong></td><td>MIOpen Perf DB: gfx900 = 169 K 行（gfx1100: なし）; rocBLAS: 128 ファイル（gfx1100: 96）; firmware: vega10 ×16 blob</td><td class="green"><strong>出荷済み（RDNA3 超）</strong></td></tr>
         <tr><td><strong>Runner 初期化検証</strong></td><td>Journal: "Device 0: AMD Radeon RX Vega, gfx900:xnack- (0x900), VMM: no, Wave Size: 64" — valid agent として認識</td><td class="green"><strong>許容（この環境）</strong></td></tr>
         <tr><td><strong>Source macro</strong></td><td>common.cuh:65 <code>GGML_CUDA_CC_VEGA=0x1000900</code>。<code>__gfx900__</code> の dp4a path も残存（inline asm による software emulation）</td><td class="green"><strong>許容</strong></td></tr>
         <tr><td><strong>Runtime execution</strong></td><td>matched run では ROCm/HIP（override-assisted）が全 num_gpu で成功。Vulkan は num_gpu &gt;= 1 で SIGSEGV。</td><td class="orange"><strong>backend 依存（今回の範囲）</strong></td></tr>
       </table>
       <p class="dim" style="font-size:16px; margin-top:8px;">出典: work_log/investigations/2026-03-07_gfx900_gate_matrix.md | ollama/CMakeLists.txt:127 | ggml-cuda/common.cuh:65</p>
-      <div class="takeaway">調べた6層のうち5層では、この環境で gfx900 実行を許す経路が残っていた。公式非掲載は即時不可能を意味しないが、主張範囲はこの環境に限定される。</div>`,
+      <div class="takeaway">調べた7層のうち6層では、この環境で gfx900 実行を許す経路が残っていた。公式非掲載は即時不可能を意味しないが、主張範囲はこの環境に限定される。</div>`,
 `      <div class="slide-title"><div class="slide-num bg-blue">4</div><h2 class="slide-title-text blue">CMake 既定フィルタ：ソースの原文エビデンス</h2></div>
       <p style="font-size:18px; margin-bottom:8px;"><strong>出典:</strong> <code>ollama/CMakeLists.txt:121-128</code></p>
       <pre style="background:#1a1a2e; color:#e0e0e0; padding:16px; border-radius:8px; font-size:15px; line-height:1.6; overflow:auto;">check_language(HIP)
@@ -762,14 +763,15 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
         <tr><td>num_gpu は GPU 枚数を意味する</td><td>失敗は multi-GPU entry の副作用になる</td><td class="green"><strong>反証：code trace は layer-count semantics を示す</strong></td></tr>
         <tr><td class="orange"><strong>AMD_GCN 上の model-/workload-dependent Vulkan compute-path 問題</strong></td><td>qwen3.5:2b は first compute batch で失敗し、phi4-mini は num_gpu=1 で完了する</td><td class="red"><strong>観測と整合</strong></td></tr>
       </table>
-      <h3 class="blue" style="font-size:22px; margin-bottom:8px;">3層の判定（収集エビデンスに基づく）</h3>
+      <h3 class="blue" style="font-size:22px; margin-bottom:8px;">4層の判定（収集エビデンスに基づく）</h3>
       <table>
         <tr><th class="bg-blue">Tier</th><th class="bg-blue">内容</th></tr>
         <tr><td class="red"><strong>1. Official support</strong></td><td>gfx900 は ROCm 7.2 と ollama の既定 build target では公式サポート外である。</td></tr>
         <tr><td class="orange"><strong>2. Conditional executability</strong></td><td>この環境では、HSA_OVERRIDE_GFX_VERSION=9.0.0 と pre-existing artifact の下で、ROCm/HIP が2日間の matched-run 全条件を成功した。</td></tr>
-        <tr><td class="blue"><strong>3. Backend-dependent stability</strong></td><td>matched qwen3.5:2b 条件では 2 日とも Vulkan が num_gpu&gt;=1 で SIGSEGV、ROCm/HIP は非該当。Vulkan num_gpu=0 は 5 epoch 安定で、phi4-mini は num_gpu=1 で完了し、model dependence を示した。</td></tr>
+        <tr><td class="green"><strong>3. Shipped artifacts</strong></td><td>ROCm 7.2 パッケージは gfx900 Perf DB（169 K 行）、rocBLAS プリコンパイル済みカーネル 128 個、firmware 16 blob を出荷しており、gfx1100（RDNA3）・gfx1030（RDNA2）を複数指標で上回る。これはビルドパイプラインへの能動的な包含を示唆する。</td></tr>
+        <tr><td class="blue"><strong>4. Backend-dependent stability</strong></td><td>matched qwen3.5:2b 条件では 2 日とも Vulkan が num_gpu&gt;=1 で SIGSEGV、ROCm/HIP は非該当。Vulkan num_gpu=0 は 5 epoch 安定で、phi4-mini は num_gpu=1 で完了し、model dependence を示した。</td></tr>
       </table>
-      <div class="takeaway">この 3 層は独立した主張である。Tier 2 は Tier 1 を否定しない。Tier 3 は matched qwen run 2 本、Vulkan num_gpu=0 control、phi4-mini 反例、deterministic crash timing 統計で支えられている。</div>`,
+      <div class="takeaway">この 4 層は独立した主張である。Tier 2 は Tier 1 を否定しない。Tier 3 はベンダーパッケージングがコード残存を超えることを示す。Tier 4 は matched qwen run 2 本、Vulkan num_gpu=0 control、phi4-mini 反例、deterministic crash timing 統計で支えられている。</div>`,
 `      <div class="slide-title"><div class="slide-num bg-orange">18</div><h2 class="slide-title-text orange">再現可能性パッケージ</h2></div>
       <table>
         <tr><th class="bg-orange">Artifact</th><th class="bg-orange">Path</th><th class="bg-orange">役割</th></tr>
@@ -795,7 +797,7 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
       <p style="margin-top:10px;"><strong class="blue">Future work:</strong> モデルと量子化形式の追加、version を揃えた matched pair、same-version での override-on / off 比較、RADV validation layers を含む deeper Vulkan trace、GPU-offload 条件での multi-epoch stress。</p>
       <div class="takeaway">今回の rerun で one-off 批判はかなり弱くなったが、中心的な未解決変数は model/workload specificity に移った。加えて version mismatch と override dependence も残る。</div>`,
 `      <div class="slide-title"><div class="slide-num bg-green">20</div><h2 class="slide-title-text green">要点まとめ</h2></div>
-      <div class="three-col">
+      <div class="three-col" style="flex-wrap: wrap;">
         <div class="card" style="border-top: 8px solid #B71C1C;">
           <h3 class="red" style="font-size: 20px; margin-top: 0;">公式には非対応</h3>
           <p style="font-size: 17px;">gfx900 は ROCm 7.2 support matrix と ollama の既定 HIP build target から外れている。これは vendor policy の事実であり、実行能力そのものを直接意味しない。</p>
@@ -804,12 +806,16 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
           <h3 class="orange" style="font-size: 20px; margin-top: 0;">条件付きで実行可能</h3>
           <p style="font-size: 17px;">この環境では override-assisted configuration の下で、ROCm/HIP は 2 日間の matched run 全 num_gpu 条件を通した。調べた6層のうち5層に実行経路が残っていた。</p>
         </div>
+        <div class="card" style="border-top: 8px solid #1B5E20;">
+          <h3 class="green" style="font-size: 20px; margin-top: 0;">コード残存を超えた出荷</h3>
+          <p style="font-size: 17px;">ROCm 7.2 は gfx900 Perf DB（169 K 行）、rocBLAS カーネル 128 個、firmware 16 blob を出荷しており、RDNA3/2 を複数指標で上回る。これは受動的コード残存ではなく、ビルドパイプラインへの能動的包含を示唆する。</p>
+        </div>
         <div class="card" style="border-top: 8px solid #0D47A1;">
           <h3 class="blue" style="font-size: 20px; margin-top: 0;">backend 依存、かつ model 依存</h3>
           <p style="font-size: 17px;">qwen3.5:2b では 2 回の matched run で Vulkan num_gpu&gt;=1 が SIGSEGV、ROCm/HIP は非該当。Vulkan num_gpu=0 は 5/5 安定し、phi4-mini は num_gpu=1 で通ったため、この failure は gfx900 Vulkan 全般に普遍的ではない。</p>
         </div>
       </div>
-      <p class="dim" style="text-align: center; font-style: italic; margin-top: 18px; font-size: 20px;">収集エビデンスに基づく結論："公式非対応" と "どの構成でも実行不能" は別の命題である。 | qwen3.5 の ROCm/Vulkan 差は 2 日で再現し crash timing も決定論的だったが、phi4-mini は Vulkan offload failure が普遍的でないことを示した。</p>`,
+      <p class="dim" style="text-align: center; font-style: italic; margin-top: 18px; font-size: 20px;">収集エビデンスに基づく結論："公式非対応" と "どの構成でも実行不能" は別の命題である。出荷成果物の調査は第4の次元を加える：ベンダーのパッケージングは一部のサポート対象アーキテクチャを上回る形で gfx900 を能動的に含んでいる。</p>`,
 `      <section style="background:#fafafa;border:1px solid #ddd;padding:1.2em 1.6em;margin:2em 0;">
         <h3 style="margin-top:0;">本資料が主張しないこと / This presentation does not claim that...</h3>
         <ul style="font-size:0.9em;">
