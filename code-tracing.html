@@ -358,6 +358,23 @@
 						<tr><td>9</td><td>common.h:378-384</td><td><span data-lang="en">supplemental semantics: `-1 auto`, `<= -2 all`</span><span data-lang="ja">補足意味: `-1 auto`, `<= -2 all`</span></td></tr>
 					</table>
 				</div>
+				<div class="mermaid">
+flowchart TD
+    P1["① _types.py\nnum_gpu as load-time option"]
+    P2["② _client.py\nforwards options unchanged"]
+    P3["③ api/types.go\nNumGPU int, default -1"]
+    P4["④ CLI help text\n'number of layers to offload to GPU'"]
+    P5["⑤ server.go\ntreats it as requestedLayers"]
+    P6["⑥ runner.go\nsums layer counts"]
+    P7["⑦ llama.go\nwrites to n_gpu_layers"]
+    P8["⑧ llama.h public header\nlayers to store in VRAM"]
+    P9["⑨ common.h semantics\n-1=auto, le-2=all layers"]
+    P1 --> P2 --> P3 --> P4 --> P5 --> P6 --> P7 --> P8 --> P9
+    P9 --> CONCL["num_gpu = layer count to offload\nNOT number of GPU devices"]
+    style P4 fill:#fff8cc,stroke:#aaaa44
+    style P8 fill:#fff8cc,stroke:#aaaa44
+    style CONCL fill:#ddeeff,stroke:#3366aa,color:#003
+				</div>
 				<div class="explain-box">
 					<span data-lang="en"><strong>Final answer:</strong> `num_gpu` is not the number of GPUs. It is the number of model layers to offload to GPU/VRAM. Therefore, `num_gpu=2` does <strong>not</strong> mean “two GPUs were used.”</span>
 					<span data-lang="ja"><strong>最終結論:</strong> `num_gpu` は GPU 枚数ではない。GPU/VRAM に offload するモデル層数である。したがって、`num_gpu=2` は<strong>「GPUを2枚使った」ことを意味しない</strong>。</span>

@@ -762,6 +762,12 @@ flowchart LR
             <td data-lang="ja">強い</td>
             <td data-lang="en">Strong</td>
           </tr>
+          <tr>
+            <td data-lang="ja">「非サポート」のアーキテクチャが、サポート対象（RDNA3/RDNA2）よりも多いプリコンパイル済みカーネルや Perf DB を公式パッケージに同梱して出荷されうる</td>
+            <td data-lang="en">An "unsupported" architecture can ship with more pre-compiled kernels and Perf DB than officially supported targets (RDNA 3/2) in the official package</td>
+            <td data-lang="ja">強い（shipped_artifact_verified）</td>
+            <td data-lang="en">Strong (shipped_artifact_verified)</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -774,6 +780,11 @@ flowchart LR
     <div class="note note-info">
       <span data-lang="ja"><strong>2026-03-15 追記 — Provenance Map:</strong> 7つの gfx900 生存経路について、git blame ベースで投入・維持・運用・修正可能の4主体を整理した。新経路（MLIR, rocMLIR）は AMD(M) が投入し、旧経路（Winograd, ASM v4r1）は外部ドメイン contributor が投入。維持面では Winograd / MP_bidir は AMD 社員が 2021-2025 に補修しており、「放置されている」とは言い切れない。運用面では Community が回避策共有を担っている。</span>
       <span data-lang="en"><strong>2026-03-15 addendum — Provenance Map:</strong> For 7 gfx900 survival paths, four ownership roles (insertion, maintenance, operation, repair-capability) were mapped using git blame. New paths (MLIR, rocMLIR) were inserted by AMD members, while legacy paths (Winograd, ASM v4r1) trace to external-domain contributors. On maintenance, Winograd / MP_bidir have been actively patched by AMD staff through 2021-2025, so "left abandoned" is not a precise characterization. On operation, the community drives workaround sharing.</span>
+    </div>
+
+    <div class="note note-green">
+      <span data-lang="ja"><strong>2026-03-15 追記 — Shipped Artifacts:</strong> ROCm 7.2 パッケージの調査で、gfx900 向けの出荷成果物が RDNA 世代を上回る複数の指標で確認された。MIOpen Perf DB: gfx900 合計 169,182 行（gfx1030: 111,296 / gfx1100: <em>なし</em>）。rocBLAS プリコンパイル済みファイル: gfx900 = 128（gfx1100 = 96, gfx1030 = 88）。amdgpu firmware: vega10 ×16 blob。これらは「コードが残っている」レベルではなく、AMD のビルド・チューニング・パッケージングのパイプラインに gfx900 が含まれていることを示唆する。これにより、従来の「維持 / 管理 / 補充」の3層モデルは「配布（shipped artifacts）」を加えた4層モデルに拡張された。</span>
+      <span data-lang="en"><strong>2026-03-15 addendum — Shipped Artifacts:</strong> Investigation of the ROCm 7.2 package found that gfx900 shipped artifacts exceed RDNA generations on multiple metrics. MIOpen Perf DB: gfx900 total 169,182 lines (gfx1030: 111,296 / gfx1100: <em>none</em>). rocBLAS pre-compiled files: gfx900 = 128 (gfx1100 = 96, gfx1030 = 88). amdgpu firmware: 16× vega10 blobs. This goes beyond "code remaining in tree" and suggests that gfx900 is included in AMD's build, tuning, and packaging pipeline. This finding extended the previous three-layer model (build / selection / fallback) to a four-layer model adding "distribute (shipped artifacts)."</span>
     </div>
 
     <div class="note note-green">

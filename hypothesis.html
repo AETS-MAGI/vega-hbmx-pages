@@ -440,6 +440,31 @@
 				</tbody>
 			</table>
 			</div>
+			<div class="mermaid">
+flowchart TB
+    REQ["Computation Request"] --> B
+    subgraph B["Layer 1 — Build  維持"]
+        B1["gfx900 in rocBLAS CMake (ROCm 5.6–7.1)"]
+        B2["Tensile shared lib includes gfx900"]
+    end
+    B --> S
+    subgraph S["Layer 2 — Selection  管理  IsApplicable()"]
+        S1["MLIR iGEMM\ngfx900 explicit return false"]
+        S2["XDLops family\ngfx908+ only"]
+        S3["Winograd\ngfx900 permitted"]
+        S4["ASM v4r1 dynamic\ngfx900 / gfx906 whitelist"]
+    end
+    S --> F
+    subgraph F["Layer 3 — Fallback  補充"]
+        F1["rocBLAS: hipBLASLt → Tensile → FP32"]
+        F2["CK: dot4 absent → sequential path"]
+        F3["DirectNaive: always available"]
+    end
+    style S1 fill:#ffdddd,stroke:#cc4444
+    style S2 fill:#ffdddd,stroke:#cc4444
+    style S3 fill:#ddffdd,stroke:#44aa44
+    style S4 fill:#ddffdd,stroke:#44aa44
+			</div>
 		</div>
 
 		<div class="card">
@@ -605,6 +630,29 @@
 					<tr><td>Repair-capable owner</td><td>Who can realistically fix the issue at that layer?</td></tr>
 				</tbody>
 			</table>
+			</div>
+
+			<div class="mermaid">
+flowchart LR
+    subgraph PATHS["gfx900 survival paths"]
+        P1["MLIR iGEMM\n(disabled)"]
+        P3["Winograd FP32\n(active)"]
+        P2["ASM v4r1\n(legacy)"]
+        P6["Tensile fallback\n(community-patched)"]
+    end
+    P1 --> I1["Insertion: AMD(M)\nZhuoran Yin, 2021-12"]
+    P3 --> I3["Insertion: ExtC\nArtem Tamazov, 2017+"]
+    P2 --> I2["Insertion: AMD(C)\ncarlushuang, 2020"]
+    P6 --> I6["Insertion: AMD(C)+ExtC\n2022–2024"]
+    I3 --> M3["Maintenance: AMD staff\npatches 2021–2025"]
+    I2 --> M2["Maintenance: deletion-cost\nresidual"]
+    I6 --> M6["Maintenance: external PR\nmerged then reverted (PR 1862→1879)"]
+    style I1 fill:#ddeeff,stroke:#3366aa
+    style I3 fill:#eeffee,stroke:#44aa44
+    style I2 fill:#eeffee,stroke:#44aa44
+    style M3 fill:#ddeeff,stroke:#3366aa
+    style M2 fill:#f5f5f5,stroke:#999
+    style M6 fill:#fff8cc,stroke:#aaaa44
 			</div>
 
 			<ul>

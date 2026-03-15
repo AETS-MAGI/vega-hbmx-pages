@@ -104,6 +104,7 @@
         <tr><td><strong>Official matrix (ROCm 7.2)</strong></td><td>gfx900 not listed in GPU target list</td><td class="red"><strong>Blocks (official scope)</strong></td></tr>
         <tr><td><strong>CMake filter (ollama)</strong></td><td>CMakeLists.txt:127 default regex <code>^gfx(94[012]|101[02]|1030|110[012]|120[01])$</code> — gfx900 excluded; manual <code>AMDGPU_TARGETS=gfx900</code> override possible</td><td class="orange"><strong>Blocks default / Allows manual</strong></td></tr>
         <tr><td><strong>rocBLAS artifacts</strong></td><td>Kernels.so-000-gfx900.hsaco found in /usr/lib/ollama/rocblas/library/</td><td class="green"><strong>Allows (this env)</strong></td></tr>
+        <tr><td><strong>ROCm 7.2 package</strong></td><td>MIOpen Perf DB: gfx900 = 169 K lines (gfx1100: none); rocBLAS: 128 files (gfx1100: 96); firmware: 16× vega10 blobs</td><td class="green"><strong>Shipped (exceeds RDNA 3)</strong></td></tr>
         <tr><td><strong>Runner init validation</strong></td><td>Journal: "Device 0: AMD Radeon RX Vega, gfx900:xnack- (0x900), VMM: no, Wave Size: 64" — recognized as valid agent</td><td class="green"><strong>Allows (this env)</strong></td></tr>
         <tr><td><strong>Source macros</strong></td><td>common.cuh:65 <code>GGML_CUDA_CC_VEGA=0x1000900</code>; <code>__gfx900__</code> dp4a path retained (software emulation via inline asm)</td><td class="green"><strong>Allows</strong></td></tr>
         <tr><td><strong>Runtime execution</strong></td><td>In the matched runs, ROCm/HIP (override-assisted): all tested num_gpu values OK. Vulkan: SIGSEGV for num_gpu &gt;= 1.</td><td class="orange"><strong>Backend-dependent (tested scope)</strong></td></tr>
@@ -398,14 +399,15 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
         <tr><td>num_gpu means GPU count</td><td>Failure implies multi-GPU entry</td><td class="green"><strong>Contradicted: code trace establishes layer-count semantics</strong></td></tr>
         <tr><td class="orange"><strong>Model-/workload-dependent Vulkan compute-path issue on AMD_GCN</strong></td><td>qwen3.5:2b fails at first compute batch via cgo, while phi4-mini completes at num_gpu=1</td><td class="red"><strong>Consistent with observed evidence</strong></td></tr>
       </table>
-      <h3 class="blue" style="font-size:22px; margin-bottom:8px;">Three-Tier Verdict (Based on Collected Evidence)</h3>
+      <h3 class="blue" style="font-size:22px; margin-bottom:8px;">Four-Tier Verdict (Based on Collected Evidence)</h3>
       <table>
         <tr><th class="bg-blue">Tier</th><th class="bg-blue">Statement</th></tr>
         <tr><td class="red"><strong>1. Official support</strong></td><td>gfx900 is not officially supported in ROCm 7.2 or ollama's default build targets.</td></tr>
         <tr><td class="orange"><strong>2. Conditional executability</strong></td><td>In this environment, with HSA_OVERRIDE_GFX_VERSION=9.0.0 and pre-existing artifacts, ROCm/HIP ran successfully across all tested num_gpu values on two matched-run days.</td></tr>
-        <tr><td class="blue"><strong>3. Backend-dependent stability</strong></td><td>Under matched qwen3.5:2b conditions across two days, Vulkan SIGSEGV'd for num_gpu&gt;=1 while ROCm/HIP did not; Vulkan remained stable at num_gpu=0, including a 5-epoch run. A phi4-mini follow-up completed at num_gpu=1, indicating model dependence.</td></tr>
+        <tr><td class="green"><strong>3. Shipped artifacts</strong></td><td>The ROCm 7.2 package ships gfx900 Perf DB (169 K lines), 128 rocBLAS pre-compiled kernels, and 16 firmware blobs — exceeding gfx1100 (RDNA 3) and gfx1030 (RDNA 2) on multiple metrics. This implies active build-pipeline inclusion.</td></tr>
+        <tr><td class="blue"><strong>4. Backend-dependent stability</strong></td><td>Under matched qwen3.5:2b conditions across two days, Vulkan SIGSEGV'd for num_gpu&gt;=1 while ROCm/HIP did not; Vulkan remained stable at num_gpu=0, including a 5-epoch run. A phi4-mini follow-up completed at num_gpu=1, indicating model dependence.</td></tr>
       </table>
-      <div class="takeaway">The three tiers are independent claims. Tier 2 does not contradict Tier 1; Tier 3 is now supported by two matched qwen runs, a 5-epoch Vulkan num_gpu=0 control, a phi4-mini counterexample, and deterministic crash-timing statistics.</div>
+      <div class="takeaway">The four tiers are independent claims. Tier 2 does not contradict Tier 1; Tier 3 shows that vendor packaging goes beyond code residue; Tier 4 is supported by two matched qwen runs, a 5-epoch Vulkan num_gpu=0 control, a phi4-mini counterexample, and deterministic crash-timing statistics.</div>
     </div>
 
     <!-- 18: Reproducibility Package -->
@@ -447,7 +449,7 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
     <!-- 20: Takeaway -->
     <div class="slide">
       <div class="slide-title"><div class="slide-num bg-green">20</div><h2 class="slide-title-text green">Takeaway & Key Messages</h2></div>
-      <div class="three-col">
+      <div class="three-col" style="flex-wrap: wrap;">
         <div class="card" style="border-top: 8px solid #B71C1C;">
           <h3 class="red" style="font-size: 20px; margin-top: 0;">Not officially supported</h3>
           <p style="font-size: 17px;">gfx900 is absent from the ROCm 7.2 support matrix and ollama's default HIP build targets. This is a factual statement about vendor policy, not execution capability.</p>
@@ -456,12 +458,16 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
           <h3 class="orange" style="font-size: 20px; margin-top: 0;">Conditionally executable</h3>
           <p style="font-size: 17px;">In this environment, under override-assisted configuration, ROCm/HIP ran across all tested num_gpu values on both matched-run days. Five of six examined gate layers retained executable paths.</p>
         </div>
+        <div class="card" style="border-top: 8px solid #1B5E20;">
+          <h3 class="green" style="font-size: 20px; margin-top: 0;">Shipped beyond code residue</h3>
+          <p style="font-size: 17px;">ROCm 7.2 ships gfx900 Perf DB (169 K lines), 128 rocBLAS kernels, and 16 firmware blobs — exceeding RDNA 3/2 on multiple metrics. This implies active build-pipeline inclusion, not passive code survival.</p>
+        </div>
         <div class="card" style="border-top: 8px solid #0D47A1;">
           <h3 class="blue" style="font-size: 20px; margin-top: 0;">Backend-dependent stability</h3>
           <p style="font-size: 17px;">For qwen3.5:2b across two matched runs, Vulkan SIGSEGV'd for num_gpu&gt;=1 while ROCm/HIP did not; Vulkan stayed stable at num_gpu=0 for 5/5 epochs. A phi4-mini follow-up passed at num_gpu=1, so the failure is not universal to gfx900 Vulkan.</p>
         </div>
       </div>
-      <p class="dim" style="text-align: center; font-style: italic; margin-top: 18px; font-size: 20px;">Based on the collected evidence: "not officially supported" and "not executable in any configuration" are distinct statements. | The qwen3.5 ROCm/Vulkan difference reproduced across two days with deterministic crash timing, but phi4-mini shows the Vulkan offload failure is model-specific rather than universal.</p>
+      <p class="dim" style="text-align: center; font-style: italic; margin-top: 18px; font-size: 20px;">Based on the collected evidence: "not officially supported" and "not executable in any configuration" are distinct statements. The shipped-artifacts finding adds a fourth dimension: vendor packaging actively includes gfx900 in ways that surpass some supported architectures.</p>
     </div>
 
     <!-- Non-claims -->
