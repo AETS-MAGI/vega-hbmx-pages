@@ -362,6 +362,13 @@
 		<span data-lang="ja">Vega56/64 の実行可否が不明な状態から出発し、環境統制→ビルドゲート解析→API意味検証→バックエンド比較実験→故障局在化→再現性確認→モデル依存性の探索、という段階を踏んだ。各主張は記録データに基づく。</span>
 	</div>
 
+	<div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:1em 1.4em;margin:1.2em 0;font-size:0.95em;line-height:1.6;">
+	  <strong>Note / 注記</strong><br>
+	  This document records the investigation timeline based on publicly available sources and local repository clones only.
+	  It does not assert the contents of private issues or internal decision-making processes.<br>
+	  本文書は、公開一次資料およびローカル clone から観測可能な範囲に基づく調査経緯を記録したものであり、非公開 issue や社内意思決定の内容を断定するものではない。
+	</div>
+
 	<section class="timeline">
 
 		<!-- ── STEP 1 ── -->
@@ -596,8 +603,8 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).<span class="hi-yellow">c
     device-&gt;subgroup_arithmetic &amp;&amp;
     device-&gt;architecture != vk_device_architecture::<span class="hi-red">AMD_GCN</span>;</div>
 			<div class="hbox orange">
-				<span data-lang="en"><strong>Detailed legend:</strong> <strong>SIGSEGV</strong> = the process touched invalid memory and crashed. <strong>cgo execution</strong> = the Go runner was inside native C/C++ backend code. <strong>computeBatch</strong> = actual inference compute had started. <strong>AMD_GCN</strong> = the backend classified this GPU as an older wave64-only AMD path. <strong>subgroup arithmetic disabled</strong> = one optimized parallel route is intentionally turned off for this class, so the backend uses a different compute path.</span>
-				<span data-lang="ja"><strong>詳細凡例:</strong> <strong>SIGSEGV</strong> = 不正なメモリアクセスでプロセスが落ちたこと。<strong>cgo execution</strong> = Go ランナーがネイティブの C/C++ backend code 内にいたこと。<strong>computeBatch</strong> = 実際の推論計算が始まっていた段階。<strong>AMD_GCN</strong> = この GPU が古い wave64 固定の AMD 系経路として分類されたこと。<strong>subgroup arithmetic disabled</strong> = この系統では最適化された並列経路の1つが意図的に無効化され、別の compute path が使われること。</span>
+				<span data-lang="en"><strong>Detailed legend:</strong> <strong>SIGSEGV</strong> = the process touched invalid memory and crashed. <strong>cgo execution</strong> = the Go runner was inside native C/C++ backend code. <strong>computeBatch</strong> = actual inference compute had started. <strong>AMD_GCN</strong> = the backend classified this GPU as an older wave64-only AMD path. <strong>subgroup arithmetic disabled</strong> = one optimized parallel route is excluded for this class (confirmed from source), so the backend uses a different compute path.</span>
+				<span data-lang="ja"><strong>詳細凡例:</strong> <strong>SIGSEGV</strong> = 不正なメモリアクセスでプロセスが落ちたこと。<strong>cgo execution</strong> = Go ランナーがネイティブの C/C++ backend code 内にいたこと。<strong>computeBatch</strong> = 実際の推論計算が始まっていた段階。<strong>AMD_GCN</strong> = この GPU が古い wave64 固定の AMD 系経路として分類されたこと。<strong>subgroup arithmetic disabled</strong> = この系統では最適化された並列経路の1つが除外されたことが確認でき、別の compute path が使われること。</span>
 			</div>
 		</article>
 
@@ -764,10 +771,12 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).<span class="hi-yellow">c
 			<div class="hbox">
 				<span data-lang="en"><strong>MLIR iGEMM — explicit gfx900 exclusion (commit 2407d2f, 2021-12-22):</strong><br>
 				<span class="fref">conv_mlir_igemm_{fwd,bwd,wrw}.cpp</span> each contain <code>if(StartsWith(device_name, "gfx900")) return false;</code>.<br>
-				All three files were patched in a single commit by Zhuoran Yin (AMD), citing a private LLVM repo issue <code>llvm-project-private/issues/389</code>.</span>
+				All three files were patched in a single commit by Zhuoran Yin (AMD), citing a private LLVM repo issue <code>llvm-project-private/issues/389</code>.<br>
+				<em>(This issue is not publicly accessible; its content cannot be verified from outside. Accordingly, what can be stated here is limited to the observable reference relationship and gating pattern in the public codebase.)</em></span>
 				<span data-lang="ja"><strong>MLIR iGEMM — gfx900 を明示除外（コミット 2407d2f, 2021-12-22）:</strong><br>
 				<span class="fref">conv_mlir_igemm_{fwd,bwd,wrw}.cpp</span> の全 3 ファイルにそれぞれ <code>if(StartsWith(device_name, "gfx900")) return false;</code> が存在。<br>
-				AMD 社内の非公開 LLVM リポジトリ issue <code>llvm-project-private/issues/389</code> を根拠に同一コミットで 3 ファイルを一括変更。</span>
+				AMD 社員によるコミットで 3 ファイルを一括変更し、<code>llvm-project-private/issues/389</code> が参照されていることが git log から確認できる。<br>
+				<em>（この issue は非公開であり、本文は外部から確認できない。公開側から確認できるのは参照関係と gating の痕跡のみ。）</em></span>
 			</div>
 
 			<div class="log-quote"><span class="hi-gray">// conv_mlir_igemm_fwd.cpp : 188  (same pattern in bwd.cpp:68, wrw.cpp:69)</span>
@@ -1089,6 +1098,17 @@ MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Asse
 	</div>
 
 </div>
+
+<section style="background:#fafafa;border:1px solid #ddd;padding:1.2em 1.6em;margin:2em 0;">
+  <h3 style="margin-top:0;">本文書が主張しないこと / This document does not claim that...</h3>
+  <ul>
+    <li>AMD の社内意思決定過程を断定するものではない / Internal decision-making processes are asserted.</li>
+    <li><code>llvm-project-private#389</code> の内容を推定で補完するものではない / The content of the private issue has been inferred.</li>
+    <li>本文書の事例が ROCm 全体の一般法則として確定しているとするものではない / A single case is generalized into a universal rule.</li>
+    <li>AMD の support policy 全体を完全に代表するものではない / AMD's support policy as a whole is fully represented.</li>
+    <li>AMD または特定個人への批判を意図するものではない / Any specific organization is being criticized.</li>
+  </ul>
+</section>
 
 <script>
 	const html  = document.documentElement;
