@@ -366,6 +366,14 @@
       .step::before { left: -22px; }
     }
   </style>
+  <style>
+    .mermaid { background:#fafafa; border:1px solid #ccd; border-radius:8px; padding:1em 1.2em; margin:1.5em 0; overflow-x:auto; text-align:center; }
+    .mermaid svg { max-width:100%; height:auto; }
+  </style>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' } });
+  </script>
 </head>
 <body>
   <div class="page">
@@ -410,6 +418,26 @@
     <h2 class="section-title" data-lang="en">Primary timeline</h2>
     <p class="section-lead" data-lang="ja">中心に置いたのは、GitHub 側の履歴から「大きな出来事」として読み取りやすいものです。gfx900 は入り口ですが、年表の主題は ROCm 一般の振る舞いです。</p>
     <p class="section-lead" data-lang="en">The focus is on events that stand out in GitHub-side history as meaningful turning points. gfx900 is the entry point, but the larger subject is ROCm behavior in general.</p>
+
+    <div class="mermaid">
+timeline
+    title Key events in gfx900 / ROCm history
+    section 2021
+        2021-10 : MIOpen sramecc workaround added (WORKAROUND_1204, commit 8498875ae)
+        2021-12 : MIOpen MLIR iGEMM gfx900 disabled (commit 2407d2f, PR 1328)
+    section ROCm 5.5 — 2022
+        2022-09 : Tensile gfx900 xnack- added (external contributor PR 1595)
+        2022-10 : MIOpen DB docs gfx900 entries remain
+    section 2023
+        2023-12 : Private issue URL updated only (commit b0f912e)
+    section ROCm 6.2 — 2024
+        ROCm 6.2 : rocSOLVER adds gfx900 to default build targets
+    section ROCm 7.0 — 2025
+        ROCm 7.0 : hipCUB removes gfx900 from default build targets
+    section Present — 2026
+        2026 : Runtime and fallback paths still present
+        2026 : gfx900 Perf DB 169K lines shipped in ROCm 7.2
+    </div>
 
     <div class="timeline">
       <div class="step">
@@ -614,6 +642,34 @@
 
     <h2 class="section-title" data-lang="ja">並行して進んでいる別の流れ</h2>
     <h2 class="section-title" data-lang="en">Other currents running in parallel</h2>
+
+    <div class="mermaid">
+flowchart LR
+    subgraph BUILD["Build layer — component by component"]
+        B_add["rocSOLVER\ngfx900 ADDED (ROCm 6.2)"]
+        B_rm["hipCUB\ngfx900 REMOVED (ROCm 7.0)"]
+        B_keep["rocBLAS / Tensile\ncontinues as target"]
+    end
+    subgraph SEL["Selection layer — MIOpen"]
+        S_dis["MLIR iGEMM\ngfx900 DISABLED (2021-12)"]
+        S_keep["Winograd / ASM v4r1\nstill passing"]
+    end
+    subgraph REPO["Repository layer"]
+        R1["ROCR-Runtime\n→ rocm-systems"]
+        R2["Tensile\n→ rocm-libraries"]
+    end
+    KEY{{"Same ROCm stack —\nexclusions and additions\nrun in parallel,\nat different layers"}}
+    BUILD --> KEY
+    SEL --> KEY
+    REPO --> KEY
+    style B_add fill:#ddffdd,stroke:#44aa44,color:#040
+    style B_rm fill:#ffdddd,stroke:#cc4444,color:#600
+    style B_keep fill:#ddeeff,stroke:#4466aa
+    style S_dis fill:#ffdddd,stroke:#cc4444,color:#600
+    style S_keep fill:#ddffdd,stroke:#44aa44,color:#040
+    style KEY fill:#fff8cc,stroke:#aaaa44,color:#440
+    </div>
+
     <div class="grid">
       <div class="card">
         <h3 data-lang="ja">support の層分解</h3>

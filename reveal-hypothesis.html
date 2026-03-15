@@ -704,12 +704,14 @@ flowchart LR
         <li data-lang="en">It remains unclear whether private-backend-to-public-gating behavior is common or just a few notable cases. However, the gating mechanism implementation was confirmed traceable in public rocMLIR as of 2026-03-15.</li>
         <li data-lang="ja"><code>#1231</code> と <code>#1328</code> の public 文脈は回収できたが、後者の private root cause 自体はなお非公開のままである。</li>
         <li data-lang="en">The public context for <code>#1231</code> and <code>#1328</code> is now recovered, but the private root cause behind the latter remains inaccessible.</li>
+        <li data-lang="ja">gfx1100（RDNA3）および gfx1200（RDNA4）に MIOpen Perf DB が存在しない理由は未確定である。MIOpen が異なるチューニング方式を採用している可能性、あるいは Perf DB 統合が未完了の可能性がある。</li>
+        <li data-lang="en">Why gfx1100 (RDNA 3) and gfx1200 (RDNA 4) have no MIOpen Perf DB remains undetermined. MIOpen may use a different tuning approach for those architectures, or integration may be incomplete.</li>
       </ul>
     </div>
 
     <div class="note note-green">
-      <span data-lang="ja"><strong>暫定結論:</strong> <code>gfx900</code> は特殊な例外というより、ROCm が本来持つ layered support / fallback / staged deprecation の構造を観測しやすい地点だった、と読むのが最も自然である。</span>
-      <span data-lang="en"><strong>Provisional conclusion:</strong> <code>gfx900</code> is best understood not as a weird exception, but as a convenient observation point for ROCm's underlying layered-support, fallback, and staged-deprecation structure.</span>
+      <span data-lang="ja"><strong>暫定結論:</strong> <code>gfx900</code> は特殊な例外というより、ROCm が本来持つ layered support / fallback / staged deprecation / <strong>配布パイプライン</strong>の構造を観測しやすい地点だった、と読むのが最も自然である。出荷成果物の調査は、「コードが残存している」だけでなく「ビルド・チューニング・パッケージングのパイプラインに gfx900 が含まれている」ことを示す。</span>
+      <span data-lang="en"><strong>Provisional conclusion:</strong> <code>gfx900</code> is best understood not as a weird exception, but as a convenient observation point for ROCm's underlying layered-support, fallback, staged-deprecation, and <strong>distribution-pipeline</strong> structure. The shipped-artifacts investigation shows not just that code remains, but that gfx900 is included in AMD's build, tuning, and packaging pipeline.</span>
     </div>
 
     <div class="actions">
