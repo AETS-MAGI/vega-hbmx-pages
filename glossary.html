@@ -626,6 +626,189 @@ flowchart TD
 
   </div>
 
+  <!-- ═══════════ Layer 4: 深掘り用語 / Deep-dive terms ═══════════ -->
+  <p class="layer-heading" data-lang="ja">STEP 4 — 深掘り用語</p>
+  <p class="layer-heading" data-lang="en">STEP 4 — Deep-dive terms</p>
+
+  <h2 class="section-title" data-lang="ja">深掘り用語</h2>
+  <h2 class="section-title" data-lang="en">Deep-dive terms</h2>
+  <p class="section-lead" data-lang="ja">調査をさらに深く読むための補足用語です。</p>
+  <p class="section-lead" data-lang="en">Supplementary terms for reading deeper into the investigation.</p>
+
+  <div class="term-grid">
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">GCN</p>
+      <p class="term-aka" data-lang="ja">Graphics Core Next — gfx900 が属するアーキテクチャ系統</p>
+      <p class="term-aka" data-lang="en">Graphics Core Next — the architecture family gfx900 belongs to</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 2012〜2018年ごろの AMD GPU の基盤設計です。<br>
+        gfx900 (Vega) はその最終世代にあたり、後継の CDNA（計算向け）と RDNA（ゲーム向け）に分岐しました。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> AMD's GPU architecture from roughly 2012–2018.<br>
+        gfx900 (Vega) is the final generation; it was succeeded by CDNA (compute) and RDNA (gaming).
+      </p>
+      <div class="term-key" data-lang="ja"><strong>要点:</strong> GCN は xdlops を持たないが、FP32 演算と Winograd カーネルは今も有効。</div>
+      <div class="term-key" data-lang="en"><strong>Key:</strong> GCN lacks xdlops, but FP32 operations and Winograd kernels remain functional.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">CDNA</p>
+      <p class="term-aka" data-lang="ja">Compute DNA — データセンター計算向けの新しいアーキテクチャ</p>
+      <p class="term-aka" data-lang="en">Compute DNA — the datacenter compute architecture</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> GCN から分岐した、AI・HPC 向けの AMD GPU 設計です。<br>
+        gfx908 (MI100)、gfx90a (MI200)、gfx942 (MI300X) が属し、xdlops を搭載しています。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> AMD's AI/HPC GPU architecture branch, split from GCN.<br>
+        Includes gfx908 (MI100), gfx90a (MI200), gfx942 (MI300X). Has xdlops.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>gfx900 との違い:</strong> xdlops を搭載し、MIOpen の高速ソルバーの大半が CDNA 以降をターゲットにしている。</div>
+      <div class="term-key" data-lang="en"><strong>Difference from gfx900:</strong> Has xdlops; most MIOpen fast solvers target CDNA and later.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">RDNA</p>
+      <p class="term-aka" data-lang="ja">Radeon DNA — ゲーム・ワークステーション向けの新しいアーキテクチャ</p>
+      <p class="term-aka" data-lang="en">Radeon DNA — the gaming and workstation architecture</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> GCN から分岐した、ゲーム向けの AMD GPU 設計です。<br>
+        gfx1030 (RDNA2)、gfx1100 (RDNA3)、gfx1200 (RDNA4) が属します。ROCm での計算サポートは CDNA ほど充実していません。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> AMD's gaming GPU architecture, also split from GCN.<br>
+        Includes gfx1030 (RDNA2), gfx1100 (RDNA3), gfx1200 (RDNA4). ROCm compute support is less complete than CDNA.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>注目点:</strong> gfx1100 (RDNA3) の Perf DB は 0 行。一方 gfx900 は 169,182 行。</div>
+      <div class="term-key" data-lang="en"><strong>Notable:</strong> gfx1100 (RDNA3) has 0 Perf DB lines, while gfx900 has 169,182.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">legacy path</p>
+      <p class="term-aka" data-lang="ja">古いけれど残っている実行経路</p>
+      <p class="term-aka" data-lang="en">An old execution path that still exists</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 新しいアーキテクチャには別の最適化経路があるが、古い世代のために作られた経路が削除されずに残っているもの。<br>
+        gfx900 が動作できる主な理由の一つです。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> An execution path originally built for older hardware that was never removed.<br>
+        A major reason gfx900 can still function.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>例:</strong> ConvAsm1x1U, ConvBinWinograd3x3U — どちらも gfx900 で runtime_verified 済み。</div>
+      <div class="term-key" data-lang="en"><strong>Examples:</strong> ConvAsm1x1U, ConvBinWinograd3x3U — both runtime_verified on gfx900.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">default build target</p>
+      <p class="term-aka" data-lang="ja">「ソースにある」と「標準でビルドされる」の違い</p>
+      <p class="term-aka" data-lang="en">The difference between "in the source" and "built by default"</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> ソースコードに gfx900 対応が含まれていても、ビルド設定のデフォルトに含まれていなければ通常のパッケージには入りません。<br>
+        「対応コードあり ≠ 公式ビルド済み」という区別が重要です。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> Even when source code contains gfx900 support, it may not be in the default build configuration.<br>
+        "Code exists" ≠ "officially built and shipped."
+      </p>
+      <div class="term-key" data-lang="ja"><strong>例:</strong> hipCUB は gfx900 を default build から除外。一方 rocBLAS は今もデフォルトでビルドされている。</div>
+      <div class="term-key" data-lang="en"><strong>Example:</strong> hipCUB excluded gfx900 from default build, while rocBLAS still builds for it.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">runtime support</p>
+      <p class="term-aka" data-lang="ja">「ビルド時」と「実行時」のサポートの違い</p>
+      <p class="term-aka" data-lang="en">The difference between build-time and run-time support</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> ビルド時に GPU ターゲットに入っていても、実行時に適切なカーネルが選ばれなければ動きません。<br>
+        逆に、ビルドに含まれていなくても fallback 経路で実行時に動く場合もあります。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> A GPU may be a build target but still fail at runtime if no suitable kernel is selected.<br>
+        Conversely, it may work at runtime via fallback even without explicit build inclusion.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>調査の核心:</strong> gfx900 は「公式サポート外」だが runtime では多くの経路で動作する — この区別が重要。</div>
+      <div class="term-key" data-lang="en"><strong>Central to investigation:</strong> gfx900 is "officially unsupported" yet works at runtime on many paths.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">lazy loading</p>
+      <p class="term-aka" data-lang="ja">必要になるまでカーネルを読み込まない仕組み</p>
+      <p class="term-aka" data-lang="en">Loading kernels only when actually needed</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> rocBLAS / Tensile は起動時に全カーネルを読み込むのではなく、実行時に必要なカーネルだけを読み込みます。<br>
+        gfx900 向けカーネルがパッケージに含まれていれば、この仕組みで読み込まれる可能性があります。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> rocBLAS/Tensile load kernels on demand at runtime, not all at startup.<br>
+        If gfx900 kernels are present in the package, this mechanism can load them.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>要点:</strong> パッケージに gfx900 向けファイルが存在する ＝ lazy loading で読まれうる。</div>
+      <div class="term-key" data-lang="en"><strong>Key:</strong> gfx900 files present in the package can be loaded lazily at runtime.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">gating</p>
+      <p class="term-aka" data-lang="ja">特定の GPU を実行経路の入口で止める仕組み</p>
+      <p class="term-aka" data-lang="en">Blocking certain GPUs at the entrance to an execution path</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> コードの中に「この GPU だったら使わせない」というチェックを入れることです。<br>
+        MIOpen では <code>IsApplicable()</code> がこの役割を担います。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> A check in code that says "do not allow this GPU to use this path."<br>
+        In MIOpen, <code>IsApplicable()</code> serves this role.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>例:</strong> <code>if(StartsWith(name, "gfx900")) return false;</code> — MLIR iGEMM ソルバーでの gating。</div>
+      <div class="term-key" data-lang="en"><strong>Example:</strong> <code>if(StartsWith(name, "gfx900")) return false;</code> — gating in the MLIR iGEMM solver.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">deprecated</p>
+      <p class="term-aka" data-lang="ja">「非推奨」— 完全削除とは違う</p>
+      <p class="term-aka" data-lang="en">"Deprecated" — not the same as removed</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> 「非推奨」とは「今後サポートを減らしていく予定」という意味で、すぐに動かなくなるわけではありません。<br>
+        gfx900 は ROCm 5.x 以降 deprecated ですが、コードの多くの部分ではまだ機能しています。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> "Deprecated" means "planned for reduced support," not "immediately broken."<br>
+        gfx900 has been deprecated since ROCm 5.x, but many code paths still function.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>大事な区別:</strong> deprecated（非推奨）→ removed from default build（ビルド除外）→ code deleted（コード削除）は別の段階。</div>
+      <div class="term-key" data-lang="en"><strong>Key distinction:</strong> deprecated → removed from default build → code deleted are separate stages.</div>
+    </div>
+
+    <div class="term-card deep">
+      <span class="cat-badge deep">Deep-dive</span>
+      <p class="term-name">private issue</p>
+      <p class="term-aka" data-lang="ja">公開されていないバグ報告・議論</p>
+      <p class="term-aka" data-lang="en">Non-public bug reports and discussions</p>
+      <p class="term-def" data-lang="ja">
+        <strong>ひとことで言うと:</strong> GitHub 上で非公開に設定された issue のことです。<br>
+        コードに「この private issue が原因で変更した」と参照があっても、外部から本文を読むことはできません。
+      </p>
+      <p class="term-def" data-lang="en">
+        <strong>In one sentence:</strong> GitHub issues marked as non-public.<br>
+        Code may reference them, but their contents cannot be read from outside the organization.
+      </p>
+      <div class="term-key" data-lang="ja"><strong>調査における限界:</strong> 公開側から確認できるのは参照関係と gating の痕跡に限られる。内容は断定できない。</div>
+      <div class="term-key" data-lang="en"><strong>Limitation:</strong> Only reference relationships and gating traces are observable from the public side.</div>
+    </div>
+
+  </div>
+
   <footer>
     <p data-lang="ja">vega-hbmx-pages — gfx900 / ROCm 調査ノート | <a href="index.html">ホームへ戻る</a></p>
     <p data-lang="en">vega-hbmx-pages — gfx900 / ROCm investigation notes | <a href="index.html">Back to home</a></p>
