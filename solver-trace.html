@@ -315,6 +315,12 @@
 				<span class="badge badge-ver">Updated: 2026-03-14</span>
 			</div>
 		</div>
+		<div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:1em 1.4em;margin:1.2em 0;font-size:0.95em;line-height:1.6;">
+		  <strong>Note / 注記</strong><br>
+		  This document organizes observations from publicly available sources and local repository clones only.
+		  It does not assert the contents of private issues or internal decision-making processes.<br>
+		  本文書は、公開一次資料およびローカル clone から観測可能な範囲を整理したものであり、非公開 issue や社内意思決定の内容を断定するものではない。
+		</div>
 		<div class="lang-toggle" aria-label="Language switch">
 			<button id="btn-en" class="lang-btn active" type="button">EN</button>
 			<button id="btn-ja" class="lang-btn" type="button">JP</button>
@@ -403,6 +409,7 @@
 				<span data-lang="en"><strong>Note on the cited issue:</strong> <code>llvm-project-private/issues/389</code> refers to AMD's internal (private) LLVM repository — not the public MIOpen #389 or public llvm-project #389. The issue reference suggests an internal LLVM-side reason for the original exclusion, but the details are not publicly accessible. A 2026-03-14 runtime follow-up also exposed missing gfx900 tuning records after forced guard bypass, so the public evidence does <em>not</em> support collapsing the whole problem to a single visible cause.</span>
 				<span data-lang="ja"><strong>参照 issue について:</strong> <code>llvm-project-private/issues/389</code> は AMD 社内の非公開 LLVM リポジトリ — 公開 MIOpen #389 や公開 llvm-project #389 とは別物。この参照は「元の除外理由のどこかに LLVM 側事情があった」ことを示唆するが、詳細は外部から確認できない。さらに 2026-03-14 の追試では、強制実行後に gfx900 向け tuning record 不在も露出しており、公開情報だけで原因を単一レイヤに還元することはできない。</span>
 			</div>
+			<p style="font-style:italic;color:#555;font-size:0.9em;">（この issue は非公開であり、本文は外部から確認できない。公開側から確認できるのは参照関係と gating の痕跡のみ。）</p>
 			<div class="hbox red">
 				<span data-lang="en"><strong>Runtime confirmation:</strong> Forced execution via <code>miopen-driver -S ConvMlirIgemmFwd</code> on Vega64 confirms that the static guard is meaningful. Earlier runs hit <code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code>. A 2026-03-14 follow-up on both INT8 and FP32 reached <code>CompileSolution</code> → <code>GetInvoker</code> and then failed with <code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assertion. In other words, <code>-S</code> can bypass <code>IsApplicable()</code>, but downstream MLIR/tuning support for gfx900 remains incomplete.</span>
 				<span data-lang="ja"><strong>実機確認:</strong> Vega64 で <code>miopen-driver -S ConvMlirIgemmFwd</code> を強制実行すると、静的ガードが有意味であることが逆に確認できる。初期の追試では <code>miirLowerTuningParams: MIIR_INVALID_PARAM</code> → <code>RunForwardGPU() FAILED, rc=0x7</code>。さらに 2026-03-14 の追試では INT8/FP32 の両方で <code>CompileSolution</code> → <code>GetInvoker</code> まで進んだ後、<code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assertion で停止した。つまり <code>-S</code> は <code>IsApplicable()</code> をバイパスできるが、その先の MLIR/tuning 支援は gfx900 で未完成のままである。</span>
