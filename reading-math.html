@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    })"></script>
+  <title>数式の読み方入門 / How to Read Math Notation | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --navy: #0B3C5D;
+      --teal: #00796B;
+      --amber: #E65100;
+      --ink: #1F2933;
+      --muted: #5F6C7B;
+      --line: #D8E0E8;
+      --bg: #F5F8FB;
+      --card: #FFFFFF;
+      --green: #2E7D32;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(0,121,107,0.07), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(11,60,93,0.06), transparent 26%),
+        var(--bg);
+    }
+    .page { max-width: 860px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 18px;
+    }
+    .home-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600;
+    }
+    .home-link:hover { text-decoration: underline; }
+    .lang-switcher { display: flex; gap: 6px; }
+    .lang-btn {
+      padding: 4px 12px; border: 1.5px solid #B0BEC5; border-radius: 20px;
+      background: transparent; cursor: pointer; font-size: 13px; color: var(--muted);
+    }
+    .lang-btn.active { background: var(--teal); border-color: var(--teal); color: #fff; }
+
+    .hero { margin-bottom: 32px; }
+    .hero h1 { font-size: 28px; font-weight: 800; color: var(--navy); margin: 0 0 6px; }
+    .subtitle { font-size: 14px; color: var(--muted); margin: 0 0 12px; }
+    .hero p { font-size: 16px; line-height: 1.75; margin: 10px 0 0; }
+
+    .section-title {
+      font-size: 21px; font-weight: 700; color: var(--navy);
+      border-left: 4px solid var(--teal); padding-left: 12px;
+      margin: 36px 0 16px;
+    }
+
+    .prose { line-height: 1.8; font-size: 15px; }
+    .prose p { margin: 0 0 14px; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    /* symbol cards grid */
+    .sym-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .sym-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .sym-card .sym-top {
+      display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px;
+    }
+    .sym-card .sym { font-size: 22px; font-weight: 700; color: var(--navy); min-width: 36px; }
+    .sym-card .sym-name { font-size: 13px; font-weight: 700; color: var(--teal); }
+    .sym-card .sym-what { font-size: 13px; color: var(--muted); line-height: 1.6; }
+    .sym-card .sym-example {
+      margin-top: 8px; padding: 6px 10px;
+      background: #F0F9F7; border-radius: 6px;
+      font-size: 12px; color: #1B5E20; line-height: 1.6;
+    }
+
+    /* step-by-step demo */
+    .demo-box {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 10px; padding: 20px 22px; margin: 20px 0;
+    }
+    .demo-box h4 { margin: 0 0 12px; font-size: 15px; color: var(--navy); }
+    .demo-row {
+      display: flex; align-items: center; gap: 10px;
+      flex-wrap: wrap; margin: 10px 0; font-size: 14px;
+    }
+    .demo-box .step-formula {
+      background: #E8F5E9; border-radius: 6px;
+      padding: 6px 14px; font-size: 15px; color: #1B5E20;
+    }
+    .demo-box .step-meaning {
+      font-size: 13px; color: var(--muted); flex: 1; min-width: 160px;
+    }
+    .demo-arrow { font-size: 18px; color: #aaa; }
+
+    /* callout */
+    .callout {
+      border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 16px 0;
+    }
+    .callout-green { background: #E8F5E9; border-left: 4px solid #2E7D32; }
+    .callout-amber { background: #FFF8E1; border-left: 4px solid #F9A825; }
+    .callout-teal  { background: #E0F2F1; border-left: 4px solid var(--teal); }
+    .callout h4 { margin: 0 0 8px; font-size: 15px; color: var(--navy); }
+    .callout p  { margin: 0 0 8px; font-size: 14px; line-height: 1.75; }
+    .callout p:last-child { margin-bottom: 0; }
+
+    /* analogy */
+    .analogy {
+      background: #FFFDE7; border: 1px solid #FDD835; border-radius: 8px;
+      padding: 14px 18px; margin: 16px 0; font-size: 14px; color: #33260A;
+    }
+    .analogy strong { color: #E65100; }
+
+    /* reference table */
+    .ref-table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 18px 0; }
+    .ref-table th {
+      background: var(--teal); color: #fff; padding: 9px 12px; text-align: left; font-weight: 700;
+    }
+    .ref-table td { padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .ref-table tr:last-child td { border-bottom: none; }
+    .ref-table tr:nth-child(even) td { background: #F0F9F8; }
+    .ref-table td:first-child { font-weight: 700; color: var(--navy); white-space: nowrap; }
+    html[data-language="ja"] td[data-lang="ja"],
+    html[data-language="en"] td[data-lang="en"],
+    html[data-language="ja"] th[data-lang="ja"],
+    html[data-language="en"] th[data-lang="en"] { display: table-cell; }
+
+    /* next cards */
+    .next-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 40px; }
+    .next-card {
+      flex: 1; min-width: 220px;
+      border-radius: 10px; padding: 16px 18px;
+      text-decoration: none; display: block;
+      border: 1px solid var(--line); background: var(--card);
+      transition: box-shadow 0.15s;
+    }
+    .next-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.10); }
+    .next-card .nc-label { font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--teal); margin-bottom: 6px; }
+    .next-card h3 { margin: 0 0 6px; font-size: 15px; color: var(--navy); }
+    .next-card p  { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+
+    /* lang */
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] li[data-lang="en"],
+    html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"],
+    html[data-language="en"] h3[data-lang="en"],
+    html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+    @media (max-width: 640px) {
+      .page { padding: 20px 16px 40px; }
+      .hero h1 { font-size: 22px; }
+      .sym-grid { grid-template-columns: 1fr; }
+      .next-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="toolbar">
+    <a class="home-link" href="index.html">&#8592; <span data-lang="ja">トップへ</span><span data-lang="en">Back to index</span></a>
+    <div class="lang-switcher">
+      <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+      <button id="btn-en" class="lang-btn" type="button">EN</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <p class="subtitle" data-lang="ja">数式が苦手な人のための準備ページ</p>
+    <p class="subtitle" data-lang="en">A warm-up for those unfamiliar with mathematical notation</p>
+    <h1 data-lang="ja">数式の読み方入門</h1>
+    <h1 data-lang="en">How to Read Math Notation</h1>
+    <p data-lang="ja">線形代数・深層学習・Attention などのページに出てくる数式を読む前に、記号の基本的な意味と読み方を確認するページです。数式を完全に理解する必要はありません。<strong>「何のためにある記号か」がわかれば十分</strong>です。</p>
+    <p data-lang="en">A quick orientation to the symbols you'll meet in the linear algebra, deep learning, and Attention pages. You don't need to understand every formula fully — <strong>knowing what each symbol is for is enough</strong>.</p>
+  </section>
+
+  <!-- 1. 数式はメモ -->
+  <h2 class="section-title" data-lang="ja">① 数式は「意味を短く書いたメモ」</h2>
+  <h2 class="section-title" data-lang="en">① A formula is a compact memo</h2>
+
+  <div class="prose">
+    <p data-lang="ja">数式は、パズルの暗号ではありません。長い説明を短く書いたメモのようなものです。</p>
+    <p data-lang="en">A formula isn't a puzzle to decode. Think of it as a compact memo for a longer explanation.</p>
+  </div>
+
+  <div class="callout callout-teal">
+    <p data-lang="ja" style="font-size:15px;font-weight:700;color:#004D40;margin:0 0 8px;">読み方のコツ：記号を追いかけるより、「何をしている式か」を先に見る</p>
+    <p data-lang="en" style="font-size:15px;font-weight:700;color:#004D40;margin:0 0 8px;">Key tip: instead of chasing symbols, ask "what is this formula trying to do?"</p>
+    <p data-lang="ja">たとえば $y = Wx$ という式は、「$x$ という入力を $W$ という重みで変換して $y$ という出力を作る」と読めます。記号そのものより、<strong>役割</strong>を先につかむのが近道です。</p>
+    <p data-lang="en">For example, $y = Wx$ says "take input $x$, transform it with weights $W$, and get output $y$." Grasping the <strong>role</strong> of each symbol first is the fastest path.</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">電気の式で考えてみると：</strong>
+    <strong data-lang="en">Think of a physics formula:</strong>
+    <p data-lang="ja" style="margin:8px 0 0;">物理で $\varepsilon$（イプシロン）を「比例定数」とだけ言われるとピンとこなくても、「電気をためやすさを表す量」と言われると、急に役割が見えてきます。数式の記号も同じです。記号の<strong>名前</strong>ではなく<strong>役割</strong>を見てください。</p>
+    <p data-lang="en" style="margin:8px 0 0;">In physics, $\varepsilon$ (epsilon) sounds abstract as "a constant" — but "a measure of how easily a material stores charge" makes the role clear immediately. Math symbols work the same way. Look for the <strong>role</strong>, not just the <strong>name</strong>.</p>
+  </div>
+
+  <!-- 2. 文字は名前 -->
+  <h2 class="section-title" data-lang="ja">② 文字は「役割の名前」</h2>
+  <h2 class="section-title" data-lang="en">② Letters are role names</h2>
+
+  <div class="prose">
+    <p data-lang="ja">式に出てくる $Q$、$K$、$V$、$W$、$x$、$y$ などは、すべて<strong>何かの役割の名前</strong>です。多くは英単語の頭文字です。</p>
+    <p data-lang="en">Symbols like $Q$, $K$, $V$, $W$, $x$, $y$ in formulas are all <strong>names for roles</strong>. Most are initials of English words.</p>
+  </div>
+
+  <div class="sym-grid">
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$Q$</span><span class="sym-name">Query（質問）</span></div>
+      <div class="sym-what" data-lang="ja">「いま何を知りたいか」を表すベクトル。Attention で使う。</div>
+      <div class="sym-what" data-lang="en">A vector representing "what I am looking for." Used in Attention.</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$K$</span><span class="sym-name">Key（目印）</span></div>
+      <div class="sym-what" data-lang="ja">「各単語がどんな情報を持っているかの目印」を表すベクトル。</div>
+      <div class="sym-what" data-lang="en">A vector representing "what each word holds." Used in Attention.</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$V$</span><span class="sym-name">Value（中身）</span></div>
+      <div class="sym-what" data-lang="ja">「実際に受け渡す情報の中身」。Attention の出力を作るために使う。</div>
+      <div class="sym-what" data-lang="en">The actual content to be passed along. Used to form the Attention output.</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$W$</span><span class="sym-name">Weight（重み）</span></div>
+      <div class="sym-what" data-lang="ja">「何をどれだけ大事にするか」を決める行列。訓練で自動的に決まる。</div>
+      <div class="sym-what" data-lang="en">A matrix deciding "how much to value each input." Learned during training.</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$x$</span><span class="sym-name">input（入力）</span></div>
+      <div class="sym-what" data-lang="ja">入力データ（点数・画素値・単語ベクトルなど）。</div>
+      <div class="sym-what" data-lang="en">Input data — scores, pixel values, word vectors, etc.</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$y$</span><span class="sym-name">output（出力）</span></div>
+      <div class="sym-what" data-lang="ja">計算の結果。$y = Wx$ なら「重みをかけた変換後の値」。</div>
+      <div class="sym-what" data-lang="en">The result of a computation. In $y = Wx$, the transformed value.</div>
+    </div>
+  </div>
+
+  <!-- 3. 上付き文字 -->
+  <h2 class="section-title" data-lang="ja">③ 右上の小さい文字 — $T$ は「T乗」ではない</h2>
+  <h2 class="section-title" data-lang="en">③ Superscript — $T$ does not mean "to the power T"</h2>
+
+  <div class="prose">
+    <p data-lang="ja">右上に小さく書かれた文字や数字には、2種類あります。混同しないよう確認しておきましょう。</p>
+    <p data-lang="en">Superscripts (small characters upper-right) have two different meanings. Let's distinguish them.</p>
+  </div>
+
+  <div class="sym-grid">
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$x^2$</span><span class="sym-name" data-lang="ja">「2乗」</span><span class="sym-name" data-lang="en">"squared"</span></div>
+      <div class="sym-what" data-lang="ja">数字が右上にあるときは「何回かける」という意味。$x^2 = x \times x$。</div>
+      <div class="sym-what" data-lang="en">A number in superscript means "multiply this many times." $x^2 = x \times x$.</div>
+      <div class="sym-example" data-lang="ja">$3^2 = 9$、$2^3 = 8$</div>
+      <div class="sym-example" data-lang="en">$3^2 = 9$, $2^3 = 8$</div>
+    </div>
+    <div class="sym-card">
+      <div class="sym-top"><span class="sym">$K^\top$</span><span class="sym-name" data-lang="ja">「転置」</span><span class="sym-name" data-lang="en">"transpose"</span></div>
+      <div class="sym-what" data-lang="ja">$T$（または $\top$）が右上にあるとき、これは<strong>乗算ではなく「向きを変える」</strong>という操作。</div>
+      <div class="sym-what" data-lang="en">When $T$ or $\top$ appears upper-right, it means <strong>"flip the orientation"</strong> — not multiplication.</div>
+      <div class="sym-example" data-lang="ja">縦に並んだ表を横向きにする、横向きを縦向きにする操作。</div>
+      <div class="sym-example" data-lang="en">Turn a column arrangement into a row, or vice versa.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <h4 data-lang="ja">転置（$^\top$）をもう少し具体的に</h4>
+    <h4 data-lang="en">A closer look at transpose ($^\top$)</h4>
+    <p data-lang="ja">たとえば、3つの数字を縦に並べたもの（列ベクトル）があるとします：</p>
+    <p data-lang="en">Suppose you have three numbers stacked vertically (a column vector):</p>
+    <div style="text-align:center;padding:8px 0;">
+      $$\begin{pmatrix}80\\70\\90\end{pmatrix}^\top = \begin{pmatrix}80 & 70 & 90\end{pmatrix}$$
+    </div>
+    <p data-lang="ja">$^\top$ をつけると、<strong>縦の並び → 横の並び</strong>に変わります（逆も同様）。「向きをくるっと変える」というイメージです。Attention の $QK^\top$ では、$K$ を横向きにすることで $Q$ と「比べやすい形」に揃えています。</p>
+    <p data-lang="en">Adding $^\top$ converts <strong>vertical → horizontal</strong> (and vice versa). Think of it as "rotating the layout." In Attention's $QK^\top$, flipping $K$ sideways puts it in the right shape to be compared with $Q$.</p>
+  </div>
+
+  <!-- 4. 掛け算の種類 -->
+  <h2 class="section-title" data-lang="ja">④ 掛け算も 1 種類じゃない</h2>
+  <h2 class="section-title" data-lang="en">④ Multiplication comes in more than one flavour</h2>
+
+  <div class="prose">
+    <p data-lang="ja">数学の掛け算には種類があります。どれを使うかは「何と何を組み合わせているか」で変わります。このページで出てくる3種類を確認しておきましょう。</p>
+    <p data-lang="en">Mathematical multiplication has several forms, depending on what is being combined. Here are the three kinds you'll see in these pages.</p>
+  </div>
+
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th data-lang="ja">種類</th><th data-lang="ja">記号</th><th data-lang="ja">何をするか</th><th data-lang="ja">例</th>
+        <th data-lang="en">Kind</th><th data-lang="en">Symbol</th><th data-lang="en">What it does</th><th data-lang="en">Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-lang="ja">数どうし</td>
+        <td>$3 \times 5$</td>
+        <td data-lang="ja">ふつうの掛け算</td>
+        <td data-lang="ja">$3 \times 5 = 15$</td>
+        <td data-lang="en">Scalars</td>
+        <td data-lang="en">ordinary multiplication</td>
+        <td data-lang="en">$3 \times 5 = 15$</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">対応する場所どうし（要素ごと）</td>
+        <td>$\odot$ または位置を揃えて掛ける</td>
+        <td data-lang="ja">同じ位置の値を掛けて、全部足す。畳み込みの計算がこれ。</td>
+        <td data-lang="ja">Sobel フィルタを画像に重ねて掛け合わせる計算</td>
+        <td data-lang="en">Element-wise</td>
+        <td data-lang="en">multiply matching positions, then sum all</td>
+        <td data-lang="en">The convolution step (Sobel filter × image patch)</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">行列積</td>
+        <td>$AB$ または $A \cdot B$</td>
+        <td data-lang="ja">$A$ の 1 行目と $B$ の 1 列目をかけて足す、というのを全ての行・列で繰り返す。</td>
+        <td data-lang="ja">$y = Wx$（重み行列で入力を変換）</td>
+        <td data-lang="en">Matrix multiplication</td>
+        <td data-lang="en">multiply A's rows by B's columns and sum — repeated for all row/column pairs</td>
+        <td data-lang="en">$y = Wx$ (transform input by weight matrix)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-teal">
+    <p data-lang="ja"><strong>このページで覚えておくこと：</strong> 式の中の掛け算記号をすべて「ふつうの掛け算」と読んでしまうと誤解が生じます。<strong>「何と何を組み合わせているか」</strong> を見ると、どの掛け算か判断しやすくなります。</p>
+    <p data-lang="en"><strong>Key takeaway:</strong> Treating every multiplication symbol as ordinary multiplication leads to misunderstandings. Ask <strong>"what is being combined?"</strong> to judge which kind is in use.</p>
+  </div>
+
+  <!-- 5. 割り算・スケーリング -->
+  <h2 class="section-title" data-lang="ja">⑤ 割り算は「大きさを調整する」</h2>
+  <h2 class="section-title" data-lang="en">⑤ Division adjusts scale</h2>
+
+  <div class="prose">
+    <p data-lang="ja">式の中に割り算（$/$）が出てくると、唐突に感じることがあります。多くの場合、割り算は<strong>「値が大きくなりすぎないように落ち着かせる」</strong>ために使われます。</p>
+    <p data-lang="en">When division ($/$) appears in a formula it can feel out of place. Most of the time, division is there to <strong>keep values from growing too large</strong>.</p>
+  </div>
+
+  <div class="callout callout-amber">
+    <h4 data-lang="ja">例：Attention の $\sqrt{d}$ による割り算</h4>
+    <h4 data-lang="en">Example: dividing by $\sqrt{d}$ in Attention</h4>
+    <p data-lang="ja">Attention の式には $\dfrac{QK^\top}{\sqrt{d}}$ という項があります。$Q$ や $K$ が長いベクトルだと、掛け合わせたときの値が大きくなりすぎることがあります。$\sqrt{d}$（ベクトルの長さの平方根）で割ることで、値を扱いやすい大きさに調整しています。</p>
+    <p data-lang="en">Attention contains the term $\dfrac{QK^\top}{\sqrt{d}}$. When $Q$ and $K$ are long vectors, their product can get very large. Dividing by $\sqrt{d}$ (the square root of the vector length) keeps the values in a manageable range.</p>
+    <p data-lang="ja" style="margin-top:8px;">最初は「<strong>スコアが暴れすぎないようにする調整</strong>」と読むだけで十分です。</p>
+    <p data-lang="en" style="margin-top:8px;">For now, read it as "<strong>a tweak to stop scores from getting too large</strong>" and move on.</p>
+  </div>
+
+  <!-- 6. かっこ -->
+  <h2 class="section-title" data-lang="ja">⑥ かっこは「先にここをまとめる」</h2>
+  <h2 class="section-title" data-lang="en">⑥ Parentheses mean "do this part first"</h2>
+
+  <div class="prose">
+    <p data-lang="ja">$\text{softmax}(\cdots)$ のようにかっこがついている場合、かっこの中をひとまとまりとして先に考えます。「かっこの中のものを softmax に渡す」というイメージです。</p>
+    <p data-lang="en">When you see $\text{softmax}(\cdots)$, treat the parentheses as a "hand this to softmax" instruction. Process the inside first, then feed the result to the function outside.</p>
+  </div>
+
+  <div class="demo-box">
+    <h4 data-lang="ja">$\text{softmax}(QK^\top)$ を順番に読む</h4>
+    <h4 data-lang="en">Reading $\text{softmax}(QK^\top)$ step by step</h4>
+    <div class="demo-row">
+      <span class="step-formula">$QK^\top$</span>
+      <span class="demo-arrow">→</span>
+      <span class="step-meaning" data-lang="ja">まず Q と K（横向きに変換済み）を掛けてスコアを作る</span>
+      <span class="step-meaning" data-lang="en">First, multiply Q and K (transposed) to get scores</span>
+    </div>
+    <div class="demo-row">
+      <span class="step-formula">$\text{softmax}(\cdots)$</span>
+      <span class="demo-arrow">→</span>
+      <span class="step-meaning" data-lang="ja">そのスコアを softmax に渡して「注目の配分」に変える</span>
+      <span class="step-meaning" data-lang="en">Pass those scores to softmax to get the attention distribution</span>
+    </div>
+    <div class="demo-row">
+      <span class="step-formula">$\text{softmax}(QK^\top)\,V$</span>
+      <span class="demo-arrow">→</span>
+      <span class="step-meaning" data-lang="ja">さらに V を掛けて、配分にしたがった情報を集める</span>
+      <span class="step-meaning" data-lang="en">Multiply by V to collect information according to the distribution</span>
+    </div>
+  </div>
+
+  <!-- 7. まとめ早見表 -->
+  <h2 class="section-title" data-lang="ja">⑦ 記号クイックリファレンス</h2>
+  <h2 class="section-title" data-lang="en">⑦ Symbol quick reference</h2>
+
+  <table class="ref-table">
+    <thead>
+      <tr>
+        <th data-lang="ja">記号</th><th data-lang="ja">読み方</th><th data-lang="ja">意味・役割</th>
+        <th data-lang="en">Symbol</th><th data-lang="en">Read as</th><th data-lang="en">Meaning / role</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>$Q, K, V$</td>
+        <td data-lang="ja">Query・Key・Value</td>
+        <td data-lang="ja">Attention で使う3つの役割の名前</td>
+        <td data-lang="en">Query, Key, Value</td>
+        <td data-lang="en">The three roles in Attention</td>
+      </tr>
+      <tr>
+        <td>$W$</td>
+        <td data-lang="ja">重み行列</td>
+        <td data-lang="ja">「何をどれだけ重視するか」を決める変換行列</td>
+        <td data-lang="en">weight matrix</td>
+        <td data-lang="en">A transformation matrix deciding "how much to value each input"</td>
+      </tr>
+      <tr>
+        <td>$x^\top$, $K^\top$</td>
+        <td data-lang="ja">転置（トランスポーズ）</td>
+        <td data-lang="ja">縦と横の向きを入れ替える。乗算ではない。</td>
+        <td data-lang="en">transpose</td>
+        <td data-lang="en">Flip rows and columns. Not a power.</td>
+      </tr>
+      <tr>
+        <td>$x^2$</td>
+        <td data-lang="ja">2乗（じょう）</td>
+        <td data-lang="ja">数字が上付きのとき → 何回かける</td>
+        <td data-lang="en">squared / to the power 2</td>
+        <td data-lang="en">A numeric superscript = repeated multiplication</td>
+      </tr>
+      <tr>
+        <td>$\sqrt{d}$</td>
+        <td data-lang="ja">$d$ の平方根</td>
+        <td data-lang="ja">$d$ を2乗するともとに戻る数。スケール調整でよく使う。</td>
+        <td data-lang="en">square root of $d$</td>
+        <td data-lang="en">The number that squares back to $d$. Common for scale adjustment.</td>
+      </tr>
+      <tr>
+        <td>$\text{softmax}(\cdots)$</td>
+        <td data-lang="ja">ソフトマックス</td>
+        <td data-lang="ja">点数の並びを「注目の配分」に変える関数。かっこ内を渡す。</td>
+        <td data-lang="en">softmax</td>
+        <td data-lang="en">Converts a list of scores into an attention distribution. Takes the parenthesised value.</td>
+      </tr>
+      <tr>
+        <td>$/$</td>
+        <td data-lang="ja">割り算</td>
+        <td data-lang="ja">ここでは多くの場合「値を小さく調整する」目的で使われる。</td>
+        <td data-lang="en">division</td>
+        <td data-lang="en">Often used here to scale values down to a manageable range.</td>
+      </tr>
+      <tr>
+        <td>$AB$ / $A \cdot B$</td>
+        <td data-lang="ja">行列積</td>
+        <td data-lang="ja">行列どうしを掛け合わせる演算。ふつうの掛け算と手順が異なる。</td>
+        <td data-lang="en">matrix multiplication</td>
+        <td data-lang="en">Multiplying matrices — different procedure from ordinary multiplication.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-green" style="margin-top:24px;">
+    <h4 data-lang="ja">最後に：記号を全部覚えなくていい</h4>
+    <h4 data-lang="en">Final note: you don't need to memorise all the symbols</h4>
+    <p data-lang="ja">このページの目的は、式を見たときに「あ、これは役割の名前だな」「これは向きを変えてる記号だな」と気づけるようにすることです。わからない記号が出てきたら、このページに戻って確認するリファレンスとして使ってください。</p>
+    <p data-lang="en">The goal of this page is simply to help you recognise: "ah, that's a role name" or "that's the flip-the-orientation symbol." Whenever you encounter an unfamiliar symbol in the other pages, come back here as a reference.</p>
+  </div>
+
+  <div class="next-row">
+    <a class="next-card" href="linear-algebra-for-rocm.html">
+      <div class="nc-label" data-lang="ja">次に読む</div>
+      <div class="nc-label" data-lang="en">Next read</div>
+      <h3 data-lang="ja">イメージでわかる線形代数</h3>
+      <h3 data-lang="en">Visual Linear Algebra</h3>
+      <p data-lang="ja">ベクトル・行列・行列積を比喩で解説</p>
+      <p data-lang="en">Vectors, matrices, and matrix multiply through analogy</p>
+    </a>
+    <a class="next-card" href="deep-learning-for-rocm.html">
+      <div class="nc-label" data-lang="ja">次に読む</div>
+      <div class="nc-label" data-lang="en">Next read</div>
+      <h3 data-lang="ja">イメージでわかる深層学習</h3>
+      <h3 data-lang="en">Visual Deep Learning</h3>
+      <p data-lang="ja">畳み込み・フィルタ・MIOpen を図で解説</p>
+      <p data-lang="en">Convolution, filters, and MIOpen through diagrams</p>
+    </a>
+    <a class="next-card" href="attention-for-llm.html">
+      <div class="nc-label" data-lang="ja">次に読む</div>
+      <div class="nc-label" data-lang="en">Next read</div>
+      <h3 data-lang="ja">イメージでわかる Attention</h3>
+      <h3 data-lang="en">Visual Attention for Beginners</h3>
+      <p data-lang="ja">LLM の核心 Attention を比喩で解説</p>
+      <p data-lang="en">Attention — the core of LLMs — through analogy</p>
+    </a>
+  </div>
+
+</div>
+
+<script>
+  const html = document.documentElement;
+  document.getElementById('btn-ja').addEventListener('click', function () {
+    html.setAttribute('data-language', 'ja'); html.setAttribute('lang', 'ja');
+    document.getElementById('btn-ja').classList.add('active');
+    document.getElementById('btn-en').classList.remove('active');
+  });
+  document.getElementById('btn-en').addEventListener('click', function () {
+    html.setAttribute('data-language', 'en'); html.setAttribute('lang', 'en');
+    document.getElementById('btn-en').classList.add('active');
+    document.getElementById('btn-ja').classList.remove('active');
+  });
+</script>
+</body>
+</html>
