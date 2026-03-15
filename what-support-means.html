@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる「対応している」の意味 / What "Supported" Really Means | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D;
+			--teal: #00796B;
+			--amber: #C56A00;
+			--red: #B71C1C;
+			--blue: #1565C0;
+			--green: #2E7D32;
+			--purple: #5B4B8A;
+			--ink: #1F2933;
+			--muted: #5F6C7B;
+			--line: #D8E0E8;
+			--bg: #F5F8FB;
+			--card: #FFFFFF;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%),
+				radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%),
+				var(--bg);
+		}
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+		.toolbar {
+			display: flex; justify-content: space-between; align-items: center;
+			gap: 16px; margin-bottom: 18px;
+		}
+		.home-link {
+			display: inline-flex; align-items: center; gap: 6px;
+			text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600;
+		}
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn {
+			padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+			cursor: pointer; border: 2px solid var(--navy); background: transparent;
+			color: var(--navy); transition: all 0.2s;
+		}
+		.lang-btn.active { background: var(--navy); color: #fff; }
+
+		.hero {
+			background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 55%, #8E24AA 100%);
+			color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px;
+		}
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+
+		.section-title {
+			font-size: 21px; font-weight: 700; color: var(--navy);
+			border-left: 5px solid var(--purple); padding-left: 14px;
+			margin: 44px 0 8px;
+		}
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+
+		.prose {
+			background: var(--card); border: 1px solid var(--line);
+			border-radius: 12px; padding: 22px 24px; margin-bottom: 18px;
+			font-size: 16px; line-height: 1.75;
+		}
+		.prose p { margin: 0 0 12px; }
+		.prose p:last-child { margin-bottom: 0; }
+
+		.analogy {
+			background: #FFF8E1; border-left: 5px solid var(--amber);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+		.analogy strong { color: var(--amber); }
+
+		.highlight {
+			background: #EDE7F6; border-left: 5px solid var(--purple);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+
+		.fact-box {
+			background: #E8F5E9; border-left: 5px solid var(--green);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+		.fact-box strong { color: var(--green); }
+
+		.warn-box {
+			background: #FBE9E7; border-left: 5px solid var(--red);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+		.warn-box strong { color: var(--red); }
+
+		/* Level cards */
+		.level-stack { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+		.level-card {
+			background: var(--card); border: 1px solid var(--line);
+			border-radius: 12px; padding: 18px 22px;
+			display: flex; align-items: flex-start; gap: 16px;
+		}
+		.level-icon {
+			flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px;
+			display: flex; align-items: center; justify-content: center;
+			font-size: 24px; color: #fff;
+		}
+		.level-body h4 { margin: 0 0 4px; font-size: 16px; }
+		.level-body p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
+		.lv-1 .level-icon { background: var(--green); }
+		.lv-2 .level-icon { background: var(--blue); }
+		.lv-3 .level-icon { background: var(--amber); }
+		.lv-4 .level-icon { background: var(--red); }
+		.lv-5 .level-icon { background: #424242; }
+
+		.next-links {
+			background: #E3F2FD; border-left: 5px solid var(--blue);
+			border-radius: 10px; padding: 16px 20px; margin-top: 32px;
+			font-size: 15px; line-height: 1.7;
+		}
+		.next-links strong { color: var(--blue); }
+		.next-links a { color: var(--blue); font-weight: 600; }
+
+		.footer {
+			margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center;
+		}
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"],
+		html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"],
+		html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],
+		html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],
+		html[data-language="ja"] h3[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"],
+		html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+
+		@media (max-width: 640px) {
+			.page { padding: 20px 14px 40px; }
+			.hero { padding: 28px 20px 24px; }
+			.hero h1 { font-size: 24px; }
+			.level-card { flex-direction: column; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div>
+				<button class="lang-btn active" id="btn-ja" type="button">JP</button>
+				<button class="lang-btn" id="btn-en" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる「対応している」の意味</h1>
+			<h1 data-lang="en">What "Supported" Really Means</h1>
+			<p class="subtitle" data-lang="ja">What "Supported" Really Means</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">「対応GPU」と言っても、ビルドできる・動く・速い・公式に推奨される、は全部同じではないことを分解してやさしく説明します。</p>
+			<p data-lang="en">When someone says a GPU is "supported," that can mean very different things: buildable, runnable, optimized, or officially recommended. Let's break it down.</p>
+		</section>
+
+		<!-- ──────── 1. 「対応」は1種類じゃない ──────── -->
+		<h2 class="section-title" data-lang="ja">1. 「対応しています」のワナ</h2>
+		<h2 class="section-title" data-lang="en">1. The Trap of "It's Supported"</h2>
+		<p class="section-lead" data-lang="ja">「このソフトは Vega 対応です」と聞いたら、ふつうは「じゃあ動くんだ！」と思いますよね。</p>
+		<p class="section-lead" data-lang="en">When you hear "This software supports Vega," you'd normally think "Great, it works!" Right?</p>
+
+		<div class="prose">
+			<p data-lang="ja">でも実は、「対応」にはいろんなレベルがあります。ちょうど、お店が「お子さま歓迎」と言っても、「キッズメニューがある」「キッズチェアがある」「単に入店を断らない」ではぜんぜん違うのと同じです。</p>
+			<p data-lang="en">But "supported" actually has many levels. It's like when a restaurant says "Kids welcome" — that could mean "We have a kids' menu," "We have high chairs," or just "We won't turn you away at the door." Very different things.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🏪 たとえ話:</strong>
+			<strong data-lang="en">🏪 Analogy:</strong>
+			<span data-lang="ja">スマホの対応OSに「iOS 15以降」と書いてあるアプリがあるとします。iOS 15 でとりあえず動く（＝ビルドされている）のと、iOS 15 で快適に動き表示も最適化されている、のはまったく別の話です。</span>
+			<span data-lang="en">Imagine an app listing "iOS 15 or later." It might technically run on iOS 15 (it was built for it), but that's completely different from running smoothly with a fully optimized UI on that version.</span>
+		</div>
+
+		<!-- ──────── 2. 5段階の「対応」 ──────── -->
+		<h2 class="section-title" data-lang="ja">2. 「対応」の5段階</h2>
+		<h2 class="section-title" data-lang="en">2. Five Levels of "Support"</h2>
+		<p class="section-lead" data-lang="ja">ソフトウェアが GPU を「対応している」と言うとき、だいたいこの5段階のどこかにいます。</p>
+		<p class="section-lead" data-lang="en">When software claims GPU "support," it usually falls somewhere in these five levels.</p>
+
+		<div class="level-stack">
+			<div class="level-card lv-1">
+				<div class="level-icon">🔨</div>
+				<div class="level-body">
+					<h4 data-lang="ja">Level 1: ビルドできる（Build Support）</h4>
+					<h4 data-lang="en">Level 1: Buildable (Build Support)</h4>
+					<p data-lang="ja">ソースコードに、その GPU 向けのコンパイル設定がある。ソフトを作ること自体はできる。でも「動くか」はまだ別の話。</p>
+					<p data-lang="en">The source code includes compilation settings for this GPU. The software can be built, but whether it actually runs is another question.</p>
+				</div>
+			</div>
+			<div class="level-card lv-2">
+				<div class="level-icon">⚡</div>
+				<div class="level-body">
+					<h4 data-lang="ja">Level 2: 実行できる（Runtime Support）</h4>
+					<h4 data-lang="en">Level 2: Runnable (Runtime Support)</h4>
+					<p data-lang="ja">ソフトが起動して、その GPU で計算が走る。エラーで落ちない。でも遅いかもしれないし、一部の機能は使えないかもしれない。</p>
+					<p data-lang="en">The software starts and the GPU actually runs computations. No crashes. But it might be slow, or some features might be unavailable.</p>
+				</div>
+			</div>
+			<div class="level-card lv-3">
+				<div class="level-icon">🏎️</div>
+				<div class="level-body">
+					<h4 data-lang="ja">Level 3: 最適化されている（Optimized Support）</h4>
+					<h4 data-lang="en">Level 3: Optimized (Optimized Support)</h4>
+					<p data-lang="ja">その GPU で速くなるように、チューニングされた計算パスが用意されている。専用の solver やカーネルが存在する。</p>
+					<p data-lang="en">Tuned computation paths are available for this GPU. Dedicated solvers or kernels exist to get the best performance.</p>
+				</div>
+			</div>
+			<div class="level-card lv-4">
+				<div class="level-icon">📋</div>
+				<div class="level-body">
+					<h4 data-lang="ja">Level 4: 公式に推奨（Officially Recommended）</h4>
+					<h4 data-lang="en">Level 4: Officially Recommended</h4>
+					<p data-lang="ja">メーカーのドキュメントに「対応GPU」として載っている。テストされていて、問題が出たら修正される可能性が高い。</p>
+					<p data-lang="en">Listed in official documentation as a supported GPU. Tested, and issues are likely to be fixed.</p>
+				</div>
+			</div>
+			<div class="level-card lv-5">
+				<div class="level-icon">🚫</div>
+				<div class="level-body">
+					<h4 data-lang="ja">Level 0: 対応していない（Unsupported）</h4>
+					<h4 data-lang="en">Level 0: Not Supported</h4>
+					<p data-lang="ja">ビルド設定にも含まれない。動かしようがない。完全に門前払い。</p>
+					<p data-lang="en">Not included in build configuration. Can't run at all. Completely shut out.</p>
+				</div>
+			</div>
+		</div>
+
+		<!-- ──────── 3. gfx900 はどのレベル？ ──────── -->
+		<h2 class="section-title" data-lang="ja">3. gfx900 はどのレベルにいるの？</h2>
+		<h2 class="section-title" data-lang="en">3. Where Does gfx900 Stand?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">ここがおもしろいところです。gfx900 は、<strong>レイヤーによってレベルが違います</strong>。</p>
+			<p data-lang="en">Here's where it gets interesting. gfx900's level <strong>varies by layer</strong>.</p>
+			<p data-lang="ja">たとえば：</p>
+			<p data-lang="en">For example:</p>
+			<p data-lang="ja">• <strong>ドライバ</strong>（amdgpu）→ ふつうに動く ≒ Level 2<br>
+			• <strong>ランタイム</strong>（HIP）→ 動く ≒ Level 2<br>
+			• <strong>rocBLAS</strong> → 動く。古い最適化はある ≒ Level 2〜3 のあいだ<br>
+			• <strong>MIOpen</strong> → 一部の solver は動くが、新しいものは使えない ≒ Level 2（部分的）<br>
+			• <strong>公式ドキュメント</strong> → 推奨リストからは外れた ≒ Level 4 ではない</p>
+			<p data-lang="en">• <strong>Driver</strong> (amdgpu) → Works fine ≒ Level 2<br>
+			• <strong>Runtime</strong> (HIP) → Works ≒ Level 2<br>
+			• <strong>rocBLAS</strong> → Works, with some legacy tuning ≒ Between Level 2–3<br>
+			• <strong>MIOpen</strong> → Some solvers run, newer ones don't ≒ Level 2 (partial)<br>
+			• <strong>Official docs</strong> → No longer on the recommended list ≒ Not Level 4</p>
+		</div>
+
+		<div class="highlight">
+			<span data-lang="ja">つまり gfx900 は「完全に対応外（Level 0）」でもなく「公式推奨（Level 4）」でもない、<strong>あいだの複雑なところ</strong> にいます。どこが動いて、どこが止まるかは、層ごとに調べないとわからないのです。</span>
+			<span data-lang="en">In other words, gfx900 is neither completely unsupported (Level 0) nor officially recommended (Level 4). It's in <strong>a complex middle ground</strong> where support varies layer by layer.</span>
+		</div>
+
+		<div class="warn-box">
+			<strong data-lang="ja">⚠️ よくある誤解:</strong>
+			<strong data-lang="en">⚠️ Common misconception:</strong>
+			<span data-lang="ja">「公式リストに載っていない＝まったく動かない」ではありません。また逆に「ビルドが通る＝問題なく使える」でもありません。この「不一致」こそが、調査で明らかになった重要な発見のひとつです。</span>
+			<span data-lang="en">"Not on the official list" ≠ "completely broken." And conversely, "it builds" ≠ "it works perfectly." This mismatch is one of the key findings of this research.</span>
+		</div>
+
+		<!-- ──────── 4. なぜこんなにややこしいの？ ──────── -->
+		<h2 class="section-title" data-lang="ja">4. なぜこんなにややこしいの？</h2>
+		<h2 class="section-title" data-lang="en">4. Why Is It So Complicated?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">ROCm は何十ものリポジトリから成る巨大プロジェクトです。各層は別々のチームが開発しています。だから「対応」の判断も層ごとにバラバラになりがちです。</p>
+			<p data-lang="en">ROCm is a massive project made of dozens of repositories, each developed by different teams. So "support" decisions are made per layer, often independently.</p>
+			<p data-lang="ja">さらに、GPU の世代交代は段階的に進みます。「ある日突然 gfx900 がオフになる」のではなく、「新しい最適化が gfx900 向けには作られなくなる」「テストリストから外れる」「デフォルトビルドから除かれる」と、少しずつ後退していきます。</p>
+			<p data-lang="en">GPU support doesn't disappear overnight. Instead, it fades gradually: new optimizations stop being made for gfx900, it drops off test lists, gets removed from default builds — a slow retreat across many layers.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🚉 たとえ話:</strong>
+			<strong data-lang="en">🚉 Analogy:</strong>
+			<span data-lang="ja">鉄道のダイヤ改正で、ある駅に止まる急行が減り、快速も通過になり、でも各駅停車はまだ止まる。「廃駅にはなっていないけど、だんだん不便になっていく」。gfx900 の状況はこれに似ています。</span>
+			<span data-lang="en">Imagine a train timetable revision: express trains stop calling at your station, then rapid services skip it too, but local trains still stop. "The station isn't closed, but it's getting less and less convenient." That's similar to gfx900's situation.</span>
+		</div>
+
+		<!-- ──────── 5. まとめ ──────── -->
+		<h2 class="section-title" data-lang="ja">5. まとめ</h2>
+		<h2 class="section-title" data-lang="en">5. Summary</h2>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>「対応している」は1種類ではない。</strong> ビルドできる、実行できる、最適化されている、公式に推奨されている、の少なくとも4段階がある。</p>
+			<p data-lang="en"><strong>"Supported" is not one thing.</strong> There are at least four levels: buildable, runnable, optimized, and officially recommended.</p>
+			<p data-lang="ja"><strong>gfx900 は層ごとにレベルが違う。</strong> ドライバは動くのに、ライブラリの一部では最適化パスがない、といった不均一が存在する。</p>
+			<p data-lang="en"><strong>gfx900's support level varies by layer.</strong> The driver works fine, but some libraries lack optimized paths — an uneven landscape.</p>
+			<p data-lang="ja"><strong>「対応」の後退は段階的に起きる。</strong> 一夜にして消えるのではなく、徐々に便利でなくなっていく。</p>
+			<p data-lang="en"><strong>Support fades gradually.</strong> It doesn't vanish overnight; it slowly becomes less convenient.</p>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="fallback-explained.html">イメージでわかる fallback</a> — 最適化パスがないとき何が起きるか<br>
+				<a href="hypothesis.html">仮説: なぜ gfx900 はまだ動くのか</a> — 研究本体で詳しく見る<br>
+				<a href="rocm-overview-for-beginners.html">イメージでわかる ROCm の全体構造</a> — 各層のイメージをおさらい
+			</span>
+			<span data-lang="en">
+				<a href="fallback-explained.html">Visual Guide to Fallback Paths</a> — What happens when there's no optimized path<br>
+				<a href="hypothesis.html">Hypothesis: Why gfx900 Still Runs</a> — The full research investigation<br>
+				<a href="rocm-overview-for-beginners.html">Visual Guide to the ROCm Stack</a> — Review the layer model
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) {
+			html.setAttribute('data-language', l);
+			html.lang = l;
+			btnJa.classList.toggle('active', l === 'ja');
+			btnEn.classList.toggle('active', l === 'en');
+			localStorage.setItem('vega-hbmx-pages-lang', l);
+		}
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>

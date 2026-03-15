@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる たたみこみ / Visual Convolution for Beginners | vega-hbmx-pages</title>
+	<style>
+		:root { --navy: #0B3C5D; --teal: #00796B; --amber: #C56A00; --red: #B71C1C; --blue: #1565C0; --green: #2E7D32; --purple: #5B4B8A; --ink: #1F2933; --muted: #5F6C7B; --line: #D8E0E8; --bg: #F5F8FB; --card: #FFFFFF; }
+		* { box-sizing: border-box; }
+		body { margin: 0; font-family: 'Calibri', 'Arial', sans-serif; color: var(--ink); background: radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg); }
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero { background: linear-gradient(135deg, #2E7D32 0%, #43A047 55%, #66BB6A 100%); color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px; }
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+		.section-title { font-size: 21px; font-weight: 700; color: var(--navy); border-left: 5px solid var(--green); padding-left: 14px; margin: 44px 0 8px; }
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; } .prose p:last-child { margin-bottom: 0; }
+		.analogy { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.analogy strong { color: var(--amber); }
+		.highlight { background: #EDE7F6; border-left: 5px solid var(--purple); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+
+		/* Grid visual */
+		.grid-demo { display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-bottom: 18px; }
+		.mini-grid { display: grid; gap: 2px; }
+		.mini-grid.g5 { grid-template-columns: repeat(5,36px); }
+		.mini-grid.g3 { grid-template-columns: repeat(3,36px); }
+		.mini-cell { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; border-radius: 4px; }
+		.mini-cell.img { background: #E8F5E9; color: var(--green); border: 1px solid #A5D6A7; }
+		.mini-cell.flt { background: #FFF3E0; color: var(--amber); border: 1px solid #FFE0B2; }
+		.mini-cell.out { background: #E3F2FD; color: var(--blue); border: 1px solid #90CAF9; }
+		.mini-cell.hl { background: #FFEB3B; color: #333; border: 2px solid var(--amber); }
+		.grid-arrow { font-size: 28px; color: var(--muted); }
+		.grid-label { text-align: center; font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 32px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); } .next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		@media (max-width: 640px) { .page { padding: 20px 14px 40px; } .hero { padding: 28px 20px 24px; } .hero h1 { font-size: 24px; } .grid-demo { flex-direction: column; } }
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる たたみこみ</h1>
+			<h1 data-lang="en">Visual Convolution for Beginners</h1>
+			<p class="subtitle" data-lang="ja">Visual Convolution for Beginners</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">画像の上を小さな窓でなぞりながら特徴を見つける、畳み込みのしくみを虫眼鏡のたとえで説明するページです。</p>
+			<p data-lang="en">A magnifying-glass style explanation of convolution — how small filters scan an image to detect patterns.</p>
+		</section>
+
+		<!-- ──────── 1. 畳み込みとは ──────── -->
+		<h2 class="section-title" data-lang="ja">1. たたみこみってなに？</h2>
+		<h2 class="section-title" data-lang="en">1. What Is Convolution?</h2>
+		<p class="section-lead" data-lang="ja">画像の上を「小さな窓（フィルタ）」でなぞりながら、特徴を見つける方法です。</p>
+		<p class="section-lead" data-lang="en">A method for scanning an image with a "small window (filter)" to find features.</p>
+
+		<div class="prose">
+			<p data-lang="ja">写真を見て「ここに線がある」「ここに角がある」と見分けるのは、人間の目なら自然にできます。でもコンピュータには最初からその力がありません。</p>
+			<p data-lang="en">Humans can naturally spot lines and edges in a photo. But computers don't have that ability built in.</p>
+			<p data-lang="ja">そこで、小さな「虫眼鏡」のような窓を画像の上で1マスずつずらしながら、「この部分に特徴はあるか？」を数値で調べていきます。これが畳み込み（convolution）です。</p>
+			<p data-lang="en">So we slide a small "magnifying glass" across the image, one square at a time, numerically checking "Is there a feature here?" That's convolution.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🔍 たとえ話:</strong>
+			<strong data-lang="en">🔍 Analogy:</strong>
+			<span data-lang="ja">大きな地図の上を虫眼鏡で端から端までなぞって、「ここに山のマークがある！」「ここに川がある！」と1つずつチェックしていくのとそっくりです。</span>
+			<span data-lang="en">It's like moving a magnifying glass across a large map from corner to corner, checking one spot at a time: "Here's a mountain symbol!" "Here's a river!"</span>
+		</div>
+
+		<!-- ──────── 2. 視覚的な例 ──────── -->
+		<h2 class="section-title" data-lang="ja">2. 見てみよう — フィルタが動く様子</h2>
+		<h2 class="section-title" data-lang="en">2. Let's See It — A Filter in Action</h2>
+
+		<div class="grid-demo">
+			<div>
+				<div class="mini-grid g5">
+					<div class="mini-cell img">0</div><div class="mini-cell img">0</div><div class="mini-cell img">1</div><div class="mini-cell img">0</div><div class="mini-cell img">0</div>
+					<div class="mini-cell img">0</div><div class="mini-cell hl">1</div><div class="mini-cell hl">1</div><div class="mini-cell hl">0</div><div class="mini-cell img">0</div>
+					<div class="mini-cell img">0</div><div class="mini-cell hl">0</div><div class="mini-cell hl">1</div><div class="mini-cell hl">1</div><div class="mini-cell img">0</div>
+					<div class="mini-cell img">0</div><div class="mini-cell hl">1</div><div class="mini-cell hl">0</div><div class="mini-cell hl">0</div><div class="mini-cell img">1</div>
+					<div class="mini-cell img">0</div><div class="mini-cell img">0</div><div class="mini-cell img">0</div><div class="mini-cell img">1</div><div class="mini-cell img">0</div>
+				</div>
+				<div class="grid-label" data-lang="ja">画像（5×5）</div>
+				<div class="grid-label" data-lang="en">Image (5×5)</div>
+			</div>
+			<div class="grid-arrow">×</div>
+			<div>
+				<div class="mini-grid g3">
+					<div class="mini-cell flt">1</div><div class="mini-cell flt">0</div><div class="mini-cell flt">-1</div>
+					<div class="mini-cell flt">1</div><div class="mini-cell flt">0</div><div class="mini-cell flt">-1</div>
+					<div class="mini-cell flt">1</div><div class="mini-cell flt">0</div><div class="mini-cell flt">-1</div>
+				</div>
+				<div class="grid-label" data-lang="ja">フィルタ（3×3）</div>
+				<div class="grid-label" data-lang="en">Filter (3×3)</div>
+			</div>
+			<div class="grid-arrow">→</div>
+			<div>
+				<div class="mini-grid g3">
+					<div class="mini-cell out">1</div><div class="mini-cell out">0</div><div class="mini-cell out">-1</div>
+					<div class="mini-cell out">-1</div><div class="mini-cell out">0</div><div class="mini-cell out">1</div>
+					<div class="mini-cell out">0</div><div class="mini-cell out">-1</div><div class="mini-cell out">1</div>
+				</div>
+				<div class="grid-label" data-lang="ja">出力（特徴マップ）</div>
+				<div class="grid-label" data-lang="en">Output (Feature Map)</div>
+			</div>
+		</div>
+
+		<div class="prose">
+			<p data-lang="ja">黄色のハイライト部分が「虫眼鏡が当たっている場所」。フィルタの数値と画像の数値をかけて足すと、1つの出力値になる。虫眼鏡を1マスずらすごとに、出力が1つ増えていく。</p>
+			<p data-lang="en">The yellow-highlighted area is "where the magnifying glass is." Multiply the filter values by the image values, add them up, and you get one output value. Slide one square over, and you get the next output.</p>
+		</div>
+
+		<!-- ──────── 3. フィルタの役割 ──────── -->
+		<h2 class="section-title" data-lang="ja">3. フィルタって何をしているの？</h2>
+		<h2 class="section-title" data-lang="en">3. What Does a Filter Do?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">フィルタの数値パターンが、「どんな特徴を探すか」を決めています。</p>
+			<p data-lang="en">The pattern of numbers in the filter determines what kind of feature it looks for.</p>
+			<p data-lang="ja">• 「タテ線」を見つけるフィルタ<br>• 「ヨコ線」を見つけるフィルタ<br>• 「角」を見つけるフィルタ<br>学習によって、AI は自分で「どんなフィルタが必要か」を見つけ出します。</p>
+			<p data-lang="en">• A filter that finds vertical lines<br>• A filter that finds horizontal lines<br>• A filter that finds corners<br>Through training, the AI figures out what filters it needs on its own.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 MIOpen との接点:</strong>
+			<strong data-lang="en">💡 Connection to MIOpen:</strong>
+			<span data-lang="ja">MIOpen は、この「フィルタをずらす計算」をどうやったらいちばん速くできるかを考える専門ライブラリです。やり方（solver）を何十種類も持っていて、GPU の能力に応じて最適なものを選びます。</span>
+			<span data-lang="en">MIOpen is a library dedicated to figuring out the fastest way to perform this "slide-the-filter" computation. It has dozens of methods (solvers) and picks the best one based on GPU capabilities.</span>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="deep-learning-for-rocm.html">イメージでわかる深層学習</a> — solver 一覧表つきの詳細ページ<br>
+				<a href="inference-flow.html">イメージでわかる 推論の流れ</a> — 畳み込みが推論のどこで使われるか<br>
+				<a href="glossary.html">用語解説</a> — わからない言葉が出てきたら
+			</span>
+			<span data-lang="en">
+				<a href="deep-learning-for-rocm.html">Visual Deep Learning</a> — Detailed page with solver table<br>
+				<a href="inference-flow.html">Visual Guide to the Inference Flow</a> — Where convolution fits in inference<br>
+				<a href="glossary.html">Glossary</a> — Look up unfamiliar terms
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>

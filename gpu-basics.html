@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる GPU のしくみ / Visual Guide to How GPUs Work | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D;
+			--teal: #00796B;
+			--amber: #C56A00;
+			--red: #B71C1C;
+			--blue: #1565C0;
+			--green: #2E7D32;
+			--purple: #5B4B8A;
+			--ink: #1F2933;
+			--muted: #5F6C7B;
+			--line: #D8E0E8;
+			--bg: #F5F8FB;
+			--card: #FFFFFF;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%),
+				radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%),
+				var(--bg);
+		}
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+		.toolbar {
+			display: flex; justify-content: space-between; align-items: center;
+			gap: 16px; margin-bottom: 18px;
+		}
+		.home-link {
+			display: inline-flex; align-items: center; gap: 6px;
+			text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600;
+		}
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn {
+			padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+			cursor: pointer; border: 2px solid var(--navy); background: transparent;
+			color: var(--navy); transition: all 0.2s;
+		}
+		.lang-btn.active { background: var(--navy); color: #fff; }
+
+		.hero {
+			background: linear-gradient(135deg, #00695C 0%, #00897B 55%, #26A69A 100%);
+			color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px;
+		}
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+
+		.section-title {
+			font-size: 21px; font-weight: 700; color: var(--navy);
+			border-left: 5px solid var(--teal); padding-left: 14px;
+			margin: 44px 0 8px;
+		}
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+
+		.prose {
+			background: var(--card); border: 1px solid var(--line);
+			border-radius: 12px; padding: 22px 24px; margin-bottom: 18px;
+			font-size: 16px; line-height: 1.75;
+		}
+		.prose p { margin: 0 0 12px; }
+		.prose p:last-child { margin-bottom: 0; }
+
+		.analogy {
+			background: #FFF8E1; border-left: 5px solid var(--amber);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+		.analogy strong { color: var(--amber); }
+
+		.highlight {
+			background: #EDE7F6; border-left: 5px solid var(--purple);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+
+		.fact-box {
+			background: #E8F5E9; border-left: 5px solid var(--green);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+		.fact-box strong { color: var(--green); }
+
+		.versus-grid {
+			display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+			margin-bottom: 18px;
+		}
+		.versus-card {
+			background: var(--card); border: 1px solid var(--line);
+			border-radius: 12px; padding: 20px; text-align: center;
+		}
+		.versus-card .icon { font-size: 42px; margin-bottom: 8px; }
+		.versus-card h4 { margin: 0 0 8px; font-size: 18px; }
+		.versus-card p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
+		.versus-card.cpu { border-top: 4px solid var(--blue); }
+		.versus-card.gpu { border-top: 4px solid var(--green); }
+
+		.next-links {
+			background: #E3F2FD; border-left: 5px solid var(--blue);
+			border-radius: 10px; padding: 16px 20px; margin-top: 32px;
+			font-size: 15px; line-height: 1.7;
+		}
+		.next-links strong { color: var(--blue); }
+		.next-links a { color: var(--blue); font-weight: 600; }
+
+		.footer {
+			margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center;
+		}
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"],
+		html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"],
+		html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],
+		html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],
+		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+		@media (max-width: 640px) {
+			.page { padding: 20px 14px 40px; }
+			.hero { padding: 28px 20px 24px; }
+			.hero h1 { font-size: 24px; }
+			.versus-grid { grid-template-columns: 1fr; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div>
+				<button class="lang-btn active" id="btn-ja" type="button">JP</button>
+				<button class="lang-btn" id="btn-en" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる GPU のしくみ</h1>
+			<h1 data-lang="en">Visual Guide to How GPUs Work</h1>
+			<p class="subtitle" data-lang="ja">Visual Guide to How GPUs Work</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">CPU と GPU のちがい、並列処理、VRAM の役割を、身近なたとえでやさしく説明するページです。AI の研究に入るまえの最初の足場になります。</p>
+			<p data-lang="en">A gentle introduction to CPUs vs GPUs, parallel processing, and the role of VRAM through everyday analogies. The first stepping stone before diving into AI research.</p>
+		</section>
+
+		<!-- ──────── 1. CPU と GPU ──────── -->
+		<h2 class="section-title" data-lang="ja">1. CPU と GPU — ちがいは何？</h2>
+		<h2 class="section-title" data-lang="en">1. CPU vs GPU — What's the Difference?</h2>
+		<p class="section-lead" data-lang="ja">パソコンの中には、大きく分けて2種類の計算するパーツがあります。</p>
+		<p class="section-lead" data-lang="en">Inside your computer, there are two main types of chips that do calculations.</p>
+
+		<div class="versus-grid">
+			<div class="versus-card cpu">
+				<div class="icon">🧑‍🔧</div>
+				<h4 data-lang="ja">CPU（少数精鋭の職人）</h4>
+				<h4 data-lang="en">CPU (A Few Skilled Craftspeople)</h4>
+				<p data-lang="ja">コアは 4〜16 個くらい。1つ1つの仕事がとても得意。「次はあれ、その次はこれ」と順番に、確実にこなす。複雑な仕事の司令塔。</p>
+				<p data-lang="en">Around 4–16 cores. Each handles one task extremely well, processing jobs in sequence. The command center for complex tasks.</p>
+			</div>
+			<div class="versus-card gpu">
+				<div class="icon">👷‍♂️👷‍♀️👷👷‍♂️</div>
+				<h4 data-lang="ja">GPU（大人数の作業チーム）</h4>
+				<h4 data-lang="en">GPU (A Massive Work Crew)</h4>
+				<p data-lang="ja">コアは 数百〜数千個。一人ひとりの力は小さいけれど、全員で同じ単純作業を一気に片づける。並列処理の達人。</p>
+				<p data-lang="en">Hundreds to thousands of cores. Each is simpler, but together they finish the same simple task all at once. Masters of parallel processing.</p>
+			</div>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🍳 たとえ話:</strong>
+			<strong data-lang="en">🍳 Analogy:</strong>
+			<span data-lang="ja">CPU は「ベテランシェフ1人で何品もつくるレストラン」。GPU は「100人のスタッフがホットケーキを一度に100枚焼く工場」。ホットケーキを1000枚焼きたいなら、どちらが速いかは明らかですね。</span>
+			<span data-lang="en">A CPU is like "one expert chef cooking many dishes in sequence." A GPU is like "100 workers flipping 100 pancakes at the same time." If you need 1,000 pancakes, which is faster?</span>
+		</div>
+
+		<!-- ──────── 2. 並列処理 ──────── -->
+		<h2 class="section-title" data-lang="ja">2. 並列処理ってなに？</h2>
+		<h2 class="section-title" data-lang="en">2. What Is Parallel Processing?</h2>
+		<p class="section-lead" data-lang="ja">「同じ作業を、たくさんの手で同時にやる」こと。それが並列処理です。</p>
+		<p class="section-lead" data-lang="en">"Doing the same task with many hands at the same time." That's parallel processing.</p>
+
+		<div class="prose">
+			<p data-lang="ja">教室で 30人の生徒が、全員同じ計算ドリルを解くところを想像してください。先生が「はい、はじめ！」と言ったら、30人が一斉にスタートします。これが並列処理のイメージです。</p>
+			<p data-lang="en">Imagine 30 students in a classroom all solving the same math drill. When the teacher says "Go!", all 30 start at once. That's the image of parallel processing.</p>
+			<p data-lang="ja">CPU は「先生が1人ずつ解かせて丁寧に見る」やりかた。ひとりひとりは速いけれど、30人分を終えるには時間がかかります。<br>GPU は「全員に同じ問題を配って一斉にやらせる」やりかた。ひとりひとりは少し遅いけれど、30問が一気に終わります。</p>
+			<p data-lang="en">A CPU is like a teacher who works through each student one at a time — precise but slow overall. A GPU hands the same problem to everyone and says "Go!" — each student is a little slower, but all 30 finish at once.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 ポイント:</strong>
+			<strong data-lang="en">💡 Key point:</strong>
+			<span data-lang="ja">AI の計算は「同じ種類の計算を膨大な回数くりかえす」ことが多いので、GPU の得意パターンにぴったりなのです。</span>
+			<span data-lang="en">AI computations often repeat the same type of operation a huge number of times, which is exactly the pattern GPUs are built for.</span>
+		</div>
+
+		<!-- ──────── 3. VRAM ──────── -->
+		<h2 class="section-title" data-lang="ja">3. VRAM って何のためにあるの？</h2>
+		<h2 class="section-title" data-lang="en">3. What Is VRAM For?</h2>
+		<p class="section-lead" data-lang="ja">GPU の「すぐ手の届く作業机」です。</p>
+		<p class="section-lead" data-lang="en">It's the GPU's "desk within arm's reach."</p>
+
+		<div class="prose">
+			<p data-lang="ja">パソコンのメインメモリ（RAM）は CPU の近くにある大きな棚のようなものです。でも GPU は遠くにいるので、そこからいちいちデータを取りに行くのは遅い。</p>
+			<p data-lang="en">Your PC's main memory (RAM) is like a large shelf near the CPU. But the GPU sits far away, and fetching data from that shelf is slow.</p>
+			<p data-lang="ja">そこで GPU には専用のメモリ＝ <strong>VRAM（ビデオメモリ）</strong> がくっついています。GPU のすぐ隣にある自分専用の作業机です。必要なデータをここに先に置いておけば、GPU は超速でアクセスできます。</p>
+			<p data-lang="en">That's why GPUs have their own dedicated memory — <strong>VRAM (Video RAM)</strong>. It's the GPU's personal desk, right next to it. Load data there first, and the GPU can access it at blazing speed.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">📚 たとえ話:</strong>
+			<strong data-lang="en">📚 Analogy:</strong>
+			<span data-lang="ja">テストのとき、教科書を毎回図書室まで取りに行くのと、最初に机の上に置いておくのでは、どちらが速いか考えてみてください。VRAM は「最初から机に置いておく」ことにあたります。</span>
+			<span data-lang="en">During an exam, is it faster to run to the library for each book, or to put all your textbooks on your desk at the start? VRAM is the "desk with everything already on it."</span>
+		</div>
+
+		<div class="highlight">
+			<span data-lang="ja">Vega 56 / 64 には <strong>HBM2</strong> という特殊な超高速メモリが搭載されています。これは「ふつうの机」ではなく「超高速エスカレーターつきの作業台」。帯域（運べる速さ）がとても広いのが強みです。</span>
+			<span data-lang="en">Vega 56/64 uses <strong>HBM2</strong>, a special ultra-fast memory. It's not a regular desk — it's a workbench with a high-speed conveyor belt. The bandwidth (how fast data can be moved) is impressively large.</span>
+		</div>
+
+		<!-- ──────── 4. なぜ AI と相性がいいのか ──────── -->
+		<h2 class="section-title" data-lang="ja">4. なぜ AI と GPU は相性がいいの？</h2>
+		<h2 class="section-title" data-lang="en">4. Why Are GPUs Great for AI?</h2>
+		<p class="section-lead" data-lang="ja">AI の正体は「巨大な行列のかけ算」だからです。</p>
+		<p class="section-lead" data-lang="en">Because AI is essentially "massive matrix multiplication."</p>
+
+		<div class="prose">
+			<p data-lang="ja">AI モデル（たとえば ChatGPT）は、内部で何百万・何億もの数字のかけ算と足し算を繰り返しています。そのひとつひとつは「掛けて足す」というシンプルな作業です。</p>
+			<p data-lang="en">AI models like ChatGPT repeat millions or billions of multiply-and-add operations internally. Each individual operation is simple: multiply, then add.</p>
+			<p data-lang="ja">シンプルだけど、回数がものすごく多い。 これが「少数精鋭で複雑な仕事をする CPU」より、「大人数で同じ作業を一気にこなす GPU」に向いている理由です。</p>
+			<p data-lang="en">Simple, but the sheer count is enormous. That's why the "massive work crew" GPU beats the "few elite craftspeople" CPU for this kind of job.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">🔢 規模感:</strong>
+			<strong data-lang="en">🔢 Scale:</strong>
+			<span data-lang="ja">たとえば 1000×1000 の行列どうしのかけ算は、約10億回の「掛けて足す」を必要とします。GPU はこれを並列に処理するので、CPU の何十倍も速くなれるのです。</span>
+			<span data-lang="en">For example, multiplying two 1000×1000 matrices requires about 1 billion multiply-add operations. GPUs process these in parallel, achieving speeds tens of times faster than a CPU.</span>
+		</div>
+
+		<!-- ──────── 5. まとめ ──────── -->
+		<h2 class="section-title" data-lang="ja">5. まとめ</h2>
+		<h2 class="section-title" data-lang="en">5. Summary</h2>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>CPU</strong> — 少数の強力なコアが、複雑な仕事を順番に確実にこなす。パソコンの司令塔。</p>
+			<p data-lang="en"><strong>CPU</strong> — A few powerful cores handle complex tasks precisely and sequentially. The command center.</p>
+			<p data-lang="ja"><strong>GPU</strong> — 数百〜数千の小さなコアが、同じ単純作業を一気に並列でこなす。大量の計算に強い。</p>
+			<p data-lang="en"><strong>GPU</strong> — Hundreds to thousands of small cores tackle the same simple operation all at once. Great for massive calculations.</p>
+			<p data-lang="ja"><strong>VRAM</strong> — GPU 専用のメモリ。データをすぐ手の届く場所に置いておくための高速作業机。</p>
+			<p data-lang="en"><strong>VRAM</strong> — The GPU's dedicated memory. A fast desk that keeps data within arm's reach.</p>
+			<p data-lang="ja"><strong>AI と GPU の相性</strong> — AI は「同じ種類の計算を大量にくりかえす」仕事なので、並列処理が得意な GPU にぴったり。</p>
+			<p data-lang="en"><strong>AI + GPUs</strong> — AI workloads repeat the same type of computation massively, a perfect match for GPU parallelism.</p>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="rocm-overview-for-beginners.html">イメージでわかる ROCm の全体構造</a> — GPU を動かすためのソフトウェア全体像<br>
+				<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 行列のかけ算をやさしく理解する<br>
+				<a href="glossary.html">用語解説</a> — わからない言葉が出てきたら
+			</span>
+			<span data-lang="en">
+				<a href="rocm-overview-for-beginners.html">Visual Guide to the ROCm Stack</a> — The software stack that makes GPUs work<br>
+				<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Matrix multiplication explained gently<br>
+				<a href="glossary.html">Glossary</a> — Look up any unfamiliar terms
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) {
+			html.setAttribute('data-language', l);
+			html.lang = l;
+			btnJa.classList.toggle('active', l === 'ja');
+			btnEn.classList.toggle('active', l === 'en');
+			localStorage.setItem('vega-hbmx-pages-lang', l);
+		}
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>

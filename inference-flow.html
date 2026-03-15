@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる 推論の流れ / Visual Guide to the Inference Flow | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D;
+			--teal: #00796B;
+			--amber: #C56A00;
+			--red: #B71C1C;
+			--blue: #1565C0;
+			--green: #2E7D32;
+			--purple: #5B4B8A;
+			--ink: #1F2933;
+			--muted: #5F6C7B;
+			--line: #D8E0E8;
+			--bg: #F5F8FB;
+			--card: #FFFFFF;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0; font-family: 'Calibri', 'Arial', sans-serif; color: var(--ink);
+			background: radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%),
+				radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg);
+		}
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero { background: linear-gradient(135deg, #1565C0 0%, #1E88E5 55%, #42A5F5 100%); color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px; }
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+		.section-title { font-size: 21px; font-weight: 700; color: var(--navy); border-left: 5px solid var(--blue); padding-left: 14px; margin: 44px 0 8px; }
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; }
+		.prose p:last-child { margin-bottom: 0; }
+		.analogy { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.analogy strong { color: var(--amber); }
+		.highlight { background: #EDE7F6; border-left: 5px solid var(--purple); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+
+		/* Flow steps */
+		.flow-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 18px; }
+		.flow-step { background: var(--card); border: 1px solid var(--line); padding: 18px 22px; display: flex; align-items: center; gap: 16px; }
+		.flow-step:first-child { border-radius: 12px 12px 0 0; }
+		.flow-step:last-child { border-radius: 0 0 12px 12px; }
+		.flow-step .step-num { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: #fff; flex-shrink: 0; background: var(--blue); }
+		.flow-step .step-body h4 { margin: 0 0 4px; font-size: 16px; }
+		.flow-step .step-body p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+		.flow-arrow { text-align: center; font-size: 20px; color: var(--muted); padding: 4px 0; }
+
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 32px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); }
+		.next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"], html[data-language="ja"] h3[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		@media (max-width: 640px) { .page { padding: 20px 14px 40px; } .hero { padding: 28px 20px 24px; } .hero h1 { font-size: 24px; } .flow-step { flex-direction: column; text-align: center; } }
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる 推論の流れ</h1>
+			<h1 data-lang="en">Visual Guide to the Inference Flow</h1>
+			<p class="subtitle" data-lang="ja">Visual Guide to the Inference Flow</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">入力がモデルの中でどう計算され、最後に答えになるのかを、工場の流れのようにやさしく説明するページです。</p>
+			<p data-lang="en">A factory-style explanation of how input data moves through a model and becomes an output during inference.</p>
+		</section>
+
+		<!-- ──────── 1. 推論とは ──────── -->
+		<h2 class="section-title" data-lang="ja">1. 「推論」ってなに？</h2>
+		<h2 class="section-title" data-lang="en">1. What Is "Inference"?</h2>
+		<p class="section-lead" data-lang="ja">学習ずみの AI モデルに新しいデータを入れて、答えを出してもらう工程です。</p>
+		<p class="section-lead" data-lang="en">The process of feeding new data into a trained AI model and getting an answer.</p>
+
+		<div class="prose">
+			<p data-lang="ja">AI には大きく2つのフェーズがあります。「学習（training）」と「推論（inference）」。学習は教科書を何百回も読んで知識をつける段階。推論は、身についた知識でテストに答える段階です。</p>
+			<p data-lang="en">AI has two major phases: "training" and "inference." Training is like reading a textbook hundreds of times to gain knowledge. Inference is using that knowledge to answer test questions.</p>
+			<p data-lang="ja">ChatGPT に質問を入力して返事をもらう、画像生成AIに指示を出して絵をもらう、これらはすべて推論です。</p>
+			<p data-lang="en">When you ask ChatGPT a question and get a reply, or tell an image-generation AI to create a picture — that's all inference.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🏭 たとえ話:</strong>
+			<strong data-lang="en">🏭 Analogy:</strong>
+			<span data-lang="ja">推論は「工場のライン」のようなもの。原材料（入力データ）を流し込むと、いくつもの加工工程を経て、完成品（出力・回答）が出てくる。</span>
+			<span data-lang="en">Inference is like a factory line. You feed in raw materials (input data), they pass through several processing stations, and a finished product (output / answer) comes out at the end.</span>
+		</div>
+
+		<!-- ──────── 2. 推論の流れ ──────── -->
+		<h2 class="section-title" data-lang="ja">2. 推論はこう進む</h2>
+		<h2 class="section-title" data-lang="en">2. How Inference Flows</h2>
+
+		<div class="flow-steps">
+			<div class="flow-step">
+				<div class="step-num">1</div>
+				<div class="step-body">
+					<h4 data-lang="ja">入力の準備</h4>
+					<h4 data-lang="en">Prepare the Input</h4>
+					<p data-lang="ja">テキストや画像をモデルが読める数値（トークン、テンソル）に変換する。「原材料を加工しやすい形にする」工程。</p>
+					<p data-lang="en">Convert text or images into numbers (tokens, tensors) the model can read. Like shaping raw materials for the production line.</p>
+				</div>
+			</div>
+			<div class="flow-step">
+				<div class="step-num">2</div>
+				<div class="step-body">
+					<h4 data-lang="ja">行列計算（rocBLAS の出番）</h4>
+					<h4 data-lang="en">Matrix Multiplication (rocBLAS's Job)</h4>
+					<p data-lang="ja">入力データに重み行列をかける。モデルの各レイヤーで何度もくり返される、推論の中心的な作業。ここに時間がいちばんかかる。</p>
+					<p data-lang="en">Multiply the input data by weight matrices. This repeats at every layer of the model and is the most time-consuming part of inference.</p>
+				</div>
+			</div>
+			<div class="flow-step">
+				<div class="step-num">3</div>
+				<div class="step-body">
+					<h4 data-lang="ja">畳み込み・活性化（MIOpen の出番）</h4>
+					<h4 data-lang="en">Convolution & Activation (MIOpen's Job)</h4>
+					<p data-lang="ja">画像系モデルでは畳み込みでパターンを抽出。どのモデルでも「活性化関数」で中間結果を調整する。</p>
+					<p data-lang="en">Image-based models use convolution to extract patterns. All models use "activation functions" to refine intermediate results.</p>
+				</div>
+			</div>
+			<div class="flow-step">
+				<div class="step-num">4</div>
+				<div class="step-body">
+					<h4 data-lang="ja">レイヤーをくり返す</h4>
+					<h4 data-lang="en">Repeat Across Layers</h4>
+					<p data-lang="ja">ステップ2〜3をモデルの層の数だけくり返す。大きいモデルでは数十〜数百層。</p>
+					<p data-lang="en">Repeat steps 2–3 for as many layers as the model has. Large models can have tens to hundreds of layers.</p>
+				</div>
+			</div>
+			<div class="flow-step">
+				<div class="step-num">5</div>
+				<div class="step-body">
+					<h4 data-lang="ja">出力を返す</h4>
+					<h4 data-lang="en">Return the Output</h4>
+					<p data-lang="ja">最終層の結果から、テキスト（次の単語）や画像（ピクセル）に変換して返す。「完成品の出荷」。</p>
+					<p data-lang="en">Convert the final layer's result back into text (the next word) or an image (pixels). "Shipping the finished product."</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 ポイント:</strong>
+			<strong data-lang="en">💡 Key point:</strong>
+			<span data-lang="ja">推論の計算時間のほとんどはステップ2（行列計算）が占めます。だから rocBLAS の速さがモデル全体の速さを大きく左右するのです。</span>
+			<span data-lang="en">Most of inference time is spent on Step 2 (matrix multiplication). That's why rocBLAS speed has a massive impact on overall model performance.</span>
+		</div>
+
+		<!-- ──────── 3. ライブラリの役割 ──────── -->
+		<h2 class="section-title" data-lang="ja">3. それぞれの担当まとめ</h2>
+		<h2 class="section-title" data-lang="en">3. Who Does What</h2>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>rocBLAS</strong> → ステップ2担当。行列のかけ算を超高速でやる専門家。</p>
+			<p data-lang="en"><strong>rocBLAS</strong> → Handles Step 2. The specialist that performs matrix multiplication at blazing speed.</p>
+			<p data-lang="ja"><strong>MIOpen</strong> → ステップ3担当。畳み込みと活性化の達人。GPU ごとにいちばん速い方法（solver）を選んでくれる。</p>
+			<p data-lang="en"><strong>MIOpen</strong> → Handles Step 3. The convolution and activation expert. Picks the fastest method (solver) for each GPU.</p>
+			<p data-lang="ja"><strong>HIP ランタイム</strong> → 工場全体の管理者。GPU にメモリを確保したり、計算命令を送ったりする裏方。</p>
+			<p data-lang="en"><strong>HIP Runtime</strong> → The factory manager. Allocates GPU memory, sends computation commands — the behind-the-scenes coordinator.</p>
+		</div>
+
+		<div class="highlight">
+			<span data-lang="ja">gfx900 で推論するとき、ステップ2・3の中で「使える solver」「使えない solver」が分かれます。使えないときは <a href="fallback-explained.html" style="color:var(--purple);">fallback 経路</a> で代替されます。</span>
+			<span data-lang="en">When running inference on gfx900, Steps 2 and 3 may have some solvers available and others not. When unavailable, <a href="fallback-explained.html" style="color:var(--purple);">fallback paths</a> take over.</span>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 行列計算の中身をもっと知る<br>
+				<a href="convolution-for-beginners.html">イメージでわかる たたみこみ</a> — 畳み込みの仕組みを深掘り<br>
+				<a href="deep-learning-for-rocm.html">イメージでわかる深層学習</a> — solver 一覧表つきの詳細ページ
+			</span>
+			<span data-lang="en">
+				<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Dive deeper into matrix operations<br>
+				<a href="convolution-for-beginners.html">Visual Convolution for Beginners</a> — Understand convolution in detail<br>
+				<a href="deep-learning-for-rocm.html">Visual Deep Learning</a> — Detailed page with solver availability table
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>

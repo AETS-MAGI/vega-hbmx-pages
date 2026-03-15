@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる fallback / Visual Guide to Fallback Paths | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D;
+			--teal: #00796B;
+			--amber: #C56A00;
+			--red: #B71C1C;
+			--blue: #1565C0;
+			--green: #2E7D32;
+			--purple: #5B4B8A;
+			--ink: #1F2933;
+			--muted: #5F6C7B;
+			--line: #D8E0E8;
+			--bg: #F5F8FB;
+			--card: #FFFFFF;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--ink);
+			background:
+				radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%),
+				radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%),
+				var(--bg);
+		}
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+		.toolbar {
+			display: flex; justify-content: space-between; align-items: center;
+			gap: 16px; margin-bottom: 18px;
+		}
+		.home-link {
+			display: inline-flex; align-items: center; gap: 6px;
+			text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600;
+		}
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn {
+			padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+			cursor: pointer; border: 2px solid var(--navy); background: transparent;
+			color: var(--navy); transition: all 0.2s;
+		}
+		.lang-btn.active { background: var(--navy); color: #fff; }
+
+		.hero {
+			background: linear-gradient(135deg, #E65100 0%, #F57C00 55%, #FF9800 100%);
+			color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px;
+		}
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+
+		.section-title {
+			font-size: 21px; font-weight: 700; color: var(--navy);
+			border-left: 5px solid var(--amber); padding-left: 14px;
+			margin: 44px 0 8px;
+		}
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+
+		.prose {
+			background: var(--card); border: 1px solid var(--line);
+			border-radius: 12px; padding: 22px 24px; margin-bottom: 18px;
+			font-size: 16px; line-height: 1.75;
+		}
+		.prose p { margin: 0 0 12px; }
+		.prose p:last-child { margin-bottom: 0; }
+
+		.analogy {
+			background: #FFF8E1; border-left: 5px solid var(--amber);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+		.analogy strong { color: var(--amber); }
+
+		.highlight {
+			background: #EDE7F6; border-left: 5px solid var(--purple);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+
+		.fact-box {
+			background: #E8F5E9; border-left: 5px solid var(--green);
+			border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+			font-size: 15px; line-height: 1.65;
+		}
+		.fact-box strong { color: var(--green); }
+
+		/* Path comparison */
+		.path-compare {
+			display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+			margin-bottom: 18px;
+		}
+		.path-card {
+			background: var(--card); border: 1px solid var(--line);
+			border-radius: 12px; padding: 20px; text-align: center;
+		}
+		.path-card .icon { font-size: 42px; margin-bottom: 10px; }
+		.path-card h4 { margin: 0 0 8px; font-size: 17px; }
+		.path-card p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
+		.path-card.fast { border-top: 4px solid var(--green); }
+		.path-card.fallback { border-top: 4px solid var(--amber); }
+
+		.next-links {
+			background: #E3F2FD; border-left: 5px solid var(--blue);
+			border-radius: 10px; padding: 16px 20px; margin-top: 32px;
+			font-size: 15px; line-height: 1.7;
+		}
+		.next-links strong { color: var(--blue); }
+		.next-links a { color: var(--blue); font-weight: 600; }
+
+		.footer {
+			margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center;
+		}
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"],
+		html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"],
+		html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],
+		html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],
+		html[data-language="ja"] h3[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"],
+		html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+
+		@media (max-width: 640px) {
+			.page { padding: 20px 14px 40px; }
+			.hero { padding: 28px 20px 24px; }
+			.hero h1 { font-size: 24px; }
+			.path-compare { grid-template-columns: 1fr; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div>
+				<button class="lang-btn active" id="btn-ja" type="button">JP</button>
+				<button class="lang-btn" id="btn-en" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる fallback</h1>
+			<h1 data-lang="en">Visual Guide to Fallback Paths</h1>
+			<p class="subtitle" data-lang="ja">Visual Guide to Fallback Paths</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">新しい近道が使えなくても、別の経路で動けることがある。そんな fallback の考え方をやさしく説明するページです。</p>
+			<p data-lang="en">Even when new shortcuts aren't available, there are often alternative routes that still work. A gentle guide to the concept of fallback paths.</p>
+		</section>
+
+		<!-- ──────── 1. fallback ──────── -->
+		<h2 class="section-title" data-lang="ja">1. fallback ってなに？</h2>
+		<h2 class="section-title" data-lang="en">1. What Is a Fallback?</h2>
+		<p class="section-lead" data-lang="ja">「最善の方法が使えないとき、代わりの方法を使うこと」です。</p>
+		<p class="section-lead" data-lang="en">"Using an alternative method when the best one isn't available."</p>
+
+		<div class="prose">
+			<p data-lang="ja">通学路の橋が工事中だったら、少し遠回りの別の道を通りますよね。到着する場所は同じだけど、時間はちょっとかかる。</p>
+			<p data-lang="en">If the bridge on your school route is under construction, you take a slightly longer detour. You still arrive at the same place, but it takes a bit more time.</p>
+			<p data-lang="ja">ソフトウェアの世界にもこれと同じしくみがあります。GPU に計算を頼むとき、「最速の専用ルート」が使えなくても、「遅いけど確実に動く一般ルート」で結果を出せることがある。これを <strong>fallback（フォールバック）</strong> と呼びます。</p>
+			<p data-lang="en">The same mechanism exists in software. When sending computations to a GPU, if the "fastest dedicated route" isn't available, there might be a "slower but reliable general route" that still produces results. This is called a <strong>fallback</strong>.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🛣️ たとえ話:</strong>
+			<strong data-lang="en">🛣️ Analogy:</strong>
+			<span data-lang="ja">高速道路（専用レーン）が通行止めでも、一般道（fallback 経路）を使えば目的地には着ける。時間は余分にかかるけれど、「着けない」わけではない。</span>
+			<span data-lang="en">Even if the highway (dedicated lane) is closed, you can use surface streets (fallback route) to reach your destination. It takes longer, but you still get there.</span>
+		</div>
+
+		<!-- ──────── 2. 速い道と遅い道 ──────── -->
+		<h2 class="section-title" data-lang="ja">2. 「速い道」と「遅い道」</h2>
+		<h2 class="section-title" data-lang="en">2. The "Fast Road" and the "Slow Road"</h2>
+
+		<div class="path-compare">
+			<div class="path-card fast">
+				<div class="icon">🏎️</div>
+				<h4 data-lang="ja">専用高速パス</h4>
+				<h4 data-lang="en">Dedicated Fast Path</h4>
+				<p data-lang="ja">その GPU 向けに最適化された計算ルート。速い。でも新しい GPU にしかないことがある。</p>
+				<p data-lang="en">A computation route optimized for that specific GPU. Fast. But sometimes only available on newer GPUs.</p>
+			</div>
+			<div class="path-card fallback">
+				<div class="icon">🚗</div>
+				<h4 data-lang="ja">fallback（一般道）</h4>
+				<h4 data-lang="en">Fallback (General Route)</h4>
+				<p data-lang="ja">どの GPU でも使える汎用ルート。遅いかもしれないけど、幅広い GPU で動く。</p>
+				<p data-lang="en">A general-purpose route that works on most GPUs. May be slower, but runs on a wide range of hardware.</p>
+			</div>
+		</div>
+
+		<div class="prose">
+			<p data-lang="ja">MIOpen（AI計算のライブラリ）を例にすると：<br>
+			最新の GPU（MI200 など）には <strong>専用の solver</strong> が何十種類も用意されています。gfx900（Vega）ではそのうちの一部しか使えないことがあります。</p>
+			<p data-lang="en">Take MIOpen (the AI computation library) as an example:<br>
+			The latest GPUs (like MI200) have <strong>dozens of dedicated solvers</strong> available. On gfx900 (Vega), only some of these may be usable.</p>
+			<p data-lang="ja">でも、MIOpen は「使える solver のリスト」を GPU の能力に応じて自動で調べ、使えるものの中からいちばん速いものを選びます。専用高速パスがなければ、使える汎用的な solver で計算する。これが fallback です。</p>
+			<p data-lang="en">However, MIOpen automatically discovers the "list of usable solvers" based on GPU capabilities and picks the fastest available one. If a dedicated fast solver isn't available, it falls back to a general-purpose solver. That's the fallback in action.</p>
+		</div>
+
+		<!-- ──────── 3. capability-based design ──────── -->
+		<h2 class="section-title" data-lang="ja">3. 「できること」ベースの設計</h2>
+		<h2 class="section-title" data-lang="en">3. Capability-Based Design</h2>
+		<p class="section-lead" data-lang="ja">fallback がうまく働く背景には、ある設計思想があります。</p>
+		<p class="section-lead" data-lang="en">Fallback works well because of an underlying design philosophy.</p>
+
+		<div class="prose">
+			<p data-lang="ja">ROCm のライブラリの多くは、GPU の「名前」ではなく「できること」で判断する設計になっています。これを <strong>capability-based design</strong>（ケイパビリティ・ベースド・デザイン）と呼びます。</p>
+			<p data-lang="en">Many ROCm libraries make decisions based on what a GPU <strong>can do</strong>, not what its name is. This is called <strong>capability-based design</strong>.</p>
+			<p data-lang="ja">イメージとしては、面接で「出身校はどこ？」ではなく「何ができる？」で判断するやり方です。gfx900 は古い GPU ですが、「この機能が使えるなら、この計算はできる」という形で仕事をもらえることがあります。</p>
+			<p data-lang="en">Think of it as a job interview that asks "What can you do?" instead of "Where did you graduate?" gfx900 is an older GPU, but if it has the required capabilities, it can still get the job done.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 ポイント:</strong>
+			<strong data-lang="en">💡 Key point:</strong>
+			<span data-lang="ja">capability-based design のおかげで、gfx900 は正式なサポートリストから外れた後も、一部の計算パスではまだ動くことがあるのです。「名前で弾かれない」設計が、結果として古い GPU を延命させている。</span>
+			<span data-lang="en">Thanks to capability-based design, gfx900 can still run some computation paths even after being removed from official support lists. A design that doesn't reject by name ends up extending the life of older GPUs.</span>
+		</div>
+
+		<!-- ──────── 4. fallback の限界 ──────── -->
+		<h2 class="section-title" data-lang="ja">4. fallback にも限界がある</h2>
+		<h2 class="section-title" data-lang="en">4. Fallback Has Limits</h2>
+
+		<div class="prose">
+			<p data-lang="ja">fallback は万能ではありません。いくつかの大事な限界があります。</p>
+			<p data-lang="en">Fallback isn't magic. It has important limitations.</p>
+			<p data-lang="ja"><strong>① 遅いことがある。</strong> 専用パスが 1秒で終わる計算が、fallback では 10秒かかることも珍しくありません。</p>
+			<p data-lang="en"><strong>① It can be slow.</strong> A computation that takes 1 second on a dedicated path might take 10 seconds via fallback.</p>
+			<p data-lang="ja"><strong>② すべてに fallback があるわけではない。</strong> 新しい命令セットが絶対に必要な機能には、代替ルート自体が存在しないことがあります。</p>
+			<p data-lang="en"><strong>② Not everything has a fallback.</strong> Features that absolutely require new instruction sets may have no alternative route at all.</p>
+			<p data-lang="ja"><strong>③ テストされていないことがある。</strong> fallback 経路は「動くはず」でも、古い GPU では実際にテストされていない場合があります。予期しないクラッシュのリスクがあります。</p>
+			<p data-lang="en"><strong>③ It may not be tested.</strong> A fallback path "should work," but if nobody actually tested it on older GPUs, unexpected crashes may occur.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🗺️ たとえ話:</strong>
+			<strong data-lang="en">🗺️ Analogy:</strong>
+			<span data-lang="ja">地図アプリが提案する迂回路は「たぶん通れる」けど、実際に走ってみたら工事中や通行止めだった、ということがあるのと同じです。fallback もそういうリスクがあります。</span>
+			<span data-lang="en">A map app might suggest a detour that "should work," but when you actually drive it, there's construction or a road closure. Fallback paths carry the same kind of risk.</span>
+		</div>
+
+		<!-- ──────── 5. まとめ ──────── -->
+		<h2 class="section-title" data-lang="ja">5. まとめ</h2>
+		<h2 class="section-title" data-lang="en">5. Summary</h2>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>fallback</strong> — 最善の道が使えないとき、代わりの道で結果を出すしくみ。</p>
+			<p data-lang="en"><strong>Fallback</strong> — A mechanism that uses an alternative path when the best one isn't available.</p>
+			<p data-lang="ja"><strong>capability-based design</strong> — GPU を名前ではなく「できること」で判断する設計。これが fallback を可能にしている。</p>
+			<p data-lang="en"><strong>Capability-based design</strong> — Judging a GPU by what it can do, not its name. This is what makes fallback possible.</p>
+			<p data-lang="ja"><strong>限界もある</strong> — 遅い、全部ではない、テスト不足のリスク。「動く」と「快適」は別の話。</p>
+			<p data-lang="en"><strong>There are limits</strong> — Slower, not universal, risk of untested paths. "It runs" and "it's comfortable" are different things.</p>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="what-support-means.html">イメージでわかる「対応している」の意味</a> — 対応のレベルを整理する<br>
+				<a href="inference-flow.html">イメージでわかる 推論の流れ</a> — fallback が実際にどこで起きるか<br>
+				<a href="solver-trace.html">gfx900 計算経路トレース</a> — 具体的な fallback の実例を見る
+			</span>
+			<span data-lang="en">
+				<a href="what-support-means.html">What "Supported" Really Means</a> — Organize the levels of support<br>
+				<a href="inference-flow.html">Visual Guide to the Inference Flow</a> — Where fallback actually happens<br>
+				<a href="solver-trace.html">gfx900 Solver Path Trace</a> — See concrete fallback examples
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) {
+			html.setAttribute('data-language', l);
+			html.lang = l;
+			btnJa.classList.toggle('active', l === 'ja');
+			btnEn.classList.toggle('active', l === 'en');
+			localStorage.setItem('vega-hbmx-pages-lang', l);
+		}
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
