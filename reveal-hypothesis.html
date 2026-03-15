@@ -373,6 +373,48 @@
       </div>
     </div>
 
+    <div class="card" style="border-left: 5px solid #1B5E20;">
+      <h3 data-lang="ja">新発見: gfx900 はプリコンパイル済み成果物付きで出荷されている <span class="conf conf-strong">shipped_artifact_verified</span></h3>
+      <h3 data-lang="en">New finding: gfx900 ships with pre-compiled artifacts and tuning data <span class="conf conf-strong">shipped_artifact_verified</span></h3>
+      <p data-lang="ja">ROCm 7.2 パッケージ（<code>/opt/rocm</code>）に含まれる gfx900 向け成果物を定量確認した（2026-03-15）。</p>
+      <p data-lang="en">Quantitative verification of gfx900-targeted artifacts in the ROCm 7.2 package (<code>/opt/rocm</code>) was performed (2026-03-15).</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th><span data-lang="ja">指標</span><span data-lang="en">Metric</span></th>
+            <th>gfx900</th>
+            <th>gfx1100 (RDNA3)</th>
+            <th>gfx1030 (RDNA2)</th>
+            <th>gfx942 (MI300X)</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>MIOpen Perf DB</td>
+              <td><strong>169,182</strong> lines</td>
+              <td style="color:#B71C1C;"><strong>none</strong></td>
+              <td>111,296 lines</td>
+              <td>470,080 lines</td>
+            </tr>
+            <tr>
+              <td>rocBLAS files</td>
+              <td><strong>128</strong></td>
+              <td>96</td>
+              <td>88</td>
+              <td>242</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note note-warn">
+        <span data-lang="ja"><strong>Fact:</strong> gfx900 の MIOpen Perf DB 行数は gfx1030 を上回り、gfx1100/gfx1200 には Perf DB 自体が存在しない。rocBLAS プリコンパイル済みカーネル数は gfx1100・gfx1030 双方を上回る。<br>
+        <strong>Interpretation:</strong> これは「コードが残っている」レベルではなく、AMD のビルド・チューニング・パッケージングパイプラインに gfx900 が組み込まれていることを示す。ただし、これが意図的なサポート維持なのかビルドターゲットリストの慣性なのかは外部からは断定できない。<br>
+        <strong>Open Question:</strong> gfx1100/1200 に Perf DB がない理由（別のチューニング方式か、MIOpen ターゲット外か）は未確認。gfx803（Fiji）にも Perf DB が存在する。</span>
+        <span data-lang="en"><strong>Fact:</strong> gfx900 MIOpen Perf DB line count exceeds gfx1030, and gfx1100/gfx1200 ship no Perf DB at all. rocBLAS pre-compiled kernel count exceeds both gfx1100 and gfx1030.<br>
+        <strong>Interpretation:</strong> This goes beyond "code still in tree" — it shows gfx900 is integrated into AMD's build-tune-package pipeline. Whether this reflects intentional support or target-list inertia cannot be determined from outside.<br>
+        <strong>Open Question:</strong> Why gfx1100/1200 lack Perf DB (different tuning mechanism? not a MIOpen target?) is not yet confirmed. gfx803 (Fiji) also has Perf DB.</span>
+      </div>
+    </div>
+
     <div class="card">
       <h3 data-lang="ja">仮説3: capability-based selection と fallback は ROCm の中心設計である <span class="conf conf-strong">strongly supported（公開一次資料の範囲で）</span></h3>
       <h3 data-lang="en">Hypothesis 3: capability-based selection and fallback are central ROCm design patterns <span class="conf conf-strong">strongly supported (within the scope of public sources)</span></h3>
@@ -645,6 +687,8 @@ flowchart LR
         <li data-lang="en">Even within a single component, public issue-driven workarounds and private-rooted release gating can coexist as different layers.</li>
         <li data-lang="ja">保守主体は単一ではなく、投入・維持・運用・修正可能性に分解して考える必要がある。</li>
         <li data-lang="en">Maintenance ownership is not singular; it should be split into insertion, maintenance, operation, and repair-capability roles.</li>
+        <li data-lang="ja">「非サポート」とされるアーキテクチャが、プリコンパイル済みカーネルやチューニング済み Perf DB を公式パッケージに含む形で出荷されうる。gfx900 のこれらの指標は gfx1100（RDNA3）や gfx1030（RDNA2）を上回る。</li>
+        <li data-lang="en">An architecture labeled "unsupported" can nevertheless ship with pre-compiled kernels and tuned Perf DB in the official package. For gfx900 these metrics exceed gfx1100 (RDNA 3) and gfx1030 (RDNA 2).</li>
       </ol>
     </div>
 
