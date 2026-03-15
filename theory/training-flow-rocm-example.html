@@ -87,8 +87,8 @@
 	<h2 class="section-title" data-lang="en">1. What We'll Do</h2>
 
 	<div class="prose">
-		<p data-lang="ja">小さなネットで「正解に近づける」を 1 ステップだけ実行します。重みの before / after を見て、学習が起きたことを確認します。</p>
-		<p data-lang="en">Run one "get closer to the correct answer" step with a small network. By comparing weights before and after, we confirm that learning happened.</p>
+		<p data-lang="ja">推論ページと対になる形で、学習の主役 4 つを見ます。<strong>① train() ② loss 計算 ③ backward() ④ optimizer.step()</strong>。最後に重みが変わることを確認します。</p>
+		<p data-lang="en">As a pair with the inference page, we focus on four training essentials: <strong>1) train() 2) loss computation 3) backward() 4) optimizer.step()</strong>. We then verify that weights actually change.</p>
 	</div>
 
 	<!-- ── 2 ── -->
@@ -98,50 +98,62 @@
 	<div class="code-block"><span class="kw">import</span> torch
 <span class="kw">import</span> torch.nn <span class="kw">as</span> nn
 
-<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This page expects PyTorch ROCm build"</span>
-DEVICE = torch.device(<span class="str">"cuda"</span>)
+<span class="comment"># 0) 実行前チェック</span>
+<span class="fn">print</span>(<span class="str">"torch.version.hip ="</span>, torch.version.hip)
+<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This example expects PyTorch built for ROCm"</span>
+DEVICE = torch.device(<span class="str">"cuda"</span> <span class="kw">if</span> torch.cuda.is_available() <span class="kw">else</span> <span class="str">"cpu"</span>)
+<span class="fn">print</span>(<span class="str">"device ="</span>, DEVICE)
 
-<span class="comment"># 1. モデル: 入力3 → 出力1</span>
+<span class="comment"># 1) 小さなモデルを作り、説明用に重みを固定</span>
 model = nn.Linear(<span class="num">3</span>, <span class="num">1</span>).to(DEVICE)
+<span class="kw">with</span> torch.no_grad():
+	model.weight[:] = torch.tensor([[<span class="num">0.1</span>, <span class="num">0.2</span>, <span class="num">0.3</span>]], device=DEVICE)
+	model.bias[:] = torch.tensor([<span class="num">0.5</span>], device=DEVICE)
 
-<span class="comment"># 2. 正解データ（ダミー）</span>
-x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]]).to(DEVICE)
-target = torch.tensor([[<span class="num">7.0</span>]]).to(DEVICE)
+<span class="comment"># 2) 学習モード</span>
+model.train()
+<span class="fn">print</span>(<span class="str">"model.training ="</span>, model.training)  <span class="comment"># True</span>
 
-<span class="comment"># 3. 損失関数とオプティマイザ</span>
+<span class="comment"># 3) 入力と正解</span>
+x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]], device=DEVICE)
+y_true = torch.tensor([[<span class="num">2.5</span>]], device=DEVICE)
+
 loss_fn = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=<span class="num">0.01</span>)
+optimizer = torch.optim.SGD(model.parameters(), lr=<span class="num">0.1</span>)
 
-<span class="comment"># 学習前の重みを記録</span>
-w_before = model.weight.data.clone().cpu()
+w_before = model.weight.detach().clone()
 
-<span class="comment"># 4. 学習 1 ステップ</span>
-pred = model(x)            <span class="comment"># forward</span>
-loss = loss_fn(pred, target)<span class="comment"># loss 計算</span>
-loss.backward()            <span class="comment"># backward (勾配計算)</span>
-optimizer.step()           <span class="comment"># 重み更新</span>
-optimizer.zero_grad()      <span class="comment"># 勾配リセット</span>
+<span class="comment"># 4) 学習 1 ステップ</span>
+optimizer.zero_grad()
+pred = model(x)
+loss = loss_fn(pred, y_true)
+loss.backward()
+optimizer.step()
 
-<span class="comment"># 学習後の重み</span>
-w_after = model.weight.data.clone().cpu()
+w_after = model.weight.detach().clone()
 
-<span class="fn">print</span>(<span class="str">"loss:"</span>, loss.item())
-<span class="fn">print</span>(<span class="str">"重み (前):"</span>, w_before)
-<span class="fn">print</span>(<span class="str">"重み (後):"</span>, w_after)
-<span class="fn">print</span>(<span class="str">"差分:"</span>, w_after - w_before)</div>
+<span class="fn">print</span>(<span class="str">"pred ="</span>, pred.detach().cpu())
+<span class="fn">print</span>(<span class="str">"loss ="</span>, loss.item())
+<span class="fn">print</span>(<span class="str">"pred.requires_grad ="</span>, pred.requires_grad)
+<span class="fn">print</span>(<span class="str">"weight changed ="</span>, <span class="kw">not</span> torch.allclose(w_before, w_after))
+<span class="fn">print</span>(<span class="str">"weight.grad ="</span>, model.weight.grad.detach().cpu())</div>
 
 	<!-- ── 3 ── -->
 	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
 	<h2 class="section-title" data-lang="en">3. What Happens When You Run It</h2>
 
-	<div class="output-block">loss: 32.4198
-重み (前): tensor([[-0.0043,  0.2987, -0.1835]])
-重み (後): tensor([[ 0.1034,  0.5141, -0.0298]])
-差分: tensor([[0.1077, 0.2154, 0.1537]])</div>
+	<div class="output-block">torch.version.hip = 6.x.x
+device = cuda
+model.training = True
+pred = tensor([[1.9000]])
+loss = 0.36
+pred.requires_grad = True
+weight changed = True
+weight.grad = tensor([[-1.2000, -2.4000, -3.6000]])</div>
 
 	<div class="prose">
-		<p data-lang="ja">重みが変わりました。これが「1 回学習した」ということです。loss が大きいほど重みの変化も大きくなります。</p>
-		<p data-lang="en">Weights changed — that's "one step of learning." The larger the loss, the larger the weight change.</p>
+		<p data-lang="ja">推論ページと違い、ここでは <code>pred.requires_grad=True</code> で勾配を追跡し、<code>backward()</code> と <code>optimizer.step()</code> によって重みが更新されます。これが「学習が起きた」状態です。</p>
+		<p data-lang="en">Unlike the inference page, this run tracks gradients with <code>pred.requires_grad=True</code>, then updates weights through <code>backward()</code> and <code>optimizer.step()</code>. That is what "learning happened" means here.</p>
 	</div>
 
 	<div class="fact-box">
@@ -178,7 +190,7 @@ w_after = model.weight.data.clone().cpu()
 python -c <span class="str">"import torch; print('torch.version.hip =', torch.version.hip)"</span>
 
 <span class="comment"># 学習ステップの HIP 呼び出し観測</span>
-rocprof --hip-trace python training_step_example.py</div>
+rocprof --hip-trace python training_flow_example.py</div>
 	<div class="prose">
 		<p data-lang="ja">同じモデルで <a href="inference-flow-rocm-example.html">推論ページ</a> の実行時間と比較すると、学習側が重いことを観測できます。理論ページの「学習は重い」を実測でつなぐ目的です。</p>
 		<p data-lang="en">Compare runtime with the same model on the <a href="inference-flow-rocm-example.html">inference page</a> to observe why training is heavier. This connects the theory claim to actual measurement.</p>

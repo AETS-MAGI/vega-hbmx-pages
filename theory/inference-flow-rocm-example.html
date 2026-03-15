@@ -86,8 +86,8 @@
 	<h2 class="section-title" data-lang="en">1. What We'll Do</h2>
 
 	<div class="prose">
-		<p data-lang="ja">学習の例（training-flow）で使ったのと同じモデルを <strong>eval モード</strong> で動かします。backward は呼ばず、重みも変わりません。これが「推論」です。</p>
-		<p data-lang="en">Run the same model from the training-flow example in <strong>eval mode</strong>. No backward, no weight updates. This is "inference."</p>
+		<p data-lang="ja">このページの主役は 3 つです。<strong>① eval() で推論モード ② no_grad() で勾配追跡しない ③ 重みを更新しない</strong>。この 3 点が見える最小例を実行します。</p>
+		<p data-lang="en">This page focuses on three things: <strong>1) eval() for inference mode 2) no_grad() to disable gradient tracking 3) no weight updates</strong>. We run a minimal example that makes these points visible.</p>
 	</div>
 
 	<!-- ── 2 ── -->
@@ -97,37 +97,54 @@
 	<div class="code-block"><span class="kw">import</span> torch
 <span class="kw">import</span> torch.nn <span class="kw">as</span> nn
 
-<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This page expects PyTorch ROCm build"</span>
-DEVICE = torch.device(<span class="str">"cuda"</span>)
+<span class="comment"># 0) 実行前チェック（主役ではなく前提確認）</span>
+<span class="fn">print</span>(<span class="str">"torch.version.hip ="</span>, torch.version.hip)
+<span class="kw">assert</span> torch.version.hip <span class="kw">is not</span> <span class="kw">None</span>, <span class="str">"This example expects PyTorch built for ROCm"</span>
 
-<span class="comment"># 1. モデル作成 (学習済みと仮定)</span>
+<span class="comment"># ROCm 版 PyTorch でも device 文字列は "cuda" を使う</span>
+DEVICE = torch.device(<span class="str">"cuda"</span> <span class="kw">if</span> torch.cuda.is_available() <span class="kw">else</span> <span class="str">"cpu"</span>)
+<span class="fn">print</span>(<span class="str">"device ="</span>, DEVICE)
+
+<span class="comment"># 1) 説明しやすい小さなモデル（重みを手で固定）</span>
 model = nn.Linear(<span class="num">3</span>, <span class="num">1</span>).to(DEVICE)
-model.<span class="fn">eval</span>()  <span class="comment"># 推論モードに切り替え</span>
-
-<span class="comment"># 2. 入力</span>
-x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]]).to(DEVICE)
-
-<span class="comment"># 3. 推論: forward だけ、勾配は計算しない</span>
 <span class="kw">with</span> torch.no_grad():
-    pred = model(x)
+	model.weight[:] = torch.tensor([[<span class="num">0.1</span>, <span class="num">0.2</span>, <span class="num">0.3</span>]], device=DEVICE)
+	model.bias[:] = torch.tensor([<span class="num">0.5</span>], device=DEVICE)
 
-<span class="fn">print</span>(<span class="str">"予測:"</span>, pred.cpu())
-<span class="fn">print</span>(<span class="str">"重み (変化なし):"</span>, model.weight.data.cpu())
+<span class="comment"># 2) 推論モードに切り替える</span>
+model.eval()
+<span class="fn">print</span>(<span class="str">"model.training ="</span>, model.training)  <span class="comment"># False なら推論モード</span>
 
-<span class="comment"># 学習と比較: requires_grad の状態</span>
-<span class="fn">print</span>(<span class="str">"grad 追跡中?:"</span>, pred.requires_grad)  <span class="comment"># False</span></div>
+<span class="comment"># 3) 入力</span>
+x = torch.tensor([[<span class="num">1.0</span>, <span class="num">2.0</span>, <span class="num">3.0</span>]], device=DEVICE)
+w_before = model.weight.detach().clone()
+
+<span class="comment"># 4) 推論: forward のみ（勾配は追跡しない）</span>
+<span class="kw">with</span> torch.no_grad():
+	pred = model(x)
+
+w_after = model.weight.detach().clone()
+
+<span class="fn">print</span>(<span class="str">"input:"</span>, x.cpu())
+<span class="fn">print</span>(<span class="str">"prediction:"</span>, pred.cpu())
+<span class="fn">print</span>(<span class="str">"pred.requires_grad:"</span>, pred.requires_grad)
+<span class="fn">print</span>(<span class="str">"weight changed:"</span>, <span class="kw">not</span> torch.allclose(w_before, w_after))</div>
 
 	<!-- ── 3 ── -->
 	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
 	<h2 class="section-title" data-lang="en">3. What Happens When You Run It</h2>
 
-	<div class="output-block">予測: tensor([[-0.0891]])
-重み (変化なし): tensor([[-0.0043,  0.2987, -0.1835]])
-grad 追跡中?: False</div>
+	<div class="output-block">torch.version.hip = 6.x.x
+device = cuda
+model.training = False
+input: tensor([[1., 2., 3.]])
+prediction: tensor([[1.9000]])
+pred.requires_grad: False
+weight changed: False</div>
 
 	<div class="prose">
-		<p data-lang="ja">答えは出ますが、重みは動きません。<code>requires_grad = False</code> なので、PyTorch は勾配グラフを作りません。</p>
-		<p data-lang="en">Output is produced but weights don't move. <code>requires_grad = False</code> so PyTorch doesn't build the gradient graph.</p>
+		<p data-lang="ja"><strong>見たいポイント:</strong> <code>model.training=False</code>（推論モード）、<code>pred.requires_grad=False</code>（勾配追跡なし）、<code>weight changed=False</code>（重み更新なし）。この 3 つが同時に成立しているのが「推論」です。</p>
+		<p data-lang="en"><strong>What to look for:</strong> <code>model.training=False</code> (inference mode), <code>pred.requires_grad=False</code> (no gradient tracking), and <code>weight changed=False</code> (no weight update). These three together define inference here.</p>
 	</div>
 
 	<!-- ── 4 ── -->
@@ -139,6 +156,8 @@ grad 追跡中?: False</div>
 		<strong>推論 (ここ):</strong> forward のみ</p>
 		<p data-lang="en"><strong>Training (training-flow):</strong> forward → loss → <strong>backward</strong> → <strong>optimizer.step()</strong><br>
 		<strong>Inference (here):</strong> forward only</p>
+		<p data-lang="ja"><strong>このコードで確認できる差:</strong> <code>eval()</code> を使う / <code>no_grad()</code> を使う / 重みを更新しない</p>
+		<p data-lang="en"><strong>Differences confirmed by this code:</strong> uses <code>eval()</code> / uses <code>no_grad()</code> / does not update weights</p>
 	</div>
 
 	<div class="analogy">
@@ -165,7 +184,7 @@ grad 追跡中?: False</div>
 python -c <span class="str">"import torch; print('torch.version.hip =', torch.version.hip)"</span>
 
 <span class="comment"># 推論（forward only）の HIP 呼び出し観測</span>
-rocprof --hip-trace python inference_example.py</div>
+rocprof --hip-trace python inference_flow_example.py</div>
 
 	<!-- ── next ── -->
 	<div class="next-links">

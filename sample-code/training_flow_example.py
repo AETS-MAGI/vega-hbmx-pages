@@ -7,30 +7,41 @@ def main() -> None:
     if not torch.cuda.is_available():
         raise RuntimeError("GPU is not available to torch")
 
-    device = torch.device("cuda")
     print(f"torch={torch.__version__}")
     print(f"torch.version.hip={torch.version.hip}")
-    print(f"device={torch.cuda.get_device_name(0)}")
+    assert torch.version.hip is not None, "This example expects PyTorch built for ROCm"
+
+    # PyTorch on ROCm still uses the "cuda" device string for compatibility.
+    device = torch.device("cuda")
+    print(f"device={device} ({torch.cuda.get_device_name(0)})")
 
     model = nn.Linear(3, 1).to(device)
+    with torch.no_grad():
+        model.weight[:] = torch.tensor([[0.1, 0.2, 0.3]], device=device)
+        model.bias[:] = torch.tensor([0.5], device=device)
+
+    model.train()
+    print("model.training:", model.training)
+
     x = torch.tensor([[1.0, 2.0, 3.0]], device=device)
-    target = torch.tensor([[7.0]], device=device)
+    target = torch.tensor([[2.5]], device=device)
 
     loss_fn = nn.MSELoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
 
     w_before = model.weight.detach().clone()
+    optimizer.zero_grad()
     pred = model(x)
     loss = loss_fn(pred, target)
     loss.backward()
     optimizer.step()
-    optimizer.zero_grad()
     w_after = model.weight.detach().clone()
 
+    print("prediction:", pred.detach().cpu())
     print("loss:", float(loss.item()))
+    print("prediction requires_grad:", pred.requires_grad)
     print("weight changed:", not torch.allclose(w_before, w_after))
-    print("weight before:", w_before.cpu())
-    print("weight after:", w_after.cpu())
+    print("weight.grad:", model.weight.grad.detach().cpu())
 
 
 if __name__ == "__main__":
