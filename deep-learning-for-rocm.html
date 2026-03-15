@@ -575,8 +575,8 @@ flowchart LR
   <div class="prose">
     <p data-lang="ja">フィルタ（カーネルとも呼ぶ）は、<strong>「どんな特徴を探すか」を決める小さな行列</strong>です。</p>
     <p data-lang="en">A filter (also called a kernel) is a <strong>small matrix that decides what feature to look for</strong>.</p>
-    <p data-lang="ja">手で設計することもできますが、深層学習では <strong>フィルタの中身（重み）を訓練によって自動で決める</strong>のが特徴です。モデルが「猫を見分けるのに役立つ特徴」を自分で学んでいきます。</p>
-    <p data-lang="en">Filters can be designed by hand, but the key feature of deep learning is that <strong>filter weights are determined automatically through training</strong>. The model learns by itself which features help distinguish a cat.</p>
+    <p data-lang="ja">手で設計することもできますが、深層学習では <strong>フィルタの中身（重み）を訓練によって自動で決める</strong>のが特徴です。モデルが「猫を見分けるのに役立つ特徴」を自分で学んでいきます。（訓練の流れは <a href="training-flow.html" style="color:var(--blue);font-weight:600;">学習の流れ</a> ページで解説しています。）</p>
+    <p data-lang="en">Filters can be designed by hand, but the key feature of deep learning is that <strong>filter weights are determined automatically through training</strong>. The model learns by itself which features help distinguish a cat. (See <a href="training-flow.html" style="color:var(--blue);font-weight:600;">Visual Guide to the Training Flow</a> for how training works.)</p>
     <p data-lang="ja">畳み込み層には複数のフィルタがあり、それぞれが異なる特徴を探します。最初の層では「端っこ・線」、深い層では「目・耳」のような複雑な部品を探すようになります。</p>
     <p data-lang="en">A convolutional layer has many filters, each looking for a different feature. Early layers find "edges and lines"; deeper layers find complex parts like "eyes and ears."</p>
   </div>
