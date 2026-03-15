@@ -803,7 +803,17 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
           <p style="font-size: 17px;">qwen3.5:2b では 2 回の matched run で Vulkan num_gpu&gt;=1 が SIGSEGV、ROCm/HIP は非該当。Vulkan num_gpu=0 は 5/5 安定し、phi4-mini は num_gpu=1 で通ったため、この failure は gfx900 Vulkan 全般に普遍的ではない。</p>
         </div>
       </div>
-      <p class="dim" style="text-align: center; font-style: italic; margin-top: 18px; font-size: 20px;">収集エビデンスに基づく結論："公式非対応" と "どの構成でも実行不能" は別の命題である。 | qwen3.5 の ROCm/Vulkan 差は 2 日で再現し crash timing も決定論的だったが、phi4-mini は Vulkan offload failure が普遍的でないことを示した。</p>`
+      <p class="dim" style="text-align: center; font-style: italic; margin-top: 18px; font-size: 20px;">収集エビデンスに基づく結論："公式非対応" と "どの構成でも実行不能" は別の命題である。 | qwen3.5 の ROCm/Vulkan 差は 2 日で再現し crash timing も決定論的だったが、phi4-mini は Vulkan offload failure が普遍的でないことを示した。</p>`,
+`      <section style="background:#fafafa;border:1px solid #ddd;padding:1.2em 1.6em;margin:2em 0;">
+        <h3 style="margin-top:0;">本資料が主張しないこと / This presentation does not claim that...</h3>
+        <ul style="font-size:0.9em;">
+          <li>AMD の社内意思決定過程を断定するものではない / Internal decision-making processes are asserted.</li>
+          <li><code>llvm-project-private#389</code> の内容を推定で補完するものではない / The content of the private issue has been inferred.</li>
+          <li>本資料の事例が ROCm 全体の一般法則として確定しているとするものではない / A single case is generalized into a universal rule.</li>
+          <li>AMD の support policy 全体を完全に代表するものではない / AMD's support policy as a whole is fully represented.</li>
+          <li>AMD または特定個人への批判を意図するものではない / Any specific organization is being criticized.</li>
+        </ul>
+      </section>`
     ];
     let currentLang = 'en';
 
