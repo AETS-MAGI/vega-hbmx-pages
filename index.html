@@ -226,6 +226,7 @@
 		.type-glossary { background: #00796B; }
 		.type-ecosystem{ background: #5B4B8A; }
 		.type-intro    { background: var(--teal); }
+		.type-theory   { background: #00695C; }
 
 		.card h3 {
 			margin: 0 0 6px;
@@ -504,6 +505,54 @@
 			<p class="section-lead" data-lang="ja">数式最小限・比喩中心の入門ページと、ROCm のエコシステム・用語を図で整理したページ群です。発表資料の前に読むと理解が深まります。</p>
 			<p class="section-lead" data-lang="en">Concept introductions using analogy over equations, plus visual maps of the ROCm ecosystem and glossary. Best read before the presentation materials.</p>
 			<div class="card-grid">
+
+				<article class="card">
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる GPU のしくみ</h3>
+					<h3 data-lang="en">Visual Guide to GPU Basics</h3>
+					<p class="filename">gpu-basics.html</p>
+					<p data-lang="ja">CPU との違い・並列処理・VRAM を、パンケーキ工場や机の上の教科書にたとえてやさしく解説。GPU がなぜ AI に使われるかがわかります。</p>
+					<p data-lang="en">CPU vs GPU, parallelism, and VRAM — explained through pancake factories and textbooks on a desk. Understand why GPUs power AI.</p>
+					<ul>
+						<li data-lang="ja">専門知識不要・中学生から読める</li>
+						<li data-lang="en">No prerequisites — readable from middle school level</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-teal" href="gpu-basics.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる ROCm の全体構造</h3>
+					<h3 data-lang="en">Visual ROCm Overview for Beginners</h3>
+					<p class="filename">rocm-overview-for-beginners.html</p>
+					<p data-lang="ja">ROCm を「5階建てビル」にたとえ、各階（GPU→ドライバ→HIP→ライブラリ→アプリ）の役割を図で解説。gfx900 がどこに住んでいるかも紹介。</p>
+					<p data-lang="en">ROCm as a 5-floor building — GPU → Driver → HIP → Libraries → App. See where gfx900 lives in the stack.</p>
+					<ul>
+						<li data-lang="ja">5階建てビルの視覚的な比喩</li>
+						<li data-lang="en">5-floor building visual metaphor</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-teal" href="rocm-overview-for-beginners.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる「対応している」の意味</h3>
+					<h3 data-lang="en">Visual Guide: What "Supported" Really Means</h3>
+					<p class="filename">what-support-means.html</p>
+					<p data-lang="ja">「対応=使える」ではない。5段階のサポートレベルを、レストランや駅のたとえで解説し、gfx900 が各レイヤでどの段階にあるか整理。</p>
+					<p data-lang="en">"Supported" ≠ "works perfectly." Five support levels explained via restaurant and station analogies, with gfx900 mapped to each layer.</p>
+					<ul>
+						<li data-lang="ja">5段階サポートモデル図</li>
+						<li data-lang="en">5-level support model diagram</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-teal" href="what-support-means.html">Open</a>
+					</div>
+				</article>
 
 				<article class="card">
 					<span class="card-type type-intro">入門</span>
