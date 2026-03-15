@@ -676,6 +676,67 @@ log(<span class="hi-orange">"No Tensile solution found for XF32, fall back to FP
 			</div>
 		</article>
 
+		<!-- ── 8b: Shipped Artifacts — Perf DB & rocBLAS pre-compiled kernels ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">8b) Shipped Artifacts — gfx900 is distributed with tuned data and pre-compiled kernels</span>
+				<span data-lang="ja">8b) 出荷成果物 — gfx900 はチューニング済みデータとプリコンパイル済みカーネル付きで配布されている</span>
+			</h2>
+			<div class="hbox green">
+				<span data-lang="en"><strong>Key finding (2026-03-15):</strong> The ROCm 7.2 package ships <strong>pre-compiled artifacts and tuning data for gfx900</strong> — not just source code, but actual build outputs targeting gfx900. In several metrics, gfx900 receives <em>more</em> shipped artifacts than RDNA 3 (gfx1100) and RDNA 2 (gfx1030).</span>
+				<span data-lang="ja"><strong>重要発見（2026-03-15）:</strong> ROCm 7.2 パッケージには gfx900 向けの<strong>プリコンパイル済み成果物とチューニングデータ</strong>が含まれている。ソースコードだけでなく、gfx900 をターゲットに指定してビルドされた実際の成果物である。複数の指標で gfx900 は RDNA 3（gfx1100）や RDNA 2（gfx1030）より<em>多くの</em>成果物を受けている。</span>
+			</div>
+			<table class="data-table">
+				<thead><tr>
+					<th><span data-lang="en">Metric</span><span data-lang="ja">指標</span></th>
+					<th>gfx900</th>
+					<th>gfx1100</th>
+					<th>gfx1030</th>
+					<th>gfx942</th>
+				</tr></thead>
+				<tbody>
+					<tr>
+						<td><span data-lang="en">MIOpen Perf DB (total lines)</span><span data-lang="ja">MIOpen Perf DB（合計行数）</span></td>
+						<td><strong>169,182</strong></td>
+						<td style="color:#B71C1C;"><strong>none</strong></td>
+						<td>111,296</td>
+						<td>470,080</td>
+					</tr>
+					<tr>
+						<td><span data-lang="en">rocBLAS pre-compiled files</span><span data-lang="ja">rocBLAS プリコンパイルファイル数</span></td>
+						<td><strong>128</strong></td>
+						<td>96</td>
+						<td>88</td>
+						<td>242</td>
+					</tr>
+					<tr>
+						<td><span data-lang="en">Firmware blobs</span><span data-lang="ja">ファームウェア</span></td>
+						<td>16</td>
+						<td><span data-lang="en">(separate)</span><span data-lang="ja">（別途）</span></td>
+						<td><span data-lang="en">(separate)</span><span data-lang="ja">（別途）</span></td>
+						<td><span data-lang="en">(separate)</span><span data-lang="ja">（別途）</span></td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="log-quote"><span class="hi-gray"># /opt/rocm/share/miopen/db/ — gfx900 Perf DB files shipped</span>
+gfx900_56.HIP.fdb.txt    64,583 lines   (Vega 56, 56 CU)
+gfx900_56.db.txt          41,835 lines
+gfx900_56.OpenCL.fdb.txt   1,711 lines
+gfx900_64.HIP.fdb.txt    59,336 lines   (Vega 64, 64 CU)
+gfx900_64.OpenCL.fdb.txt   1,717 lines
+
+<span class="hi-gray"># /opt/rocm/lib/rocblas/library/ — gfx900 kernel types</span>
+HH(28) ZZ(17) CC(17) SS(16) HS(16) DD(16) I8I(4) BS(4) BB(4) 4xi8I(4)
+<span class="hi-gray"># 54 of 128 files carry "fallback" in filename; 74 are tuned kernels</span>
+
+<span class="hi-gray"># Note: gfx803 (Fiji) also ships Perf DB (112K lines per variant)</span>
+<span class="hi-gray"># Note: gfx1100 (RDNA3) and gfx1200 (RDNA4) ship NO Perf DB at all</span></div>
+			<div class="hbox">
+				<span data-lang="en"><strong>Implication:</strong> This is <em>not</em> residual code that "happens to still compile." A Perf DB is the result of architecture-specific tuning runs. Pre-compiled <code>.hsaco</code> and <code>.co</code> files require an explicit <code>--offload-arch=gfx900</code> compilation step. Their presence in the shipped package shows that gfx900 is integrated into AMD's build-and-packaging pipeline. Whether this reflects intentional support or target-list inertia cannot be determined from outside, but the practical effect is that users receive ready-to-run gfx900 artifacts out of the box.</span>
+				<span data-lang="ja"><strong>含意:</strong> これは「たまたままだコンパイルが通る」残留コードでは<em>ない</em>。Perf DB はアーキテクチャ固有のチューニング実行の結果である。プリコンパイル済み <code>.hsaco</code> / <code>.co</code> ファイルは明示的な <code>--offload-arch=gfx900</code> コンパイル工程を必要とする。出荷パッケージへの収録は、gfx900 が AMD のビルド・パッケージングパイプラインに組み込まれていることを示す。これが意図的なサポートなのかターゲットリストの慣性なのかは外部からは判別できないが、実際の効果としてユーザは箱から出してすぐ使える gfx900 成果物を受け取っている。</span>
+			</div>
+		</article>
+
 		<!-- ── 9: Runtime summary table ── -->
 		<article class="step">
 			<h2>
