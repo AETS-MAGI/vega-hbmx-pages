@@ -443,29 +443,16 @@
 			</table>
 			</div>
 			<div class="mermaid">
-flowchart TB
-    REQ["Computation Request"] --> B
-    subgraph B["Layer 1 — Build  維持"]
-        B1["gfx900 in rocBLAS CMake (ROCm 5.6–7.1)"]
-        B2["Tensile shared lib includes gfx900"]
-    end
-    B --> S
-    subgraph S["Layer 2 — Selection  管理  IsApplicable()"]
-        S1["MLIR iGEMM\ngfx900 explicit return false"]
-        S2["XDLops family\ngfx908+ only"]
-        S3["Winograd\ngfx900 permitted"]
-        S4["ASM v4r1 dynamic\ngfx900 / gfx906 whitelist"]
-    end
-    S --> F
-    subgraph F["Layer 3 — Fallback  補充"]
-        F1["rocBLAS: hipBLASLt → Tensile → FP32"]
-        F2["CK: dot4 absent → sequential path"]
-        F3["DirectNaive: always available"]
-    end
-    style S1 fill:#ffdddd,stroke:#cc4444
-    style S2 fill:#ffdddd,stroke:#cc4444
-    style S3 fill:#ddffdd,stroke:#44aa44
-    style S4 fill:#ddffdd,stroke:#44aa44
+flowchart LR
+    REQ["Request"]
+    L1["L1 — Build\nrocBLAS · Tensile\ngfx900 target kept"]
+    L2N["Selection ✗\nMLIR · XDLops\nblocked / gfx908+"]
+    L2Y["Selection ✓\nWinograd · ASM v4r1\ngfx900 permitted"]
+    L3["L3 — Fallback\nhipBLAS→FP32\ndot4→seq · Naive"]
+    REQ --> L1 --> L2N
+    L1 --> L2Y --> L3
+    style L2N fill:#ffdddd,stroke:#cc4444
+    style L2Y fill:#ddffdd,stroke:#44aa44
 			</div>
 		</div>
 
