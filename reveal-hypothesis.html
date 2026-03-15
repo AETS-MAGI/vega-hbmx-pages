@@ -456,6 +456,26 @@
         <span data-lang="ja"><strong>重要:</strong> <code>gfx900</code> の主要分岐の一部が AMD 社員コミットだったことは、投入主体の証拠である。そこからそのまま ROCm 全体の維持主体まで一般化するのは早い。</span>
         <span data-lang="en"><strong>Important:</strong> The fact that some key <code>gfx900</code> branches were introduced by AMD employees is evidence about insertion ownership, not automatically about long-term maintenance ownership across ROCm.</span>
       </div>
+      <div class="note note-info">
+        <span data-lang="ja"><strong>2026-03-15 追記 — Provenance Map 完成:</strong> 7つの gfx900 生存経路について git blame ベースで 4主体（投入・維持・運用・修正可能）を整理した。主な知見:
+        <ul>
+          <li>新経路（MLIR 除外, rocMLIR gating）→ AMD(M) が投入</li>
+          <li>旧経路（Winograd, ASM v4r1）→ <code>@gmail.com</code> 等の外部ドメイン contributor が目立つ（ただし AMD との関係を排除できない）</li>
+          <li>維持: Winograd / MP_bidir は AMD 社員が 2021-2025 に補修。v4r1 / WORKAROUND_1204 は削除コスト由来残存と読める</li>
+          <li>運用: Community（エンドユーザ）が <code>-S</code> solver 強制選択や <code>HSA_OVERRIDE_GFX_VERSION</code> 等の回避策を共有</li>
+          <li>Tensile fallback: 外部 contributor の補修が merge 後に revert されるケースも観測</li>
+        </ul>
+        </span>
+        <span data-lang="en"><strong>2026-03-15 addendum — Provenance Map completed:</strong> For 7 gfx900 survival paths, git-blame-based mapping of 4 roles (insertion, maintenance, operation, repair-capability) was compiled. Key findings:
+        <ul>
+          <li>New paths (MLIR disable, rocMLIR gating) → inserted by AMD members</li>
+          <li>Legacy paths (Winograd, ASM v4r1) → <code>@gmail.com</code> / non-AMD-domain contributors stand out (though AMD affiliation cannot be ruled out)</li>
+          <li>Maintenance: Winograd / MP_bidir actively patched by AMD(M) staff through 2021-2025. v4r1 / WORKAROUND_1204 persist due to deletion cost</li>
+          <li>Operation: Community (end users) share workarounds such as <code>-S</code> solver forcing and <code>HSA_OVERRIDE_GFX_VERSION</code></li>
+          <li>Tensile fallback: external contributor patches were merged then reverted in at least one case</li>
+        </ul>
+        </span>
+      </div>
     </div>
 
     <h2 class="section-title" data-lang="ja">reveal された設計モデル</h2>
@@ -495,8 +515,8 @@
       <ul>
         <li data-lang="ja">maintainer 自身がこの思想を明示的に宣言した一次資料はまだ不足している。</li>
         <li data-lang="en">Primary materials where maintainers explicitly state this design philosophy are still limited.</li>
-        <li data-lang="ja">community がどこまで実質的に支えているかは、issue / PR / workaround 文書の追加調査が必要。</li>
-        <li data-lang="en">How far the community materially sustains the stack still requires more issue / PR / workaround analysis.</li>
+        <li data-lang="ja">community がどこまで実質的に支えているかは、provenance map により運用主体レベルでは整理された（2026-03-15）。ただし GitHub 外のフォーラム・ブログ等での知見共有は調査範囲外。</li>
+        <li data-lang="en">How far the community materially sustains the stack has been mapped at the operational-owner level via the provenance map (2026-03-15). However, knowledge sharing on forums and blogs outside GitHub remains outside the scope of this investigation.</li>
         <li data-lang="ja">private backend issue が public gating に現れる例が一般的かどうかは未確定。ただし gating メカニズムの実装は public rocMLIR で追跡可能であることが 2026-03-15 に確認された。</li>
         <li data-lang="en">It remains unclear whether private-backend-to-public-gating behavior is common or just a few notable cases. However, the gating mechanism implementation was confirmed traceable in public rocMLIR as of 2026-03-15.</li>
         <li data-lang="ja"><code>#1231</code> と <code>#1328</code> の public 文脈は回収できたが、後者の private root cause 自体はなお非公開のままである。</li>

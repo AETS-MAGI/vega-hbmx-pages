@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROCm Structure and Contribution Layers | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --navy: #0B3C5D;
+      --teal: #00796B;
+      --amber: #C56A00;
+      --ink: #1F2933;
+      --muted: #5F6C7B;
+      --line: #D8E0E8;
+      --bg: #F5F8FB;
+      --card: #FFFFFF;
+      --lav: #5B4B8A;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(0,121,107,0.08), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(11,60,93,0.08), transparent 24%),
+        var(--bg);
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .home-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--navy);
+      font-weight: bold;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 14px;
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      background: transparent;
+      color: #455A64;
+      cursor: pointer;
+    }
+
+    .lang-btn.active {
+      background: var(--navy);
+      color: #FFFFFF;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0B3C5D 0%, #00796B 52%, #5B4B8A 100%);
+      color: #FFFFFF;
+      border-radius: 22px;
+      padding: 34px 34px 28px;
+      box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+    }
+
+    .hero h1 {
+      margin: 0 0 12px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 38px;
+      line-height: 1.12;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.5;
+      color: #E5F4F2;
+    }
+
+    .hero-meta {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: bold;
+      background: rgba(255,255,255,0.14);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .summary {
+      margin-top: 22px;
+      background: #FFFFFF;
+      border-left: 6px solid var(--amber);
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-size: 18px;
+      line-height: 1.6;
+      box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+      margin: 38px 0 10px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 28px;
+      color: var(--navy);
+    }
+
+    .section-lead {
+      margin: 0 0 18px;
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 24px 20px;
+      box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+      margin-bottom: 16px;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 21px;
+      line-height: 1.3;
+    }
+
+    .card p, .card li {
+      font-size: 16px;
+      line-height: 1.58;
+      color: #37474F;
+    }
+
+    .card ul, .card ol {
+      margin: 10px 0 12px;
+      padding-left: 20px;
+    }
+
+    .card li { margin-bottom: 6px; }
+
+    .note {
+      margin: 18px 0;
+      border-left: 6px solid var(--amber);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 16px;
+      line-height: 1.58;
+    }
+
+    .note-info { background: #E3F2FD; border-left-color: var(--navy); color: #1A237E; }
+    .note-warn { background: #FFF8E1; color: #5D4037; }
+    .note-green { background: #E8F5E9; border-left-color: var(--teal); color: #1B5E20; }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .pill-fact { background: #E8F5E9; color: #1B5E20; }
+    .pill-int { background: #E3F2FD; color: #0D47A1; }
+    .pill-open { background: #FFF3E0; color: #C56A00; }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 12px 0 16px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #FFFFFF;
+    }
+
+    th {
+      background: #EDF2F7;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: bold;
+      border-bottom: 2px solid var(--line);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #ECEFF1;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .mini-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 1px 2px 10px rgba(0,0,0,0.04);
+    }
+
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+      color: var(--teal);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      padding: 11px 15px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 15px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 1px 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .button-primary {
+      background: var(--navy);
+      color: #FFFFFF;
+    }
+
+    .button-secondary {
+      background: #FFFFFF;
+      color: var(--navy);
+      border: 1px solid var(--line);
+    }
+
+    .footer {
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    [data-language="ja"] [data-lang="en"],
+    [data-language="en"] [data-lang="ja"] {
+      display: none !important;
+    }
+
+    @media (max-width: 720px) {
+      .page { padding: 24px 16px 44px; }
+      .hero { padding: 26px 22px 22px; }
+      .hero h1 { font-size: 31px; }
+      .hero p { font-size: 18px; }
+      .toolbar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar">
+      <a class="home-link" href="index.html">← <span data-lang="ja">トップへ戻る</span><span data-lang="en">Back to index</span></a>
+      <div class="lang-toggle" aria-label="Language switch">
+        <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+        <button id="btn-en" class="lang-btn" type="button">EN</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <h1 data-lang="ja">ROCm の構造と寄与の層</h1>
+      <h1 data-lang="en">ROCm Structure and Contribution Layers</h1>
+      <p data-lang="ja">`gfx900` 個別事例を越えて、ROCm 一般の設計思想・support の分離・repo 統合・AMD / community の寄与構造を、GitHub 一次資料から読み解くページです。</p>
+      <p data-lang="en">A public page that steps beyond the `gfx900` case and reads ROCm's general design model, support splitting, repository consolidation, and AMD/community contribution structure from GitHub-side primary evidence.</p>
+      <div class="hero-meta">
+        <span class="badge">GitHub-side evidence</span>
+        <span class="badge">ROCm-wide structure</span>
+        <span class="badge">Updated: 2026-03-15</span>
+      </div>
+    </section>
+
+    <div class="summary">
+      <span data-lang="ja"><strong>要点:</strong> ROCm は GitHub 上で単一 monolith ではなく、release manifest、super-project、super-repo、component repo、retired repo が重なる layered stack として見える。support 問題や contribution も一枚岩ではなく、build・component・driver/user space・source-build 補修・repo 再編の層ごとに役割が分かれている。</span>
+      <span data-lang="en"><strong>Key point:</strong> On GitHub, ROCm looks less like a single monolith and more like a layered stack of release manifests, super-projects, super-repos, component repositories, and retired repositories. Support and contribution also split by layer: build, component policy, driver/user space, source-build repair, and repository reorganization.</span>
+    </div>
+
+    <div class="note note-info">
+      <span data-lang="ja">このページは内部 investigation note <code>rocm-common-investigate_github.md</code> を public 向けに圧縮したものです。private issue や社内意思決定は推定せず、公開一次資料と local clone から確認できる範囲に限って述べています。</span>
+      <span data-lang="en">This page is a public condensation of the internal investigation note <code>rocm-common-investigate_github.md</code>. It does not reconstruct private issues or internal decisions, and stays within what can be confirmed from public sources and local clones.</span>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">このページの立場</h2>
+    <h2 class="section-title" data-lang="en">How to read this page</h2>
+    <div class="mini-grid">
+      <div class="mini-card">
+        <h3 data-lang="ja">`rocm-history` との違い</h3>
+        <h3 data-lang="en">Different from `rocm-history`</h3>
+        <p data-lang="ja">年表中心ではなく、履歴から見える構造軸を整理します。時間順の出来事より、「support がなぜ層ごとに分かれて見えるか」に重点があります。</p>
+        <p data-lang="en">This page is not primarily chronological. It extracts the structural axes visible in the history, especially why support appears split across layers.</p>
+      </div>
+      <div class="mini-card">
+        <h3 data-lang="ja">`reveal-hypothesis` との違い</h3>
+        <h3 data-lang="en">Different from `reveal-hypothesis`</h3>
+        <p data-lang="ja">`gfx900` を入口にした仮説検証そのものではなく、ROCm 一般の設計モデルと寄与構造を public evidence から読む補助ページです。</p>
+        <p data-lang="en">This is not the hypothesis-testing page built around `gfx900` itself. It is a companion page for reading ROCm's wider design model and contribution structure from public evidence.</p>
+      </div>
+      <div class="mini-card">
+        <h3 data-lang="ja">言い切らない範囲</h3>
+        <h3 data-lang="en">What stays unresolved</h3>
+        <p data-lang="ja">GitHub 上の visible surface だけを扱うため、private planning や internal review を再構成するものではありません。</p>
+        <p data-lang="en">Because it uses only GitHub-visible evidence, it does not reconstruct private planning or internal review.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">結論サマリ</h2>
+    <h2 class="section-title" data-lang="en">Summary conclusions</h2>
+    <div class="card">
+      <ul>
+        <li data-lang="ja">ROCm は GitHub 上で layered / multi-repo stack として自己定義されている。</li>
+        <li data-lang="en">ROCm presents itself on GitHub as a layered, multi-repo stack.</li>
+        <li data-lang="ja">`support` は build、component、package、driver / user space で分離して見える。</li>
+        <li data-lang="en">“Support” appears split across build, component policy, package contents, and driver/user-space compatibility.</li>
+        <li data-lang="ja">official 側では build entry point と repo topology の統合が進んでいる。</li>
+        <li data-lang="en">The official side is moving toward more consolidated build entry points and repository topology.</li>
+        <li data-lang="ja">AMD と community の寄与は単一の ownership story ではなく、整理・統合、issue 可視化、fallback 補修など層ごとに違って現れる。</li>
+        <li data-lang="en">AMD/community contribution does not reduce to one ownership story; it appears by layer through consolidation, issue surfacing, fallback repair, and related work.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">観測された構造</h2>
+    <h2 class="section-title" data-lang="en">Observed structure</h2>
+
+    <div class="card">
+      <div class="pill-row">
+        <span class="pill pill-fact">Fact</span>
+        <span class="pill pill-int">Interpretation</span>
+        <span class="pill pill-open">Open Question</span>
+      </div>
+      <h3 data-lang="ja">1. ROCm は layered / multi-repo stack として自己定義されている</h3>
+      <h3 data-lang="en">1. ROCm defines itself as a layered / multi-repo stack</h3>
+      <ul>
+        <li data-lang="ja"><strong>Fact:</strong> `ROCm/README.md` は ROCm を drivers / development tools / APIs の collection と記述し、`default.xml` と `repo` tool を source management の前提としている。</li>
+        <li data-lang="en"><strong>Fact:</strong> `ROCm/README.md` describes ROCm as a collection of drivers, development tools, and APIs, and treats `default.xml` plus the `repo` tool as the baseline for source management.</li>
+        <li data-lang="ja"><strong>Fact:</strong> `TheRock/README.md` は `A CMake super-project for HIP and ROCm source builds` を掲げ、contributors / researchers / advanced users を対象にしている。</li>
+        <li data-lang="en"><strong>Fact:</strong> `TheRock/README.md` explicitly presents itself as `A CMake super-project for HIP and ROCm source builds`, aimed at contributors, researchers, and advanced users.</li>
+        <li data-lang="ja"><strong>Fact:</strong> `rocm-systems/README.md` は system projects の migration status と source-of-truth table を公開している。</li>
+        <li data-lang="en"><strong>Fact:</strong> `rocm-systems/README.md` publishes migration-status and source-of-truth tables for systems projects.</li>
+        <li data-lang="ja"><strong>Interpretation:</strong> ROCm の public GitHub surface は、release manifest、super-project、super-repo、component repo が重なる layered topology として読むのが自然である。</li>
+        <li data-lang="en"><strong>Interpretation:</strong> ROCm's public GitHub surface is naturally read as a layered topology of release manifests, super-projects, super-repos, and component repositories.</li>
+        <li data-lang="ja"><strong>Open Question:</strong> `rocm-libraries` 側の umbrella 化は、今回の local snapshot だけでは均一に追えていない。</li>
+        <li data-lang="en"><strong>Open Question:</strong> The umbrella direction on the `rocm-libraries` side is not yet evenly traceable from the current local snapshot alone.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="pill-row">
+        <span class="pill pill-fact">Fact</span>
+        <span class="pill pill-int">Interpretation</span>
+        <span class="pill pill-open">Open Question</span>
+      </div>
+      <h3 data-lang="ja">2. `support` は build / component / driver-user space で分離して見える</h3>
+      <h3 data-lang="en">2. “Support” appears split across build / component / driver-user space</h3>
+      <ul>
+        <li data-lang="ja"><strong>Fact:</strong> `TheRock#1414` は unsupported target でも hipBLASLt が default arch で build される振る舞いを問題化している。</li>
+        <li data-lang="en"><strong>Fact:</strong> `TheRock#1414` raises the problem that hipBLASLt still gets built for a default architecture even when the requested target is unsupported.</li>
+        <li data-lang="ja"><strong>Fact:</strong> `TheRock#1975` は、super-project 側で target が空でも component default に fall back して incompatible package ができる問題を整理している。</li>
+        <li data-lang="en"><strong>Fact:</strong> `TheRock#1975` explains how a super-project can still produce incompatible packages when empty target sets fall back to component defaults.</li>
+        <li data-lang="ja"><strong>Fact:</strong> `rocm-install-on-linux#648` は driver version と user-space / ROCm version の split を明示すべきだと指摘している。</li>
+        <li data-lang="en"><strong>Fact:</strong> `rocm-install-on-linux#648` argues that the split between driver version and user-space / ROCm version needs clearer annotation.</li>
+        <li data-lang="ja"><strong>Interpretation:</strong> GitHub issue の表面からだけでも、ROCm における `support` は一枚岩ではなく、build matrix、component policy、package contents、driver-user space compatibility に分かれている。</li>
+        <li data-lang="en"><strong>Interpretation:</strong> Even from GitHub issues alone, ROCm “support” does not behave like one single notion; it separates into build matrix policy, component policy, package contents, and driver/user-space compatibility.</li>
+        <li data-lang="ja"><strong>Open Question:</strong> これが recurring pattern なのか、個別に露出した論点なのかは、さらに issue を広く見る必要がある。</li>
+        <li data-lang="en"><strong>Open Question:</strong> More issues would be needed to determine whether this is a broad recurring pattern or a smaller set of exposed edge cases.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="pill-row">
+        <span class="pill pill-fact">Fact</span>
+        <span class="pill pill-int">Interpretation</span>
+        <span class="pill pill-open">Open Question</span>
+      </div>
+      <h3 data-lang="ja">3. official 側では build entry point と repo topology の統合が進んでいる</h3>
+      <h3 data-lang="en">3. The official side is consolidating build entry points and repository topology</h3>
+      <ul>
+        <li data-lang="ja"><strong>Fact:</strong> `ROCm/RELEASE.md` には `HIPCC Perl scripts deprecation` が upcoming change として明記されている。</li>
+        <li data-lang="en"><strong>Fact:</strong> `ROCm/RELEASE.md` explicitly lists `HIPCC Perl scripts deprecation` as an upcoming change.</li>
+        <li data-lang="ja"><strong>Fact:</strong> `ROCm/tools/autotag/templates/highlights/6.0.0.md` では `GPU_TARGETS` が `AMDGPU_TARGETS` より preferred とされる。</li>
+        <li data-lang="en"><strong>Fact:</strong> `ROCm/tools/autotag/templates/highlights/6.0.0.md` treats `GPU_TARGETS` as the preferred knob over `AMDGPU_TARGETS`.</li>
+        <li data-lang="ja"><strong>Fact:</strong> retired repo README は `ROCR-Runtime -> rocm-systems`、`Tensile -> rocm-libraries`、`ROCm/vllm -> upstream` を明示している。</li>
+        <li data-lang="en"><strong>Fact:</strong> Retired repo READMEs explicitly redirect `ROCR-Runtime -> rocm-systems`, `Tensile -> rocm-libraries`, and `ROCm/vllm -> upstream`.</li>
+        <li data-lang="ja"><strong>Interpretation:</strong> public record からは、build knob と repository ownership の両方で統合圧力が進んでいるように見える。</li>
+        <li data-lang="en"><strong>Interpretation:</strong> The public record suggests simultaneous consolidation pressure in both build knobs and repository ownership.</li>
+        <li data-lang="ja"><strong>Open Question:</strong> この統合が全 component に同じ速度で進むかは、現時点では repo ごとの差が大きい。</li>
+        <li data-lang="en"><strong>Open Question:</strong> It remains unclear whether this consolidation will proceed at the same speed across all components.</li>
+      </ul>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">寄与の層分解</h2>
+    <h2 class="section-title" data-lang="en">Contribution layers</h2>
+    <p class="section-lead" data-lang="ja">ここでの焦点は「誰が全部を支えているか」を決めることではなく、GitHub 上で観測できる寄与がどの層に現れているかを分けて読むことです。</p>
+    <p class="section-lead" data-lang="en">The point here is not to declare who owns everything, but to separate the layers where contribution is actually visible on GitHub.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th data-lang="ja">層</th>
+            <th data-lang="en">Layer</th>
+            <th data-lang="ja">主な根拠</th>
+            <th data-lang="en">Main evidence</th>
+            <th data-lang="ja">見えている寄与</th>
+            <th data-lang="en">Visible contribution</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-lang="ja">自己定義 / release / build platform</td>
+            <td data-lang="en">Self-definition / release / build platform</td>
+            <td><code>ROCm/README.md</code>, <code>TheRock/README.md</code>, <code>rocm-systems/README.md</code>, <code>RELEASE.md</code></td>
+            <td data-lang="ja">official repo 側の stack 定義、release guidance、super-project / super-repo 整理</td>
+            <td data-lang="en">Official stack definition, release guidance, and super-project / super-repo organization</td>
+          </tr>
+          <tr>
+            <td data-lang="ja">support 境界の可視化</td>
+            <td data-lang="en">Support-boundary surfacing</td>
+            <td><code>TheRock#1414</code>, <code>TheRock#1975</code>, <code>rocm-install-on-linux#648</code></td>
+            <td data-lang="ja">user-originated issue による build/support ambiguity の整理</td>
+            <td data-lang="en">User-originated issues surfacing build/support ambiguity</td>
+          </tr>
+          <tr>
+            <td data-lang="ja">source-build / fallback 補修</td>
+            <td data-lang="en">Source-build / fallback repair</td>
+            <td><code>Tensile#1595</code>, <code>Tensile#1862</code></td>
+            <td data-lang="ja">contributor patch と maintainer review による portability / fallback 改善</td>
+            <td data-lang="en">Contributor patches plus maintainer review improving portability and fallback</td>
+          </tr>
+          <tr>
+            <td data-lang="ja">repo topology 再編</td>
+            <td data-lang="en">Repository-topology reorganization</td>
+            <td>retired README, <code>rocm-systems/README.md</code></td>
+            <td data-lang="ja">official 側の責務再配置と source-of-truth の移動</td>
+            <td data-lang="en">Official reassignment of responsibilities and source-of-truth migration</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3 data-lang="ja">見えている協働パターン</h3>
+      <h3 data-lang="en">Visible collaboration pattern</h3>
+      <ul>
+        <li data-lang="ja"><strong>Issue 層:</strong> user / contributor が support ambiguity や package mismatch を public issue として露出させる。</li>
+        <li data-lang="en"><strong>Issue layer:</strong> users and contributors surface support ambiguity and package mismatches through public issues.</li>
+        <li data-lang="ja"><strong>PR 層:</strong> contributor が fallback / source-build 改善 patch を出し、official maintainer / collaborator が review・merge する。</li>
+        <li data-lang="en"><strong>PR layer:</strong> contributors submit fallback or source-build fixes, while official maintainers/collaborators review and merge them.</li>
+        <li data-lang="ja"><strong>Repo 整理層:</strong> official 側が README、release、migration table を通じて入口と責務の再配置を公開する。</li>
+        <li data-lang="en"><strong>Repository-organization layer:</strong> the official side publishes entry-point and responsibility shifts through READMEs, releases, and migration tables.</li>
+      </ul>
+      <div class="note note-warn">
+        <span data-lang="ja"><strong>注意:</strong> GitHub の `authorAssociation` や current commit author だけから、雇用関係や全体 ownership を断定することはできません。このページが示すのは、観測可能な寄与の層です。</span>
+        <span data-lang="en"><strong>Caution:</strong> GitHub `authorAssociation` values and current commit authors are not enough to infer employment status or total ownership. This page is about observable contribution layers only.</span>
+      </div>
+    </div>
+
+    <h2 class="section-title" data-lang="ja">このページから今言えること</h2>
+    <h2 class="section-title" data-lang="en">What this page currently supports</h2>
+    <div class="grid">
+      <div class="card">
+        <h3 data-lang="ja">強く言えること</h3>
+        <h3 data-lang="en">Supported strongly</h3>
+        <ul>
+          <li data-lang="ja">ROCm は GitHub 上で layered / multi-repo stack として自己定義されている。</li>
+          <li data-lang="en">ROCm presents itself on GitHub as a layered, multi-repo stack.</li>
+          <li data-lang="ja">support は build / component / package / driver-user space で分離して見える。</li>
+          <li data-lang="en">Support appears split across build, component, package, and driver/user-space layers.</li>
+          <li data-lang="ja">寄与は user issue、contributor PR、official repo 整理で層ごとに見え方が違う。</li>
+          <li data-lang="en">Contribution looks different by layer across user issues, contributor PRs, and official repo organization.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 data-lang="ja">まだ慎重であるべきこと</h3>
+        <h3 data-lang="en">Still unresolved</h3>
+        <ul>
+          <li data-lang="ja">ROCm 全体の contribution ratio を定量化したわけではない。</li>
+          <li data-lang="en">This does not quantify contribution ratios across all of ROCm.</li>
+          <li data-lang="ja">private planning / internal review は public record からは見えない。</li>
+          <li data-lang="en">Private planning and internal review are not visible from the public record.</li>
+          <li data-lang="ja">`rocm-libraries` umbrella 側の全体像は、今回の local snapshot だけでは十分に固定できていない。</li>
+          <li data-lang="en">The full `rocm-libraries` umbrella picture is not yet firmly fixed from the current local snapshot alone.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note note-green">
+      <span data-lang="ja"><strong>暫定結論:</strong> ROCm の GitHub 上の姿は、「AMD が全部を一方向に動かしている」でも「community だけが支えている」でもなく、official 側の定義・統合・repo 再編と、public user / contributor 側の issue 可視化・source-build / fallback 補修が層ごとに重なっている構造として読むのがもっとも自然である。</span>
+      <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm's GitHub presence is best read neither as a one-directional AMD-only story nor as a community-only survival story, but as a layered structure where official definition/consolidation/repo reorganization overlaps with user issue surfacing and contributor source-build / fallback repair.</span>
+    </div>
+
+    <div class="actions">
+      <a class="button button-primary" href="reveal-hypothesis.html" data-lang="ja">設計モデル要約へ戻る</a>
+      <a class="button button-primary" href="reveal-hypothesis.html" data-lang="en">Back to the design-model summary</a>
+      <a class="button button-secondary" href="rocm-history.html" data-lang="ja">GitHub 履歴タイムラインへ</a>
+      <a class="button button-secondary" href="rocm-history.html" data-lang="en">Open the GitHub history timeline</a>
+      <a class="button button-secondary" href="page-history.html" data-lang="ja">更新ログを見る</a>
+      <a class="button button-secondary" href="page-history.html" data-lang="en">View the page-update log</a>
+    </div>
+
+    <div class="footer">
+      <span data-lang="ja"><strong>公開方針:</strong> このページは内部ノート <code>rocm-common-investigate_github.md</code> の public summary です。詳細な根拠、留保、repo path は内部ノート側の方が詳しく、ここでは読みやすさを優先して再構成しています。</span>
+      <span data-lang="en"><strong>Publishing note:</strong> This page is a public summary of the internal note <code>rocm-common-investigate_github.md</code>. The internal note contains the fuller evidence trail, caveats, and repository paths; this page restructures that material for readability.</span>
+    </div>
+  </div>
+
+  <section style="background:#fafafa;border:1px solid #ddd;padding:1.2em 1.6em;margin:2em 0;">
+    <h3 style="margin-top:0;" data-lang="ja">本文書が主張しないこと</h3>
+    <h3 style="margin-top:0;" data-lang="en">This document does not claim that...</h3>
+    <ul>
+      <li data-lang="ja">AMD の社内意思決定過程を断定するものではない</li>
+      <li data-lang="en">Internal AMD decision-making processes are asserted.</li>
+      <li data-lang="ja">GitHub 上の `authorAssociation` から雇用関係を断定するものではない</li>
+      <li data-lang="en">Employment relationships are inferred from GitHub `authorAssociation` alone.</li>
+      <li data-lang="ja">一部 issue / PR から ROCm 全体の contribution ratio を確定するものではない</li>
+      <li data-lang="en">A small set of issues and PRs determines overall ROCm contribution ratios.</li>
+      <li data-lang="ja">private issue や internal review の内容を推定で補完するものではない</li>
+      <li data-lang="en">The contents of private issues or internal reviews have been reconstructed.</li>
+      <li data-lang="ja">AMD または特定個人への批判を意図するものではない</li>
+      <li data-lang="en">Any specific organization or individual is being criticized.</li>
+    </ul>
+  </section>
+
+  <script>
+    const html = document.documentElement;
+    const btnJa = document.getElementById('btn-ja');
+    const btnEn = document.getElementById('btn-en');
+
+    function setLanguage(lang) {
+      html.setAttribute('data-language', lang);
+      btnJa.classList.toggle('active', lang === 'ja');
+      btnEn.classList.toggle('active', lang === 'en');
+    }
+
+    btnJa.addEventListener('click', () => setLanguage('ja'));
+    btnEn.addEventListener('click', () => setLanguage('en'));
+  </script>
+</body>
+</html>
