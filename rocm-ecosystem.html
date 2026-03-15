@@ -547,16 +547,11 @@ timeline
   <div class="diagram-box">
     <div class="mermaid">
 flowchart LR
-    subgraph WHY["Why gfx900 code persists"]
-      CB["Capability-based design\nIsApplicable() checks at runtime\nno hard gfx900 blocklist"]
-      COST["Deletion cost\nbreaking fallback chains\nrisks regressions on other GPUs"]
-      COMM["Community maintenance\nWinograd / ASM v4r1 authors\nstill accept patches"]
-      PERF_DB_NODE["Perf DB entries\nshipped with ROCm releases\nno active removal"]
-    end
-    CB --> RESULT["gfx900 keeps working\nvia fallback paths"]
-    COST --> RESULT
-    COMM --> RESULT
-    PERF_DB_NODE --> RESULT
+    CB["Capability-based design\nIsApplicable() runtime check\nno hard blocklist"]
+    COST["Deletion cost\nbreaks fallback chains\nregression risk"]
+    COMM["Community maintenance\nWinograd / ASM v4r1\nauthors active"]
+    PERF_DB_NODE["Perf DB entries\nshipped per release\nno active removal"]
+    CB & COST & COMM & PERF_DB_NODE --> RESULT["gfx900 keeps working\nvia fallback paths"]
 
     style CB fill:#E3F2FD,stroke:#1565C0
     style COST fill:#FFF3E0,stroke:#E65100
