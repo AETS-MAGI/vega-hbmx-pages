@@ -323,20 +323,16 @@
 
   <div class="prose" style="text-align:center;overflow-x:auto;">
     <div data-lang="ja">
-      $$\underbrace{\begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}}_{\text{入力ベクトル } \mathbf{x}}
-      \;\longrightarrow\;
-      \underbrace{\begin{pmatrix} 0.5 & 0.1 \\ 0.2 & 0.7 \\ 0.3 & 0.2 \end{pmatrix}^{\!\mathsf{T}}}_{\text{変換行列 } W^\mathsf{T}}
-      \mathbf{x}
+      $$\underbrace{\begin{pmatrix} 1 & 1 & 1 \\ 0 & 1 & 1 \end{pmatrix}}_{\text{変換行列 } W}
+      \underbrace{\begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}}_{\text{入力 } \mathbf{x}\;(\text{国語・数学・英語})}
       \;=\;
-      \underbrace{\begin{pmatrix} 81 \\ 75 \end{pmatrix}}_{\text{出力ベクトル } \mathbf{y}}$$
+      \underbrace{\begin{pmatrix} 240 \\ 160 \end{pmatrix}}_{\text{出力 } \mathbf{y}}$$
     </div>
     <div data-lang="en">
-      $$\underbrace{\begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}}_{\text{Input vector } \mathbf{x}}
-      \;\longrightarrow\;
-      \underbrace{\begin{pmatrix} 0.5 & 0.1 \\ 0.2 & 0.7 \\ 0.3 & 0.2 \end{pmatrix}^{\!\mathsf{T}}}_{\text{Transform matrix } W^\mathsf{T}}
-      \mathbf{x}
+      $$\underbrace{\begin{pmatrix} 1 & 1 & 1 \\ 0 & 1 & 1 \end{pmatrix}}_{\text{transform matrix } W}
+      \underbrace{\begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}}_{\text{input } \mathbf{x}\;(\text{Lit., Math, Eng.})}
       \;=\;
-      \underbrace{\begin{pmatrix} 81 \\ 75 \end{pmatrix}}_{\text{Output vector } \mathbf{y}}$$
+      \underbrace{\begin{pmatrix} 240 \\ 160 \end{pmatrix}}_{\text{output } \mathbf{y}}$$
     </div>
   </div>
 
@@ -351,11 +347,11 @@
   <!-- 行列積の手順図 -->
   <figure class="matmul-fig">
     <img src="media/img/matmul-how-it-works.png"
-         alt="行列Wの行1（オレンジ）と入力xを掛けて足すとy1=81、行2（紫）を使うとy2=75になることを示す計算図"
+         alt="行列Wの行1（オレンジ）で全科目を合計するとy1=240、行2（紫）で数学+英語だけを合計するとy2=160になる計算図"
          loading="lazy">
     <figcaption>
-      <span data-lang="ja">同じ色 = 同じ行。行ごとに「重み × 入力をすべて足す」と、その行に対応する出力が得られる</span>
-      <span data-lang="en">Same colour = same row. For each row: "sum all (weight × input)" gives the corresponding output value</span>
+      <span data-lang="ja">同じ色 = 同じ行。重みが 1 なら「そのまま足す」、0 なら「無視する」。行を変えると集め方が変わり、出力の意味も変わる</span>
+      <span data-lang="en">Same colour = same row. Weight 1 = "include as-is", weight 0 = "skip". Change the row, change what you collect, change the meaning of the output.</span>
     </figcaption>
   </figure>
 
