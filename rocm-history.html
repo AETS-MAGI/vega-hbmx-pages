@@ -449,6 +449,8 @@
           <li data-lang="en">But the public body and comments of PR <code>#1328</code> still show that <code>gfx900</code> was removed not only from the solver path but also from ctest and the tuning surface, as preparatory cleanup before ROCm 5.1 MLIR solver tuning.</li>
           <li data-lang="ja">つまり公開側だけでも、これは単なる局所ガードではなく、release-engineering 上の計画的な切り離しだったことが見える。</li>
           <li data-lang="en">So even from the public side alone, this reads less like a local guard and more like a planned release-engineering separation.</li>
+          <li data-lang="ja">PR <code>#1328</code> のレビューログには 2件の APPROVED（review thread のコメントは 0件）と、release timing 調整の issue comment 2件が残るのみであり、技術的議論は公開側には観測されない。</li>
+          <li data-lang="en">The PR <code>#1328</code> review log shows 2 APPROVEDs (with 0 review-thread comments) and 2 issue comments about release timing. No technical discussion is visible on the public side.</li>
           <li data-lang="ja"><strong>意味:</strong> public product code が private backend constraint を吸収している可能性を示す強い観測点。</li>
           <li data-lang="en"><strong>Meaning:</strong> A strong observation point suggesting that public product code may absorb private backend constraints.</li>
         </ul>
@@ -547,8 +549,8 @@
         <h3 data-lang="en">Even so, legacy runtime and fallback paths still remain</h3>
         <ul>
           <li data-lang="ja">現行 tree には MIOpen の ASM implicit GEMM 許可、rocBLAS/Tensile の lazy loading、dot4 非対応時の fallback が残っている。</li>
-          <li data-lang="en">The current tree still contains MIOpen ASM implicit GEMM allowances, rocBLAS/Tensile lazy loading, and fallback paths for missing dot4 capability.</li>
-          <li data-lang="ja"><strong>意味:</strong> `default build` 後退と `runtime path` 残存は同時に起こりうる。ここが today の mixed-support state を作っている。</li>
+          <li data-lang="en">The current tree still contains MIOpen ASM implicit GEMM allowances, rocBLAS/Tensile lazy loading, and fallback paths for missing dot4 capability.</li>          <li data-lang="ja">また、MLIR iGEMM の gating メカニズム実装が公開 <code>ROCm/rocMLIR</code> リポジトリ（<code>rocmlir-lib.cpp</code>）で追跡可能であることが確認された。<code>miirCreateHandle</code> → <code>RockEnabled</code>（layout/dtype 制約）→ <code>miirLowerTuningParams</code>（applicability pipeline）の全チェーンを読める。</li>
+          <li data-lang="en">Additionally, the Miir gating mechanism implementation was confirmed to be traceable in the public <code>ROCm/rocMLIR</code> repository (<code>rocmlir-lib.cpp</code>). The full chain from <code>miirCreateHandle</code> → <code>RockEnabled</code> (layout/dtype constraints) → <code>miirLowerTuningParams</code> (applicability pipeline) is publicly readable.</li>          <li data-lang="ja"><strong>意味:</strong> `default build` 後退と `runtime path` 残存は同時に起こりうる。ここが today の mixed-support state を作っている。</li>
           <li data-lang="en"><strong>Meaning:</strong> Default-build retreat and runtime-path survival can happen simultaneously. That is what produces today's mixed-support state.</li>
         </ul>
       </div>
@@ -707,8 +709,8 @@
     </div>
 
     <div class="note note-warn">
-      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言、そして特に <code>llvm-project-private#389</code> が何を問題視していたかの一次資料。（この issue は非公開であり、本文は外部から確認できない。公開側から確認できるのは参照関係と gating の痕跡のみ。）今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
-      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, explicit maintainer statements of design intent, and especially primary evidence for what <code>llvm-project-private#389</code> actually identified as the problem. (This issue is not publicly accessible; its content cannot be verified from outside. What can be stated is limited to the observable reference relationship and gating pattern in the public codebase.) This page re-assembles already-confirmed fragments for public use.</span>
+      <span data-lang="ja"><strong>まだ不足しているもの:</strong> private repository 側の事情、maintainer 自身の明示的な設計宣言、そして特に <code>llvm-project-private#389</code> が何を問題視していたかの一次資料。（この issue は非公開であり、本文は外部から確認できない。公開側から確認できるのは参照関係と gating の痕跡のみ。）なお、Miir 側の gating メカニズム実装は public rocMLIR で完全追跡済み（2026-03-15）、PR #1328 の review ログも取得済みである。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
+      <span data-lang="en"><strong>What is still missing:</strong> private-repository context, explicit maintainer statements of design intent, and especially primary evidence for what <code>llvm-project-private#389</code> actually identified as the problem. (This issue is not publicly accessible; its content cannot be verified from outside. What can be stated is limited to the observable reference relationship and gating pattern in the public codebase.) Note: the Miir-side gating mechanism implementation has been fully traced through public rocMLIR (2026-03-15), and the PR #1328 review log has also been retrieved. This page re-assembles already-confirmed fragments for public use.</span>
     </div>
 
     <div class="note note-green">
