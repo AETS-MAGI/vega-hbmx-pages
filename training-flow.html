@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる 学習の流れ / Visual Guide to the Training Flow | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--navy: #0B3C5D;
+			--teal: #00796B;
+			--amber: #C56A00;
+			--red: #B71C1C;
+			--blue: #1565C0;
+			--green: #2E7D32;
+			--purple: #5B4B8A;
+			--ink: #1F2933;
+			--muted: #5F6C7B;
+			--line: #D8E0E8;
+			--bg: #F5F8FB;
+			--card: #FFFFFF;
+			--train: #E65100;
+		}
+		* { box-sizing: border-box; }
+		body {
+			margin: 0; font-family: 'Calibri', 'Arial', sans-serif; color: var(--ink);
+			background: radial-gradient(circle at top right, rgba(230,81,0,0.07), transparent 28%),
+				radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg);
+		}
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero { background: linear-gradient(135deg, #BF360C 0%, #E65100 55%, #FF6D00 100%); color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px; }
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+		.section-title { font-size: 21px; font-weight: 700; color: var(--navy); border-left: 5px solid var(--train); padding-left: 14px; margin: 44px 0 8px; }
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; }
+		.prose p:last-child { margin-bottom: 0; }
+		.analogy { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.analogy strong { color: var(--amber); }
+		.highlight { background: #EDE7F6; border-left: 5px solid var(--purple); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+		.warn-box { background: #FFF3E0; border-left: 5px solid var(--train); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.warn-box strong { color: var(--train); }
+
+		/* Flow steps */
+		.flow-steps { display: flex; flex-direction: column; gap: 0; margin-bottom: 18px; }
+		.flow-step { background: var(--card); border: 1px solid var(--line); padding: 18px 22px; display: flex; align-items: center; gap: 16px; }
+		.flow-step:first-child { border-radius: 12px 12px 0 0; }
+		.flow-step:last-child { border-radius: 0 0 12px 12px; }
+		.flow-step .step-num { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: #fff; flex-shrink: 0; background: var(--train); }
+		.flow-step .step-body h4 { margin: 0 0 4px; font-size: 16px; }
+		.flow-step .step-body p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+		.flow-arrow { text-align: center; font-size: 20px; color: var(--muted); padding: 4px 0; }
+
+		/* Compare table */
+		.compare-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; font-size: 15px; }
+		.compare-table th, .compare-table td { border: 1px solid var(--line); padding: 12px 16px; text-align: left; }
+		.compare-table th { background: var(--navy); color: #fff; font-weight: 600; }
+		.compare-table tr:nth-child(even) { background: #F5F8FB; }
+		.compare-table td:first-child { font-weight: 600; }
+
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 32px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); }
+		.next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"], html[data-language="ja"] h3[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		html[data-language="en"] span[data-lang="en"], html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+		html[data-language="en"] td[data-lang="en"], html[data-language="ja"] td[data-lang="ja"],
+		html[data-language="en"] th[data-lang="en"], html[data-language="ja"] th[data-lang="ja"] { display: table-cell; }
+		@media (max-width: 640px) { .page { padding: 20px 14px 40px; } .hero { padding: 28px 20px 24px; } .hero h1 { font-size: 24px; } .flow-step { flex-direction: column; text-align: center; } .compare-table { font-size: 13px; } .compare-table th, .compare-table td { padding: 8px 10px; } }
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる 学習の流れ</h1>
+			<h1 data-lang="en">Visual Guide to the Training Flow</h1>
+			<p class="subtitle" data-lang="ja">Visual Guide to the Training Flow</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">モデルが「答え合わせをしながら少しずつ賢くなる」流れを、テスト勉強のたとえでやさしく説明するページです。</p>
+			<p data-lang="en">A gentle explanation of how models learn by making predictions, checking errors, and gradually updating themselves — told through a "studying for a test" analogy.</p>
+		</section>
+
+		<!-- ──────── 1. 学習ってなに？ ──────── -->
+		<h2 class="section-title" data-lang="ja">1. 「学習」ってなに？</h2>
+		<h2 class="section-title" data-lang="en">1. What Is "Training"?</h2>
+		<p class="section-lead" data-lang="ja">推論は「答えを出すこと」。学習は「答え合わせをしながら中身を直すこと」。</p>
+		<p class="section-lead" data-lang="en">Inference means "producing an answer." Training means "checking answers and fixing yourself."</p>
+
+		<div class="prose">
+			<p data-lang="ja">AI モデルには<strong>推論（inference）</strong>と<strong>学習（training）</strong>の2つのフェーズがあります。</p>
+			<p data-lang="en">An AI model has two phases: <strong>inference</strong> and <strong>training</strong>.</p>
+			<p data-lang="ja"><strong>推論</strong>は、すでにできあがったモデルに新しいデータを入れて答えをもらうこと。テストを受けて答えを書く段階です。</p>
+			<p data-lang="en"><strong>Inference</strong> feeds new data into a finished model and gets an answer. It's like taking a test.</p>
+			<p data-lang="ja"><strong>学習</strong>は、問題を解き、答え合わせをし、間違えたところを直す――これを何百回もくり返してモデルを賢くする段階です。</p>
+			<p data-lang="en"><strong>Training</strong> is solving problems, checking answers, fixing mistakes — repeating this hundreds of times to make the model smarter.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">📖 テスト勉強のたとえ:</strong>
+			<strong data-lang="en">📖 Studying-for-a-test analogy:</strong>
+			<span data-lang="ja">テスト勉強は「問題を解く → 答え合わせ → 間違いを直す → もう一回解く」のくり返し。AI の学習もまさに同じ流れです。</span>
+			<span data-lang="en">Studying means "solve a problem → check the answer → fix mistakes → solve again." AI training follows exactly the same loop.</span>
+		</div>
+
+		<!-- ──────── 2. 学習の5ステップ ──────── -->
+		<h2 class="section-title" data-lang="ja">2. 学習はこう進む — 5つのステップ</h2>
+		<h2 class="section-title" data-lang="en">2. How Training Works — 5 Steps</h2>
+		<p class="section-lead" data-lang="ja">1回の学習サイクルは、たった5ステップ。これをひたすらくり返します。</p>
+		<p class="section-lead" data-lang="en">One training cycle is just 5 steps. The model repeats them over and over.</p>
+
+		<div class="flow-steps">
+			<div class="flow-step">
+				<div class="step-num">1</div>
+				<div class="step-body">
+					<h4 data-lang="ja">入力を入れる</h4>
+					<h4 data-lang="en">Feed the Input</h4>
+					<p data-lang="ja">学習データ（問題文）をモデルに渡す。テスト勉強でいう「問題を読む」段階。</p>
+					<p data-lang="en">Pass training data (the question) to the model. Like reading a test question.</p>
+				</div>
+			</div>
+			<div class="flow-arrow">↓</div>
+			<div class="flow-step">
+				<div class="step-num">2</div>
+				<div class="step-body">
+					<h4 data-lang="ja">予想を出す（フォワードパス）</h4>
+					<h4 data-lang="en">Make a Prediction (Forward Pass)</h4>
+					<p data-lang="ja">モデルが今の「実力」で答えを出す。最初はデタラメに近い。テストで「とりあえず書いてみる」のと同じ。</p>
+					<p data-lang="en">The model answers using its current ability. At first, it's mostly random. Like writing your best guess on a test.</p>
+				</div>
+			</div>
+			<div class="flow-arrow">↓</div>
+			<div class="flow-step">
+				<div class="step-num">3</div>
+				<div class="step-body">
+					<h4 data-lang="ja">正解とくらべる（loss を計算する）</h4>
+					<h4 data-lang="en">Compare with the Right Answer (Compute Loss)</h4>
+					<p data-lang="ja">予想と正解がどれだけ外れたかを計算する。この「外れ具合」を <strong>loss（損失）</strong> と呼ぶ。答え合わせして×がいくつあるか数えるイメージ。</p>
+					<p data-lang="en">Calculate how far the prediction was from the correct answer. This "distance" is called <strong>loss</strong>. Like grading your test and counting how many you got wrong.</p>
+				</div>
+			</div>
+			<div class="flow-arrow">↓</div>
+			<div class="flow-step">
+				<div class="step-num">4</div>
+				<div class="step-body">
+					<h4 data-lang="ja">間違いの原因を探す（バックプロパゲーション）</h4>
+					<h4 data-lang="en">Trace the Source of Error (Backpropagation)</h4>
+					<p data-lang="ja">loss をもとに、「どの重みがどれだけ間違いに貢献したか」を逆方向にたどって調べる。テスト勉強で「どの知識があいまいだったか」を特定するようなもの。</p>
+					<p data-lang="en">Using the loss, trace backward to find "which weights contributed how much to the error." Like figuring out which knowledge gaps caused your mistakes.</p>
+				</div>
+			</div>
+			<div class="flow-arrow">↓</div>
+			<div class="flow-step">
+				<div class="step-num">5</div>
+				<div class="step-body">
+					<h4 data-lang="ja">パラメータを少し直す（最適化）</h4>
+					<h4 data-lang="en">Adjust Parameters a Little (Optimization)</h4>
+					<p data-lang="ja"><strong>optimizer</strong> が、間違いが減る方向へ重みを少しだけ動かす。全部の重みを一気に大きく変えると壊れるので、少しずつ。ノートに赤ペンで「ここはこう覚え直す」と書くようなイメージ。</p>
+					<p data-lang="en">The <strong>optimizer</strong> nudges each weight slightly in the direction that reduces the error. Moving too much at once would break things, so it's always a small step. Like writing corrections in red pen: "re-learn this part."</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">🔁 そしてステップ1に戻る。</strong>
+			<strong data-lang="en">🔁 Then back to Step 1.</strong>
+			<span data-lang="ja">この5ステップを何万回・何十万回とくり返すことで、モデルはだんだん賢くなります。</span>
+			<span data-lang="en">By repeating these 5 steps tens or hundreds of thousands of times, the model gradually becomes smarter.</span>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🎯 的当てのたとえ:</strong>
+			<strong data-lang="en">🎯 Target-shooting analogy:</strong>
+			<span data-lang="ja">的を狙う → 外れる → どれだけ外れたか測る（loss）→ 狙いを修正する（optimizer）→ もう一回投げる。繰り返すうちに、だんだん的の中心に近づく。</span>
+			<span data-lang="en">Aim at a target → miss → measure how far off (loss) → adjust your aim (optimizer) → throw again. Over time, you get closer and closer to the bullseye.</span>
+		</div>
+
+		<!-- ──────── 3. loss ──────── -->
+		<h2 class="section-title" data-lang="ja">3. loss ってなに？</h2>
+		<h2 class="section-title" data-lang="en">3. What Is "Loss"?</h2>
+		<p class="section-lead" data-lang="ja">ひとことで言うと「どれだけ外れたかを表す点数」です。</p>
+		<p class="section-lead" data-lang="en">In one sentence: a score that tells you "how far off the prediction was."</p>
+
+		<div class="prose">
+			<p data-lang="ja">モデルが「5」と予想したのに正解が「8」だったら、外れ具合は 3。この外れ具合を数値にしたものが loss です。</p>
+			<p data-lang="en">If the model predicts "5" but the answer is "8," the miss is 3. Loss is that miss turned into a number.</p>
+			<p data-lang="ja">loss が<strong>大きい</strong> → まだまだ外れている → もっと直す必要がある。</p>
+			<p data-lang="en">A <strong>large</strong> loss → still far off → more correction needed.</p>
+			<p data-lang="ja">loss が<strong>小さい</strong> → かなり近い → あまり直さなくてよい。</p>
+			<p data-lang="en">A <strong>small</strong> loss → pretty close → less correction needed.</p>
+			<p data-lang="ja">学習の目標は、この loss をできるだけ小さくすることです。</p>
+			<p data-lang="en">The goal of training is to make this loss as small as possible.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">📏 テスト点数のたとえ:</strong>
+			<strong data-lang="en">📏 Test-score analogy:</strong>
+			<span data-lang="ja">テストの「不正解数」が loss。不正解が 50 問あったのが、勉強を重ねて 3 問に減る。それが学習の進みかたです。</span>
+			<span data-lang="en">Think of loss as "the number of wrong answers." You started with 50 wrong, and after studying, it's down to 3. That's how training progresses.</span>
+		</div>
+
+		<!-- ──────── 4. 重み ──────── -->
+		<h2 class="section-title" data-lang="ja">4. 重みはどう変わるの？</h2>
+		<h2 class="section-title" data-lang="en">4. How Do Weights Change?</h2>
+		<p class="section-lead" data-lang="ja">間違いが減る方向へ、少しずつ調整されます。</p>
+		<p class="section-lead" data-lang="en">They are adjusted a little at a time, always in the direction that reduces the error.</p>
+
+		<div class="prose">
+			<p data-lang="ja">「重み（weight）」とは、モデルの中にある大量の数値のことです。畳み込みの<strong>フィルタ</strong>も、Attention の中で使われる<strong>行列</strong>も、その正体は重みです。</p>
+			<p data-lang="en">"Weights" are the massive collection of numbers inside a model. The <strong>filters</strong> in convolution and the <strong>matrices</strong> used in Attention are all weights.</p>
+			<p data-lang="ja">学習では、loss を減らす方向を計算し（ステップ4：バックプロパゲーション）、その方向にほんの少しだけ重みを動かします（ステップ5：最適化）。</p>
+			<p data-lang="en">During training, we compute the direction that reduces loss (Step 4: backpropagation) and nudge the weights just a little that way (Step 5: optimization).</p>
+			<p data-lang="ja">いきなり大きく変えると学習が壊れるので、「<strong>学習率（learning rate）</strong>」という小さい係数をかけて、ちょっとずつ動かします。</p>
+			<p data-lang="en">Jumping too far breaks training, so a small multiplier called the <strong>learning rate</strong> ensures each step is tiny.</p>
+		</div>
+
+		<div class="warn-box">
+			<strong data-lang="ja">⚠️ よくある誤解:</strong>
+			<strong data-lang="en">⚠️ Common misconception:</strong>
+			<span data-lang="ja">「重みは人間が手動で決める」と思われがちですが、そうではありません。最初はランダムに設定し、学習のくり返しで自動的に良い値に育てるのが深層学習の特徴です。</span>
+			<span data-lang="en">People often think weights are set manually. They're not. Weights start random and grow into good values automatically through repeated training — that's what makes deep learning "deep."</span>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🎯 的当てのことば:</strong>
+			<strong data-lang="en">🎯 In target-shooting terms:</strong>
+			<span data-lang="ja">重み = 狙いの角度。loss = 的から外れた距離。optimizer = 角度をちょっと直す係。learning rate = 1回に直す量。</span>
+			<span data-lang="en">Weight = aiming angle. Loss = distance from the bullseye. Optimizer = the coach who adjusts your angle. Learning rate = how much to adjust each time.</span>
+		</div>
+
+		<!-- ──────── 5. くり返し ──────── -->
+		<h2 class="section-title" data-lang="ja">5. 何回もくり返すとどうなる？</h2>
+		<h2 class="section-title" data-lang="en">5. What Happens After Many Repetitions?</h2>
+		<p class="section-lead" data-lang="ja">最初はデタラメだった予想が、回数を重ねるとどんどん正解に近づきます。</p>
+		<p class="section-lead" data-lang="en">Predictions that started out random get closer and closer to the right answer.</p>
+
+		<div class="prose">
+			<p data-lang="ja">学習データ全体を1回通すことを <strong>1 エポック（epoch）</strong>と呼びます。たいてい何十〜何百エポックくり返します。</p>
+			<p data-lang="en">One pass through the entire training dataset is called <strong>1 epoch</strong>. Typically, models train for tens to hundreds of epochs.</p>
+			<p data-lang="ja">くり返すたびに loss は下がっていきます。ただし、ある程度から先は下がりにくくなります（テスト勉強でも、90点から100点にするのは50点から90点にするより大変ですよね）。</p>
+			<p data-lang="en">Loss drops with each repetition, but progress slows over time. (Getting from 90 to 100 on a test is harder than getting from 50 to 90, right?)</p>
+			<p data-lang="ja">学習データには正解しすぎるのに、見たことないデータには間違えるようになることがあります。これを<strong>過学習（overfitting）</strong>といいます。テスト勉強でいうと、「過去問を丸暗記したけど、初めて見る問題に弱い」状態です。</p>
+			<p data-lang="en">The model may get training data perfectly right but fail on unseen data. This is called <strong>overfitting</strong>. In study terms: memorizing past exams but struggling with new questions.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 学習の終了:</strong>
+			<strong data-lang="en">💡 When training ends:</strong>
+			<span data-lang="ja">loss が十分小さくなり、未見データでも良い精度が出るようになったら学習は完了。できあがったモデルを「推論」に使います。</span>
+			<span data-lang="en">Training finishes when loss is low enough and accuracy on unseen data is good. The resulting model is then used for "inference."</span>
+		</div>
+
+		<!-- ──────── 6. 推論との違い ──────── -->
+		<h2 class="section-title" data-lang="ja">6. 学習と推論のちがい</h2>
+		<h2 class="section-title" data-lang="en">6. Training vs Inference</h2>
+		<p class="section-lead" data-lang="ja">学習 = 直す。推論 = 使う。これだけ覚えれば OK。</p>
+		<p class="section-lead" data-lang="en">Training = fix yourself. Inference = use what you've learned. That's the key difference.</p>
+
+		<table class="compare-table">
+			<tr>
+				<th></th>
+				<th data-lang="ja">学習（Training）</th>
+				<th data-lang="en">Training</th>
+				<th data-lang="ja">推論（Inference）</th>
+				<th data-lang="en">Inference</th>
+			</tr>
+			<tr>
+				<td data-lang="ja">目的</td>
+				<td data-lang="en">Purpose</td>
+				<td data-lang="ja">モデルを育てる</td>
+				<td data-lang="en">Grow the model</td>
+				<td data-lang="ja">答えを出す</td>
+				<td data-lang="en">Produce answers</td>
+			</tr>
+			<tr>
+				<td data-lang="ja">正解データ</td>
+				<td data-lang="en">Ground truth</td>
+				<td data-lang="ja">必要（答え合わせするため）</td>
+				<td data-lang="en">Needed (for grading)</td>
+				<td data-lang="ja">不要</td>
+				<td data-lang="en">Not needed</td>
+			</tr>
+			<tr>
+				<td data-lang="ja">重みの変化</td>
+				<td data-lang="en">Weight changes</td>
+				<td data-lang="ja">毎回更新される</td>
+				<td data-lang="en">Updated every cycle</td>
+				<td data-lang="ja">変化しない（固定）</td>
+				<td data-lang="en">Frozen</td>
+			</tr>
+			<tr>
+				<td data-lang="ja">計算の方向</td>
+				<td data-lang="en">Compute direction</td>
+				<td data-lang="ja">前方 + 後方（バックプロパゲーション）</td>
+				<td data-lang="en">Forward + backward (backpropagation)</td>
+				<td data-lang="ja">前方のみ</td>
+				<td data-lang="en">Forward only</td>
+			</tr>
+			<tr>
+				<td data-lang="ja">計算コスト</td>
+				<td data-lang="en">Compute cost</td>
+				<td data-lang="ja">とても大きい</td>
+				<td data-lang="en">Very large</td>
+				<td data-lang="ja">学習より軽い</td>
+				<td data-lang="en">Lighter than training</td>
+			</tr>
+			<tr>
+				<td data-lang="ja">たとえ</td>
+				<td data-lang="en">Analogy</td>
+				<td data-lang="ja">テスト勉強</td>
+				<td data-lang="en">Studying for a test</td>
+				<td data-lang="ja">本番のテスト</td>
+				<td data-lang="en">Taking the actual test</td>
+			</tr>
+		</table>
+
+		<div class="highlight">
+			<span data-lang="ja">学習時はバックプロパゲーションのぶん<strong>計算量が約2〜3倍</strong>になり、中間結果を保存するため<strong>メモリも多く</strong>必要です。これが「学習には高性能 GPU が必要」と言われる理由です。</span>
+			<span data-lang="en">Backpropagation roughly <strong>doubles or triples the computation</strong>, and storing intermediate results demands <strong>more memory</strong>. That's why "training requires high-end GPUs."</span>
+		</div>
+
+		<!-- ──────── 他ページへの接続 ──────── -->
+		<h2 class="section-title" data-lang="ja">他のページとのつながり</h2>
+		<h2 class="section-title" data-lang="en">How This Connects to Other Pages</h2>
+
+		<div class="prose">
+			<p data-lang="ja"><a href="deep-learning-for-rocm.html" style="color:var(--blue);font-weight:600;">深層学習ページ</a>の「フィルタは訓練で決まる」 → <strong>ステップ4〜5で重みが更新されるから。</strong></p>
+			<p data-lang="en"><a href="deep-learning-for-rocm.html" style="color:var(--blue);font-weight:600;">Deep Learning page</a> says "filters are decided during training" → <strong>because weights are updated in Steps 4–5.</strong></p>
+			<p data-lang="ja"><a href="attention-for-llm.html" style="color:var(--blue);font-weight:600;">Attention ページ</a>の「重みは学習で決まる」 → <strong>Query・Key・Value の行列も学習で育つ。</strong></p>
+			<p data-lang="en"><a href="attention-for-llm.html" style="color:var(--blue);font-weight:600;">Attention page</a> says "weights are learned" → <strong>Q, K, V matrices are grown through training.</strong></p>
+			<p data-lang="ja"><a href="matrices-and-ai.html" style="color:var(--blue);font-weight:600;">行列とAI ページ</a>の「パラメータが更新される」 → <strong>行列の要素一つひとつが重みであり、学習で更新される。</strong></p>
+			<p data-lang="en"><a href="matrices-and-ai.html" style="color:var(--blue);font-weight:600;">Matrices &amp; AI page</a> says "parameters get updated" → <strong>each element of a matrix is a weight, updated during training.</strong></p>
+			<p data-lang="ja"><a href="int8-vs-fp32.html" style="color:var(--blue);font-weight:600;">INT8/FP32 ページ</a>の「学習時と推論時の違い」 → <strong>学習は FP32 で精度を保ち、推論で INT8 に圧縮して高速化する、という使い分け。</strong></p>
+			<p data-lang="en"><a href="int8-vs-fp32.html" style="color:var(--blue);font-weight:600;">INT8/FP32 page</a> says "training vs inference differ" → <strong>training uses FP32 for precision; inference may compress to INT8 for speed.</strong></p>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="inference-flow.html">イメージでわかる 推論の流れ</a> — 学習が終わったモデルが答えを出す工程<br>
+				<a href="deep-learning-for-rocm.html">イメージでわかる深層学習</a> — フィルタ・solver・MIOpen の詳細<br>
+				<a href="linear-algebra-for-rocm.html">イメージでわかる線形代数</a> — 行列計算の中身をもっと知る
+			</span>
+			<span data-lang="en">
+				<a href="inference-flow.html">Visual Guide to the Inference Flow</a> — How a trained model produces answers<br>
+				<a href="deep-learning-for-rocm.html">Visual Deep Learning</a> — Filters, solvers, and MIOpen in detail<br>
+				<a href="linear-algebra-for-rocm.html">Visual Linear Algebra</a> — Dive deeper into matrix operations
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ · 2026-03-16</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series · 2026-03-16</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
