@@ -777,18 +777,20 @@ HH(28) ZZ(17) CC(17) SS(16) HS(16) DD(16) I8I(4) BS(4) BB(4) 4xi8I(4)
 			<span data-lang="ja">総合判定</span>
 		</h3>
 		<span data-lang="en">
-		The gfx900 (Vega10) computation path in the ROCm library stack is structured across three layers:<br><br>
+		The gfx900 (Vega10) computation path in the ROCm library stack is structured across four layers:<br><br>
 		<strong>Maintain (build):</strong> gfx900 is present in rocBLAS CMake target lists through at least ROCm 7.1. The Tensile shared library is built with gfx900 support by default.<br><br>
 		<strong>Manage (selection):</strong> MIOpen's IsApplicable filter system allows old-generation solvers to survive in the global registry. On gfx900, MLIR iGEMM and all XDLops-family solvers fall out, while Winograd-family, ASM 1×1, implicit GEMM v4r1 (HIP/ASM), and legacy direct ASM solvers remain available. Solver choice is also dtype-sensitive (FP32 / FP16 / BFP16 each route to different families).<br><br>
 		<strong>Supplement (fallback):</strong> rocBLAS carries multi-stage runtime fallbacks. CK carries a dot4-absent sequential accumulation path. Tensile provides per-ISA capability gating and gfx900-specific lazy-load catalogs.<br><br>
+		<strong>Distribute (shipped artifacts):</strong> The ROCm 7.2 package ships gfx900-targeted pre-compiled kernels (128 rocBLAS files) and architecture-specific tuning data (169K lines of MIOpen Perf DB). In these metrics, gfx900 surpasses RDNA 3 (gfx1100: 96 rocBLAS files, no Perf DB) and RDNA 2 (gfx1030: 88 rocBLAS files, 111K Perf DB lines). This is not residual code — it is the output of an active build pipeline.<br><br>
 		<strong>2026-03-14 follow-up:</strong> A local Debug MIOpen build succeeded once the source tree was moved off CIFS to NVMe-local storage and the incompatible MLIR/CK pieces were disabled for the rebuild. Forced <code>-S ConvMlirIgemmFwd</code> can bypass the normal applicability gate, but then falls into incomplete downstream support (<code>MIIR_INVALID_PARAM</code> and/or missing gfx900 Perf DB records).<br><br>
 		<strong>Confirmed gap:</strong> No natural INT8 solver selection beyond <code>ConvDirectNaiveConvFwd</code> was observed. The naive kernel operates via element-wise multiply-accumulate without dot-product instructions — functional but not peak-performance.
 		</span>
 		<span data-lang="ja">
-		ROCm ライブラリスタックにおける gfx900（Vega10）計算経路は 3 層で構成される:<br><br>
+		ROCm ライブラリスタックにおける gfx900（Vega10）計算経路は 4 層で構成される:<br><br>
 		<strong>維持（build）:</strong> gfx900 は少なくとも ROCm 7.1 まで rocBLAS CMake ターゲットリストに存在する。Tensile 共有ライブラリもデフォルトで gfx900 サポートを含む。<br><br>
 		<strong>管理（selection）:</strong> MIOpen の IsApplicable フィルタ方式は旧世代 solver がグローバルレジストリに残ることを許す。gfx900 では MLIR iGEMM と全 XDLops 系 solver が落ちる一方、Winograd 系・ASM 1×1・implicit GEMM v4r1（HIP/ASM）・旧式直接 ASM solver が残る。dtype によっても solver 選択が分岐する（FP32・FP16・BFP16 でそれぞれ異なるファミリーへルーティング）。<br><br>
 		<strong>補充（fallback）:</strong> rocBLAS は多段実行時フォールバックを持つ。CK は dot4 非対応時の逐次積和経路を保持。Tensile は ISA 別能力ゲートと gfx900 専用 lazy-load カタログを提供。<br><br>
+		<strong>配布（shipped artifacts）:</strong> ROCm 7.2 パッケージには gfx900 ターゲットのプリコンパイル済みカーネル（rocBLAS 128 ファイル）とアーキテクチャ固有のチューニングデータ（MIOpen Perf DB 169K 行）が含まれる。これらの指標で gfx900 は RDNA 3（gfx1100: rocBLAS 96 ファイル、Perf DB なし）および RDNA 2（gfx1030: rocBLAS 88 ファイル、Perf DB 111K 行）を上回る。これは残留コードではなく、アクティブなビルドパイプラインの出力である。<br><br>
 		<strong>2026-03-14 追補:</strong> ソースを CIFS から NVMe ローカルへ移し、再ビルド時に非互換な MLIR/CK 要素を切り離すことで、ローカル Debug MIOpen はビルド・実行に成功した。一方で <code>-S ConvMlirIgemmFwd</code> 強制は通常の適用ガードをバイパスできても、その先で <code>MIIR_INVALID_PARAM</code> や gfx900 向け Perf DB 不在に突き当たる。<br><br>
 		<strong>確認済みギャップ:</strong> INT8 での自然 solver 選択は <code>ConvDirectNaiveConvFwd</code> のみ観測された。naive カーネルは dot 系命令を使わず要素ごとの乗算・加算で動作 — 機能的には成立するが最大性能ではない。
 		</span>
