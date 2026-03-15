@@ -68,12 +68,13 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `theory/gpu-generations.html` — GPU の世代と進化
 - `theory/rocm-overview-for-beginners.html` — ROCm 入門
 
-### 気になるテーマを読む（11 ページ）
+### 気になるテーマを読む（12 ページ）
 - `theory/reading-math.html` — 数式の読み方ガイド
 - `theory/convolution-for-beginners.html` — 畳み込み入門
 - `theory/attention-for-llm.html` — Attention と LLM
 - `theory/linear-algebra-for-rocm.html` — 線形代数と ROCm
 - `theory/deep-learning-for-rocm.html` — 深層学習と ROCm
+- `theory/training-vs-inference.html` — 学習と推論のちがい
 - `theory/inference-flow.html` — 推論の流れ
 - `theory/training-flow.html` — 学習の流れ
 - `theory/int8-vs-fp32.html` — INT8 vs FP32
