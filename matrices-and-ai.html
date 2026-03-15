@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/mermaid-layout.css">
+	<title>イメージでわかる 行列と AI / Visual Matrices &amp; AI | vega-hbmx-pages</title>
+	<style>
+		:root { --navy: #0B3C5D; --teal: #00796B; --amber: #C56A00; --red: #B71C1C; --blue: #1565C0; --green: #2E7D32; --purple: #5B4B8A; --ink: #1F2933; --muted: #5F6C7B; --line: #D8E0E8; --bg: #F5F8FB; --card: #FFFFFF; }
+		* { box-sizing: border-box; }
+		body { margin: 0; font-family: 'Calibri', 'Arial', sans-serif; color: var(--ink); background: radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%), radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%), var(--bg); }
+		.page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+		.toolbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 18px; }
+		.home-link { display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600; }
+		.home-link:hover { text-decoration: underline; }
+		.lang-btn { padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; border: 2px solid var(--navy); background: transparent; color: var(--navy); transition: all 0.2s; }
+		.lang-btn.active { background: var(--navy); color: #fff; }
+		.hero { background: linear-gradient(135deg, #4A148C 0%, #7B1FA2 55%, #AB47BC 100%); color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px; }
+		.hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+		.hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+		.hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+		.section-title { font-size: 21px; font-weight: 700; color: var(--navy); border-left: 5px solid var(--purple); padding-left: 14px; margin: 44px 0 8px; }
+		.section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+		.prose { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 22px 24px; margin-bottom: 18px; font-size: 16px; line-height: 1.75; }
+		.prose p { margin: 0 0 12px; } .prose p:last-child { margin-bottom: 0; }
+		.analogy { background: #FFF8E1; border-left: 5px solid var(--amber); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.analogy strong { color: var(--amber); }
+		.highlight { background: #EDE7F6; border-left: 5px solid var(--purple); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box { background: #E8F5E9; border-left: 5px solid var(--green); border-radius: 10px; padding: 16px 20px; margin: 16px 0; font-size: 15px; line-height: 1.65; }
+		.fact-box strong { color: var(--green); }
+
+		/* Matrix visual */
+		.matrix-demo { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-bottom: 18px; }
+		.mat { display: grid; gap: 3px; }
+		.mat.m2x3 { grid-template-columns: repeat(3, 44px); }
+		.mat.m3x2 { grid-template-columns: repeat(2, 44px); }
+		.mat.m2x2 { grid-template-columns: repeat(2, 44px); }
+		.mat-cell { width: 44px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; border-radius: 5px; }
+		.mat-cell.a { background: #E8F5E9; color: var(--green); border: 1px solid #A5D6A7; }
+		.mat-cell.b { background: #E3F2FD; color: var(--blue); border: 1px solid #90CAF9; }
+		.mat-cell.c { background: #F3E5F5; color: var(--purple); border: 1px solid #CE93D8; }
+		.mat-op { font-size: 24px; color: var(--muted); font-weight: 700; }
+		.mat-label { text-align: center; font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+		/* Transform cards */
+		.transform-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+		.transform-card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px; text-align: center; }
+		.transform-card .tf-icon { font-size: 36px; margin-bottom: 6px; }
+		.transform-card h4 { margin: 0 0 4px; font-size: 15px; color: var(--ink); }
+		.transform-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+		.next-links { background: #E3F2FD; border-left: 5px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-top: 32px; font-size: 15px; line-height: 1.7; }
+		.next-links strong { color: var(--blue); } .next-links a { color: var(--blue); font-weight: 600; }
+		.footer { margin-top: 28px; color: var(--muted); font-size: 13px; text-align: center; }
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"], html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] p[data-lang="en"], html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"], html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"], html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"], html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h4[data-lang="en"], html[data-language="ja"] h4[data-lang="ja"] { display: block; }
+		@media (max-width: 640px) { .page { padding: 20px 14px 40px; } .hero { padding: 28px 20px 24px; } .hero h1 { font-size: 24px; } .transform-grid { grid-template-columns: 1fr; } .matrix-demo { flex-direction: column; } }
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="home-link" href="index.html">← <span data-lang="ja">もくじ</span><span data-lang="en">Index</span></a>
+			<div><button class="lang-btn active" id="btn-ja" type="button">JP</button><button class="lang-btn" id="btn-en" type="button">EN</button></div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">イメージでわかる 行列と AI</h1>
+			<h1 data-lang="en">Visual Guide: Matrices &amp; AI</h1>
+			<p class="subtitle" data-lang="ja">Visual Matrices &amp; AI</p>
+			<p class="subtitle" data-lang="en">シリーズ: イメージでわかる</p>
+			<p data-lang="ja">行列の掛け算が、どうして AI の中心的な計算になるのかを、変換の道具としてやさしく説明します。</p>
+			<p data-lang="en">Why matrix multiplication is the core computation in AI — explained as a "transformation tool."</p>
+		</section>
+
+		<!-- ──────── 1. 行列ってなに？ ──────── -->
+		<h2 class="section-title" data-lang="ja">1. 行列ってなに？</h2>
+		<h2 class="section-title" data-lang="en">1. What Is a Matrix?</h2>
+		<p class="section-lead" data-lang="ja">数字をタテヨコに並べた表のことです。</p>
+		<p class="section-lead" data-lang="en">A grid of numbers arranged in rows and columns.</p>
+
+		<div class="prose">
+			<p data-lang="ja">たとえばテストの点数——数学 80、英語 70、理科 90 という3科目の点を1行に並べたものは「1×3 の行列」です。生徒が30人いれば「30×3 の行列」。ただそれだけのことです。</p>
+			<p data-lang="en">For example, test scores — Math 80, English 70, Science 90 arranged in a row is a "1×3 matrix." If 30 students each have 3 scores, that's a "30×3 matrix." That's really all there is to it.</p>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">📊 たとえ話:</strong>
+			<strong data-lang="en">📊 Analogy:</strong>
+			<span data-lang="ja">行列は「Excel のシート」と同じです。行（ヨコ）と列（タテ）に数字が入っている。特別な数学の記号ですが、中身はただの表と考えて大丈夫です。</span>
+			<span data-lang="en">A matrix is basically an "Excel spreadsheet." Numbers in rows (horizontal) and columns (vertical). It uses special math notation, but inside it's just a table.</span>
+		</div>
+
+		<!-- ──────── 2. 行列のかけ算 ──────── -->
+		<h2 class="section-title" data-lang="ja">2. 行列のかけ算を見てみよう</h2>
+		<h2 class="section-title" data-lang="en">2. Let's See Matrix Multiplication</h2>
+
+		<div class="matrix-demo">
+			<div>
+				<div class="mat m2x3">
+					<div class="mat-cell a">1</div><div class="mat-cell a">2</div><div class="mat-cell a">3</div>
+					<div class="mat-cell a">4</div><div class="mat-cell a">5</div><div class="mat-cell a">6</div>
+				</div>
+				<div class="mat-label">A (2×3)</div>
+			</div>
+			<div class="mat-op">×</div>
+			<div>
+				<div class="mat m3x2">
+					<div class="mat-cell b">7</div><div class="mat-cell b">8</div>
+					<div class="mat-cell b">9</div><div class="mat-cell b">10</div>
+					<div class="mat-cell b">11</div><div class="mat-cell b">12</div>
+				</div>
+				<div class="mat-label">B (3×2)</div>
+			</div>
+			<div class="mat-op">=</div>
+			<div>
+				<div class="mat m2x2">
+					<div class="mat-cell c">58</div><div class="mat-cell c">64</div>
+					<div class="mat-cell c">139</div><div class="mat-cell c">154</div>
+				</div>
+				<div class="mat-label">C (2×2)</div>
+			</div>
+		</div>
+
+		<div class="prose">
+			<p data-lang="ja">A の1行目「1, 2, 3」と B の1列目「7, 9, 11」を、対応する数字同士でかけて足す: 1×7 + 2×9 + 3×11 = 58。これを全マスぶん繰り返すのが行列のかけ算です。</p>
+			<p data-lang="en">Take row 1 of A (1, 2, 3) and column 1 of B (7, 9, 11), multiply matching pairs and sum: 1×7 + 2×9 + 3×11 = 58. Repeat for every cell — that's matrix multiplication.</p>
+		</div>
+
+		<!-- ──────── 3. なぜ AI に必要？ ──────── -->
+		<h2 class="section-title" data-lang="ja">3. なぜ AI に行列が必要なの？</h2>
+		<h2 class="section-title" data-lang="en">3. Why Does AI Need Matrices?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">AI（ニューラルネットワーク）の中では、「入力を受け取って → 変換して → 次の層に渡す」を何十回も繰り返します。この「変換」が行列のかけ算です。</p>
+			<p data-lang="en">Inside an AI (neural network), the process "receive input → transform → pass to next layer" repeats dozens of times. That "transform" is matrix multiplication.</p>
+		</div>
+
+		<div class="transform-grid">
+			<div class="transform-card">
+				<div class="tf-icon">🖼️</div>
+				<h4 data-lang="ja">画像認識</h4>
+				<h4 data-lang="en">Image Recognition</h4>
+				<p data-lang="ja">ピクセルの行列を変換して「猫」「犬」を判定</p>
+				<p data-lang="en">Transform pixel matrices to determine "cat" or "dog"</p>
+			</div>
+			<div class="transform-card">
+				<div class="tf-icon">💬</div>
+				<h4 data-lang="ja">文章生成</h4>
+				<h4 data-lang="en">Text Generation</h4>
+				<p data-lang="ja">単語の行列を変換して次の単語を予測</p>
+				<p data-lang="en">Transform word matrices to predict the next word</p>
+			</div>
+			<div class="transform-card">
+				<div class="tf-icon">🔊</div>
+				<h4 data-lang="ja">音声認識</h4>
+				<h4 data-lang="en">Speech Recognition</h4>
+				<p data-lang="ja">音の周波数行列を変換してテキスト化</p>
+				<p data-lang="en">Transform frequency matrices into text</p>
+			</div>
+		</div>
+
+		<div class="analogy">
+			<strong data-lang="ja">🔧 たとえ話:</strong>
+			<strong data-lang="en">🔧 Analogy:</strong>
+			<span data-lang="ja">行列のかけ算は「変換レンズ」のようなもの。入力データにレンズを通すと、違う形のデータに変わる。AI は何枚ものレンズを重ねて、入力を最終的な答えに変換しています。</span>
+			<span data-lang="en">Matrix multiplication is like a "transformation lens." Pass input data through the lens, and you get data in a different shape. AI stacks many lenses to convert input into a final answer.</span>
+		</div>
+
+		<!-- ──────── 4. GPU が得意な理由 ──────── -->
+		<h2 class="section-title" data-lang="ja">4. なぜ GPU が行列計算に向いている？</h2>
+		<h2 class="section-title" data-lang="en">4. Why Are GPUs Good at Matrix Math?</h2>
+
+		<div class="prose">
+			<p data-lang="ja">行列のかけ算は「同じ計算を大量に繰り返す」仕事です。2×3 と 3×2 のかけ算だけでも 12回のかけ算と6回の足し算が必要。実際の AI では数百万〜数十億回になります。</p>
+			<p data-lang="en">Matrix multiplication is "repeating the same calculation many times." Even a 2×3 times 3×2 requires 12 multiplications and 6 additions. In real AI, that becomes millions to billions.</p>
+			<p data-lang="ja">GPU は何千もの計算ユニットを持ち、これらを同時並列で処理できます。CPU が1人の達人なら、GPU は数千人のチームワークです。</p>
+			<p data-lang="en">GPUs have thousands of compute units and can process these in parallel. If a CPU is one expert, a GPU is a team of thousands working together.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 rocBLAS の役割:</strong>
+			<strong data-lang="en">💡 Role of rocBLAS:</strong>
+			<span data-lang="ja">rocBLAS は ROCm の行列演算ライブラリです。行列のかけ算を GPU 上で最速に実行するためのルーチンが詰まっています。Vega（gfx900）でも rocBLAS を通じて行列計算を高速に実行できます。</span>
+			<span data-lang="en">rocBLAS is ROCm's matrix computation library, packed with routines to execute matrix multiplication at maximum speed on GPUs. Even Vega (gfx900) can perform fast matrix math through rocBLAS.</span>
+		</div>
+
+		<!-- ──────── 次に読むなら ──────── -->
+		<div class="next-links">
+			<strong data-lang="ja">📖 このあと読むならこれ:</strong>
+			<strong data-lang="en">📖 Read next:</strong><br>
+			<span data-lang="ja">
+				<a href="linear-algebra-for-rocm.html">ROCm のための線形代数</a> — 行列演算の数学的な詳細（数式つき）<br>
+				<a href="inference-flow.html">イメージでわかる推論の流れ</a> — 行列計算が推論のどこで使われるか<br>
+				<a href="gpu-basics.html">イメージでわかる GPU のしくみ</a> — GPU の並列処理をもっと知る
+			</span>
+			<span data-lang="en">
+				<a href="linear-algebra-for-rocm.html">Linear Algebra for ROCm</a> — Mathematical details of matrix operations (with equations)<br>
+				<a href="inference-flow.html">Visual Guide to the Inference Flow</a> — Where matrix computation fits in inference<br>
+				<a href="gpu-basics.html">Visual Guide to GPU Basics</a> — Learn more about GPU parallelism
+			</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages · イメージでわかるシリーズ</span>
+			<span data-lang="en">vega-hbmx-pages · Visual Guide series</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+		function setLang(l) { html.setAttribute('data-language', l); html.lang = l; btnJa.classList.toggle('active', l === 'ja'); btnEn.classList.toggle('active', l === 'en'); localStorage.setItem('vega-hbmx-pages-lang', l); }
+		btnJa.addEventListener('click', () => setLang('ja'));
+		btnEn.addEventListener('click', () => setLang('en'));
+		setLang(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
