@@ -699,6 +699,8 @@
 
 			<p data-lang="ja" style="font-size:15px;color:#546E7A;margin-top:10px">"Disable" の語感はバグ回避寄りだが、private issue の本文が非公開のため設計判断かバグ回避かの確定はできない。さらに 2026-03-14 の強制実行追試では、<code>-S</code> により <code>IsApplicable()</code> をバイパスすると <code>CompileSolution</code> → <code>GetInvoker</code> まで進み、<code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assert に落ちることも確認された。したがって、現時点で確定しているのは「後段経路のどこかが未整備である」ことであり、単一原因を LLVM バックエンドだけに還元することはできない。</p>
 			<p data-lang="en" style="font-size:15px;color:#546E7A;margin-top:10px">The word "Disable" suggests a bug workaround, but the private issue body is inaccessible, so whether this was a design decision or bug avoidance cannot be confirmed. A 2026-03-14 forced-run follow-up also showed that once <code>-S</code> bypasses <code>IsApplicable()</code>, execution can reach <code>CompileSolution</code> → <code>GetInvoker</code> and then fail with <code>Perf Db: record not found</code> → <code>boost::optional::get()</code> assertion. What is firmly established is therefore that some downstream path remains incomplete; the public evidence does not justify reducing everything to the LLVM backend alone.</p>
+			<p data-lang="ja" style="font-size:15px;color:#546E7A;margin-top:10px">追補（2026-03-15）: <code>MiirIsConfigApplicable()</code> の先にある Miir 実装は public な <code>ROCm/rocMLIR</code>（<code>rocmlir-lib.cpp</code>）で追跡可能。<code>miirLowerTuningParams()</code> は Applicability モードで pipeline を実行し、失敗時に <code>MIIR_BUILD_FAILURE</code> を返す。よって未解決なのは Miir 実装の不可視性ではなく、private issue #389 が示す 2021 年当時の判断根拠である。</p>
+			<p data-lang="en" style="font-size:15px;color:#546E7A;margin-top:10px">Addendum (2026-03-15): The Miir implementation behind <code>MiirIsConfigApplicable()</code> is publicly traceable in <code>ROCm/rocMLIR</code> (<code>rocmlir-lib.cpp</code>). <code>miirLowerTuningParams()</code> runs the pipeline in applicability mode and returns <code>MIIR_BUILD_FAILURE</code> on failure. Therefore, the unresolved part is no longer Miir visibility itself, but the 2021 decision context hidden behind private issue #389.</p>
 		</div>
 
 		<div class="card">
@@ -952,6 +954,8 @@
 			<ul>
 				<li data-lang="ja">&#x2705; MIOpen PR #1328 のレビュー実データ取得（reviews: APPROVED x2、review thread comments: 0、issue comments: 2）</li>
 				<li data-lang="en">&#x2705; MIOpen PR #1328 review data collected (reviews: APPROVED x2, review-thread comments: 0, issue comments: 2)</li>
+				<li data-lang="ja">&#x2705; <code>MiirIsConfigApplicable</code> の実装到達（public <code>ROCm/rocMLIR</code>）: <code>miirLowerTuningParams</code> は Applicability pipeline 実行、失敗時 <code>MIIR_BUILD_FAILURE</code></li>
+				<li data-lang="en">&#x2705; Reached the implementation behind <code>MiirIsConfigApplicable</code> (public <code>ROCm/rocMLIR</code>): <code>miirLowerTuningParams</code> runs applicability pipeline and returns <code>MIIR_BUILD_FAILURE</code> on failure</li>
 				<li data-lang="ja">&#x2705; FP32 fallback 確認（Vega 64 で <code>ConvBinWinograd3x3U</code> / <code>ConvAsm1x1U</code> / <code>ConvHipImplicitGemmV4R1Fwd</code> を自然選択で確認）</li>
 				<li data-lang="en">&#x2705; FP32 fallback confirmed (Vega 64 naturally selected <code>ConvBinWinograd3x3U</code> / <code>ConvAsm1x1U</code> / <code>ConvHipImplicitGemmV4R1Fwd</code>)</li>
 				<li data-lang="ja">&#x2705; HSACO 逆アセンブル手順の確立</li>
@@ -971,8 +975,8 @@
 			<ul>
 				<li data-lang="ja">&#x1F538; 公開 <code>llvm-project</code> で gfx900 / MLIR 関連の commit / issue を再探索</li>
 				<li data-lang="en">&#x1F538; Search public <code>llvm-project</code> for gfx900 / MLIR related commits and issues</li>
-				<li data-lang="ja">&#x1F538; <code>MiirIsConfigApplicable</code> の返り値条件を Miir 側ソース（非公開）まで到達して確定</li>
-				<li data-lang="en">&#x1F538; Confirm exact return conditions of <code>MiirIsConfigApplicable</code> by reaching Miir-side source (private)</li>
+				<li data-lang="ja">&#x1F538; <code>MIIR_BUILD_FAILURE</code> を誘発する最小再現ケースを抽出し、MIOpen 側の失敗シグネチャ（rc=0x7）と対応づける</li>
+				<li data-lang="en">&#x1F538; Extract a minimal reproducer for <code>MIIR_BUILD_FAILURE</code> and map it to MIOpen failure signatures (rc=0x7)</li>
 				<li data-lang="ja">&#x1F538; 他の gfx900 関連コミットへの AMD 社員 / 外部貢献の分類拡張</li>
 				<li data-lang="en">&#x1F538; Extend AMD employee vs external contributor classification to other gfx900 commits</li>
 				<li data-lang="ja">&#x1F538; Provenance map の作成</li>
