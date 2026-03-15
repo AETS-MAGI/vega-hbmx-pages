@@ -155,6 +155,23 @@
 			<span data-lang="en">MIOpen is a library dedicated to figuring out the fastest way to perform this "slide-the-filter" computation. It has dozens of methods (solvers) and picks the best one based on GPU capabilities.</span>
 		</div>
 
+		<h2 class="section-title" data-lang="ja">4. ROCm では畳み込みをどう見る？</h2>
+		<h2 class="section-title" data-lang="en">4. How Does ROCm Look at Convolution?</h2>
+		<p class="section-lead" data-lang="ja">ROCm では、畳み込みは「MIOpen に、どの解き方が速いか相談する仕事」として現れます。</p>
+		<p class="section-lead" data-lang="en">In ROCm, convolution appears as "a job where MIOpen decides which solving method is fastest."</p>
+
+		<div class="prose">
+			<p data-lang="ja">同じ「3×3 フィルタをずらす」計算でも、画像サイズ、データ型、メモリの並べ方、GPU 世代によって速い方法が変わります。だから MIOpen は「畳み込みかどうか」だけでなく、「どんな畳み込みか」を細かく見て solver を選びます。</p>
+			<p data-lang="en">Even for the same "slide a 3×3 filter" idea, the fastest method changes with image size, data type, memory layout, and GPU generation. So MIOpen looks not just at whether it is convolution, but at what kind of convolution it is, in detail.</p>
+			<p data-lang="ja">この研究で gfx900 を調べる意味もここにあります。式の意味は同じでも、ROCm が使える solver の種類が変わると、速さや対応状況が変わるからです。</p>
+			<p data-lang="en">This is also why gfx900 matters in the research. The mathematical meaning may stay the same, but if the set of usable solvers changes, the speed and support picture also changes.</p>
+		</div>
+
+		<div class="highlight">
+			<span data-lang="ja">ROCm 目線では、畳み込みは 1 つの式というより、「画像サイズ・フィルタサイズ・精度・GPU 世代で分岐する仕事」です。</span>
+			<span data-lang="en">From a ROCm point of view, convolution is not just one formula. It is a job that branches depending on image size, filter size, precision, and GPU generation.</span>
+		</div>
+
 		<!-- ──────── 次に読むなら ──────── -->
 		<div class="next-links">
 			<strong data-lang="ja">📖 このあと読むならこれ:</strong>

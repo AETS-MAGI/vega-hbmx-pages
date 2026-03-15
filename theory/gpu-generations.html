@@ -185,6 +185,25 @@
 			<span data-lang="en">An old smartphone can still make calls and send emails, but the latest apps may declare it "outside recommended specs." It works, but support gradually fades — GPUs follow the same pattern.</span>
 		</div>
 
+		<h2 class="section-title" data-lang="ja">5. ROCm では世代差をどう見る？</h2>
+		<h2 class="section-title" data-lang="en">5. How Does ROCm See Generation Gaps?</h2>
+		<p class="section-lead" data-lang="ja">ROCm から見る世代差は、「新しいほど速い」だけでなく、「使える速い道が増える」という差でもあります。</p>
+		<p class="section-lead" data-lang="en">From ROCm's point of view, generation gaps are not only "newer is faster" but also "newer has more fast paths available."</p>
+
+		<div class="prose">
+			<p data-lang="ja">新しい世代になると、rocBLAS が使える高速カーネル、MIOpen が選べる solver、扱いやすいデータ型が増えます。逆に古い世代では、基本計算はできても、最新向けに増えた速い経路は使えないことがあります。</p>
+			<p data-lang="en">Newer generations gain more high-speed kernels for rocBLAS, more solver choices for MIOpen, and more practical data types. Older generations may still handle the basic computation, but they can miss the newer fast paths.</p>
+			<p data-lang="ja">だから gfx900 を考えるときは、「動くか」だけでなく「どのライブラリのどの経路まで残っているか」を見るのが ROCm らしい見方です。これが support boundary の話につながります。</p>
+			<p data-lang="en">So when thinking about gfx900, a ROCm-style question is not just "does it run?" but "which library paths are still available?" That is exactly what leads into the support-boundary discussion.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 ROCm における世代差:</strong>
+			<strong data-lang="en">💡 Generation gaps in ROCm:</strong>
+			<span data-lang="ja">VRAM や演算器の差だけでなく、<strong>どの経路がテストされ、最適化され、残されているか</strong> も世代差の一部です。</span>
+			<span data-lang="en">Generation gaps in ROCm are not only about VRAM and compute units, but also about <strong>which paths are still tested, tuned, and kept alive</strong>.</span>
+		</div>
+
 		<!-- ──────── 次に読むなら ──────── -->
 		<div class="next-links">
 			<strong data-lang="ja">📖 このあと読むならこれ:</strong>

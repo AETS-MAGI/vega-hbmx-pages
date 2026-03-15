@@ -156,9 +156,31 @@
 			<p data-lang="en">Vega's bandwidth is 484 GB/s — less than 1/10 of the latest MI300X, but much wider than GDDR5 cards from the same era.</p>
 		</div>
 
-		<!-- ──────── 4. まとめ ──────── -->
-		<h2 class="section-title" data-lang="ja">4. まとめ</h2>
-		<h2 class="section-title" data-lang="en">4. Summary</h2>
+		<!-- ──────── 4. ROCm ではどう考える？ ──────── -->
+		<h2 class="section-title" data-lang="ja">4. ROCm ではどう考える？</h2>
+		<h2 class="section-title" data-lang="en">4. How Does ROCm Think About This?</h2>
+		<p class="section-lead" data-lang="ja">ROCm では、メモリの問題をまず「載るか」、次に「流れるか」で考えると整理しやすくなります。</p>
+		<p class="section-lead" data-lang="en">In ROCm, it helps to think about memory problems in two steps: first "does it fit?" and then "can it flow fast enough?"</p>
+
+		<div class="prose">
+			<p data-lang="ja"><strong>まず見るのは容量です。</strong> モデル本体、途中のデータ、作業用の一時領域が VRAM に載らなければ、ROCm は計算を始めにくくなります。バッチを小さくしたり、軽いデータ型にしたりする理由はここにあります。</p>
+			<p data-lang="en"><strong>Capacity comes first.</strong> If the model itself, intermediate data, and temporary workspaces do not fit in VRAM, ROCm has trouble even starting the computation. This is why people shrink batch size or use lighter data types.</p>
+			<p data-lang="ja"><strong>次に見るのが帯域幅です。</strong> 載っていても、rocBLAS や MIOpen がデータを読む速さが足りないと、計算器が待たされます。GPU の中は速くても、材料の受け渡しが遅いと全体は遅くなります。</p>
+			<p data-lang="en"><strong>Bandwidth comes next.</strong> Even when things fit, if rocBLAS or MIOpen cannot read the data quickly enough, the compute units spend time waiting. The inside of the GPU may be fast, but slow delivery still slows the whole job down.</p>
+			<p data-lang="ja">Vega（gfx900）は 8 GB という容量では厳しい場面がある一方、HBM2 の広い帯域は強みです。だから ROCm 目線では「大きなモデルは載りにくいが、載る計算は気持ちよく流せることがある」と考えます。</p>
+			<p data-lang="en">Vega (gfx900) can feel tight on capacity with 8 GB, but its wide HBM2 bandwidth is a real strength. So from a ROCm viewpoint, it is often "hard to fit very large models, but quite capable of streaming the ones that do fit."</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 ROCm の2つの問い:</strong>
+			<strong data-lang="en">💡 ROCm's two questions:</strong>
+			<span data-lang="ja">① <strong>載るか？</strong> ② <strong>流れるか？</strong> メモリの話をこの順番で見ると、ROCm で起きていることがかなり整理しやすくなります。</span>
+			<span data-lang="en">① <strong>Does it fit?</strong> ② <strong>Can it flow?</strong> Looking at memory in that order makes ROCm behaviour much easier to understand.</span>
+		</div>
+
+		<!-- ──────── 5. まとめ ──────── -->
+		<h2 class="section-title" data-lang="ja">5. まとめ</h2>
+		<h2 class="section-title" data-lang="en">5. Summary</h2>
 
 		<div class="highlight">
 			<span data-lang="ja">🔑 <strong>容量</strong> = いくつ並べられるか。 <strong>帯域幅</strong> = どれだけ速く運べるか。AI は両方ないと困る。HBM2 は帯域幅が太いメモリで、Vega の強みのひとつ。</span>

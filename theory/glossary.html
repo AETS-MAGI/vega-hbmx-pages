@@ -495,9 +495,9 @@ flowchart TD
       <p class="term-name">HIP</p>
       <p class="term-aka" data-lang="ja">Heterogeneous-computing Interface for Portability</p>
       <p class="term-aka" data-lang="en">Heterogeneous-computing Interface for Portability</p>
-      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>AMD GPU 向けプログラミングの「標準変換窓口」です。ゲームや AI プログラムを「どの世代の AMD GPU でも同じコードで動かせる」ようにする翻訳担当です。NVIDIA GPU 向けの CUDA コードを AMD GPU でも動くように変換するツールも含まれます。</div>
-      <p class="term-def" data-lang="ja">CUDA に似た API で AMD GPU をプログラムするための移植性レイヤ。CUDA コードを HIP に変換するツールもある。GPU の種類を抽象化し、上位ライブラリが特定 GPU に縛られないようにする役割を持つ。</p>
-      <p class="term-def" data-lang="en">A CUDA-like API portability layer for AMD GPUs. Tools exist to translate CUDA code to HIP. Abstracts away specific GPU details so higher-level libraries don't depend on particular hardware.</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>AMD GPU 向けプログラミングの「標準窓口」です。上のソフトが「GPU でこの計算をして」と頼むときの共通インターフェースで、GPU 世代の違いを吸収してくれます。</div>
+      <p class="term-def" data-lang="ja">AMD GPU をプログラムするための移植性レイヤ / API。GPU 世代や実装差を抽象化し、上位ライブラリやアプリが特定 GPU に強く縛られないようにする。ROCm の多くの計算要求は、この層を通って下位ランタイムへ渡される。</p>
+      <p class="term-def" data-lang="en">A portability layer / API for programming AMD GPUs. It abstracts away differences between GPU generations and implementations so higher-level libraries and applications are less tightly tied to one specific GPU. Many ROCm compute requests pass through this layer before reaching the lower runtime.</p>
       <div class="term-key" data-lang="ja"><strong>役割:</strong> 上位コードと GPU 世代の差を吸収する「翻訳層」</div>
       <div class="term-key" data-lang="en"><strong>Role:</strong> A "translation layer" bridging user code and GPU generations</div>
     </div>

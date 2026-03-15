@@ -255,9 +255,27 @@
 			<span data-lang="en">For example, multiplying two 1000×1000 matrices requires about 1 billion multiply-add operations. GPUs process these in parallel, achieving speeds tens of times faster than a CPU.</span>
 		</div>
 
-		<!-- ──────── 5. まとめ ──────── -->
-		<h2 class="section-title" data-lang="ja">5. まとめ</h2>
-		<h2 class="section-title" data-lang="en">5. Summary</h2>
+		<!-- ──────── 5. ROCm ではどう見る？ ──────── -->
+		<h2 class="section-title" data-lang="ja">5. ROCm では GPU をどう見る？</h2>
+		<h2 class="section-title" data-lang="en">5. How Does ROCm Look at a GPU?</h2>
+		<p class="section-lead" data-lang="ja">ROCm では GPU は「画面を出す部品」というより、「同じ計算を大量に引き受ける計算装置」として登場します。</p>
+		<p class="section-lead" data-lang="en">In ROCm, a GPU appears less as "the thing that draws graphics" and more as "a machine that takes on huge amounts of the same calculation."</p>
+
+		<div class="prose">
+			<p data-lang="ja">ROCm のライブラリは、GPU に対して「この行列計算を何千本も同時に回して」「このデータを VRAM に置いて」と頼みます。つまり ROCm から見る GPU は、ゲームの絵を出す道具というより、AI の同じ計算をまとめて引き受ける大きな作業班です。</p>
+			<p data-lang="en">ROCm libraries ask the GPU to do things like "run this matrix calculation thousands of times at once" and "keep this data in VRAM." From ROCm's point of view, a GPU is less a graphics device and more a giant work crew for repeated AI-style computation.</p>
+			<p data-lang="ja">この研究で Vega（gfx900）を見るときも、「GPU があるか」ではなく「ROCm が得意な計算を、どの精度で、どのくらいの量まで受け持てるか」を見ています。FP32/FP16 と HBM2 帯域は強みですが、最新世代の専用 AI ユニットはありません。</p>
+			<p data-lang="en">That is why, when we look at Vega (gfx900) in this research, we ask not just "is there a GPU?" but "how much of ROCm's preferred workload can it handle, and at what precision?" Its strengths are FP32/FP16 and HBM2 bandwidth, though it lacks the dedicated AI units of newer generations.</p>
+		</div>
+
+		<div class="highlight">
+			<span data-lang="ja">ROCm で大事な見方は 2 つです。<strong>同じ計算をたくさん同時にできるか</strong>、そして <strong>必要なデータを VRAM から速く取り出せるか</strong>。このページの GPU の説明は、そのまま ROCm の性能の見方につながります。</span>
+			<span data-lang="en">Two questions matter in ROCm: <strong>Can it do many of the same calculations at once?</strong> And <strong>can it pull needed data from VRAM quickly?</strong> The GPU ideas on this page map directly to how ROCm thinks about performance.</span>
+		</div>
+
+		<!-- ──────── 6. まとめ ──────── -->
+		<h2 class="section-title" data-lang="ja">6. まとめ</h2>
+		<h2 class="section-title" data-lang="en">6. Summary</h2>
 
 		<div class="prose">
 			<p data-lang="ja"><strong>CPU</strong> — 少数の強力なコアが、複雑な仕事を順番に確実にこなす。パソコンの司令塔。</p>

@@ -198,6 +198,23 @@
 			<span data-lang="en">rocBLAS is ROCm's matrix computation library, packed with routines to execute matrix multiplication at maximum speed on GPUs. Even Vega (gfx900) can perform fast matrix math through rocBLAS.</span>
 		</div>
 
+		<h2 class="section-title" data-lang="ja">5. ROCm では行列をどう見る？</h2>
+		<h2 class="section-title" data-lang="en">5. How Does ROCm Look at Matrices?</h2>
+		<p class="section-lead" data-lang="ja">ROCm では、「この式は結局どんな行列計算か？」をまず見ると話がつながりやすくなります。</p>
+		<p class="section-lead" data-lang="en">In ROCm, it often helps to ask first: "What kind of matrix computation is this, underneath?"</p>
+
+		<div class="prose">
+			<p data-lang="ja">$y = Wx$ や $AB$ のような式が出てきたら、ROCm 目線では「rocBLAS が得意な仕事かも」と考えると理解しやすくなります。全結合層、Attention の一部、埋め込みの変換など、見た目が違っても中身は行列積であることが多いからです。</p>
+			<p data-lang="en">When you see formulas like $y = Wx$ or $AB$, a ROCm-friendly way to read them is: "this may be a rocBLAS-style job." Fully connected layers, parts of Attention, and embedding transforms may look different, but many of them reduce to matrix multiplication.</p>
+			<p data-lang="ja">この研究で gfx900 を見るときも、「AI らしい名前の層か」より「大きな行列計算として速い経路に乗るか」を追います。そこで rocBLAS や、その下で行列カーネルを整える仕組みの重要さが出てきます。</p>
+			<p data-lang="en">That is why, in this research, we look at gfx900 less in terms of AI buzzwords and more in terms of whether a workload lands on a fast matrix path. This is where rocBLAS and the machinery that tunes matrix kernels start to matter.</p>
+		</div>
+
+		<div class="highlight">
+			<span data-lang="ja">ROCm では「たくさんの AI 計算 = たくさんの行列計算」と考えることがよくあります。数式の見た目が少し難しくても、まずは「行列積かどうか」を見ると整理しやすくなります。</span>
+			<span data-lang="en">ROCm often treats "lots of AI computation" as "lots of matrix multiplication." Even if the formula looks intimidating, checking whether it is basically a matrix product is a great first step.</span>
+		</div>
+
 		<!-- ──────── 次に読むなら ──────── -->
 		<div class="next-links">
 			<strong data-lang="ja">📖 このあと読むならこれ:</strong>

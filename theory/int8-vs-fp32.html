@@ -157,6 +157,26 @@
 			<span data-lang="en">🔑 <strong>Key point:</strong> Choosing a data type is a "precision vs speed trade-off." Which types are fastest depends on the GPU.</span>
 		</div>
 
+		<!-- ──────── 5. ROCm ではどう考える？ ──────── -->
+		<h2 class="section-title" data-lang="ja">5. ROCm ではデータ型をどう考える？</h2>
+		<h2 class="section-title" data-lang="en">5. How Does ROCm Think About Data Types?</h2>
+		<p class="section-lead" data-lang="ja">ROCm では、「その数字の入れ物に対して、その GPU に速い計算経路があるか」がとても大事です。</p>
+		<p class="section-lead" data-lang="en">In ROCm, an important question is whether that number format has a fast execution path on the GPU you are using.</p>
+
+		<div class="prose">
+			<p data-lang="ja">同じ INT8 でも、GPU 世代によって意味が少し変わります。新しい世代では「INT8 を速く回す専用の道」がありますが、Vega（gfx900）ではその道が細い、またはありません。</p>
+			<p data-lang="en">The meaning of INT8 changes a little across GPU generations. On newer generations there may be special fast paths for INT8, while on Vega (gfx900) those paths are narrow or missing.</p>
+			<p data-lang="ja">そのため ROCm では、INT8 を見るときに <strong>1. VRAM をどれだけ減らせるか</strong> と <strong>2. その GPU に速いカーネルがあるか</strong> を分けて考えます。小さくなることと、速くなることは、同じではありません。</p>
+			<p data-lang="en">So in ROCm it helps to separate <strong>1. how much VRAM you save</strong> from <strong>2. whether the GPU has a fast kernel for that type</strong>. Becoming smaller and becoming faster are not always the same thing.</p>
+		</div>
+
+		<div class="fact-box">
+			<strong data-lang="ja">💡 gfx900 を ROCm で見ると:</strong>
+			<strong data-lang="en">💡 Looking at gfx900 in ROCm:</strong>
+			<span data-lang="ja">INT8 は「メモリ節約」の意味ではかなり役立つことがありますが、「新世代のような大きな加速」までは出ないことがあります。ROCm では <strong>軽くなる</strong> と <strong>速くなる</strong> を別々に確かめるのがコツです。</span>
+			<span data-lang="en">INT8 can still be very useful for <strong>saving memory</strong> on gfx900, but it may not deliver the <strong>large acceleration</strong> seen on newer generations. In ROCm, it is wise to check "lighter" and "faster" separately.</span>
+		</div>
+
 		<!-- ──────── 次に読むなら ──────── -->
 		<div class="next-links">
 			<strong data-lang="ja">📖 このあと読むならこれ:</strong>

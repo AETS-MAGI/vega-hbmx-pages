@@ -250,8 +250,8 @@
 		<div class="fact-box">
 			<strong data-lang="ja">💡 ポイント:</strong>
 			<strong data-lang="en">💡 Key point:</strong>
-			<span data-lang="ja">PyTorch で「model.cuda()」と書くと、5F→4F→3F→2F→1F と注文が階段を下りていく。最終的に GPU のコアが計算して結果を上に返す。この一連の流れが ROCm の仕事です。</span>
-			<span data-lang="en">When you write "model.cuda()" in PyTorch, the request travels 5F→4F→3F→2F→1F. The GPU cores compute the result and send it back up. That entire flow is what ROCm does.</span>
+			<span data-lang="ja">PyTorch でモデルを GPU に送り、推論や学習を始めると、注文が 5F→4F→3F→2F→1F と階段を下りていきます。最終的に GPU のコアが計算して結果を上に返す。この一連の流れが ROCm の仕事です。</span>
+			<span data-lang="en">When PyTorch sends a model to the GPU and starts inference or training, the request travels 5F→4F→3F→2F→1F. The GPU cores compute the result and send it back up. That whole trip is what ROCm handles.</span>
 		</div>
 
 		<!-- ──────── 3. 各フロアの代表選手 ──────── -->
@@ -263,8 +263,8 @@
 			<p data-lang="en"><strong>rocBLAS</strong> — The specialist for fast basic math like matrix multiplication. One of the most-used computation libraries in AI.</p>
 			<p data-lang="ja"><strong>MIOpen</strong> — 畳み込みなど、深層学習に特化した計算を担当。「どのやり方（solver）が速いか？」を GPU ごとに調べて切り替えてくれる。</p>
 			<p data-lang="en"><strong>MIOpen</strong> — Handles deep learning specific operations like convolution. It figures out which method (solver) runs fastest on your particular GPU.</p>
-			<p data-lang="ja"><strong>HIP</strong> — プログラマが GPU に指示を出すためのしくみ。NVIDIA の CUDA に相当する AMD の仕組み。</p>
-			<p data-lang="en"><strong>HIP</strong> — The programming interface for talking to the GPU. AMD's equivalent of NVIDIA's CUDA.</p>
+			<p data-lang="ja"><strong>HIP</strong> — プログラマが GPU に仕事を渡すための共通窓口。上位のコードが GPU 世代の違いをあまり意識せずにすむようにする仕組み。</p>
+			<p data-lang="en"><strong>HIP</strong> — A common interface for handing work to the GPU. It helps upper layers avoid thinking too much about the differences between GPU generations.</p>
 		</div>
 
 		<div class="analogy">

@@ -480,6 +480,25 @@
     </tbody>
   </table>
 
+  <h2 class="section-title" data-lang="ja">⑧ ROCm のページで数式を見るときのコツ</h2>
+  <h2 class="section-title" data-lang="en">⑧ A trick for reading formulas on ROCm pages</h2>
+
+  <div class="prose">
+    <p data-lang="ja">ROCm の説明で数式が出てきたら、「この式はどのライブラリの仕事っぽいか？」を一緒に見ると、意味がつながりやすくなります。数式は、計算の担当者を教えてくれる地図として読むこともできます。</p>
+    <p data-lang="en">When a formula appears in a ROCm explanation, it helps to also ask: "Which library's kind of job is this?" You can read a formula as a map that hints at who is responsible for the computation.</p>
+  </div>
+
+  <div class="callout callout-green">
+    <h4 data-lang="ja">見分け方の目安</h4>
+    <h4 data-lang="en">A simple way to tell</h4>
+    <p data-lang="ja"><strong>$Wx$ や $AB$ が見えたら:</strong> 行列計算なので、ROCm では rocBLAS の出番になりやすいです。</p>
+    <p data-lang="en"><strong>If you see $Wx$ or $AB$:</strong> that is matrix math, so rocBLAS is often involved in ROCm.</p>
+    <p data-lang="ja"><strong>小さなフィルタや画像パッチが見えたら:</strong> 畳み込みなので、MIOpen がどう解くかが大事になります。</p>
+    <p data-lang="en"><strong>If you see small filters or image patches:</strong> that is convolution, so how MIOpen solves it becomes important.</p>
+    <p data-lang="ja"><strong>$Q, K, V$ や softmax が見えたら:</strong> Attention の計算で、内部では大量の行列計算とメモリ移動が起きていると考えると整理しやすいです。</p>
+    <p data-lang="en"><strong>If you see $Q, K, V$ or softmax:</strong> think of Attention, where lots of matrix math and memory movement happen underneath.</p>
+  </div>
+
   <div class="callout callout-green" style="margin-top:24px;">
     <h4 data-lang="ja">最後に：記号を全部覚えなくていい</h4>
     <h4 data-lang="en">Final note: you don't need to memorise all the symbols</h4>
