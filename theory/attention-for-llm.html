@@ -533,16 +533,23 @@ flowchart TB
     <p class="diagram-caption" data-lang="en">Transformer = [Multi-head Attention → FFN] repeated N times</p>
   </div>
 
-  <!-- 9. MIOpen との接続 -->
-  <h2 class="section-title" data-lang="ja">⑨ MIOpen・ROCm との接続</h2>
-  <h2 class="section-title" data-lang="en">⑨ Connection to MIOpen and ROCm</h2>
+  <!-- 9. ROCm との接続 -->
+  <h2 class="section-title" data-lang="ja">⑨ ROCm との接続</h2>
+  <h2 class="section-title" data-lang="en">⑨ Connection to ROCm</h2>
 
   <div class="prose">
-    <p data-lang="ja">Attention の核心計算 <code>Q·Kᵀ</code> と <code>· V</code> はどちらも<strong>大きな行列積（GEMM）</strong>です。MIOpen と rocBLAS はまさにこの GEMM を GPU で高速実行するために設計されており、Transformer の学習・推論でも中心的な役割を担います。</p>
-    <p data-lang="en">The core computations <code>Q·Kᵀ</code> and <code>· V</code> are both <strong>large matrix multiplications (GEMM)</strong>. MIOpen and rocBLAS are designed precisely to run these GEMMs at full GPU speed, making them just as central to Transformer training and inference as to CNN convolution.</p>
+    <p data-lang="ja">Attention の核心計算 <code>Q·Kᵀ</code> と <code>· V</code> は、どちらも<strong>大きな行列積（GEMM）</strong>です。中学生向けに言えば、<strong>大きな表どうしの掛け算</strong>です。ROCm では、この種の計算は主に rocBLAS などの行列計算ライブラリが支えます。</p>
+    <p data-lang="en">The core computations <code>Q·Kᵀ</code> and <code>· V</code> are both <strong>large matrix multiplications (GEMM)</strong> — in simple terms, <strong>multiplying big tables of numbers</strong>. In ROCm, this kind of work is mainly supported by matrix-math libraries such as rocBLAS.</p>
 
-    <p data-lang="ja">また、系列長 n が長いと全単語ペアのスコアが O(n²) になってメモリを大量消費します。<strong>Flash Attention</strong> はこれをタイルに分割して省メモリで計算する手法で、内部ではやはり GPU の行列演算カーネルに依存しています。gfx900 のような旧世代 GPU では SRAM が少なくタイルサイズが制限されるため、Flash Attention の恩恵が限定的になる場合があります。</p>
-    <p data-lang="en">For long sequences, pairwise scores grow as O(n²) and consume enormous memory. <strong>Flash Attention</strong> addresses this by tiling the computation for memory efficiency — still relying on GPU matrix kernels underneath. On older GPUs like gfx900 with limited SRAM, tile sizes are constrained, which can limit Flash Attention's benefits.</p>
+    <p data-lang="ja">また、文が長くなると「単語どうしの組み合わせ」を全部比べる必要があり、メモリをたくさん使います。<strong>Flash Attention</strong> は、その計算を小さなかたまりに分けて、途中で使うメモリを減らす考え方です。gfx900 のような旧世代 GPU では GPU 内部の小さくて速い作業スペースが限られるため、恩恵が小さめになる場合があります。</p>
+    <p data-lang="en">As sequences get longer, Attention must compare many pairs of words, which uses a lot of memory. <strong>Flash Attention</strong> is the idea of breaking that work into smaller chunks so it needs less temporary memory. On older GPUs like gfx900, the small fast workspace inside the GPU is more limited, so the benefit can be smaller.</p>
+  </div>
+
+  <div class="callout callout-teal">
+    <h4 data-lang="ja">ここで出る難しい言葉を一言で</h4>
+    <h4 data-lang="en">Quick translations for the harder terms here</h4>
+    <p data-lang="ja"><strong>GEMM:</strong> 大きな表どうしの掛け算。<strong>Flash Attention:</strong> Attention を小分けにしてメモリ節約する工夫。<strong>GPU 内部の小さくて速い作業スペース:</strong> その場で計算を回すための小さな作業机、くらいの理解で十分です。</p>
+    <p data-lang="en"><strong>GEMM:</strong> multiplying large tables of numbers. <strong>Flash Attention:</strong> a way to split Attention into smaller chunks to save memory. <strong>The GPU's small fast workspace:</strong> think of it as a tiny desk inside the GPU used for immediate work.</p>
   </div>
 
   <div class="callout callout-green">
@@ -559,8 +566,8 @@ flowchart TB
       <li data-lang="en">Multi-head Attention reads the sequence from multiple perspectives simultaneously</li>
       <li data-lang="ja">Transformer は Attention ブロックを積み重ねたもので、LLM の主要構成要素</li>
       <li data-lang="en">Transformer stacks Attention blocks and is the backbone of modern LLMs</li>
-      <li data-lang="ja">核心計算は GEMM — MIOpen / rocBLAS が担う</li>
-      <li data-lang="en">The core computation is GEMM — handled by MIOpen / rocBLAS</li>
+      <li data-lang="ja">核心計算は大きな行列計算で、ROCm では rocBLAS 系の経路が重要</li>
+      <li data-lang="en">The core computation is large matrix math, and rocBLAS-style paths are important in ROCm</li>
     </ul>
   </div>
 

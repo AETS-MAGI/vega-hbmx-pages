@@ -203,6 +203,11 @@
   <p class="section-lead" data-lang="ja">ROCm は複数の GitHub リポジトリに分散して開発・配布されます。2023〜2024 年頃から <strong>TheRock</strong> や <strong>rocm-libraries</strong> などの統合リポジトリへの再編が進んでいます。</p>
   <p class="section-lead" data-lang="en">ROCm is developed and distributed across many GitHub repositories. Since roughly 2023–2024, a consolidation into umbrella repos like <strong>TheRock</strong> and <strong>rocm-libraries</strong> has been underway.</p>
 
+  <div class="highlight-box">
+    <span data-lang="ja"><strong>まずは全部覚えなくて大丈夫です。</strong> このページでは名前の多さに圧倒されやすいですが、最初は <strong>上: アプリ</strong>、<strong>中: 計算ライブラリ</strong>、<strong>下: ランタイムとドライバ</strong>、<strong>いちばん下: GPU 本体</strong> の4段だけ追えば十分です。</span>
+    <span data-lang="en"><strong>You do not need to memorise every name here.</strong> The list can feel overwhelming. At first, just track four layers: <strong>top: apps</strong>, <strong>middle: compute libraries</strong>, <strong>below that: runtime and driver</strong>, and <strong>bottom: the GPU itself</strong>.</span>
+  </div>
+
   <div class="diagram-box">
     <div class="mermaid">
 flowchart TD
@@ -303,8 +308,8 @@ flowchart TD
       <span class="badge-repo hw" data-lang="ja">ランタイム</span>
       <span class="badge-repo hw" data-lang="en">Runtime</span>
       <h4>ROCr / HIP runtime</h4>
-      <p data-lang="ja">カーネル起動・メモリ管理・GPU検出を担う最下位レイヤ。HSA APIをGPUドライバに橋渡しする。</p>
-      <p data-lang="en">The lowest layer: kernel launch, memory management, GPU detection. Bridges HSA API to the GPU driver.</p>
+      <p data-lang="ja">GPU に仕事を送り出す受付係。メモリ確保、計算開始、GPU 検出などを担当し、上のソフトとドライバのあいだをつなぐ。</p>
+      <p data-lang="en">The reception desk that sends work to the GPU. Handles memory allocation, launching computation, and GPU detection, connecting upper software to the driver.</p>
     </div>
   </div>
 
@@ -315,6 +320,11 @@ flowchart TD
   <h2 class="section-title" data-lang="en">2. Software stack execution flow</h2>
   <p class="section-lead" data-lang="ja">ユーザーコード（PyTorch 等）から GPU 実行まで、データがどのレイヤを経由するかを示します。</p>
   <p class="section-lead" data-lang="en">Shows the layers a computation passes through from user code (e.g. PyTorch) down to GPU execution.</p>
+
+  <div class="highlight-box">
+    <span data-lang="ja"><strong>この図の読み方:</strong> <strong>solver</strong> は「計算のやり方の候補」、<strong>fallback</strong> は「速い道が使えないときの予備ルート」です。<strong>HSA</strong> は、GPU に仕事を並べて渡すための土台、くらいの理解で十分です。</span>
+    <span data-lang="en"><strong>How to read this diagram:</strong> a <strong>solver</strong> is one candidate way to do the computation, a <strong>fallback</strong> is the backup route when the fast path is unavailable, and <strong>HSA</strong> can be thought of simply as the underlying system for queuing work to the GPU.</span>
+  </div>
 
   <div class="diagram-box">
     <div class="mermaid">
@@ -370,8 +380,8 @@ flowchart TD
   <p class="section-lead" data-lang="en">gfx900 (the Vega / RX Vega generation) is handled differently at each layer of the ROCm stack.</p>
 
   <div class="highlight-box">
-    <span data-lang="ja"><strong>ポイント：</strong> gfx900 は「公式にサポートされていない」GPUですが、コードベース上では能力ベースのフォールバック設計によりほとんどのパスが機能し続けています。完全削除ではなく、<strong>段階的な後退 (staged retreat)</strong> がとられています。</span>
-    <span data-lang="en"><strong>Key point:</strong> gfx900 is not "officially supported," yet capability-based fallback design in the codebase means most paths keep working. Rather than full removal, a <strong>staged retreat</strong> is in place.</span>
+    <span data-lang="ja"><strong>ポイント：</strong> gfx900 は「公式にサポートされていない」GPUですが、コードベース上では能力ベースのフォールバック設計により多くのパスが機能し続けています。完全削除ではなく、<strong>少しずつ速い道や新しい道が減っていく形</strong>です。</span>
+    <span data-lang="en"><strong>Key point:</strong> gfx900 is not "officially supported," yet capability-based fallback design in the codebase keeps many paths alive. Rather than a hard removal, support has faded by <strong>gradually losing newer and faster routes</strong>.</span>
   </div>
 
   <div class="diagram-box">

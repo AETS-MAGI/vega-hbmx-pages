@@ -177,15 +177,15 @@
 		<div class="prose">
 			<p data-lang="ja"><strong>rocBLAS</strong> → ステップ2担当。行列のかけ算を超高速でやる専門家。</p>
 			<p data-lang="en"><strong>rocBLAS</strong> → Handles Step 2. The specialist that performs matrix multiplication at blazing speed.</p>
-			<p data-lang="ja"><strong>MIOpen</strong> → ステップ3担当。畳み込みと活性化の達人。GPU ごとにいちばん速い方法（solver）を選んでくれる。</p>
-			<p data-lang="en"><strong>MIOpen</strong> → Handles Step 3. The convolution and activation expert. Picks the fastest method (solver) for each GPU.</p>
+			<p data-lang="ja"><strong>MIOpen</strong> → ステップ3担当。畳み込みと活性化の達人。GPU ごとにいちばん速い方法（solver = 計算のやり方）を選んでくれる。</p>
+			<p data-lang="en"><strong>MIOpen</strong> → Handles Step 3. The convolution and activation expert. Picks the fastest method (solver = one way of doing the computation) for each GPU.</p>
 			<p data-lang="ja"><strong>HIP ランタイム</strong> → 工場全体の管理者。GPU にメモリを確保したり、計算命令を送ったりする裏方。</p>
 			<p data-lang="en"><strong>HIP Runtime</strong> → The factory manager. Allocates GPU memory, sends computation commands — the behind-the-scenes coordinator.</p>
 		</div>
 
 		<div class="highlight">
-			<span data-lang="ja">gfx900 で推論するとき、ステップ2・3の中で「使える solver」「使えない solver」が分かれます。使えないときは <a href="fallback-explained.html" style="color:var(--purple);">fallback 経路</a> で代替されます。</span>
-			<span data-lang="en">When running inference on gfx900, Steps 2 and 3 may have some solvers available and others not. When unavailable, <a href="fallback-explained.html" style="color:var(--purple);">fallback paths</a> take over.</span>
+			<span data-lang="ja">gfx900 で推論するとき、ステップ2・3の中で「使える solver」「使えない solver」が分かれます。使えないときは <a href="fallback-explained.html" style="color:var(--purple);">fallback 経路</a>、つまり予備の少し遅い道で代替されます。</span>
+			<span data-lang="en">When running inference on gfx900, Steps 2 and 3 may have some solvers available and others not. When unavailable, <a href="fallback-explained.html" style="color:var(--purple);">fallback paths</a> — slower backup routes — take over.</span>
 		</div>
 
 		<!-- ──────── 次に読むなら ──────── -->

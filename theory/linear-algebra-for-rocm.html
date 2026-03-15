@@ -482,7 +482,7 @@ flowchart LR
   <h2 class="section-title" data-lang="en">How does this connect to gfx900?</h2>
 
   <div class="prose">
-    <p data-lang="ja">gfx900 は Vega 世代（2017年）の GPU です。最近の GPU が持っている行列演算の専用命令（xdlops / dot4）を持っていません。</p>
+    <p data-lang="ja">gfx900 は Vega 世代（2017年）の GPU です。最近の GPU が持っている、行列計算を一気に速くする専用命令の一部を持っていません。名前で言うと xdlops や dot4 です。</p>
     <p data-lang="en">gfx900 is the Vega-generation GPU from 2017. It does not have the dedicated matrix arithmetic instructions (xdlops / dot4) that newer GPUs have.</p>
     <p data-lang="ja">そのため、最新の高速パスは使えませんが、ROCm の「能力確認＋フォールバック」設計により、<strong>汎用的な行列計算は今もちゃんと動きます</strong>。rocBLAS には gfx900 向けにコンパイル済みの行列カーネルが 128 本収録されており、ROCm 7.2 に同梱されています。</p>
     <p data-lang="en">The newest fast paths are therefore unavailable, but thanks to ROCm's "capability check + fallback" design, <strong>general-purpose matrix computation still works correctly</strong>. rocBLAS ships 128 pre-compiled matrix kernels for gfx900 with ROCm 7.2.</p>
@@ -491,8 +491,8 @@ flowchart LR
   <div class="analogy">
     <strong data-lang="ja">たとえるなら：</strong>
     <strong data-lang="en">Analogy:</strong>
-    <p data-lang="ja" style="margin:6px 0 0;">最新の工場には「超高速の専用機械」がありますが、gfx900 にはありません。でも「汎用の手順」で同じ仕事はできます。少し遅くなりますが、結果は正しく出ます。これが「staged retreat（段階的後退）」の意味です。</p>
-    <p data-lang="en" style="margin:6px 0 0;">The newest factories have ultra-fast specialized machines that gfx900 lacks. But the work can still be done using general-purpose methods — somewhat slower, but with correct results. This is what "staged retreat" means.</p>
+    <p data-lang="ja" style="margin:6px 0 0;">最新の工場には「超高速の専用機械」がありますが、gfx900 にはありません。でも「汎用の手順」で同じ仕事はできます。少し遅くなりますが、結果は正しく出ます。つまり <strong>新しい近道は減っても、基本の道はまだ残っている</strong> ということです。</p>
+    <p data-lang="en" style="margin:6px 0 0;">The newest factories have ultra-fast specialized machines that gfx900 lacks. But the work can still be done using general-purpose methods — somewhat slower, but with correct results. In other words, <strong>some newer shortcuts disappear, but the basic road still remains</strong>.</p>
   </div>
 
   <!-- まとめ -->

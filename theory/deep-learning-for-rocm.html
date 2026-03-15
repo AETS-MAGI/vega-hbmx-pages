@@ -663,6 +663,11 @@ flowchart LR
     <p data-lang="en">Even for the same "convolution," the fastest computation method varies depending on the <strong>GPU generation, instruction set, input shape, and data type</strong>. MIOpen registers a solver for each case and checks "can this solver run on this GPU with this input?" (<code>IsApplicable()</code>) before selecting the best one.</p>
   </div>
 
+  <div class="highlight">
+    <span data-lang="ja"><strong>ここでの言葉の意味:</strong> <strong>solver</strong> は「計算のやり方」、<strong>IsApplicable()</strong> は「そのやり方が今の GPU と入力条件で使えるかを調べる確認」です。名前は少し難しいですが、やっていることは「使える方法の中から、いちばん良さそうなものを選ぶ」だけです。</span>
+    <span data-lang="en"><strong>What these terms mean here:</strong> a <strong>solver</strong> is simply "one way to do the computation," and <strong>IsApplicable()</strong> is the check that asks "can this method run on this GPU with this input?" The names are technical, but the idea is just "pick the best usable method."</span>
+  </div>
+
   <div class="analogy">
     <strong data-lang="ja">たとえるなら：</strong>
     <strong data-lang="en">Analogy:</strong>
@@ -737,10 +742,17 @@ flowchart LR
   <h2 class="section-title" data-lang="en">What works on gfx900 and what is hard?</h2>
 
   <div class="prose">
-    <p data-lang="ja">gfx900（Vega 世代）は 2017 年の GPU です。xdlops（行列演算専用命令）も dot4（INT8 向け積和命令）も持っていません。</p>
+    <p data-lang="ja">gfx900（Vega 世代）は 2017 年の GPU です。最近の GPU にある「行列計算のための専用の近道」の一部を持っていません。名前で言うと xdlops や dot4 です。</p>
     <p data-lang="en">gfx900 (Vega generation) is a 2017 GPU. It has neither xdlops (dedicated matrix instructions) nor dot4 (INT8 multiply-accumulate).</p>
     <p data-lang="ja">そのため、MLIR iGEMM と XDLops 系の solver は使えません。しかし Winograd / ASM v4r1 は今も動作し、MIOpen の Naive solver は常に利用できます。また、Perf DB（性能チューニング済みパラメータ集）に gfx900 向けの 169,182 行のエントリが ROCm 7.2 に収録されており、これが動作を支えています。</p>
     <p data-lang="en">As a result, MLIR iGEMM and XDLops solvers are unavailable. But Winograd and ASM v4r1 still work, and the Naive solver is always available. The Perf DB (pre-tuned parameter database) also ships 169,182 gfx900 entries in ROCm 7.2, which underpins continued operation.</p>
+  </div>
+
+  <div class="fact-box">
+    <strong data-lang="ja">💡 ここはこう読めば十分:</strong>
+    <strong data-lang="en">💡 The simple reading is enough:</strong>
+    <span data-lang="ja">「最新の速い道の一部は使えない。でも古い道と予備の道が残っているので、まだ計算できる」と理解できれば OK です。Perf DB の大きな数字は、「事前に調整された設定がまだたくさん残っている」という意味で見れば十分です。</span>
+    <span data-lang="en">It is enough to understand this as: "some of the newest fast paths are unavailable, but older paths and backup paths remain, so computation still works." The large Perf DB number mainly means "many pre-tuned settings are still kept."</span>
   </div>
 
   <div class="diagram-box">

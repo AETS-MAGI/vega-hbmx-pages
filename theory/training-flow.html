@@ -363,8 +363,8 @@
 				<div class="step-body">
 					<h4 data-lang="ja">MIOpen — 畳み込み・活性化関数</h4>
 					<h4 data-lang="en">MIOpen — Convolution & Activation</h4>
-					<p data-lang="ja">ステップ2で畳み込みや活性化を実行し、ステップ4（バックプロパゲーション）では勾配計算用の畳み込みも担当します。GPU ごとに最速の solver を選んでくれます。</p>
-					<p data-lang="en">Runs convolution and activation in Step 2, and also handles gradient convolutions in Step 4 (backpropagation). Selects the fastest solver for each GPU.</p>
+					<p data-lang="ja">ステップ2で畳み込みや活性化を実行し、ステップ4（バックプロパゲーション）では勾配計算用の畳み込みも担当します。GPU ごとに最速の solver（計算のやり方）を選んでくれます。</p>
+					<p data-lang="en">Runs convolution and activation in Step 2, and also handles gradient convolutions in Step 4 (backpropagation). Selects the fastest solver (way of doing the computation) for each GPU.</p>
 				</div>
 			</div>
 			<div class="flow-step">
@@ -390,8 +390,8 @@
 		<div class="warn-box">
 			<strong data-lang="ja">⚠️ gfx900（Vega）での学習:</strong>
 			<strong data-lang="en">⚠️ Training on gfx900 (Vega):</strong>
-			<span data-lang="ja">学習は推論より計算量・メモリ使用量が大きいため、VRAM 8 GB の Vega 56/64 では大規模モデルの学習は現実的ではありません。ただし、小規模モデルのファインチューニングや実験レベルの学習は動作可能です。gfx900 で使える solver が限られる点は <a href="fallback-explained.html" style="color:var(--train);font-weight:600;">fallback 解説ページ</a>を参照してください。</span>
-			<span data-lang="en">Training demands more compute and memory than inference, so large-model training is impractical on Vega 56/64 with 8 GB VRAM. However, fine-tuning small models or running experiments is feasible. For solver limitations on gfx900, see the <a href="fallback-explained.html" style="color:var(--train);font-weight:600;">fallback explanation page</a>.</span>
+			<span data-lang="ja">学習は推論より計算量・メモリ使用量が大きいため、VRAM 8 GB の Vega 56/64 では大規模モデルの学習は現実的ではありません。ただし、小規模モデルのファインチューニングや実験レベルの学習は動作可能です。gfx900 で使える solver が限られる点は <a href="fallback-explained.html" style="color:var(--train);font-weight:600;">fallback 解説ページ</a>、つまり予備の少し遅い道の説明を参照してください。</span>
+			<span data-lang="en">Training demands more compute and memory than inference, so large-model training is impractical on Vega 56/64 with 8 GB VRAM. However, fine-tuning small models or running experiments is feasible. For solver limitations on gfx900, see the <a href="fallback-explained.html" style="color:var(--train);font-weight:600;">fallback explanation page</a>, which explains the slower backup routes.</span>
 		</div>
 
 		<!-- ──────── 他ページへの接続 ──────── -->
