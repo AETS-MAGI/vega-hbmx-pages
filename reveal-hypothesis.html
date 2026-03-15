@@ -712,6 +712,32 @@ flowchart LR
         <span data-lang="ja"><strong>2026-03-15 の補足:</strong> public PR / issue 文脈まで含めると、<code>#1231</code> は community user が踏んだ実害を userspace workaround で吸収した例、<code>#1328</code> は private root cause を抱えたまま ROCm 5.1 の MLIR release/tuning surface から <code>gfx900</code> を外した例として読める。</span>
         <span data-lang="en"><strong>2026-03-15 addendum:</strong> Once the public PR/issue context is added back in, <code>#1231</code> reads as a userspace workaround for a failure hit by community users, while <code>#1328</code> reads as a ROCm 5.1 MLIR release/tuning-surface removal that still rests on a private root cause.</span>
       </div>
+
+      <!-- Revealed Design Model — Structure Diagram -->
+      <div class="mermaid">
+mindmap
+  root((ROCm Design Model<br/>revealed by gfx900))
+    Stack Structure
+      Layered open stack
+      Build ≠ runtime ≠ support matrix ≠ driver
+      Targets drift per component
+    Selection & Fallback
+      Capability-based selection
+      Multi-stage runtime fallback
+      Build knobs unifying
+    Legacy Lifecycle
+      Staged retreat, not instant death
+      Deprecated repos keep legacy knowledge
+      Public workaround + private gating coexist
+    Ownership Layers
+      Insertion ≠ maintenance ≠ operation ≠ repair
+      ::icon(fa fa-users)
+    Shipped Artifacts **NEW**
+      Unsupported arch ships more artifacts
+      Build pipeline includes gfx900
+      ::icon(fa fa-box)
+      </div>
+
       <ol>
         <li data-lang="ja">ROCm は layered open stack として自己定義されている。</li>
         <li data-lang="en">ROCm defines itself as a layered open stack.</li>
