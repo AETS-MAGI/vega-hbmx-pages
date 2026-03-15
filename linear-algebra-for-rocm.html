@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/mermaid-layout.css">
   <title>イメージでわかる線形代数 / Visual Linear Algebra | vega-hbmx-pages</title>
   <style>
     :root {
@@ -142,8 +143,6 @@
       overflow-x: auto;
     }
     .diagram-caption { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
-    .mermaid { display: flex; justify-content: center; }
-    .mermaid svg { width: 100% !important; min-width: 560px; height: auto !important; }
 
     /* next-page link */
     .next-card {
@@ -185,14 +184,8 @@
     }
   </style>
   <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({
-      startOnLoad: true, useMaxWidth: false,
-      flowchart: { useMaxWidth: false, nodeSpacing: 30, rankSpacing: 40, curve: 'basis' },
-      timeline: { useMaxWidth: false },
-      theme: 'base',
-      themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' }
-    });
+    import { initMermaidPage } from './scripts/mermaid-page.js';
+    initMermaidPage();
   </script>
 </head>
 <body>
@@ -267,8 +260,8 @@
   <div class="prose">
     <p data-lang="ja">ベクトルは、<strong>数字を一列にならべたもの</strong>です。</p>
     <p data-lang="en">A vector is simply <strong>a row of numbers</strong>.</p>
-    <p data-lang="ja">たとえば、ある生徒のテスト結果を「国語80・数学70・英語90」とするとき、これを <code>[80, 70, 90]</code> と書きます。これがひとつのベクトルです。</p>
-    <p data-lang="en">For example, a student's test scores — Japanese 80, Math 70, English 90 — can be written as <code>[80, 70, 90]</code>. That is one vector.</p>
+    <p data-lang="ja">たとえば、ある生徒のテスト結果を「国語80・数学70・英語90」とするとき、これを $\mathbf{x} = \begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}$ と書きます。これがひとつのベクトルです。</p>
+    <p data-lang="en">For example, a student's test scores — Japanese 80, Math 70, English 90 — can be written as $\mathbf{x} = \begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}$. That is one vector.</p>
     <p data-lang="ja">AI の世界では、画像・音・文章の特徴も最終的には数字の並びとして扱います。ベクトルはその基本単位です。</p>
     <p data-lang="en">In AI, the features of images, sounds, and text are all ultimately treated as rows of numbers. The vector is the basic building block.</p>
   </div>
@@ -280,8 +273,8 @@
   <div class="prose">
     <p data-lang="ja">行列は、<strong>数字を表の形にしたもの</strong>です。ただの数の羅列ではなく、「変換のルールを書いた表」として使います。</p>
     <p data-lang="en">A matrix is <strong>numbers arranged in a table</strong>. Think of it not as a random collection of numbers, but as a table of transformation rules.</p>
-    <p data-lang="ja">たとえば、テストの点数に「各科目の重み」をかけて「文系評価」と「理系評価」を出すとき、その重みの組み合わせが行列になります。</p>
-    <p data-lang="en">For example, if you weight test scores differently to produce a "humanities score" and a "science score," those weighting combinations form a matrix.</p>
+    <p data-lang="ja">たとえば、テストの点数に「各科目の重み」をかけて「文系評価」と「理系評価」を出すとき、その重みの組み合わせが行列 $W$ になります。</p>
+    <p data-lang="en">For example, if you weight test scores differently to produce a &ldquo;humanities score&rdquo; and a &ldquo;science score,&rdquo; those weighting combinations form a matrix $W$.</p>
   </div>
 
   <div class="analogy">
@@ -306,34 +299,42 @@
   <p class="section-lead" data-lang="ja">「行列をかける」とは、入力の数字の並びを別の形に変えることです。</p>
   <p class="section-lead" data-lang="en">Multiplying by a matrix means changing one arrangement of numbers into a different arrangement.</p>
 
-  <div class="vm-visual">
-    <div class="vm-box">
-      <div class="label" data-lang="ja">入力ベクトル</div>
-      <div class="label" data-lang="en">Input vector</div>
-      <div class="value">[80]
-[70]
-[90]</div>
+  <div class="prose" style="text-align:center;overflow-x:auto;">
+    <div data-lang="ja">
+      $$\underbrace{\begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}}_{\text{入力ベクトル } \mathbf{x}}
+      \;\longrightarrow\;
+      \underbrace{\begin{pmatrix} 0.5 & 0.1 \\ 0.2 & 0.7 \\ 0.3 & 0.2 \end{pmatrix}^{\!\mathsf{T}}}_{\text{変換行列 } W^\mathsf{T}}
+      \mathbf{x}
+      \;=\;
+      \underbrace{\begin{pmatrix} 81 \\ 75 \end{pmatrix}}_{\text{出力ベクトル } \mathbf{y}}$$
     </div>
-    <div class="vm-arrow">×</div>
-    <div class="vm-box matrix">
-      <div class="label" data-lang="ja">行列（変換ルール）</div>
-      <div class="label" data-lang="en">Matrix (rules)</div>
-      <div class="value">0.5  0.1
-0.2  0.7
-0.3  0.2</div>
-    </div>
-    <div class="vm-arrow">=</div>
-    <div class="vm-box result">
-      <div class="label" data-lang="ja">出力ベクトル</div>
-      <div class="label" data-lang="en">Output vector</div>
-      <div class="value">[79]
-[75]</div>
+    <div data-lang="en">
+      $$\underbrace{\begin{pmatrix} 80 \\ 70 \\ 90 \end{pmatrix}}_{\text{Input vector } \mathbf{x}}
+      \;\longrightarrow\;
+      \underbrace{\begin{pmatrix} 0.5 & 0.1 \\ 0.2 & 0.7 \\ 0.3 & 0.2 \end{pmatrix}^{\!\mathsf{T}}}_{\text{Transform matrix } W^\mathsf{T}}
+      \mathbf{x}
+      \;=\;
+      \underbrace{\begin{pmatrix} 81 \\ 75 \end{pmatrix}}_{\text{Output vector } \mathbf{y}}$$
     </div>
   </div>
-  <p style="font-size:13px;color:var(--muted);margin:-8px 0 20px;">
-    <span data-lang="ja">3つの点数が「文系寄り評価 79」「理系寄り評価 75」に変換された。同じ入力でも行列が変われば結果が変わる。</span>
-    <span data-lang="en">Three scores transformed into "humanities-leaning 79" and "science-leaning 75." Change the matrix and the output changes, even with the same input.</span>
-  </p>
+
+  <!-- 計算過程 -->
+  <div class="prose">
+    <h3 data-lang="ja">計算のしくみ</h3>
+    <h3 data-lang="en">How the computation works</h3>
+    <div data-lang="ja">
+      <p>各科目の点数に重みをかけて合計します。</p>
+      $$y_1 = 0.5 \times 80 + 0.2 \times 70 + 0.3 \times 90 = 40 + 14 + 27 = \mathbf{81} \;\text{（文系寄り評価）}$$
+      $$y_2 = 0.1 \times 80 + 0.7 \times 70 + 0.2 \times 90 = 8 + 49 + 18 = \mathbf{75} \;\text{（理系寄り評価）}$$
+      <p>同じ入力でも、行列（重みの組み合わせ）が変われば結果が変わります。</p>
+    </div>
+    <div data-lang="en">
+      <p>Multiply each score by its weight and sum them up.</p>
+      $$y_1 = 0.5 \times 80 + 0.2 \times 70 + 0.3 \times 90 = 40 + 14 + 27 = \mathbf{81} \;\text{(humanities-leaning)}$$
+      $$y_2 = 0.1 \times 80 + 0.7 \times 70 + 0.2 \times 90 = 8 + 49 + 18 = \mathbf{75} \;\text{(science-leaning)}$$
+      <p>Change the matrix (the weighting), and the output changes even with the same input.</p>
+    </div>
+  </div>
 
   <!-- AI との関係 -->
   <h2 class="section-title" data-lang="ja">なんで AI で大事なの？</h2>
@@ -397,8 +398,8 @@ flowchart LR
   </div>
 
   <div class="highlight">
-    <span data-lang="ja">行列 A（1000×1000）と行列 B（1000×1000）をかけるには、約 10 億回の掛け算と足し算が必要です。GPU はこれを並列で一気に処理します。</span>
-    <span data-lang="en">Multiplying a 1000×1000 matrix by another 1000×1000 matrix requires roughly one billion multiplications and additions. A GPU processes these in parallel all at once.</span>
+    <span data-lang="ja">行列 $A$（$1000 \times 1000$）と行列 $B$（$1000 \times 1000$）をかけるには、約 $10^9$（10億）回の掛け算と足し算が必要です。GPU はこれを並列で一気に処理します。</span>
+    <span data-lang="en">Multiplying a $1000 \times 1000$ matrix $A$ by another $1000 \times 1000$ matrix $B$ requires roughly $10^9$ (one billion) multiply-add operations. A GPU processes these in parallel all at once.</span>
   </div>
 
   <!-- rocBLAS -->
@@ -408,8 +409,8 @@ flowchart LR
   <div class="prose">
     <p data-lang="ja"><strong>BLAS</strong>（Basic Linear Algebra Subprograms）は、ベクトルや行列の基本計算をまとめた「関数の仕様セット」です。何十年も前から使われてきた標準です。</p>
     <p data-lang="en"><strong>BLAS</strong> (Basic Linear Algebra Subprograms) is a set of standard function interfaces for vector and matrix arithmetic that has been in use for decades.</p>
-    <p data-lang="ja"><strong>rocBLAS</strong> は、その AMD GPU 向け実装です。「行列×行列」「行列×ベクトル」などの計算を、GPU の能力を最大限に活かして高速に実行します。</p>
-    <p data-lang="en"><strong>rocBLAS</strong> is AMD's GPU implementation of those interfaces. It runs "matrix × matrix" and "matrix × vector" computations at full GPU speed.</p>
+    <p data-lang="ja"><strong>rocBLAS</strong> は、その AMD GPU 向け実装です。$C = \alpha A B + \beta C$（GEMM = General Matrix Multiply）のような行列演算を、GPU の能力を最大限に活かして高速に実行します。</p>
+    <p data-lang="en"><strong>rocBLAS</strong> is AMD's GPU implementation of those interfaces. It runs operations like $C = \alpha A B + \beta C$ (GEMM = General Matrix Multiply) at full GPU speed.</p>
     <p data-lang="ja">PyTorch や TensorFlow などの AI フレームワークは、内部で rocBLAS を呼び出してこの計算をこなしています。</p>
     <p data-lang="en">AI frameworks like PyTorch and TensorFlow call rocBLAS internally to handle this computation.</p>
   </div>

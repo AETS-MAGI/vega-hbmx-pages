@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>イメージでわかる深層学習 / Visual Deep Learning | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --navy: #0B3C5D;
+      --teal: #00796B;
+      --amber: #C56A00;
+      --red: #B71C1C;
+      --blue: #1565C0;
+      --green: #2E7D32;
+      --purple: #5B4B8A;
+      --ink: #1F2933;
+      --muted: #5F6C7B;
+      --line: #D8E0E8;
+      --bg: #F5F8FB;
+      --card: #FFFFFF;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top right, rgba(21,101,192,0.08), transparent 28%),
+        radial-gradient(circle at bottom left, rgba(91,75,138,0.07), transparent 26%),
+        var(--bg);
+    }
+    .page { max-width: 900px; margin: 0 auto; padding: 32px 24px 60px; }
+
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 18px;
+    }
+    .home-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      text-decoration: none; color: var(--navy); font-size: 14px; font-weight: 600;
+    }
+    .home-link:hover { text-decoration: underline; }
+    .lang-btn {
+      padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 2px solid var(--navy); background: transparent;
+      color: var(--navy); transition: all 0.2s;
+    }
+    .lang-btn.active { background: var(--navy); color: #fff; }
+
+    .hero {
+      background: linear-gradient(135deg, #1A237E 0%, #283593 55%, #3949AB 100%);
+      color: #fff; border-radius: 16px; padding: 40px 36px 32px; margin-bottom: 32px;
+    }
+    .hero h1 { margin: 0 0 10px; font-size: 28px; font-weight: 700; line-height: 1.3; }
+    .hero .subtitle { margin: 0 0 14px; font-size: 16px; opacity: 0.82; }
+    .hero p { margin: 0; font-size: 16px; opacity: 0.9; line-height: 1.65; }
+
+    .section-title {
+      font-size: 21px; font-weight: 700; color: var(--navy);
+      border-left: 5px solid var(--blue); padding-left: 14px;
+      margin: 44px 0 8px;
+    }
+    .section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.6; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 12px; margin-bottom: 8px;
+    }
+    .summary-item {
+      background: var(--card); border: 1px solid var(--line);
+      border-top: 4px solid var(--blue);
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .summary-item .icon { font-size: 22px; margin-bottom: 6px; }
+    .summary-item strong { display: block; font-size: 14px; color: var(--navy); margin-bottom: 4px; }
+    .summary-item p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .prose {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 22px 24px; margin-bottom: 18px;
+      font-size: 16px; line-height: 1.75;
+    }
+    .prose p { margin: 0 0 12px; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .analogy {
+      background: #FFF8E1; border-left: 5px solid var(--amber);
+      border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+      font-size: 15px; line-height: 1.65;
+    }
+    .analogy strong { color: var(--amber); }
+
+    .highlight {
+      background: #EDE7F6; border-left: 5px solid var(--purple);
+      border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+      font-size: 15px; line-height: 1.65;
+    }
+
+    .fact-box {
+      background: #E8F5E9; border-left: 5px solid var(--green);
+      border-radius: 10px; padding: 16px 20px; margin: 16px 0;
+      font-size: 15px; line-height: 1.65;
+    }
+    .fact-box strong { color: var(--green); }
+
+    /* conv visual */
+    .conv-visual {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 20px 24px; margin-bottom: 18px;
+    }
+    .conv-box {
+      border-radius: 8px; padding: 10px 14px; text-align: center; min-width: 90px;
+    }
+    .conv-box .label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .conv-box .val { font-size: 18px; }
+    .conv-box.input  { background: #E8F5E9; border: 2px solid var(--green); }
+    .conv-box.filter { background: #FFF3E0; border: 2px solid var(--amber); }
+    .conv-box.feat   { background: #E3F2FD; border: 2px solid var(--blue); }
+    .conv-box.judge  { background: #EDE7F6; border: 2px solid var(--purple); }
+    .conv-arr { font-size: 22px; color: var(--muted); }
+
+    /* solver table */
+    .solver-table {
+      width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 8px;
+    }
+    .solver-table th {
+      background: var(--navy); color: #fff; padding: 8px 12px; text-align: left;
+    }
+    .solver-table td { padding: 8px 12px; border-bottom: 1px solid var(--line); }
+    .solver-table tr:last-child td { border-bottom: none; }
+    .solver-table tr:nth-child(even) td { background: #f5f8fb; }
+    .tick   { color: var(--green); font-weight: 700; }
+    .cross  { color: var(--red); font-weight: 700; }
+    .partial { color: var(--amber); font-weight: 700; }
+
+    /* diagram */
+    .diagram-box {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 20px 16px; margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .diagram-caption { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
+    .mermaid { display: flex; justify-content: center; }
+    .mermaid svg { width: 100% !important; min-width: 560px; height: auto !important; }
+
+    /* prev/next */
+    .nav-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; }
+    .nav-card {
+      border-radius: 12px; padding: 20px 22px; text-decoration: none; color: #fff;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .nav-card.prev { background: linear-gradient(135deg, #004D40, #00796B); }
+    .nav-card.next { background: linear-gradient(135deg, #4A148C, #7B1FA2); }
+    .nav-card .nav-label { font-size: 12px; opacity: 0.75; }
+    .nav-card .nav-title { font-size: 15px; font-weight: 700; }
+
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] li[data-lang="en"],
+    html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"],
+    html[data-language="en"] h3[data-lang="en"],
+    html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+    @media (max-width: 680px) {
+      .hero { padding: 26px 20px 22px; }
+      .hero h1 { font-size: 22px; }
+      .nav-cards { grid-template-columns: 1fr; }
+      .conv-visual { flex-direction: column; align-items: flex-start; }
+      .conv-arr { transform: rotate(90deg); align-self: center; }
+    }
+  </style>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: true, useMaxWidth: false,
+      flowchart: { useMaxWidth: false, nodeSpacing: 30, rankSpacing: 40, curve: 'basis' },
+      theme: 'base',
+      themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' }
+    });
+  </script>
+</head>
+<body>
+<div class="page">
+
+  <div class="toolbar">
+    <a class="home-link" href="index.html">&#8592; <span data-lang="ja">トップへ</span><span data-lang="en">Back to index</span></a>
+    <div style="display:flex;gap:6px;">
+      <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+      <button id="btn-en" class="lang-btn" type="button">EN</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <p class="subtitle" data-lang="ja">MIOpen につながるやさしい入門</p>
+    <p class="subtitle" data-lang="en">A gentle introduction connected to MIOpen</p>
+    <h1 data-lang="ja">イメージでわかる深層学習</h1>
+    <h1 data-lang="en">Visual Deep Learning</h1>
+    <p data-lang="ja">「AI が画像を認識する」とき、内部では何が起きているのでしょうか。このページでは、<strong>ニューラルネット・畳み込み・フィルタ</strong> をイメージで説明し、そこから <strong>MIOpen</strong> が何をしているのか、なぜ solver が複数存在するのかをつなげます。</p>
+    <p data-lang="en">What actually happens inside AI when it recognises an image? This page explains <strong>neural networks, convolution, and filters</strong> through images and analogies, then connects them to what <strong>MIOpen</strong> does and why multiple solvers exist.</p>
+  </section>
+
+  <!-- まずこれだけ -->
+  <h2 class="section-title" data-lang="ja">まずこれだけ</h2>
+  <h2 class="section-title" data-lang="en">The essentials</h2>
+
+  <div class="summary-grid">
+    <div class="summary-item">
+      <div class="icon">🧠</div>
+      <strong data-lang="ja">ニューラルネット</strong>
+      <strong data-lang="en">Neural network</strong>
+      <p data-lang="ja">行列変換を何層も重ねた仕組み</p>
+      <p data-lang="en">Many layers of matrix transforms stacked together</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">🔍</div>
+      <strong data-lang="ja">畳み込み</strong>
+      <strong data-lang="en">Convolution</strong>
+      <p data-lang="ja">小さい窓で画像をなぞって特徴を探す</p>
+      <p data-lang="en">Scanning an image with a small window to find features</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">🪟</div>
+      <strong data-lang="ja">フィルタ（カーネル）</strong>
+      <strong data-lang="en">Filter (kernel)</strong>
+      <p data-lang="ja">「どんな特徴を探すか」を決める小さな行列</p>
+      <p data-lang="en">A small matrix that decides what feature to look for</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">⚙️</div>
+      <strong data-lang="ja">MIOpen</strong>
+      <strong data-lang="en">MIOpen</strong>
+      <p data-lang="ja">AMD GPU で畳み込みを担当するライブラリ</p>
+      <p data-lang="en">The library that handles convolution on AMD GPUs</p>
+    </div>
+    <div class="summary-item">
+      <div class="icon">🗂️</div>
+      <strong data-lang="ja">Solver</strong>
+      <strong data-lang="en">Solver</strong>
+      <p data-lang="ja">GPU の能力に合った計算手順を選ぶ仕組み</p>
+      <p data-lang="en">A mechanism that picks the right computation method for each GPU</p>
+    </div>
+  </div>
+
+  <!-- ニューラルネット -->
+  <h2 class="section-title" data-lang="ja">ニューラルネットってなに？</h2>
+  <h2 class="section-title" data-lang="en">What is a neural network?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">前のページ（線形代数）で、<strong>行列をかける＝数字の並びを変換する</strong>ことを説明しました。ニューラルネットワーク（Neural Network / NN）は、この変換を何層も重ねた仕組みです。</p>
+    <p data-lang="en">The previous page (linear algebra) showed that <strong>multiplying by a matrix = transforming a row of numbers</strong>. A neural network simply stacks many such transformations in layers.</p>
+    <p data-lang="ja">各層では「変換＋非線形な絞り込み」をおこない、それを繰り返すことで、最初はただの数字の集まりだったデータが、最終的に「これは猫」「これは犬」という判断に変わります。</p>
+    <p data-lang="en">Each layer applies a transform followed by a non-linear squeeze, and repeating this turns a raw collection of numbers into a judgment like "this is a cat" or "this is a dog."</p>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    IN["入力\n(ピクセル値)"]
+    L1["層 1\n行列変換\n+ 絞り込み"]
+    L2["層 2\n行列変換\n+ 絞り込み"]
+    LN["層 N\n行列変換\n+ 絞り込み"]
+    OUT["出力\n(猫 / 犬 / …)"]
+    IN --> L1 --> L2 --> LN --> OUT
+    style IN fill:#E8F5E9,stroke:#2E7D32
+    style L1 fill:#E3F2FD,stroke:#1565C0
+    style L2 fill:#E3F2FD,stroke:#1565C0
+    style LN fill:#E3F2FD,stroke:#1565C0
+    style OUT fill:#EDE7F6,stroke:#5B4B8A
+    </div>
+    <p class="diagram-caption" data-lang="ja">層を重ねるほど「抽象的な特徴」を扱えるようになる</p>
+    <p class="diagram-caption" data-lang="en">Deeper layers handle increasingly abstract features</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">たとえるなら：</strong>
+    <strong data-lang="en">Analogy:</strong>
+    <p data-lang="ja" style="margin:6px 0 0;">漢字を読むとき、最初は「線の組み合わせ」に見えます。次第に「部首」として認識し、最終的に「この字は"山"だ」とわかります。ニューラルネットはこの過程を数値で行います。</p>
+    <p data-lang="en" style="margin:6px 0 0;">When learning to read kanji, you first see "combinations of lines," then recognise radicals, then finally know "this character means mountain." A neural network performs exactly this progression with numbers.</p>
+  </div>
+
+  <!-- 畳み込み -->
+  <h2 class="section-title" data-lang="ja">畳み込みってなに？</h2>
+  <h2 class="section-title" data-lang="en">What is convolution?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">全結合のニューラルネットでは、画像の全ピクセルを一度に扱います。しかし画像には「近いピクセルどうしが関係している」という性質があります。端っこ・線・模様は、<strong>局所的な範囲</strong>に現れるからです。</p>
+    <p data-lang="en">A fully connected network processes all pixels at once. But images have a key property: nearby pixels relate to each other. Edges, lines, and textures appear in <strong>local regions</strong>.</p>
+    <p data-lang="ja">そこで「畳み込み」は、<strong>小さい窓（フィルタ）を画像の上でずらしながら、その窓の範囲だけを計算する</strong>という方法をとります。</p>
+    <p data-lang="en">Convolution therefore uses a <strong>small window (filter) that slides across the image, computing only within that window at each step</strong>.</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">虫眼鏡の比喩：</strong>
+    <strong data-lang="en">The magnifying-glass analogy:</strong>
+    <p data-lang="ja" style="margin:6px 0 0;">画像の上で小さな虫眼鏡を左から右へ、上から下へとゆっくり動かすことを想像してください。虫眼鏡の中だけを見て「ここに縦線はあるか？」「ここに角はあるか？」と確認していきます。これが畳み込みのイメージです。</p>
+    <p data-lang="en" style="margin:6px 0 0;">Imagine slowly moving a tiny magnifying glass across an image, left to right, top to bottom. At each position you ask only "is there a vertical edge here?" or "is there a corner here?" That is the image of convolution.</p>
+  </div>
+
+  <!-- フィルタのビジュアル -->
+  <div class="conv-visual">
+    <div class="conv-box input">
+      <div class="label" data-lang="ja">元の画像</div>
+      <div class="label" data-lang="en">Original image</div>
+      <div class="val">🖼️</div>
+    </div>
+    <div class="conv-arr">×</div>
+    <div class="conv-box filter">
+      <div class="label" data-lang="ja">フィルタ（3×3）</div>
+      <div class="label" data-lang="en">Filter (3×3)</div>
+      <div class="val" style="font-size:13px;font-family:monospace;">−1  0  1
+−2  0  2
+−1  0  1</div>
+    </div>
+    <div class="conv-arr">=</div>
+    <div class="conv-box feat">
+      <div class="label" data-lang="ja">特徴マップ</div>
+      <div class="label" data-lang="en">Feature map</div>
+      <div class="val">📊</div>
+    </div>
+    <div class="conv-arr">→</div>
+    <div class="conv-box judge">
+      <div class="label" data-lang="ja">判断へ</div>
+      <div class="label" data-lang="en">Toward judgment</div>
+      <div class="val">🎯</div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--muted);margin:-8px 0 20px;">
+    <span data-lang="ja">このフィルタは「縦方向の境界線」を検出する Sobel フィルタ。右側の数字が大きいほど「右に向かって明るさが変わる縦線」の存在を示す。</span>
+    <span data-lang="en">This is a Sobel filter detecting vertical edges. Larger values in the output indicate "a vertical boundary where brightness changes toward the right."</span>
+  </p>
+
+  <!-- フィルタ -->
+  <h2 class="section-title" data-lang="ja">フィルタってなに？</h2>
+  <h2 class="section-title" data-lang="en">What is a filter?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">フィルタ（カーネルとも呼ぶ）は、<strong>「どんな特徴を探すか」を決める小さな行列</strong>です。</p>
+    <p data-lang="en">A filter (also called a kernel) is a <strong>small matrix that decides what feature to look for</strong>.</p>
+    <p data-lang="ja">手で設計することもできますが、深層学習では <strong>フィルタの中身（重み）を訓練によって自動で決める</strong>のが特徴です。モデルが「猫を見分けるのに役立つ特徴」を自分で学んでいきます。</p>
+    <p data-lang="en">Filters can be designed by hand, but the key feature of deep learning is that <strong>filter weights are determined automatically through training</strong>. The model learns by itself which features help distinguish a cat.</p>
+    <p data-lang="ja">畳み込み層には複数のフィルタがあり、それぞれが異なる特徴を探します。最初の層では「端っこ・線」、深い層では「目・耳」のような複雑な部品を探すようになります。</p>
+    <p data-lang="en">A convolutional layer has many filters, each looking for a different feature. Early layers find "edges and lines"; deeper layers find complex parts like "eyes and ears."</p>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    IMG["画像入力"]
+    C1["Conv 層 1\n端・線を検出\n(低レベル特徴)"]
+    C2["Conv 層 2\n形・模様を検出\n(中レベル特徴)"]
+    C3["Conv 層 3\n部品・構造を検出\n(高レベル特徴)"]
+    FC["全結合層\n分類"]
+    OUT["出力\n猫 / 犬 / …"]
+    IMG --> C1 --> C2 --> C3 --> FC --> OUT
+    style IMG fill:#E8F5E9,stroke:#2E7D32
+    style C1 fill:#E3F2FD,stroke:#1565C0
+    style C2 fill:#E3F2FD,stroke:#1565C0
+    style C3 fill:#E3F2FD,stroke:#1565C0
+    style FC fill:#FFF3E0,stroke:#E65100
+    style OUT fill:#EDE7F6,stroke:#5B4B8A
+    </div>
+    <p class="diagram-caption" data-lang="ja">畳み込みを重ねるほど抽象度の高い特徴を扱える（CNN = 畳み込みニューラルネット）</p>
+    <p class="diagram-caption" data-lang="en">Stacking convolutions handles increasingly abstract features (CNN = Convolutional Neural Network)</p>
+  </div>
+
+  <!-- MIOpen -->
+  <h2 class="section-title" data-lang="ja">MIOpen ってなに？</h2>
+  <h2 class="section-title" data-lang="en">What is MIOpen?</h2>
+
+  <div class="prose">
+    <p data-lang="ja"><strong>MIOpen</strong> は、AMD GPU で畳み込み・行列演算・プーリングなど DNN の基本計算を高速に実行するためのライブラリです。</p>
+    <p data-lang="en"><strong>MIOpen</strong> is AMD's library for running DNN building blocks — convolution, matrix operations, pooling, etc. — at full GPU speed.</p>
+    <p data-lang="ja">PyTorch などの AI フレームワークから「畳み込みを実行してください」と呼ばれると、MIOpen がその GPU に合った最適な計算手順（solver）を選んで実行します。</p>
+    <p data-lang="en">When an AI framework like PyTorch says "run a convolution," MIOpen selects the optimal computation method (solver) for the specific GPU and executes it.</p>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    FW["PyTorch / TF\n畳み込み要求"]
+    MIOPEN["MIOpen\nGPU DNN ライブラリ"]
+    SOLVER["Solver 選択\nIsApplicable()"]
+    KERNEL["GPU カーネル実行\n(HSACO)"]
+    GPU["AMD GPU"]
+    FW --> MIOPEN --> SOLVER --> KERNEL --> GPU
+    style FW fill:#E8F5E9,stroke:#2E7D32
+    style MIOPEN fill:#E3F2FD,stroke:#1565C0
+    style SOLVER fill:#FFF3E0,stroke:#E65100
+    style GPU fill:#FFEBEE,stroke:#B71C1C
+    </div>
+    <p class="diagram-caption" data-lang="ja">MIOpen は「要求を受けて → solver を選んで → GPU で実行する」仲介役</p>
+    <p class="diagram-caption" data-lang="en">MIOpen is the intermediary that "receives requests → selects a solver → executes on GPU"</p>
+  </div>
+
+  <!-- Solver -->
+  <h2 class="section-title" data-lang="ja">なぜ solver がたくさんあるの？</h2>
+  <h2 class="section-title" data-lang="en">Why are there so many solvers?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">同じ「畳み込み」でも、<strong>GPU の世代・命令セット・入力の形・データ型</strong>によって、最も速い計算手順が変わります。MIOpen はそれぞれに対応した solver を登録しており、実行前に「この GPU でこの入力に使えるか？」（<code>IsApplicable()</code>）を確認して最適なものを選びます。</p>
+    <p data-lang="en">Even for the same "convolution," the fastest computation method varies depending on the <strong>GPU generation, instruction set, input shape, and data type</strong>. MIOpen registers a solver for each case and checks "can this solver run on this GPU with this input?" (<code>IsApplicable()</code>) before selecting the best one.</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">たとえるなら：</strong>
+    <strong data-lang="en">Analogy:</strong>
+    <p data-lang="ja" style="margin:6px 0 0;">「東京から大阪に行く」方法は、新幹線・飛行機・在来線・バスなど複数あります。最も速い手段は、時間帯・予算・出発地によって変わります。solver はその「移動手段のリスト」です。使える手段があれば使い、なければ次の手段を試します。</p>
+    <p data-lang="en" style="margin:6px 0 0;">There are many ways to get from Tokyo to Osaka — shinkansen, plane, local train, bus. The fastest option depends on timing, budget, and starting point. Solvers are that list of travel options: use the best available one and fall back to the next if the first is unavailable.</p>
+  </div>
+
+  <table class="solver-table">
+    <thead>
+      <tr>
+        <th data-lang="ja">Solver</th>
+        <th data-lang="ja">得意なこと</th>
+        <th data-lang="ja">gfx900</th>
+        <th data-lang="ja">gfx908+</th>
+        <th data-lang="en">Solver</th>
+        <th data-lang="en">Strength</th>
+        <th data-lang="en">gfx900</th>
+        <th data-lang="en">gfx908+</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>MLIR iGEMM</td>
+        <td data-lang="ja">MLIR コンパイラ経由の高速 GEMM</td>
+        <td data-lang="ja"><span class="cross">✗ 除外</span></td>
+        <td data-lang="ja"><span class="tick">✓</span></td>
+        <td data-lang="en">Fast GEMM via MLIR compiler</td>
+        <td data-lang="en"><span class="cross">✗ excluded</span></td>
+        <td data-lang="en"><span class="tick">✓</span></td>
+      </tr>
+      <tr>
+        <td>XDLops / CK</td>
+        <td data-lang="ja">行列演算専用命令（xdlops）を使う</td>
+        <td data-lang="ja"><span class="cross">✗ 命令なし</span></td>
+        <td data-lang="ja"><span class="tick">✓</span></td>
+        <td data-lang="en">Uses dedicated xdlops matrix instructions</td>
+        <td data-lang="en"><span class="cross">✗ no xdlops</span></td>
+        <td data-lang="en"><span class="tick">✓</span></td>
+      </tr>
+      <tr>
+        <td>Winograd</td>
+        <td data-lang="ja">小カーネル畳み込みの演算量削減</td>
+        <td data-lang="ja"><span class="tick">✓ 動作</span></td>
+        <td data-lang="ja"><span class="tick">✓</span></td>
+        <td data-lang="en">Reduces operations for small-kernel convolutions</td>
+        <td data-lang="en"><span class="tick">✓ works</span></td>
+        <td data-lang="en"><span class="tick">✓</span></td>
+      </tr>
+      <tr>
+        <td>ASM v4r1</td>
+        <td data-lang="ja">手書きアセンブリで最適化した経路</td>
+        <td data-lang="ja"><span class="tick">✓ 動作</span></td>
+        <td data-lang="ja"><span class="tick">✓</span></td>
+        <td data-lang="en">Hand-written assembly optimised path</td>
+        <td data-lang="en"><span class="tick">✓ works</span></td>
+        <td data-lang="en"><span class="tick">✓</span></td>
+      </tr>
+      <tr>
+        <td>Naive / Reference</td>
+        <td data-lang="ja">どの GPU でも必ず動く汎用経路</td>
+        <td data-lang="ja"><span class="tick">✓ 常に利用可</span></td>
+        <td data-lang="ja"><span class="tick">✓</span></td>
+        <td data-lang="en">Generic path guaranteed to work on any GPU</td>
+        <td data-lang="en"><span class="tick">✓ always</span></td>
+        <td data-lang="en"><span class="tick">✓</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- gfx900 -->
+  <h2 class="section-title" data-lang="ja">gfx900 で何が使えて、何がつらいの？</h2>
+  <h2 class="section-title" data-lang="en">What works on gfx900 and what is hard?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">gfx900（Vega 世代）は 2017 年の GPU です。xdlops（行列演算専用命令）も dot4（INT8 向け積和命令）も持っていません。</p>
+    <p data-lang="en">gfx900 (Vega generation) is a 2017 GPU. It has neither xdlops (dedicated matrix instructions) nor dot4 (INT8 multiply-accumulate).</p>
+    <p data-lang="ja">そのため、MLIR iGEMM と XDLops 系の solver は使えません。しかし Winograd / ASM v4r1 は今も動作し、MIOpen の Naive solver は常に利用できます。また、Perf DB（性能チューニング済みパラメータ集）に gfx900 向けの 169,182 行のエントリが ROCm 7.2 に収録されており、これが動作を支えています。</p>
+    <p data-lang="en">As a result, MLIR iGEMM and XDLops solvers are unavailable. But Winograd and ASM v4r1 still work, and the Naive solver is always available. The Perf DB (pre-tuned parameter database) also ships 169,182 gfx900 entries in ROCm 7.2, which underpins continued operation.</p>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    REQ["畳み込み要求\n(gfx900)"]
+    MLIR["MLIR iGEMM\n→ BLOCKED\n(commit 2407d2f)"]
+    XDLOPS["XDLops / CK\n→ BLOCKED\n(命令なし)"]
+    WINO["Winograd\n→ PASS"]
+    ASM["ASM v4r1\n→ PASS"]
+    NAIVE["Naive solver\n→ PASS (常時)"]
+    REQ --> MLIR
+    REQ --> XDLOPS
+    REQ --> WINO --> OK["計算実行 OK"]
+    REQ --> ASM --> OK
+    REQ --> NAIVE --> OK
+    style MLIR fill:#FFEBEE,stroke:#B71C1C,color:#B71C1C
+    style XDLOPS fill:#FFEBEE,stroke:#B71C1C,color:#B71C1C
+    style WINO fill:#E8F5E9,stroke:#2E7D32
+    style ASM fill:#E8F5E9,stroke:#2E7D32
+    style NAIVE fill:#FFF3E0,stroke:#E65100
+    style OK fill:#E3F2FD,stroke:#1565C0
+    </div>
+    <p class="diagram-caption" data-lang="ja">速い道は使えないが、使える solver が残っているため計算は成立する</p>
+    <p class="diagram-caption" data-lang="en">Fast paths are blocked, but remaining solvers keep computation viable</p>
+  </div>
+
+  <div class="fact-box">
+    <strong data-lang="ja">調査で確認された事実：</strong>
+    <strong data-lang="en">Facts confirmed by this investigation:</strong>
+    <ul>
+      <li data-lang="ja">MIOpen MLIR iGEMM は commit <code>2407d2f</code>（2021-12-22）で gfx900 を明示除外</li>
+      <li data-lang="ja">Winograd・ASM v4r1 は <code>IsApplicable()</code> を通過し、現在も動作する</li>
+      <li data-lang="ja">INT8 は dot4 命令がないため Naive solver のみ（実機逆アセンブルで確認）</li>
+      <li data-lang="ja">gfx900 向け Perf DB エントリ 169,182 行が ROCm 7.2 に同梱</li>
+      <li data-lang="en">MIOpen MLIR iGEMM explicitly excluded gfx900 in commit <code>2407d2f</code> (2021-12-22)</li>
+      <li data-lang="en">Winograd and ASM v4r1 pass <code>IsApplicable()</code> and remain functional</li>
+      <li data-lang="en">INT8 uses Naive solver only due to absent dot4 instructions (confirmed by disassembly)</li>
+      <li data-lang="en">169,182 gfx900 Perf DB entries ship with ROCm 7.2</li>
+    </ul>
+  </div>
+
+  <!-- まとめ -->
+  <h2 class="section-title" data-lang="ja">まとめ</h2>
+  <h2 class="section-title" data-lang="en">Summary</h2>
+
+  <ul style="font-size:16px;line-height:2;padding-left:22px;margin:0 0 24px;">
+    <li data-lang="ja">ニューラルネットは行列変換の積み重ね。畳み込みはその中で「局所特徴を探す」専門の層</li>
+    <li data-lang="ja">フィルタが「何の特徴を探すか」を決め、訓練で自動的に最適化される</li>
+    <li data-lang="ja">MIOpen は AMD GPU で畳み込みを担当するライブラリ。GPU に合った solver を選んで実行する</li>
+    <li data-lang="ja">gfx900 は速い solver が使えないが、Winograd / ASM v4r1 / Naive で動作が継続している</li>
+    <li data-lang="en">A neural network stacks matrix transforms; convolution is the specialised layer that searches for local features</li>
+    <li data-lang="en">Filters decide what feature to look for and are optimised automatically during training</li>
+    <li data-lang="en">MIOpen is the AMD GPU convolution library; it selects a GPU-appropriate solver and runs it</li>
+    <li data-lang="en">gfx900 cannot use the fast solvers, but Winograd, ASM v4r1, and Naive keep it working</li>
+  </ul>
+
+  <!-- prev / next -->
+  <div class="nav-cards">
+    <a class="nav-card prev" href="linear-algebra-for-rocm.html">
+      <span class="nav-label" data-lang="ja">← 前のページ</span>
+      <span class="nav-label" data-lang="en">← Previous</span>
+      <span class="nav-title" data-lang="ja">イメージでわかる線形代数</span>
+      <span class="nav-title" data-lang="en">Visual Linear Algebra</span>
+    </a>
+    <a class="nav-card next" href="glossary.html">
+      <span class="nav-label" data-lang="ja">次のページ →</span>
+      <span class="nav-label" data-lang="en">Next →</span>
+      <span class="nav-title" data-lang="ja">用語解説（Glossary）</span>
+      <span class="nav-title" data-lang="en">Glossary</span>
+    </a>
+  </div>
+
+  <div style="margin-top:28px;color:var(--muted);font-size:13px;text-align:center;">
+    <span data-lang="ja">vega-hbmx-pages — イメージでわかる深層学習 | 2026-03-15</span>
+    <span data-lang="en">vega-hbmx-pages — Visual Deep Learning | 2026-03-15</span>
+  </div>
+</div>
+
+<script>
+  const html = document.documentElement;
+  const btnJa = document.getElementById('btn-ja');
+  const btnEn = document.getElementById('btn-en');
+  function setLanguage(lang) {
+    html.setAttribute('data-language', lang);
+    html.setAttribute('lang', lang);
+    btnJa.classList.toggle('active', lang === 'ja');
+    btnEn.classList.toggle('active', lang === 'en');
+    localStorage.setItem('vega-hbmx-pages-lang', lang);
+  }
+  btnJa.addEventListener('click', () => setLanguage('ja'));
+  btnEn.addEventListener('click', () => setLanguage('en'));
+  setLanguage(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+</script>
+</body>
+</html>
