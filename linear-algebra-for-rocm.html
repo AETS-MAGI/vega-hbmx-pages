@@ -357,16 +357,16 @@
 
   <div class="prose">
     <div data-lang="ja">
-      <p>数式で書くとこうなります（確認用）：</p>
-      $$y_1 = 0.5 \times 80 + 0.2 \times 70 + 0.3 \times 90 = 40 + 14 + 27 = \mathbf{81} \;\text{（文系寄り評価）}$$
-      $$y_2 = 0.1 \times 80 + 0.7 \times 70 + 0.2 \times 90 = 8 + 49 + 18 = \mathbf{75} \;\text{（理系寄り評価）}$$
-      <p>同じ入力でも、行列（重みの組み合わせ）が変われば結果が変わります。</p>
+      <p>数式で確認：</p>
+      $$y_1 = 1 \times 80 + 1 \times 70 + 1 \times 90 = 80 + 70 + 90 = \mathbf{240} \;\text{（3 科目の合計点）}$$
+      $$y_2 = 0 \times 80 + 1 \times 70 + 1 \times 90 = 0 + 70 + 90 = \mathbf{160} \;\text{（数学と英語の合計）}$$
+      <p>行列の中身（どの行にどの重みを書くか）を変えれば、同じ入力から好きな集め方の出力が作れます。</p>
     </div>
     <div data-lang="en">
-      <p>Written as equations (for reference):</p>
-      $$y_1 = 0.5 \times 80 + 0.2 \times 70 + 0.3 \times 90 = 40 + 14 + 27 = \mathbf{81} \;\text{(humanities-leaning)}$$
-      $$y_2 = 0.1 \times 80 + 0.7 \times 70 + 0.2 \times 90 = 8 + 49 + 18 = \mathbf{75} \;\text{(science-leaning)}$$
-      <p>Change the matrix (the weighting) and the output changes even with the same input.</p>
+      <p>Written as equations:</p>
+      $$y_1 = 1 \times 80 + 1 \times 70 + 1 \times 90 = 80 + 70 + 90 = \mathbf{240} \;\text{(total of all three subjects)}$$
+      $$y_2 = 0 \times 80 + 1 \times 70 + 1 \times 90 = 0 + 70 + 90 = \mathbf{160} \;\text{(Math + English only)}$$
+      <p>Change what numbers go in each row of the matrix, and you get a different way of combining the same inputs.</p>
     </div>
   </div>
 

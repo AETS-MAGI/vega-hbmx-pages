@@ -157,6 +157,71 @@
       display: inline-block;
     }
 
+    /* Sobel explanation deep-dive */
+    .sobel-explain {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 20px 22px; margin-bottom: 18px;
+      font-size: 15px; line-height: 1.75;
+    }
+    .sobel-explain h4 {
+      margin: 0 0 10px; font-size: 16px; color: var(--navy);
+    }
+    .sobel-explain p { margin: 0 0 10px; }
+    .sobel-explain p:last-child { margin-bottom: 0; }
+
+    .sobel-example-row {
+      display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+      justify-content: center; margin: 14px 0;
+    }
+    .sobel-example-row .sep {
+      font-size: 20px; color: var(--muted); font-weight: 700; flex-shrink: 0;
+    }
+
+    /* mini pixel grids */
+    .px-grid {
+      border-collapse: collapse; margin: 0 auto;
+    }
+    .px-grid td {
+      width: 36px; height: 32px; text-align: center;
+      font-size: 12px; font-weight: 700; border: 1px solid #bbb;
+    }
+    .px-dark   { background: #263238; color: #eceff1; }
+    .px-bright { background: #FFD54F; color: #333; }
+    .px-mid    { background: #BDBDBD; color: #333; }
+
+    /* filter value cell colors */
+    .fv-neg  { background: #BBDEFB; color: #0D47A1; }
+    .fv-zero { background: #F5F5F5; color: #9E9E9E; }
+    .fv-pos  { background: #FFCCBC; color: #BF360C; }
+
+    .sobel-calc {
+      font-size: 13px; line-height: 2.0;
+      background: #FAFAFA; border: 1px solid var(--line);
+      border-radius: 8px; padding: 10px 14px;
+      min-width: 200px;
+    }
+    .sobel-calc .total {
+      font-weight: 700; color: var(--blue); font-size: 14px;
+      border-top: 1px solid var(--line); padding-top: 4px; margin-top: 4px;
+    }
+
+    .sign-list {
+      margin: 10px 0 0; padding: 0;
+      list-style: none; display: flex; flex-direction: column; gap: 5px;
+    }
+    .sign-list li {
+      display: flex; align-items: baseline; gap: 8px;
+      font-size: 14px; line-height: 1.4;
+    }
+    .sign-badge {
+      display: inline-block; min-width: 42px;
+      border-radius: 4px; padding: 1px 6px;
+      font-size: 12px; font-weight: 700; text-align: center; flex-shrink: 0;
+    }
+    .sign-pos  { background: #FFCCBC; color: #BF360C; }
+    .sign-neg  { background: #BBDEFB; color: #0D47A1; }
+    .sign-zero { background: #F5F5F5; color: #757575; border: 1px solid #ddd; }
+
     /* solver table */
     .solver-table {
       width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 8px;
@@ -395,6 +460,84 @@ flowchart LR
     <span data-lang="ja">Sobel フィルタ（x 方向）は、左右の明るさの差を計算して、縦方向の境界線を強調します。</span>
     <span data-lang="en">The x-direction Sobel filter computes left-right brightness differences and highlights vertical edges.</span>
   </p>
+
+  <!-- Sobel 詳細解説 -->
+  <div class="sobel-explain">
+    <h4 data-lang="ja">Sobel フィルタのしくみ — なぜその数字？</h4>
+    <h4 data-lang="en">How the Sobel filter works — why those numbers?</h4>
+
+    <p data-lang="ja"><strong>シーソーのイメージで考えてみましょう。</strong>フィルタを窓の上に重ねたとき、<strong>左の列はマイナス（暗い側）、右の列はプラス（明るい側）</strong> として働きます。真ん中の列は 0 — これは支点にあたる場所で、スコアの計算には参加しません。</p>
+    <p data-lang="en"><strong>Think of it as a seesaw.</strong> When the filter is placed on the window, the <strong>left column acts as the minus side (dark)</strong> and the <strong>right column as the plus side (bright)</strong>. The center column is 0 — it's the pivot, and plays no role in the score.</p>
+
+    <p data-lang="ja">左と右で明るさが同じなら、マイナスとプラスが打ち消し合って <strong>合計 ≈ 0</strong>（境界なし）。左が暗くて右が明るい「段差」があれば、プラス側だけ大きくなって <strong>合計が正の大きな値</strong> になります。</p>
+    <p data-lang="en">If left and right are equally bright, the minus and plus cancel out → <strong>total ≈ 0</strong> (no edge). If left is dark and right is bright — a real step — only the plus side is large → <strong>large positive total</strong>.</p>
+
+    <p data-lang="ja"><strong>具体的な数字で確かめてみましょう。</strong>窓の左側が暗い（輝度 10）、右側が明るい（輝度 200）場合：</p>
+    <p data-lang="en"><strong>Let's verify with real numbers.</strong> Suppose the left side of the window is dark (brightness 10) and the right side is bright (brightness 200):</p>
+
+    <div class="sobel-example-row">
+      <div>
+        <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="ja">画素の明るさ</div>
+        <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="en">Pixel brightness</div>
+        <table class="px-grid">
+          <tr><td class="px-dark">10</td><td class="px-dark">10</td><td class="px-bright">200</td></tr>
+          <tr><td class="px-dark">10</td><td class="px-dark">10</td><td class="px-bright">200</td></tr>
+          <tr><td class="px-dark">10</td><td class="px-dark">10</td><td class="px-bright">200</td></tr>
+        </table>
+      </div>
+      <div style="font-size:22px;color:#888;">×</div>
+      <div>
+        <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="ja">Sobel フィルタ</div>
+        <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="en">Sobel filter</div>
+        <table class="px-grid">
+          <tr><td class="fv-neg">−1</td><td class="fv-zero">0</td><td class="fv-pos">+1</td></tr>
+          <tr><td class="fv-neg">−2</td><td class="fv-zero">0</td><td class="fv-pos">+2</td></tr>
+          <tr><td class="fv-neg">−1</td><td class="fv-zero">0</td><td class="fv-pos">+1</td></tr>
+        </table>
+      </div>
+      <div style="font-size:22px;color:#888;">=</div>
+      <div>
+        <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="ja">計算結果</div>
+        <div style="text-align:center;font-size:12px;margin-bottom:4px;" data-lang="en">Result</div>
+        <div class="sobel-calc">
+          <div data-lang="ja">1行め: −1×10 + 0×10 + 1×200 = <strong>190</strong></div>
+          <div data-lang="en">Row 1: −1×10 + 0×10 + 1×200 = <strong>190</strong></div>
+          <div data-lang="ja">2行め: −2×10 + 0×10 + 2×200 = <strong>380</strong></div>
+          <div data-lang="en">Row 2: −2×10 + 0×10 + 2×200 = <strong>380</strong></div>
+          <div data-lang="ja">3行め: −1×10 + 0×10 + 1×200 = <strong>190</strong></div>
+          <div data-lang="en">Row 3: −1×10 + 0×10 + 1×200 = <strong>190</strong></div>
+          <div style="border-top:1px solid #ccc;margin-top:6px;padding-top:6px;" data-lang="ja">合計 = <strong style="color:#BF360C;">760</strong></div>
+          <div style="border-top:1px solid #ccc;margin-top:6px;padding-top:6px;" data-lang="en">Total = <strong style="color:#BF360C;">760</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <p data-lang="ja">この「760」という大きな正の値が、特徴マップの明るい白い点として記録されます。</p>
+    <p data-lang="en">This large positive value (760) is what gets recorded as a bright white dot in the feature map.</p>
+
+    <p data-lang="ja"><strong>合計値の符号（プラス・マイナス・ゼロ）が意味すること：</strong></p>
+    <p data-lang="en"><strong>What the sign of the total means:</strong></p>
+    <ul class="sign-list">
+      <li>
+        <span class="sign-badge sign-pos" data-lang="ja">正（＋）</span>
+        <span class="sign-badge sign-pos" data-lang="en">Positive (+)</span>
+        <span data-lang="ja">左が暗く、右が明るい。左→右へ明るくなる境界。</span>
+        <span data-lang="en">Left is dark, right is bright. Brightness rises left-to-right.</span>
+      </li>
+      <li>
+        <span class="sign-badge sign-neg" data-lang="ja">負（−）</span>
+        <span class="sign-badge sign-neg" data-lang="en">Negative (−)</span>
+        <span data-lang="ja">左が明るく、右が暗い。右→左へ明るくなる境界。</span>
+        <span data-lang="en">Left is bright, right is dark. Brightness rises right-to-left.</span>
+      </li>
+      <li>
+        <span class="sign-badge sign-zero" data-lang="ja">ゼロ付近</span>
+        <span class="sign-badge sign-zero" data-lang="en">Near zero</span>
+        <span data-lang="ja">左右の明るさがほぼ同じ。境界線なし。</span>
+        <span data-lang="en">Left and right brightness are nearly equal. No edge.</span>
+      </li>
+    </ul>
+  </div>
 
   <!-- フィルタ -->
   <h2 class="section-title" data-lang="ja">フィルタってなに？</h2>
