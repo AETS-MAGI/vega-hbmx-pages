@@ -75,10 +75,10 @@
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="inference-flow.html">Visual Inference Flow</a> — Why inference is fast, KV Cache, and more</p>
 	</div>
 	<div class="fact-box">
-		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm では GPU デバイス名に "cuda" を使います。名前は CUDA 互換ですが、実行は HIP/ROCm 側で行われます。</p>
-		<p data-lang="en"><strong>Note:</strong> PyTorch ROCm uses "cuda" as the GPU device name. The name is CUDA-compatible, but execution runs on the HIP/ROCm side.</p>
-		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① 推論の実行基盤は HIP/rocBLAS/MIOpen ② 観測ツールは rocprof ③ 実機ごとの対応境界・最適経路により挙動差が出る場合があります。</p>
-		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Inference runs on HIP/rocBLAS/MIOpen foundations 2) rocprof is used for observation 3) Behavior can differ with hardware support boundaries and optimal-path selection.</p>
+		<p data-lang="ja"><strong>このページの読み方:</strong> 1) まず <code>model.training = False</code> を見る 2) 次に <code>pred.requires_grad = False</code> を見る 3) 最後に <code>weight changed = False</code> を見れば、このページの主眼はつかめます。</p>
+		<p data-lang="en"><strong>How to read this page:</strong> 1) First look at <code>model.training = False</code> 2) Then check <code>pred.requires_grad = False</code> 3) Finally check <code>weight changed = False</code>. That is enough to catch the main point.</p>
+		<p data-lang="ja"><strong>注記:</strong> PyTorch ROCm では GPU デバイス名に <code>"cuda"</code> を使います。これは互換 API 名で、実行は HIP/ROCm 側です。</p>
+		<p data-lang="en"><strong>Note:</strong> PyTorch ROCm uses <code>"cuda"</code> as the GPU device name. This is a compatibility API name; execution still runs on the HIP/ROCm side.</p>
 	</div>
 
 	<!-- ── 1 ── -->
@@ -88,6 +88,11 @@
 	<div class="prose">
 		<p data-lang="ja">このページの主役は 3 つです。<strong>① eval() で推論モード ② no_grad() で勾配追跡しない ③ 重みを更新しない</strong>。この 3 点が見える最小例を実行します。</p>
 		<p data-lang="en">This page focuses on three things: <strong>1) eval() for inference mode 2) no_grad() to disable gradient tracking 3) no weight updates</strong>. We run a minimal example that makes these points visible.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>困ったらこの 3 語だけ:</strong> <code>eval()</code> は推論モード、<code>no_grad()</code> は学習用の記録を取らない、<code>weight changed = False</code> は重みを直していない、です。</p>
+		<p data-lang="en"><strong>If you get stuck, keep just these three ideas:</strong> <code>eval()</code> means inference mode, <code>no_grad()</code> means no training-related bookkeeping, and <code>weight changed = False</code> means the weights were not updated.</p>
 	</div>
 
 	<!-- ── 2 ── -->
@@ -130,6 +135,19 @@ w_after = model.weight.detach().clone()
 <span class="fn">print</span>(<span class="str">"pred.requires_grad:"</span>, pred.requires_grad)
 <span class="fn">print</span>(<span class="str">"weight changed:"</span>, <span class="kw">not</span> torch.allclose(w_before, w_after))</div>
 
+	<div class="prose">
+		<p data-lang="ja">コードは長く見えますが、最初は次の 4 行だけ追えば十分です。</p>
+		<p data-lang="en">The code may look long, but at first it is enough to follow these four lines.</p>
+		<p data-lang="ja"><strong><code>model.eval()</code>:</strong> 推論モードへ切り替えます。</p>
+		<p data-lang="en"><strong><code>model.eval()</code>:</strong> This switches the model into inference mode.</p>
+		<p data-lang="ja"><strong><code>with torch.no_grad():</code>:</strong> 学習用の記録を取らない、と伝えています。</p>
+		<p data-lang="en"><strong><code>with torch.no_grad():</code>:</strong> This says “do not keep training-related records.”</p>
+		<p data-lang="ja"><strong><code>pred = model(x)</code>:</strong> 入力から答えを出す、forward です。</p>
+		<p data-lang="en"><strong><code>pred = model(x)</code>:</strong> This is the forward step that produces the answer.</p>
+		<p data-lang="ja"><strong><code>weight changed</code>:</strong> 重みが変わっていないことを確認しています。</p>
+		<p data-lang="en"><strong><code>weight changed</code>:</strong> This checks that the weights did not change.</p>
+	</div>
+
 	<!-- ── 3 ── -->
 	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
 	<h2 class="section-title" data-lang="en">3. What Happens When You Run It</h2>
@@ -163,19 +181,19 @@ weight changed: False</div>
 	<div class="analogy">
 		<p data-lang="ja"><strong>🏭 何が速くなるか:</strong></p>
 		<p data-lang="en"><strong>🏭 What gets faster:</strong></p>
-		<p data-lang="ja">① <strong>勾配グラフ不要</strong> — backward のために記録していた中間値を保持しないのでメモリが節約<br>
-		② <strong>backward 不要</strong> — 計算量がおおよそ半分<br>
-		③ <strong>重み更新不要</strong> — optimizer kernel が走らない</p>
-		<p data-lang="en">① <strong>No gradient graph</strong> — intermediate values for backward are not stored, saving memory<br>
-		② <strong>No backward pass</strong> — roughly halves computation<br>
-		③ <strong>No weight update</strong> — optimizer kernel doesn't run</p>
+		<p data-lang="ja">① <strong>学習用の記録が不要</strong> — 途中の情報をたくさん持たなくてよい<br>
+		② <strong>backward が不要</strong> — 直し方を逆向きに計算しない<br>
+		③ <strong>重み更新が不要</strong> — optimizer の処理が走らない</p>
+		<p data-lang="en">① <strong>No training record-keeping</strong> — fewer intermediate values need to be kept<br>
+		② <strong>No backward pass</strong> — there is no reverse pass to compute corrections<br>
+		③ <strong>No weight update</strong> — optimizer work does not run</p>
 	</div>
 
 	<div class="prose">
 		<p data-lang="ja"><code>torch.no_grad()</code> は PyTorch に「勾配を追跡しない」と伝えるコンテキストマネージャです。推論時には必ず使います。LLM（Ollama など）が会話するとき、内部ではこの forward-only が繰り返されています。</p>
 		<p data-lang="en"><code>torch.no_grad()</code> tells PyTorch "don't track gradients." Always use it for inference. When an LLM (like Ollama) chats with you, this forward-only loop is what runs internally.</p>
-		<p data-lang="ja">ROCm観点では、推論の主計算は行列演算（Linear、Attention の QK<sup>T</sup> など）で、主に rocBLAS 系の計算経路に乗ります。学習時の backward/update がない点が、推論軽量化の中心です。</p>
-		<p data-lang="en">From a ROCm perspective, inference is dominated by matrix math (Linear, QK<sup>T</sup> in Attention, etc.), mostly along rocBLAS paths. The absence of backward/update is the core reason inference is lighter.</p>
+		<p data-lang="ja">ROCm の見方では、推論は主に「答えを出すための計算」だけが走ります。学習で必要だった backward や update がないぶん、軽くなります。</p>
+		<p data-lang="en">From a ROCm point of view, inference mainly runs the calculations needed to produce an answer. It is lighter because backward and updates are absent.</p>
 	</div>
 
 	<h2 class="section-title" data-lang="ja">5. ROCmで観測するポイント</h2>

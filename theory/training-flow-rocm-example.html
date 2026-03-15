@@ -76,10 +76,10 @@
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="training-flow.html">Visual Training Flow</a> — Forward / backward / optimizer explained with diagrams</p>
 	</div>
 	<div class="fact-box">
-		<p data-lang="ja"><strong>注記:</strong> このページの GPU 指定は "cuda" 表記ですが、ROCm版 PyTorch の互換 API 名です。実行経路は HIP/ROCm です。</p>
-		<p data-lang="en"><strong>Note:</strong> GPU selection appears as "cuda" in this page, but that is the compatibility API name used by PyTorch ROCm. Execution path is HIP/ROCm.</p>
-		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① 学習時の主要計算経路は HIP/rocBLAS/MIOpen 側で走る ② 実行観測は rocprof が基本 ③ どの経路が使われるかは GPU 世代と演算条件に依存します。</p>
-		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Main training paths run through HIP/rocBLAS/MIOpen 2) rocprof is the primary observation tool 3) The chosen path depends on GPU generation and operation conditions.</p>
+		<p data-lang="ja"><strong>このページの読み方:</strong> 1) まず <code>model.training = True</code> を見る 2) 次に <code>loss</code> が出るのを見る 3) 最後に <code>weight changed = True</code> を見れば、学習が起きたことがつかめます。</p>
+		<p data-lang="en"><strong>How to read this page:</strong> 1) First look at <code>model.training = True</code> 2) Then see that a <code>loss</code> appears 3) Finally check <code>weight changed = True</code>. That is enough to see that learning happened.</p>
+		<p data-lang="ja"><strong>注記:</strong> このページの GPU 指定は <code>"cuda"</code> 表記ですが、ROCm 版 PyTorch の互換 API 名です。実行経路は HIP/ROCm です。</p>
+		<p data-lang="en"><strong>Note:</strong> GPU selection appears as <code>"cuda"</code> on this page, but that is the compatibility API name used by PyTorch ROCm. Execution still goes through HIP/ROCm.</p>
 	</div>
 
 	<!-- ── 1 ── -->
@@ -89,6 +89,11 @@
 	<div class="prose">
 		<p data-lang="ja">推論ページと対になる形で、学習の主役 4 つを見ます。<strong>① train() ② loss 計算 ③ backward() ④ optimizer.step()</strong>。最後に重みが変わることを確認します。</p>
 		<p data-lang="en">As a pair with the inference page, we focus on four training essentials: <strong>1) train() 2) loss computation 3) backward() 4) optimizer.step()</strong>. We then verify that weights actually change.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>困ったらこの 4 語だけ:</strong> <code>train()</code> は学習モード、<code>loss</code> はどれだけ外れたか、<code>backward()</code> はどこを直すか、<code>optimizer.step()</code> は実際に直す、です。</p>
+		<p data-lang="en"><strong>If you get stuck, keep just these four ideas:</strong> <code>train()</code> means training mode, <code>loss</code> means how wrong the answer was, <code>backward()</code> means what should be fixed, and <code>optimizer.step()</code> means actually fixing it.</p>
 	</div>
 
 	<!-- ── 2 ── -->
@@ -138,6 +143,19 @@ w_after = model.weight.detach().clone()
 <span class="fn">print</span>(<span class="str">"weight changed ="</span>, <span class="kw">not</span> torch.allclose(w_before, w_after))
 <span class="fn">print</span>(<span class="str">"weight.grad ="</span>, model.weight.grad.detach().cpu())</div>
 
+	<div class="prose">
+		<p data-lang="ja">コードは長く見えますが、最初は次の 4 行だけ追えば十分です。</p>
+		<p data-lang="en">The code may look long, but at first it is enough to follow these four lines.</p>
+		<p data-lang="ja"><strong><code>model.train()</code>:</strong> 学習モードへ切り替えます。</p>
+		<p data-lang="en"><strong><code>model.train()</code>:</strong> This switches the model into training mode.</p>
+		<p data-lang="ja"><strong><code>loss = loss_fn(pred, y_true)</code>:</strong> 予測と正解のずれを数にします。</p>
+		<p data-lang="en"><strong><code>loss = loss_fn(pred, y_true)</code>:</strong> This turns the gap between prediction and target into a number.</p>
+		<p data-lang="ja"><strong><code>loss.backward()</code>:</strong> どこをどう直すとよいかを計算します。</p>
+		<p data-lang="en"><strong><code>loss.backward()</code>:</strong> This computes what should be changed and in which direction.</p>
+		<p data-lang="ja"><strong><code>optimizer.step()</code>:</strong> モデルの中の調整つまみを実際に少し動かします。</p>
+		<p data-lang="en"><strong><code>optimizer.step()</code>:</strong> This actually moves the model’s internal adjustment knobs a little.</p>
+	</div>
+
 	<!-- ── 3 ── -->
 	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
 	<h2 class="section-title" data-lang="en">3. What Happens When You Run It</h2>
@@ -174,14 +192,14 @@ weight.grad = tensor([[-1.2000, -2.4000, -3.6000]])</div>
 	<h2 class="section-title" data-lang="en">4. Under the Hood</h2>
 
 	<div class="prose">
-		<p data-lang="ja"><strong>forward:</strong> rocBLAS GEMM で行列積を実行。<br>
-		<strong>backward:</strong> 自動微分グラフを逆順にたどり、各パラメータの勾配を計算。計算の大部分はやはり rocBLAS。<br>
-		<strong>optimizer.step():</strong> SGD の場合は <code>w = w - lr × grad</code> の単純な kernel。</p>
-		<p data-lang="en"><strong>forward:</strong> rocBLAS GEMM executes the matrix multiply.<br>
-		<strong>backward:</strong> Traverses the autograd graph in reverse, computing gradients for each parameter — again mostly rocBLAS.<br>
-		<strong>optimizer.step():</strong> For SGD, a simple kernel: <code>w = w - lr × grad</code>.</p>
-		<p data-lang="ja">学習は推論より重く、forward だけでなく backward と update が追加されます。ROCm 観点では、行列演算回数と中間テンソル保持が増えるため、メモリ圧と計算時間が上がります。</p>
-		<p data-lang="en">Training is heavier than inference because it adds backward and update on top of forward. From a ROCm perspective, this increases matrix operations and intermediate tensor retention, raising memory pressure and compute time.</p>
+		<p data-lang="ja"><strong>forward:</strong> まず答えを出します。<br>
+		<strong>backward:</strong> 次に、どこをどう直すとよいかを逆向きに調べます。<br>
+		<strong>optimizer.step():</strong> 最後に、その情報を使って重みを少し直します。</p>
+		<p data-lang="en"><strong>forward:</strong> First the model produces an answer.<br>
+		<strong>backward:</strong> Then it looks backward to find what should be changed.<br>
+		<strong>optimizer.step():</strong> Finally it uses that information to adjust the weights a little.</p>
+		<p data-lang="ja">ROCm の見方では、学習は推論より仕事が増えます。答えを出すだけでなく、直し方を計算し、重みも更新するからです。</p>
+		<p data-lang="en">From a ROCm point of view, training has more work than inference. It not only produces an answer, but also computes corrections and updates the weights.</p>
 	</div>
 
 	<h2 class="section-title" data-lang="ja">5. ROCmで観測するポイント</h2>
