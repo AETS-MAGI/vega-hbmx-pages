@@ -10,6 +10,8 @@
 			--blue: #0D47A1;
 			--green: #1B5E20;
 			--orange: #E65100;
+			--teal: #00695C;
+			--purple: #4A148C;
 			--text: #212121;
 			--muted: #616161;
 			--line: #D7DEE8;
@@ -119,37 +121,69 @@
 			box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
 		}
 
-		.section-title {
-			margin: 34px 0 14px;
+		/* ── Section headings ───────────────────────────── */
+		.section-block {
+			margin-top: 38px;
+		}
+
+		.section-header {
+			display: flex;
+			align-items: baseline;
+			gap: 12px;
+			margin-bottom: 6px;
+		}
+
+		.section-num {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
 			font-family: 'Arial Black', sans-serif;
-			font-size: 30px;
-			color: var(--red);
+			font-size: 15px;
+			font-weight: bold;
+			color: #FFFFFF;
+			flex-shrink: 0;
 		}
 
-		.card-grid {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-			gap: 18px;
-		}
+		.section-num.s1 { background: var(--blue); }
+		.section-num.s2 { background: var(--teal); }
+		.section-num.s3 { background: var(--red); }
+		.section-num.s4 { background: var(--purple); }
 
-		.flow-section {
-			margin-top: 26px;
-		}
-
-		.flow-title {
-			margin: 0 0 12px;
+		.section-header h2 {
+			margin: 0;
 			font-family: 'Arial Black', sans-serif;
-			font-size: 22px;
-			color: var(--blue);
+			font-size: 24px;
 		}
 
-		.flow-lead {
-			margin: 0 0 14px;
-			font-size: 17px;
+		.section-header h2.c1 { color: var(--blue); }
+		.section-header h2.c2 { color: var(--teal); }
+		.section-header h2.c3 { color: var(--red); }
+		.section-header h2.c4 { color: var(--purple); }
+
+		.section-lead {
+			margin: 0 0 16px;
+			font-size: 16px;
 			line-height: 1.5;
 			color: #546E7A;
 		}
 
+		hr.section-divider {
+			border: none;
+			border-top: 1px solid var(--line);
+			margin: 36px 0 0;
+		}
+
+		/* ── Card grid ─────────────────────────────────── */
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+			gap: 18px;
+		}
+
+		/* standard card */
 		.card {
 			background: var(--card);
 			border: 1px solid var(--line);
@@ -158,66 +192,90 @@
 			box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
 			display: flex;
 			flex-direction: column;
-			min-height: 270px;
+			min-height: 260px;
+		}
+
+		/* compact card (深掘りセクション) */
+		.card-compact {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 14px;
+			padding: 16px 16px 14px;
+			box-shadow: 1px 2px 10px rgba(0,0,0,0.04);
+			display: flex;
+			flex-direction: column;
 		}
 
 		.card-type {
 			display: inline-block;
 			align-self: flex-start;
-			padding: 6px 10px;
+			padding: 5px 10px;
 			border-radius: 999px;
-			font-size: 13px;
+			font-size: 12px;
 			font-weight: bold;
 			color: #FFFFFF;
-			margin-bottom: 12px;
+			margin-bottom: 10px;
 		}
 
-		.type-slides { background: var(--red); }
-		.type-history { background: var(--green); }
-		.type-trace { background: var(--orange); }
-		.type-general { background: var(--blue); }
-		.type-story { background: #9B72CF; }
+		.type-slides   { background: var(--red); }
+		.type-history  { background: var(--green); }
+		.type-trace    { background: var(--orange); }
+		.type-general  { background: var(--blue); }
+		.type-story    { background: #9B72CF; }
 		.type-hypothesis { background: #4A148C; }
 		.type-glossary { background: #00796B; }
-		.type-ecosystem { background: #5B4B8A; }
-		.type-intro { background: #00796B; }
+		.type-ecosystem{ background: #5B4B8A; }
+		.type-intro    { background: var(--teal); }
 
 		.card h3 {
-			margin: 0 0 8px;
-			font-size: 28px;
-			line-height: 1.2;
+			margin: 0 0 6px;
+			font-size: 22px;
+			line-height: 1.25;
+		}
+
+		.card-compact h3 {
+			margin: 0 0 6px;
+			font-size: 18px;
+			line-height: 1.25;
 		}
 
 		.filename {
-			margin: 0 0 12px;
+			margin: 0 0 10px;
 			font-family: 'Consolas', monospace;
-			font-size: 14px;
+			font-size: 13px;
 			color: #546E7A;
 			word-break: break-all;
 		}
 
 		.card p {
-			margin: 0 0 12px;
-			font-size: 18px;
+			margin: 0 0 10px;
+			font-size: 16px;
 			line-height: 1.5;
 			color: #37474F;
 		}
 
-		.card ul {
-			margin: 0 0 16px;
-			padding-left: 20px;
+		.card-compact p {
+			margin: 0 0 10px;
+			font-size: 14px;
+			line-height: 1.45;
 			color: #455A64;
-			font-size: 16px;
+		}
+
+		.card ul {
+			margin: 0 0 14px;
+			padding-left: 18px;
+			color: #455A64;
+			font-size: 14px;
 			line-height: 1.45;
 		}
 
-		.card li { margin-bottom: 6px; }
+		.card li { margin-bottom: 4px; }
 
 		.actions {
 			margin-top: auto;
 			display: flex;
 			flex-wrap: wrap;
-			gap: 10px;
+			gap: 8px;
 		}
 
 		.button {
@@ -225,10 +283,10 @@
 			align-items: center;
 			justify-content: center;
 			text-decoration: none;
-			padding: 11px 15px;
+			padding: 10px 14px;
 			border-radius: 10px;
 			font-weight: bold;
-			font-size: 15px;
+			font-size: 14px;
 			transition: transform 0.12s ease, box-shadow 0.12s ease;
 		}
 
@@ -237,34 +295,42 @@
 			box-shadow: 1px 3px 10px rgba(0,0,0,0.08);
 		}
 
-		.button-primary {
-			background: var(--blue);
-			color: #FFFFFF;
-		}
+		.button-primary   { background: var(--blue);   color: #FFFFFF; }
+		.button-teal      { background: var(--teal);   color: #FFFFFF; }
+		.button-purple    { background: var(--purple);  color: #FFFFFF; }
+		.button-secondary { background: #ECEFF1;        color: #37474F; }
 
-		.button-secondary {
-			background: #ECEFF1;
-			color: #37474F;
-		}
-
+		/* ── Misc ────────────────────────────────────────── */
 		.note {
 			margin-top: 28px;
 			background: #FFF8E1;
 			border-left: 6px solid var(--orange);
 			border-radius: 12px;
 			padding: 16px 18px;
-			font-size: 18px;
+			font-size: 17px;
 			line-height: 1.5;
 			color: #5D4037;
 		}
 
 		.footer {
-			margin-top: 26px;
+			margin-top: 28px;
 			color: var(--muted);
-			font-size: 15px;
+			font-size: 14px;
 			text-align: center;
+			line-height: 1.7;
 		}
 
+		.meta-link {
+			color: var(--muted);
+			font-size: 13px;
+			text-decoration: none;
+		}
+
+		.meta-link:hover {
+			text-decoration: underline;
+		}
+
+		/* ── Language switching ──────────────────────────── */
 		[data-lang] { display: none; }
 		html[data-language="en"] [data-lang="en"] { display: initial; }
 		html[data-language="ja"] [data-lang="ja"] { display: initial; }
@@ -284,56 +350,33 @@
 		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
 
 		@media (max-width: 760px) {
-			.toolbar {
-				justify-content: center;
-			}
-
+			.toolbar { justify-content: center; }
 			.page { padding: 20px 16px 42px; }
 			.hero { padding: 26px 22px 22px; }
 			.hero h1 { font-size: 32px; }
 			.hero p { font-size: 18px; }
 			.hero-meta { gap: 8px; }
-			.badge {
-				width: 100%;
-				justify-content: center;
-			}
+			.badge { width: 100%; justify-content: center; }
 			.summary { font-size: 17px; }
-			.section-title { font-size: 24px; }
-			.flow-title { font-size: 20px; }
-			.flow-lead { font-size: 16px; }
-			.card-grid {
-				grid-template-columns: 1fr;
-			}
-			.card {
+			.card-grid { grid-template-columns: 1fr; }
+			.card, .card-compact {
 				min-height: unset;
-				padding: 18px 16px 16px;
+				padding: 16px 14px 14px;
 			}
-			.card h3 { font-size: 24px; }
-			.card p { font-size: 16px; }
-			.actions {
-				flex-direction: column;
-			}
-			.button {
-				width: 100%;
-			}
+			.card h3 { font-size: 20px; }
+			.card-compact h3 { font-size: 17px; }
+			.actions { flex-direction: column; }
+			.button { width: 100%; }
 		}
 
 		@media (max-width: 480px) {
 			.page { padding: 16px 12px 32px; }
-			.hero {
-				padding: 20px 16px 18px;
-				border-radius: 16px;
-			}
+			.hero { padding: 20px 16px 18px; border-radius: 16px; }
 			.hero h1 { font-size: 28px; }
 			.hero p { font-size: 16px; }
-			.summary,
-			.note {
-				padding: 14px 14px;
-				font-size: 15px;
-			}
-			.section-title { font-size: 22px; }
-			.card h3 { font-size: 22px; }
-			.filename { font-size: 13px; }
+			.summary, .note { padding: 14px 14px; font-size: 15px; }
+			.card h3 { font-size: 18px; }
+			.card-compact h3 { font-size: 16px; }
 		}
 	</style>
 </head>
@@ -359,26 +402,116 @@
 		</section>
 
 		<div class="summary">
-			<span data-lang="ja">公開時もファイル名は変更せず、トップページから各資料へ直接アクセスできる構成にしています。スライド形式の HTML もブラウザでそのまま開いて閲覧できます。</span>
-			<span data-lang="en">The original filenames are preserved. This root index links directly to each published document so they can be used immediately as presentation materials or supplementary web pages.</span>
+			<span data-lang="ja">上から順に読むと「なぜこれを調べているか → 仕組みの基礎 → 発表資料 → 詳細根拠」という流れで全体像が見渡せます。</span>
+			<span data-lang="en">Reading top to bottom follows the arc: why this matters → foundational concepts → presentation materials → detailed evidence.</span>
 		</div>
 
-		<h2 class="section-title" data-lang="ja">公開コンテンツ</h2>
-		<h2 class="section-title" data-lang="en">Published contents</h2>
-
-		<section class="flow-section">
-			<h3 class="flow-title" data-lang="ja">1. まずはやさしい入口から</h3>
-			<h3 class="flow-title" data-lang="en">1. Start with the easiest entry points</h3>
-			<p class="flow-lead" data-lang="ja">最初に理念・思想のページを読むと、この活動の目的がわかります。音声や時系列資料で全体像をつかめます。</p>
-			<p class="flow-lead" data-lang="en">Start with the vision page to understand the purpose of this work, then use the audio and timeline for the big picture.</p>
+		<!-- ═══════════════════════════════════════════════════
+		     Section 1: 入口
+		═══════════════════════════════════════════════════ -->
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s1">1</span>
+				<h2 class="c1" data-lang="ja">入口</h2>
+				<h2 class="c1" data-lang="en">Start here</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">技術の背景や研究の動機を、一般向けの読み物やストーリーで伝えるページ群です。専門知識不要。</p>
+			<p class="section-lead" data-lang="en">Pages that convey the motivation and background of this work through essays and stories. No technical background needed.</p>
 			<div class="card-grid">
+
+				<article class="card">
+					<span class="card-type type-general">General</span>
+					<h3 data-lang="ja">理念 — 未来の道具を、みんなの手に。</h3>
+					<h3 data-lang="en">Vision — Putting the tools of the future into everyone's hands</h3>
+					<p class="filename">general-audience.html</p>
+					<p data-lang="ja">「なぜこの活動をしているのか」「誰のためにやっているのか」を伝えるページです。技術の説明ではなく、理念の宣言。</p>
+					<p data-lang="en">A declaration page — conveying why this work is done and who it is for. Vision, not technical explanation.</p>
+					<ul>
+						<li data-lang="ja">専門知識不要・一般向け</li>
+						<li data-lang="en">No technical background needed</li>
+						<li data-lang="ja">1画面1テーマのスクロール構成</li>
+						<li data-lang="en">One theme per screen, scroll-based layout</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="general-audience.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-story">Story</span>
+					<h3 data-lang="ja">Vegaちゃんのあったか成長物語</h3>
+					<h3 data-lang="en">Vega-chan's Warm Growth Story</h3>
+					<p class="filename">vega-story_for-child.html</p>
+					<p data-lang="ja">gfx900 の歩みを、子どもにもわかる絵本形式のスライドで紹介します。各ページに解説モーダル付き。</p>
+					<p data-lang="en">gfx900's journey as a picture-book slideshow. Technical notes pop up on each page.</p>
+					<ul>
+						<li data-lang="ja">スワイプ／矢印キーでページ送り</li>
+						<li data-lang="en">Swipe or arrow keys to turn pages</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="vega-story_for-child.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-story" style="background:#8B6914;">Essay</span>
+					<h3 data-lang="ja">Vegaと、わたしのはじまり</h3>
+					<h3 data-lang="en">Vega, and Where I Began</h3>
+					<p class="filename">essay.html</p>
+					<p data-lang="ja">統計計算がしたいという小さな願いから、AIの研究にたどり着くまでの道のりを綴った研究エッセイ。</p>
+					<p data-lang="en">A research essay tracing the path from a simple wish to do statistical computing, to arriving at AI research.</p>
+					<ul>
+						<li data-lang="ja">やわらかい読み物形式</li>
+						<li data-lang="en">Gentle essay-style narrative</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="essay.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card">
+					<span class="card-type type-general">Media</span>
+					<h3 data-lang="ja">音声・ポスター閲覧ページ</h3>
+					<h3 data-lang="en">Media viewer page</h3>
+					<p class="filename">media.html</p>
+					<p data-lang="ja">NotebookLM の解説音声と、ポスター PDF 本体をブラウザ上で再生・閲覧できるページ。</p>
+					<p data-lang="en">Browser-friendly player for the NotebookLM audio and the poster PDF.</p>
+					<ul>
+						<li data-lang="ja">音声プレイヤー内蔵</li>
+						<li data-lang="en">Built-in audio player</li>
+						<li data-lang="ja">ポスター PDF 埋め込み表示対応</li>
+						<li data-lang="en">Embedded poster PDF viewer</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="media.html">Open</a>
+					</div>
+				</article>
+
+			</div>
+		</section>
+
+		<hr class="section-divider">
+
+		<!-- ═══════════════════════════════════════════════════
+		     Section 2: 理論を学ぶ
+		═══════════════════════════════════════════════════ -->
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s2">2</span>
+				<h2 class="c2" data-lang="ja">理論を学ぶ</h2>
+				<h2 class="c2" data-lang="en">Learn the concepts</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">数式最小限・比喩中心の入門ページと、ROCm のエコシステム・用語を図で整理したページ群です。発表資料の前に読むと理解が深まります。</p>
+			<p class="section-lead" data-lang="en">Concept introductions using analogy over equations, plus visual maps of the ROCm ecosystem and glossary. Best read before the presentation materials.</p>
+			<div class="card-grid">
+
 				<article class="card">
 					<span class="card-type type-intro">入門</span>
 					<h3 data-lang="ja">イメージでわかる線形代数</h3>
 					<h3 data-lang="en">Visual Linear Algebra</h3>
 					<p class="filename">linear-algebra-for-rocm.html</p>
-					<p data-lang="ja">ベクトル・行列・行列積をやさしく解説し、rocBLAS・GPU・gfx900 につなぐ入門ページです。数学が苦手でも読めます。</p>
-					<p data-lang="en">A gentle explanation of vectors, matrices, and matrix multiplication, connected to rocBLAS, GPUs, and gfx900. No prior math required.</p>
+					<p data-lang="ja">ベクトル・行列・行列積をやさしく解説し、rocBLAS・GPU・gfx900 へとつなぐ入門ページ。数学が苦手でも読めます。</p>
+					<p data-lang="en">Vectors, matrices, and matrix multiply explained gently — connected to rocBLAS, GPUs, and gfx900. No prior math required.</p>
 					<ul>
 						<li data-lang="ja">数式最小限・比喩中心</li>
 						<li data-lang="en">Minimal equations, analogy-driven</li>
@@ -386,8 +519,7 @@
 						<li data-lang="en">Explains what rocBLAS actually does</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-primary" href="linear-algebra-for-rocm.html">Open</a>
-						<a class="button button-secondary" href="./linear-algebra-for-rocm.html">Direct URL</a>
+						<a class="button button-teal" href="linear-algebra-for-rocm.html">Open</a>
 					</div>
 				</article>
 
@@ -397,7 +529,7 @@
 					<h3 data-lang="en">Visual Deep Learning</h3>
 					<p class="filename">deep-learning-for-rocm.html</p>
 					<p data-lang="ja">畳み込み・フィルタ・MIOpen solver を比喩で解説。gfx900 でどの solver が動くかも確認できます。</p>
-					<p data-lang="en">Convolution, filters, and MIOpen solvers explained through analogies — with a per-solver availability table for gfx900.</p>
+					<p data-lang="en">Convolution, filters, and MIOpen solvers through analogy — with a per-solver availability table for gfx900.</p>
 					<ul>
 						<li data-lang="ja">「虫眼鏡でなぞる」畳み込みの比喩</li>
 						<li data-lang="en">The "magnifying-glass" convolution analogy</li>
@@ -405,187 +537,75 @@
 						<li data-lang="en">Solver table with gfx900 availability</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-primary" href="deep-learning-for-rocm.html">Open</a>
-						<a class="button button-secondary" href="./deep-learning-for-rocm.html">Direct URL</a>
+						<a class="button button-teal" href="deep-learning-for-rocm.html">Open</a>
 					</div>
 				</article>
 
 				<article class="card">
-					<span class="card-type type-general">General</span>
-					<h3 data-lang="ja">理念 — 未来の道具を、みんなの手に。</h3>
-					<h3 data-lang="en">Vision — Putting the tools of the future into everyone's hands</h3>
-					<p class="filename">general-audience.html</p>
-					<p data-lang="ja">技術の説明ではなく、「なぜこの活動をしているのか」「誰のためにやっているのか」を伝えるためのページです。</p>
-					<p data-lang="en">Not a technical explanation but a declaration page — conveying why this work is done and who it is for.</p>
+					<span class="card-type type-glossary">Glossary</span>
+					<h3 data-lang="ja">用語解説</h3>
+					<h3 data-lang="en">Glossary</h3>
+					<p class="filename">glossary.html</p>
+					<p data-lang="ja">ROCm・GPU アーキテクチャ・MIOpen ソルバに関わる専門用語を、カードと図で解説するページ。</p>
+					<p data-lang="en">Card-and-diagram explanations of ROCm, GPU architecture, and MIOpen solver terminology.</p>
 					<ul>
-						<li data-lang="ja">専門知識不要・一般向け</li>
-						<li data-lang="en">No technical background needed</li>
-						<li data-lang="ja">1画面1テーマのスクロール構成</li>
-						<li data-lang="en">One theme per screen, scroll-based layout</li>
+						<li data-lang="ja">ハードウェア・スタック・概念の 3 カテゴリ</li>
+						<li data-lang="en">Three categories: hardware, stack, concepts</li>
+						<li data-lang="ja">GPU 世代タイムライン図・スタック実行フロー図付き</li>
+						<li data-lang="en">GPU generation timeline and stack execution flow diagrams</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-primary" href="general-audience.html">Open</a>
-						<a class="button button-secondary" href="./general-audience.html">Direct URL</a>
+						<a class="button button-teal" href="glossary.html">Open</a>
 					</div>
 				</article>
 
 				<article class="card">
-					<span class="card-type type-general">Media</span>
-				<h3 data-lang="ja">音声・ポスター閲覧ページ</h3>
-				<h3 data-lang="en">Media viewer page</h3>
-				<p class="filename">media.html</p>
-				<p data-lang="ja">NotebookLM の解説音声と、ポスター PDF 本体をブラウザ上で見たり再生したりできるページです。</p>
-				<p data-lang="en">A browser-friendly page for the NotebookLM commentary audio and the poster PDF.</p>
-				<ul>
-					<li data-lang="ja">音声プレイヤー内蔵</li>
-					<li data-lang="en">Built-in audio player</li>
-					<li data-lang="ja">ポスター PDF 埋め込み表示対応</li>
-					<li data-lang="en">Embedded poster PDF viewer</li>
-				</ul>
-				<div class="actions">
-					<a class="button button-primary" href="media.html">Open</a>
-					<a class="button button-secondary" href="./media.html">Direct URL</a>
-				</div>
-				</article>
-
-				<article class="card">
-					<span class="card-type type-story">Story</span>
-					<h3 data-lang="ja">Vegaちゃんのあったか成長物語</h3>
-					<h3 data-lang="en">Vega-chan's Warm Growth Story</h3>
-					<p class="filename">vega-story_for-child.html</p>
-					<p data-lang="ja">gfx900 が歩んできた道のりを、子どもにもわかる絵本形式のスライドで紹介するページです。技術解説もモーダルで確認できます。</p>
-					<p data-lang="en">A picture-book-style slideshow introducing the journey of gfx900, accessible even to children. Technical notes are available in pop-up modals.</p>
+					<span class="card-type type-ecosystem">Ecosystem</span>
+					<h3 data-lang="ja">ROCm エコシステム図解</h3>
+					<h3 data-lang="en">ROCm Ecosystem Map</h3>
+					<p class="filename">rocm-ecosystem.html</p>
+					<p data-lang="ja">ROCm のリポジトリ構成・ライブラリスタック・GPU 世代対応を Mermaid 図とカードで整理したページ。gfx900 の各レイヤ対応状況を一覧できます。</p>
+					<p data-lang="en">Visual map of ROCm repository topology, library stack execution flow, and per-generation support — including a per-layer gfx900 status table.</p>
 					<ul>
-						<li data-lang="ja">スワイプ／矢印キーでページ送り</li>
-						<li data-lang="en">Swipe or arrow keys to turn pages</li>
-						<li data-lang="ja">各ページに解説モーダル付き</li>
-						<li data-lang="en">Each page has a detail modal</li>
+						<li data-lang="ja">リポジトリ依存図・スタック実行フロー・世代タイムラインを収録</li>
+						<li data-lang="en">Repository dependency graph, stack execution flow, GPU generation timeline</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-primary" href="vega-story_for-child.html">Open</a>
-						<a class="button button-secondary" href="./vega-story_for-child.html">Direct URL</a>
+						<a class="button button-teal" href="rocm-ecosystem.html">Open</a>
 					</div>
 				</article>
 
-				<article class="card">
-					<span class="card-type type-story" style="background:#8B6914;">Essay</span>
-					<h3 data-lang="ja">Vegaと、わたしのはじまり</h3>
-					<h3 data-lang="en">Vega, and Where I Began</h3>
-					<p class="filename">essay.html</p>
-					<p data-lang="ja">統計計算がしたいという小さな願いから、AIの研究にたどり着くまでの道のりを綴った研究エッセイです。</p>
-					<p data-lang="en">A research essay tracing the journey from a simple wish to do statistical computing, to arriving at AI research.</p>
-					<ul>
-						<li data-lang="ja">やわらかい読み物形式</li>
-						<li data-lang="en">Gentle essay-style narrative</li>
-						<li data-lang="ja">研究の動機と歩みを一本の物語で</li>
-						<li data-lang="en">Motivation and journey told as one story</li>
-					</ul>
-					<div class="actions">
-						<a class="button button-primary" href="essay.html">Open</a>
-						<a class="button button-secondary" href="./essay.html">Direct URL</a>
-					</div>
-				</article>
+			</div>
+		</section>
 
-					<article class="card">
-						<span class="card-type type-history">Timeline</span>
-					<h3 data-lang="ja">実験の流れ</h3>
-				<h3 data-lang="en">Experiment history</h3>
-				<p class="filename">experiment-history.html</p>
-				<p data-lang="ja">問題設定から再現確認、モデル依存性の追試、さらに 2026-03-15 時点の GitHub chronology / PR-context synthesis まで、調査の流れを時系列で整理したページです。</p>
-				<p data-lang="en">A timeline-style document showing the investigation flow from problem framing through reproducibility, model-dependency follow-up tests, and the 2026-03-15 GitHub chronology / PR-context synthesis phase.</p>
-				<ul>
-					<li data-lang="ja">1ページで流れを俯瞰</li>
-					<li data-lang="en">Single-page overview of the full workflow</li>
-					<li data-lang="ja">凡例・やさしい解説つき</li>
-					<li data-lang="en">Includes legend and non-specialist explanations</li>
-				</ul>
-					<div class="actions">
-						<a class="button button-primary" href="experiment-history.html">Open</a>
-						<a class="button button-secondary" href="./experiment-history.html">Direct URL</a>
-					</div>
-					</article>
+		<hr class="section-divider">
 
-					<article class="card">
-						<span class="card-type type-history">Update Log</span>
-						<h3 data-lang="ja">ページ更新履歴</h3>
-						<h3 data-lang="en">Page update history</h3>
-						<p class="filename">page-history.html</p>
-						<p data-lang="ja">公開ページ側で何をどう書き換えたかを、旧記述と新記述を並べて残す監査ログです。</p>
-						<p data-lang="en">An audit log showing what changed on the public pages, with old wording and new wording preserved side by side.</p>
-						<ul>
-							<li data-lang="ja">旧記述 → 新記述 → 根拠 を追える</li>
-							<li data-lang="en">Tracks old wording → new wording → rationale</li>
-							<li data-lang="ja">ページ更新の共有用ログ</li>
-							<li data-lang="en">Designed for sharing public-page updates</li>
-						</ul>
-						<div class="actions">
-							<a class="button button-primary" href="page-history.html">Open</a>
-							<a class="button button-secondary" href="./page-history.html">Direct URL</a>
-						</div>
-					</article>
-
-					<article class="card">
-						<span class="card-type type-glossary">Glossary</span>
-						<h3 data-lang="ja">用語解説</h3>
-						<h3 data-lang="en">Glossary</h3>
-						<p class="filename">glossary.html</p>
-						<p data-lang="ja">ROCm・GPU アーキテクチャ・MIOpen ソルバに関わる専門用語を、非専門者向けにカードと図で解説するページです。</p>
-						<p data-lang="en">Card-and-diagram explanations of ROCm, GPU architecture, and MIOpen solver terminology for non-specialist readers.</p>
-						<ul>
-							<li data-lang="ja">ハードウェア・スタック・概念の 3 カテゴリ</li>
-							<li data-lang="en">Three categories: hardware, stack, concepts</li>
-							<li data-lang="ja">GPU 世代タイムライン図・スタック実行フロー図付き</li>
-							<li data-lang="en">Includes GPU generation timeline and stack execution flow diagrams</li>
-						</ul>
-						<div class="actions">
-							<a class="button button-primary" href="glossary.html">Open</a>
-							<a class="button button-secondary" href="./glossary.html">Direct URL</a>
-						</div>
-					</article>
-
-					<article class="card">
-						<span class="card-type type-ecosystem">Ecosystem</span>
-						<h3 data-lang="ja">ROCm エコシステム図解</h3>
-						<h3 data-lang="en">ROCm Ecosystem Map</h3>
-						<p class="filename">rocm-ecosystem.html</p>
-						<p data-lang="ja">ROCm のリポジトリ構成・ライブラリスタック・GPU 世代対応を Mermaid 図とカードで視覚的に整理したページです。gfx900 がどのレイヤで何ができるかを一覧できます。</p>
-						<p data-lang="en">A visual map of ROCm repository topology, library stack execution flow, and per-generation support scope — including a per-layer status table for gfx900.</p>
-						<ul>
-							<li data-lang="ja">リポジトリ依存図・スタック実行フロー・世代タイムラインを収録</li>
-							<li data-lang="en">Repository dependency graph, stack execution flow, GPU generation timeline</li>
-							<li data-lang="ja">gfx900 の各レイヤ対応状況を表で確認可能</li>
-							<li data-lang="en">Per-layer gfx900 status table (works / excluded / partial)</li>
-						</ul>
-						<div class="actions">
-							<a class="button button-primary" href="rocm-ecosystem.html">Open</a>
-							<a class="button button-secondary" href="./rocm-ecosystem.html">Direct URL</a>
-						</div>
-					</article>
-				</div>
-			</section>
-
-		<section class="flow-section">
-			<h3 class="flow-title" data-lang="ja">2. 発表・補助資料を見る</h3>
-			<h3 class="flow-title" data-lang="en">2. Move to the presentation materials</h3>
-			<p class="flow-lead" data-lang="ja">全体像をつかんだら、次に発表用スライドで結果と主張の流れをまとめて確認できます。</p>
-			<p class="flow-lead" data-lang="en">After the overview, the main slide deck presents the tested conditions, results, and claims in presentation form.</p>
+		<!-- ═══════════════════════════════════════════════════
+		     Section 3: 発表と概要
+		═══════════════════════════════════════════════════ -->
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s3">3</span>
+				<h2 class="c3" data-lang="ja">発表と概要</h2>
+				<h2 class="c3" data-lang="en">Presentations &amp; overview</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">実験結果と主張をまとめたスライド・ポスター・実験フローです。発表会場や口頭説明のための資料。</p>
+			<p class="section-lead" data-lang="en">Slides, posters, and the experiment timeline that present the results and claims. Ready for presentations.</p>
 			<div class="card-grid">
+
 				<article class="card">
 					<span class="card-type type-slides">Slides</span>
 					<h3 data-lang="ja">ポスター準拠の補助スライド</h3>
 					<h3 data-lang="en">Advanced bilingual slides</h3>
 					<p class="filename">presentation_advanced_en-jp.html</p>
-					<p data-lang="ja">日英切替つきの補助スライドです。実験設定、再現結果、クラッシュ局在化、追加追試までを1本で確認できます。</p>
-					<p data-lang="en">A bilingual slide deck with English/Japanese switching. It covers setup, reproduced results, failure localization, and follow-up tests.</p>
+					<p data-lang="ja">日英切替つきの補助スライドです。実験設定・再現結果・クラッシュ局在化・追加追試までを1本で確認できます。</p>
+					<p data-lang="en">Bilingual slide deck covering setup, reproduced results, failure localization, and follow-up tests.</p>
 					<ul>
-						<li data-lang="ja">左右キーでページ移動</li>
-						<li data-lang="en">Navigate with arrow keys</li>
-						<li data-lang="ja">会場でそのまま表示可能</li>
-						<li data-lang="en">Ready for direct presentation use</li>
+						<li data-lang="ja">左右キーでページ移動・会場でそのまま表示可能</li>
+						<li data-lang="en">Navigate with arrow keys — ready for direct presentation</li>
 					</ul>
 					<div class="actions">
 						<a class="button button-primary" href="presentation_advanced_en-jp.html">Open</a>
-						<a class="button button-secondary" href="./presentation_advanced_en-jp.html">Direct URL</a>
 					</div>
 				</article>
 
@@ -594,143 +614,123 @@
 					<h3 data-lang="ja">ポスター（日本語 HTML 版）</h3>
 					<h3 data-lang="en">Poster (Japanese HTML version)</h3>
 					<p class="filename">poster-ja.html</p>
-					<p data-lang="ja">A0ポスターと同じ内容・配置を日本語で HTML 化したものです。ブラウザだけで閲覧できます。</p>
+					<p data-lang="ja">A0ポスターと同じ内容・配置を日本語で HTML 化したもの。ブラウザだけで閲覧できます。</p>
 					<p data-lang="en">The A0 poster content translated into Japanese and laid out as a responsive HTML page.</p>
 					<ul>
 						<li data-lang="ja">ポスター全7セクション完全日本語化</li>
 						<li data-lang="en">All 7 poster sections fully in Japanese</li>
-						<li data-lang="ja">表・仮説検証・テイクアウェイ含む</li>
-						<li data-lang="en">Includes tables, hypothesis tests, takeaways</li>
 					</ul>
 					<div class="actions">
 						<a class="button button-primary" href="poster-ja.html">Open</a>
-						<a class="button button-secondary" href="./poster-ja.html">Direct URL</a>
 					</div>
 				</article>
+
+				<article class="card">
+					<span class="card-type type-history">Timeline</span>
+					<h3 data-lang="ja">実験の流れ</h3>
+					<h3 data-lang="en">Experiment history</h3>
+					<p class="filename">experiment-history.html</p>
+					<p data-lang="ja">問題設定から再現確認、モデル依存性の追試、GitHub chronology / PR-context synthesis まで、調査の流れを時系列で整理したページ。</p>
+					<p data-lang="en">A timeline from problem framing through reproducibility, model-dependency follow-up, and the GitHub chronology / PR-context synthesis phase.</p>
+					<ul>
+						<li data-lang="ja">1ページで流れを俯瞰・凡例・やさしい解説つき</li>
+						<li data-lang="en">Single-page overview with legend and non-specialist explanations</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="experiment-history.html">Open</a>
+					</div>
+				</article>
+
 			</div>
 		</section>
 
-		<section class="flow-section">
-			<h3 class="flow-title" data-lang="ja">3. さらに研究向けの根拠へ進む</h3>
-			<h3 class="flow-title" data-lang="en">3. Go deeper into the research evidence</h3>
-			<p class="flow-lead" data-lang="ja">実装上の意味や質疑向けの厳密な根拠を確認したい場合は、gfx900 仮説ページ、そこから一段引いた ROCm 全体像ページ、GitHub 一次資料から ROCm 一般の構造を読む独立ページ、release block・retired/deprecated repo・late-phase layout 再編まで含めた GitHub 履歴タイムライン、そして code / solver trace 資料へ進めます。</p>
-			<p class="flow-lead" data-lang="en">For deeper research evidence, you can move from the gfx900 hypothesis page to the broader ROCm design-model page, then into a standalone page on ROCm-wide structure read from GitHub primary sources, then the GitHub history timeline with release blocks, retired/deprecated repos, and late-phase layout reorganization, and finally the code / solver trace reference decks.</p>
+		<hr class="section-divider">
+
+		<!-- ═══════════════════════════════════════════════════
+		     Section 4: 深掘り
+		═══════════════════════════════════════════════════ -->
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s4">4</span>
+				<h2 class="c4" data-lang="ja">深掘り</h2>
+				<h2 class="c4" data-lang="en">Deep dive</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">ソースコード・commit・実機ログを根拠にした技術資料です。仮説の構造的根拠、ROCm の設計思想、GitHub 履歴、solver・code トレースを収録しています。</p>
+			<p class="section-lead" data-lang="en">Technical references grounded in source code, commits, and runtime logs — hypothesis evidence, ROCm design analysis, GitHub history, and solver / code traces.</p>
 			<div class="card-grid">
-				<article class="card">
+
+				<article class="card-compact">
 					<span class="card-type type-hypothesis">Hypothesis</span>
 					<h3 data-lang="ja">仮説: なぜ gfx900 はまだ動くのか</h3>
 					<h3 data-lang="en">Hypothesis: Why Does gfx900 Still Run?</h3>
 					<p class="filename">hypothesis.html</p>
-					<p data-lang="ja">ROCm の capability-based 設計がなぜ旧世代を包含しうるかを、コード検証・ランタイム動的検証・git 来歴から構造的に分析した仮説ページです。</p>
-					<p data-lang="en">A structural analysis of how ROCm's capability-based design can encompass legacy generations, grounded in code verification, runtime dynamic testing, and git provenance.</p>
-					<ul>
-						<li data-lang="ja">事実と仮説を明確に分離</li>
-						<li data-lang="en">Clear separation of facts and hypotheses</li>
-						<li data-lang="ja">信頼度バッジ（検証済・仮説・推測）付き</li>
-						<li data-lang="en">Confidence badges (verified / hypothesis / speculative)</li>
-					</ul>
+					<p data-lang="ja">capability-based 設計が旧世代を包含しうる理由を、コード・ランタイム・git 来歴から構造的に分析した仮説ページ。</p>
+					<p data-lang="en">Structural analysis of ROCm's capability-based design encompassing legacy GPUs, grounded in code, runtime, and git provenance.</p>
 					<div class="actions">
-						<a class="button button-primary" href="hypothesis.html">Open</a>
-						<a class="button button-secondary" href="./hypothesis.html">Direct URL</a>
+						<a class="button button-purple" href="hypothesis.html">Open</a>
 					</div>
 				</article>
 
-				<article class="card">
+				<article class="card-compact">
 					<span class="card-type type-hypothesis" style="background:#6A1B9A;">Design Model</span>
 					<h3 data-lang="ja">gfx900 が明かした ROCm 全体像</h3>
 					<h3 data-lang="en">What gfx900 Revealed About ROCm</h3>
 					<p class="filename">reveal-hypothesis.html</p>
-					<p data-lang="ja">gfx900 個別調査を起点にしながら、ROCm 一般の設計思想を GitHub 側の一次資料で検証した要約ページです。layered support、capability-based fallback、staged deprecation、repo-level consolidation、deprecated branch 上に残る legacy knowledge、AMD とコミュニティの役割分解を扱います。</p>
-					<p data-lang="en">A GitHub-grounded summary page that starts from the gfx900 investigation but expands into ROCm-wide design questions: layered support, capability-based fallback, staged deprecation, repository-level consolidation, legacy knowledge preserved on deprecated branches, and the split roles of AMD and the community.</p>
-					<ul>
-						<li data-lang="ja">README・changelog・TheRock issue・runtime fallback 実装を横断</li>
-						<li data-lang="en">Cross-reads README, changelog, TheRock issues, and runtime fallback implementations</li>
-						<li data-lang="ja">「support」を build / runtime / driver / user space に分解</li>
-						<li data-lang="en">Breaks “support” into build, runtime, driver, and user-space layers</li>
-					</ul>
+					<p data-lang="ja">gfx900 調査を起点に、ROCm 一般の設計思想を GitHub 一次資料で検証した要約ページ。layered support・capability-based fallback・staged deprecation を扱います。</p>
+					<p data-lang="en">GitHub-grounded summary expanding the gfx900 investigation to ROCm-wide design: layered support, capability-based fallback, staged deprecation, and role splits.</p>
 					<div class="actions">
-						<a class="button button-primary" href="reveal-hypothesis.html">Open</a>
-						<a class="button button-secondary" href="./reveal-hypothesis.html">Direct URL</a>
+						<a class="button button-purple" href="reveal-hypothesis.html">Open</a>
 					</div>
 				</article>
 
-				<article class="card">
+				<article class="card-compact">
 					<span class="card-type type-hypothesis" style="background:#1565C0;">Structure</span>
 					<h3 data-lang="ja">ROCm の構造と貢献レイヤ</h3>
 					<h3 data-lang="en">ROCm Structure and Contribution Layers</h3>
 					<p class="filename">rocm-structure.html</p>
-					<p data-lang="ja">ROCm 全体を、GitHub 側の一次資料から layered stack、support の意味の分離、repo topology の統合、AMD と community の寄与レイヤという観点で整理した独立ページです。gfx900 個別事例から一段引いて、ROCm 一般の構造を public 向けに読みやすくまとめています。</p>
-					<p data-lang="en">A standalone page that reads ROCm-wide structure from GitHub-side primary material: layered stack organization, split meanings of support, repository-topology consolidation, and the contribution layers of AMD and the community. It steps back from the gfx900 case and summarizes the broader ROCm structure for public readers.</p>
-					<ul>
-						<li data-lang="ja">Fact / Interpretation / Open Question を分離</li>
-						<li data-lang="en">Separates facts, interpretations, and open questions</li>
-						<li data-lang="ja">TheRock / rocm-systems / retired repo / public issue・PR を横断</li>
-						<li data-lang="en">Cross-reads TheRock, rocm-systems, retired repos, and public issues/PRs</li>
-					</ul>
+					<p data-lang="ja">GitHub 一次資料から layered stack・support の意味の分離・repo topology の統合・AMD とコミュニティの寄与レイヤを整理した独立ページ。</p>
+					<p data-lang="en">Reads ROCm-wide structure from GitHub primary material: stack organization, split meanings of support, topology consolidation, and AMD / community contribution layers.</p>
 					<div class="actions">
-						<a class="button button-primary" href="rocm-structure.html">Open</a>
-						<a class="button button-secondary" href="./rocm-structure.html">Direct URL</a>
+						<a class="button button-purple" href="rocm-structure.html">Open</a>
 					</div>
 				</article>
 
-				<article class="card">
+				<article class="card-compact">
 					<span class="card-type type-hypothesis" style="background:#AD1457;">History</span>
 					<h3 data-lang="ja">ROCm GitHub 履歴タイムライン</h3>
 					<h3 data-lang="en">ROCm GitHub History Timeline</h3>
 					<p class="filename">rocm-history.html</p>
-					<p data-lang="ja">これまでの調査で確定した commit、release block、issue trail、retired/deprecated repo の痕跡を使って、ROCm の変遷を public 向けの年表として整理したページです。gfx900 を入口にしつつ、より広い ROCm の歴史を見渡せます。</p>
-					<p data-lang="en">A public-facing chronology built from the commits, release blocks, issue trails, and traces preserved in retired/deprecated repos. It starts from gfx900, but opens onto a broader view of ROCm history.</p>
-					<ul>
-						<li data-lang="ja">exact commit と release-note anchor を混在表示</li>
-						<li data-lang="en">Mixes exact commits with release-note anchors</li>
-						<li data-lang="ja">追加・後退・統合・fallback を時間軸で読める</li>
-						<li data-lang="en">Makes expansion, retreat, consolidation, and fallback readable on one timeline</li>
-					</ul>
+					<p data-lang="ja">commit・release block・issue trail・retired/deprecated repo の痕跡を使った年表。追加・後退・統合・fallback を時間軸で読めます。</p>
+					<p data-lang="en">Chronology built from commits, release blocks, issue trails, and deprecated repos. Expansion, retreat, consolidation, and fallback on one timeline.</p>
 					<div class="actions">
-						<a class="button button-primary" href="rocm-history.html">Open</a>
-						<a class="button button-secondary" href="./rocm-history.html">Direct URL</a>
+						<a class="button button-purple" href="rocm-history.html">Open</a>
 					</div>
 				</article>
 
-				<article class="card">
-					<span class="card-type type-trace">Trace</span>
-				<h3 data-lang="ja">`num_gpu` コード追跡資料</h3>
-				<h3 data-lang="en">`num_gpu` code-tracing deck</h3>
-				<p class="filename">code-tracing.html</p>
-				<p data-lang="ja">`num_gpu` の意味を client → server → runner → llama.cpp まで厳密な行番号で追う単体資料です。</p>
-				<p data-lang="en">A standalone supplementary deck tracing the exact meaning of `num_gpu` from client to server, runner, and llama.cpp with precise line references.</p>
-				<ul>
-					<li data-lang="ja">全11ページの単体補助資料</li>
-					<li data-lang="en">11-page standalone explainer</li>
-					<li data-lang="ja">`num_gpu` 誤読防止に有効</li>
-					<li data-lang="en">Useful for preventing `num_gpu` misinterpretation</li>
-				</ul>
-				<div class="actions">
-					<a class="button button-primary" href="code-tracing.html">Open</a>
-					<a class="button button-secondary" href="./code-tracing.html">Direct URL</a>
-				</div>
+				<article class="card-compact">
+					<span class="card-type type-trace">Solver Trace</span>
+					<h3 data-lang="ja">gfx900 計算経路トレース（ROCm）</h3>
+					<h3 data-lang="en">gfx900 solver path trace (ROCm)</h3>
+					<p class="filename">solver-trace.html</p>
+					<p data-lang="ja">MIOpen・rocBLAS・CK・Tensile における gfx900 推論経路を、ソース行番号と実機ログで対応づけた技術参照資料。</p>
+					<p data-lang="en">gfx900 computation paths through MIOpen, rocBLAS, CK, and Tensile — source line numbers cross-referenced with real Vega64 runtime logs.</p>
+					<div class="actions">
+						<a class="button button-purple" href="solver-trace.html">Open</a>
+					</div>
 				</article>
 
-				<article class="card">
-					<span class="card-type type-trace">Solver Trace</span>
-				<h3 data-lang="ja">gfx900 計算経路トレース（ROCm）</h3>
-				<h3 data-lang="en">gfx900 solver path trace (ROCm)</h3>
-				<p class="filename">solver-trace.html</p>
-				<p data-lang="ja">MIOpen・rocBLAS・CK・Tensile における gfx900 推論経路を、ソース行番号と実機ログで対応づけた技術参照資料です。</p>
-				<p data-lang="en">A technical reference tracing gfx900 computation paths through MIOpen, rocBLAS, CK, and Tensile — with exact source line numbers cross-referenced against real Vega64 runtime logs.</p>
-				<ul>
-					<li data-lang="ja">MLIR 除外コミット・ASM ホワイトリスト・dot4 フォールバックをコードで確認</li>
-					<li data-lang="en">MLIR exclusion commit, ASM whitelist, dot4 fallback — all code-verified</li>
-					<li data-lang="ja">実機逆アセンブルで dot4 命令不在を確認</li>
-					<li data-lang="en">Disassembly confirms no dot4 instructions in INT8 naive kernel on Vega64</li>
-					<li data-lang="ja">「維持・管理・補充」3 層構造をコードと実機の両面で説明</li>
-					<li data-lang="en">Maintain / manage / supplement: three-layer architecture explained with code + runtime evidence</li>
-				</ul>
-				<div class="actions">
-					<a class="button button-primary" href="solver-trace.html">Open</a>
-					<a class="button button-secondary" href="./solver-trace.html">Direct URL</a>
-				</div>
+				<article class="card-compact">
+					<span class="card-type type-trace">Code Trace</span>
+					<h3 data-lang="ja"><code>num_gpu</code> コード追跡資料</h3>
+					<h3 data-lang="en"><code>num_gpu</code> code-tracing deck</h3>
+					<p class="filename">code-tracing.html</p>
+					<p data-lang="ja"><code>num_gpu</code> の意味を client → server → runner → llama.cpp まで厳密な行番号で追う単体資料（全11ページ）。</p>
+					<p data-lang="en">Traces the exact meaning of <code>num_gpu</code> from client to server, runner, and llama.cpp with precise line references. 11-page standalone explainer.</p>
+					<div class="actions">
+						<a class="button button-purple" href="code-tracing.html">Open</a>
+					</div>
 				</article>
+
 			</div>
 		</section>
 
@@ -747,6 +747,9 @@
 		<div class="footer">
 			<span data-lang="ja">AETS-MAGI GitHub Pages landing page for vega-hbmx materials</span>
 			<span data-lang="en">AETS-MAGI GitHub Pages landing page for vega-hbmx materials</span>
+			<br>
+			<a class="meta-link" href="page-history.html" data-lang="ja">ページ更新履歴</a>
+			<a class="meta-link" href="page-history.html" data-lang="en">Page update history</a>
 		</div>
 	</div>
 
