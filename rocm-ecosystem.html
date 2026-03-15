@@ -77,6 +77,7 @@
     .diagram-caption {
       font-size: 13px; color: var(--muted); margin-top: 12px; text-align: center;
     }
+    .mermaid svg { min-width: 600px; height: auto; }
     .mermaid { text-align: center;   overflow-x: auto;
     }
 
@@ -163,7 +164,9 @@
   </style>
   <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true, theme: 'base',
+    mermaid.initialize({ startOnLoad: true, useMaxWidth: false,
+      flowchart: { useMaxWidth: false },
+      timeline:   { useMaxWidth: false },, theme: 'base',
       themeVariables: { primaryColor: '#E3F2FD', primaryTextColor: '#1F2933',
                         primaryBorderColor: '#1565C0', lineColor: '#607D8B',
                         secondaryColor: '#EDE7F6', tertiaryColor: '#E8F5E9' } });

@@ -301,7 +301,9 @@
 	</style>
 	<script type="module">
 		import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-		mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' } });
+		mermaid.initialize({ startOnLoad: true, useMaxWidth: false,
+      flowchart: { useMaxWidth: false },
+      timeline:   { useMaxWidth: false },, theme: 'base', themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' } });
 	</script>
 </head>
 <body>
