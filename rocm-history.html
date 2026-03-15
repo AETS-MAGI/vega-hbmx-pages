@@ -389,14 +389,14 @@
         <span class="badge">Updated: 2026-03-15</span>
       </div>
       <div class="summary">
-        <span data-lang="ja"><strong>要点:</strong> いま見えている範囲だけでも、ROCm の歴史は「対応 / 非対応」の単純な二値ではなく、component ごとの追加・後退・統合・fallback がずれながら積み重なる履歴として読むほうが自然です。</span>
-        <span data-lang="en"><strong>Key point:</strong> Even with the limited evidence already fixed in the notebook, ROCm history reads less like a simple supported/unsupported binary and more like a layered record of component-specific expansion, retreat, consolidation, and fallback.</span>
+        <span data-lang="ja"><strong>要点:</strong> いま見えている範囲だけでも、ROCm の歴史は「対応 / 非対応」の単純な二値ではなく、component ごとの追加・後退・統合・fallback、さらに retired repo の再編がずれながら積み重なる履歴として読むほうが自然です。</span>
+        <span data-lang="en"><strong>Key point:</strong> Even with the limited evidence already fixed in the notebook, ROCm history reads less like a simple supported/unsupported binary and more like a layered record of component-specific expansion, retreat, consolidation, fallback, and repository reorganization.</span>
       </div>
     </section>
 
     <div class="note note-info">
-      <span data-lang="ja"><strong>読み方:</strong> この年表は、<strong>正確な日付の commit</strong> と <strong>ROCm release block 単位でしか固定できていない出来事</strong> と <strong>issue trail から読める継続的議論</strong> を混ぜています。まだ公式通史ではなく、公開用の working draft です。</span>
-      <span data-lang="en"><strong>How to read this:</strong> This timeline mixes <strong>exactly dated commits</strong>, <strong>events only anchored to ROCm release blocks</strong>, and <strong>ongoing issue-trail discussions</strong>. It is a public working draft, not yet a complete official history.</span>
+      <span data-lang="ja"><strong>読み方:</strong> この年表は、<strong>正確な日付の commit</strong> と <strong>ROCm release block 単位でしか固定できていない出来事</strong> と <strong>issue trail や retired notice から読める継続的議論</strong> を混ぜています。まだ公式通史ではなく、公開用の working draft です。</span>
+      <span data-lang="en"><strong>How to read this:</strong> This timeline mixes <strong>exactly dated commits</strong>, <strong>events only anchored to ROCm release blocks</strong>, and <strong>ongoing issue trails or retired-repo notices</strong>. It is a public working draft, not yet a complete official history.</span>
     </div>
 
     <h2 class="section-title" data-lang="ja">主要な時間軸</h2>
@@ -436,6 +436,24 @@
           <li data-lang="en">The <code>Tensile 4.36.0</code> release block records <code>gfx900:xnack-</code> being added alongside other architectures.</li>
           <li data-lang="ja"><strong>意味:</strong> 同じ ecosystem の中で、ある component では除外が進み、別 component ではまだ追加系の動きがある。</li>
           <li data-lang="en"><strong>Meaning:</strong> Within the same ecosystem, one component may be retreating while another still shows expansion-style target work.</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-date">2022-10-05</span>
+          <span class="anchor anchor-date" data-lang="ja">exact commit</span>
+          <span class="anchor anchor-date" data-lang="en">exact commit</span>
+        </div>
+        <h3 data-lang="ja">MIOpen の別層では <code>gfx900</code> 向け workaround と DB docs が残る</h3>
+        <h3 data-lang="en">Other MIOpen layers still carry <code>gfx900</code> workarounds and DB docs</h3>
+        <ul>
+          <li data-lang="ja">commit <code>e5c6ce1</code> 由来の current tree には、<code>gfx900</code> 用 <code>sramecc-</code> misreport workaround が残っている。</li>
+          <li data-lang="en">The current tree still carries a <code>gfx900</code>-specific <code>sramecc-</code> misreport workaround from commit <code>e5c6ce1</code>.</li>
+          <li data-lang="ja"><code>embed.md</code> と <code>find_and_immediate.md</code> には <code>gfx900_56</code> / <code>gfx900_64</code> の Find-db / immediate-mode 例が残っている。</li>
+          <li data-lang="en"><code>embed.md</code> and <code>find_and_immediate.md</code> still document <code>gfx900_56</code> / <code>gfx900_64</code> Find-db and immediate-mode examples.</li>
+          <li data-lang="ja"><strong>意味:</strong> MLIR solver は止まっていても、runtime metadata や tuning database の層では <code>gfx900</code> がまだ明示的に扱われていた。</li>
+          <li data-lang="en"><strong>Meaning:</strong> Even with MLIR solver support blocked, runtime metadata and tuning-database layers were still explicitly handling <code>gfx900</code>.</li>
         </ul>
       </div>
 
@@ -519,6 +537,25 @@
           <li data-lang="en"><strong>Meaning:</strong> ROCm history is better read not as a simple support-matrix delta, but as an interaction between component autonomy and stack-wide pressure to reorganize.</li>
         </ul>
       </div>
+
+      <div class="step">
+        <div class="anchor-row">
+          <span class="anchor anchor-current" data-lang="ja">retired repo notices</span>
+          <span class="anchor anchor-current" data-lang="en">retired repo notices</span>
+        </div>
+        <h3 data-lang="ja">retired repo の案内先そのものが、ROCm の再編方向を露出している</h3>
+        <h3 data-lang="en">Retired-repo notices themselves expose ROCm's reorganization path</h3>
+        <ul>
+          <li data-lang="ja"><code>ROCR-Runtime</code> は retired とされ、移行先として <code>rocm-systems</code> を案内している。</li>
+          <li data-lang="en"><code>ROCR-Runtime</code> is marked retired and points to <code>rocm-systems</code> as the new home.</li>
+          <li data-lang="ja"><code>Tensile</code> は retired とされ、移行先として <code>rocm-libraries</code> を案内している。</li>
+          <li data-lang="en"><code>Tensile</code> is marked retired and points to <code>rocm-libraries</code>.</li>
+          <li data-lang="ja"><code>ROCm/vllm</code> は retired とされ、移行先として upstream <code>vllm-project/vllm</code> を案内している。</li>
+          <li data-lang="en"><code>ROCm/vllm</code> is marked retired and points back to upstream <code>vllm-project/vllm</code>.</li>
+          <li data-lang="ja"><strong>意味:</strong> support policy だけでなく、repo topology 自体も <code>rocm-libraries</code> / <code>rocm-systems</code> / upstream へ再編されている。</li>
+          <li data-lang="en"><strong>Meaning:</strong> Not only support policy but repository topology itself is being consolidated toward <code>rocm-libraries</code>, <code>rocm-systems</code>, and upstream projects.</li>
+        </ul>
+      </div>
     </div>
 
     <h2 class="section-title" data-lang="ja">並行して進んでいる別の流れ</h2>
@@ -543,6 +580,13 @@
         <h3 data-lang="en">Persistent capability-based fallback</h3>
         <p data-lang="ja"><code>Tensile</code> docs と <code>rocBLAS</code> 実装は、individual arch ID より capability と fallback catalog を重視する設計が長く続いていることを示す。</p>
         <p data-lang="en"><code>Tensile</code> docs and <code>rocBLAS</code> runtime code show a durable design preference for capability-based selection and fallback catalogs over strict per-arch branching.</p>
+      </div>
+
+      <div class="card">
+        <h3 data-lang="ja">repo topology の再編</h3>
+        <h3 data-lang="en">Repository-topology consolidation</h3>
+        <p data-lang="ja">retired notice は、単に古い repo を閉じるだけでなく、<code>rocm-libraries</code>、<code>rocm-systems</code>、upstream project へ責務を寄せ直す再編が進んでいることを示す。</p>
+        <p data-lang="en">Retired notices show more than closure: responsibilities are being regrouped toward <code>rocm-libraries</code>, <code>rocm-systems</code>, and selected upstream projects.</p>
       </div>
     </div>
 
@@ -583,18 +627,24 @@
             <td data-lang="ja">枠組みとして有効</td>
             <td data-lang="en">Useful as framing</td>
           </tr>
+          <tr>
+            <td data-lang="ja">repo の統廃合そのものが ROCm の設計整理を反映している</td>
+            <td data-lang="en">Repository consolidation itself reflects ROCm's design reorganization</td>
+            <td data-lang="ja">中程度</td>
+            <td data-lang="en">Moderate</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     <div class="note note-warn">
-      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
-      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, and explicit maintainer statements of design intent. This page re-assembles already-confirmed fragments for public use.</span>
+      <span data-lang="ja"><strong>まだ不足しているもの:</strong> issue / PR コメントの完全追跡、private repository 側の事情、maintainer 自身の明示的な設計宣言、そして legacy <code>MIOpen</code> clone の fully-expanded working tree。今の年表は、すでに確定した断片を public 向けに編み直したものです。</span>
+      <span data-lang="en"><strong>What is still missing:</strong> full issue/PR comment tracking, private-repository context, explicit maintainer statements of design intent, and a fully expanded working tree for the legacy <code>MIOpen</code> clone. This page re-assembles already-confirmed fragments for public use.</span>
     </div>
 
     <div class="note note-green">
-      <span data-lang="ja"><strong>暫定結論:</strong> ROCm の歴史は、単に「古いものを切って新しいものに置き換える」直線ではなく、追加・統合・選択的無効化・fallback 残存が層ごとにずれながら進む履歴として読める。</span>
-      <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm history is better read not as a straight line of replacing the old with the new, but as a layered record in which expansion, consolidation, selective disable, and fallback survival proceed at different speeds.</span>
+      <span data-lang="ja"><strong>暫定結論:</strong> ROCm の歴史は、単に「古いものを切って新しいものに置き換える」直線ではなく、追加・統合・選択的無効化・fallback 残存・repo 再編が層ごとにずれながら進む履歴として読める。</span>
+      <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm history is better read not as a straight line of replacing the old with the new, but as a layered record in which expansion, consolidation, selective disable, fallback survival, and repository reorganization proceed at different speeds.</span>
     </div>
 
     <div class="actions">

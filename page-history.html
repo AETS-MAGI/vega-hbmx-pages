@@ -410,6 +410,62 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">legacy / retired repo の再編も公開側へ反映</h2>
+        <h2 data-lang="en">Reflected legacy / retired-repo reorganization on the public pages</h2>
+        <span class="entry-date">2026-03-15</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">official clone に加えて legacy / retired repo 群を調査対象へ入れたことで、ROCm の歴史を arch support だけでなく repo topology の再編としても読めるようになった。その知見を公開ページ群へ反映した。</p>
+      <p class="entry-lead" data-lang="en">Once legacy and retired repositories were added to the source set, ROCm history became readable not only as arch-support drift but also as repository-topology reorganization. The public pages were updated to reflect that added axis.</p>
+      <div class="file-list">
+        <span class="file-tag">rocm-history.html</span>
+        <span class="file-tag">reveal-hypothesis.html</span>
+        <span class="file-tag">index.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>rocm-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">年表は、主に commit・release block・issue trail から見える support の変動を中心に整理していた。repo 自体の退役や移行先はまだ歴史軸に入っていなかった。</p>
+            <p data-lang="en">The timeline mainly organized support drift visible from commits, release blocks, and issue trails. Repository retirement and re-homing were not yet part of the public history axis.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>ROCR-Runtime -&gt; rocm-systems</code>、<code>Tensile -&gt; rocm-libraries</code>、<code>ROCm/vllm -&gt; upstream</code> を timeline に加え、並行流にも <em>repository-topology consolidation</em> を追加した。暫定結論も、support policy に加えて repo 再編まで含む形へ拡張した。</p>
+            <p data-lang="en"><code>ROCR-Runtime -&gt; rocm-systems</code>, <code>Tensile -&gt; rocm-libraries</code>, and <code>ROCm/vllm -&gt; upstream</code> were added to the timeline, with a new <em>repository-topology consolidation</em> current and a broadened provisional conclusion.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> legacy / retired repo README の移行案内。arch support の後退とは別に、責務の置き場所そのものが組み替わっていることが public に読めるようになった。</span>
+          <span data-lang="en"><strong>Rationale:</strong> Migration guidance in the legacy/retired repo READMEs. Separate from arch-support retreat, the public record now shows that the location of responsibilities is also being reorganized.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>reveal-hypothesis.html</code> / <code>index.html</code> / <code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">設計モデル側は layered support と fallback を中心に説明していたが、repo 再編の信号はまだ表に出していなかった。トップ導線や README も、そこまで明示していなかった。</p>
+            <p data-lang="en">The design-model side explained layered support and fallback, but did not yet surface repository-reorganization signals. The top-level routes and README did not name that axis either.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>reveal-hypothesis.html</code> では仮説4と summary に repo-level consolidation を追加し、<code>index.html</code> と README でも <code>retired repo notice</code> や <code>repo-level consolidation</code> を読めるページだと分かる説明へ更新した。</p>
+            <p data-lang="en"><code>reveal-hypothesis.html</code> now adds repository-level consolidation to Hypothesis 4 and the summary, while <code>index.html</code> and the README now make it clear that readers will also encounter retired-repo notices and repo-level consolidation.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">ROCm GitHub 履歴タイムラインを公開ページへ追加</h2>
         <h2 data-lang="en">Added a public ROCm GitHub history timeline</h2>
         <span class="entry-date">2026-03-15</span>

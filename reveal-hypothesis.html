@@ -322,8 +322,8 @@
         <span class="badge">Updated: 2026-03-15</span>
       </div>
       <div class="summary">
-        <span data-lang="ja"><strong>要点:</strong> gfx900 の出来事だけから一般論を言うのではなく、README・changelog・TheRock issue・Tensile docs・rocBLAS runtime fallback を合わせて読むと、ROCm は「単一の support policy」でなく「層ごと・component ごとにズレを持つ stack」として理解するのが自然になる。</span>
-        <span data-lang="en"><strong>Key point:</strong> Rather than generalizing from a single legacy GPU event, reading the README, changelog, TheRock issues, Tensile docs, and rocBLAS fallback logic together suggests that ROCm is best understood as a stack with layer-specific and component-specific support behavior, not a single binary policy.</span>
+        <span data-lang="ja"><strong>要点:</strong> gfx900 の出来事だけから一般論を言うのではなく、README・release block・TheRock issue・Tensile docs・rocBLAS runtime fallback・retired repo notice を合わせて読むと、ROCm は「単一の support policy」でなく「層ごと・component ごと・repo topology ごとにズレを持つ stack」として理解するのが自然になる。</span>
+        <span data-lang="en"><strong>Key point:</strong> Rather than generalizing from a single legacy GPU event, reading the README, release blocks, TheRock issues, Tensile docs, rocBLAS fallback logic, and retired-repo notices together suggests that ROCm is best understood as a stack with layer-specific, component-specific, and repository-topology-specific behavior, not a single binary policy.</span>
       </div>
     </section>
 
@@ -383,6 +383,8 @@
         <li data-lang="en"><code>AMDGPU_TARGETS</code> is deprecated in favor of <code>GPU_TARGETS</code>.</li>
         <li data-lang="ja"><code>TheRock</code> は unified CMake build with bundled dependencies を掲げている。</li>
         <li data-lang="en"><code>TheRock</code> advertises a unified CMake build with bundled dependencies.</li>
+        <li data-lang="ja">retired repo notice では、個別 repo の責務が <code>rocm-libraries</code>、<code>rocm-systems</code>、upstream project へ寄せ直されている。</li>
+        <li data-lang="en">Retired-repo notices show standalone repositories being regrouped toward <code>rocm-libraries</code>, <code>rocm-systems</code>, and selected upstream projects.</li>
       </ul>
     </div>
 
@@ -455,6 +457,8 @@
         <li data-lang="en">Execution paths are broadly supported through capability-based selection and fallback.</li>
         <li data-lang="ja">表の入口や build knob は徐々に統合される。</li>
         <li data-lang="en">Public-facing entry points and build knobs are gradually unified.</li>
+        <li data-lang="ja">standalone repo 群も、より大きい umbrella repo や upstream へ再配置されつつある。</li>
+        <li data-lang="en">Standalone repositories are also being re-homed into larger umbrella repos or back to upstream.</li>
         <li data-lang="ja">legacy は source から即死するのでなく、段階的に retreat する。</li>
         <li data-lang="en">Legacy support retreats in stages rather than dying at once in source.</li>
         <li data-lang="ja">保守主体は単一ではなく、投入・維持・運用・修正可能性に分解して考える必要がある。</li>
@@ -472,6 +476,8 @@
         <li data-lang="en">How far the community materially sustains the stack still requires more issue / PR / workaround analysis.</li>
         <li data-lang="ja">private backend issue が public gating に現れる例が一般的かどうかは未確定。</li>
         <li data-lang="en">It remains unclear whether private-backend-to-public-gating behavior is common or just a few notable cases.</li>
+        <li data-lang="ja">legacy <code>MIOpen</code> clone はまだ fully expanded ではなく、retired / current の厳密比較には追加展開が必要。</li>
+        <li data-lang="en">The legacy <code>MIOpen</code> clone is not yet fully expanded, so exact retired/current comparison still needs more local extraction.</li>
       </ul>
     </div>
 
