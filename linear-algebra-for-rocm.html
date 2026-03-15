@@ -105,6 +105,23 @@
       font-size: 15px; line-height: 1.65;
     }
 
+    /* matmul figure */
+    .matmul-fig {
+      margin: 14px 0 20px;
+      text-align: center;
+    }
+    .matmul-fig img {
+      width: 100%; max-width: 780px;
+      display: block; margin: 0 auto;
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+    .matmul-fig figcaption {
+      font-size: 12px; color: var(--muted);
+      margin-top: 8px; line-height: 1.5;
+    }
+
     /* vector-matrix visual */
     .vm-visual {
       display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
@@ -325,19 +342,35 @@
 
   <!-- 計算過程 -->
   <div class="prose">
-    <h3 data-lang="ja">計算のしくみ</h3>
-    <h3 data-lang="en">How the computation works</h3>
+    <h3 data-lang="ja">計算のしくみ — どこをどう掛けて足すか</h3>
+    <h3 data-lang="en">How the computation works — what multiplies what</h3>
+    <p data-lang="ja">出力の各要素は、行列の <strong>1 行分の重み</strong> と、入力ベクトルの <strong>対応する要素</strong> を掛けて、すべて足し合わせたものです。行が変われば出力も変わります。</p>
+    <p data-lang="en">Each output value is produced by taking <strong>one row of the matrix</strong>, multiplying it element-by-element with <strong>the input vector</strong>, and summing everything up. Change the row, and you get a different output.</p>
+  </div>
+
+  <!-- 行列積の手順図 -->
+  <figure class="matmul-fig">
+    <img src="media/img/matmul-how-it-works.png"
+         alt="行列Wの行1（オレンジ）と入力xを掛けて足すとy1=81、行2（紫）を使うとy2=75になることを示す計算図"
+         loading="lazy">
+    <figcaption>
+      <span data-lang="ja">同じ色 = 同じ行。行ごとに「重み × 入力をすべて足す」と、その行に対応する出力が得られる</span>
+      <span data-lang="en">Same colour = same row. For each row: "sum all (weight × input)" gives the corresponding output value</span>
+    </figcaption>
+  </figure>
+
+  <div class="prose">
     <div data-lang="ja">
-      <p>各科目の点数に重みをかけて合計します。</p>
+      <p>数式で書くとこうなります（確認用）：</p>
       $$y_1 = 0.5 \times 80 + 0.2 \times 70 + 0.3 \times 90 = 40 + 14 + 27 = \mathbf{81} \;\text{（文系寄り評価）}$$
       $$y_2 = 0.1 \times 80 + 0.7 \times 70 + 0.2 \times 90 = 8 + 49 + 18 = \mathbf{75} \;\text{（理系寄り評価）}$$
       <p>同じ入力でも、行列（重みの組み合わせ）が変われば結果が変わります。</p>
     </div>
     <div data-lang="en">
-      <p>Multiply each score by its weight and sum them up.</p>
+      <p>Written as equations (for reference):</p>
       $$y_1 = 0.5 \times 80 + 0.2 \times 70 + 0.3 \times 90 = 40 + 14 + 27 = \mathbf{81} \;\text{(humanities-leaning)}$$
       $$y_2 = 0.1 \times 80 + 0.7 \times 70 + 0.2 \times 90 = 8 + 49 + 18 = \mathbf{75} \;\text{(science-leaning)}$$
-      <p>Change the matrix (the weighting), and the output changes even with the same input.</p>
+      <p>Change the matrix (the weighting) and the output changes even with the same input.</p>
     </div>
   </div>
 
