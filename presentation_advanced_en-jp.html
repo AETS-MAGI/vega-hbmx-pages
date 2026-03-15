@@ -48,6 +48,14 @@
 </style>
 </head>
 <body>
+  <!-- Disclaimer / 注記 -->
+  <div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:0.6em 1.0em;font-size:0.78em;line-height:1.5;position:fixed;bottom:0;left:0;right:0;z-index:100;box-shadow:0 -1px 6px rgba(0,0,0,0.08);">
+    <strong>Note / 注記</strong>:
+    This presentation organizes observations from publicly available sources and local repository clones only.
+    It does not assert the contents of private issues or internal decision-making processes.
+    / 本資料は、公開一次資料およびローカル clone から観測可能な範囲を整理したものであり、非公開 issue や社内意思決定の内容を断定するものではない。
+  </div>
+
   <div class="slide-container">
     <div class="toolbar">
       <span class="toolbar-label" id="lang-label">Language</span>
@@ -456,6 +464,20 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
       <p class="dim" style="text-align: center; font-style: italic; margin-top: 18px; font-size: 20px;">Based on the collected evidence: "not officially supported" and "not executable in any configuration" are distinct statements. | The qwen3.5 ROCm/Vulkan difference reproduced across two days with deterministic crash timing, but phi4-mini shows the Vulkan offload failure is model-specific rather than universal.</p>
     </div>
 
+    <!-- Non-claims -->
+    <div class="slide">
+      <section style="background:#fafafa;border:1px solid #ddd;padding:1.2em 1.6em;margin:2em 0;">
+        <h3 style="margin-top:0;">本資料が主張しないこと / This presentation does not claim that...</h3>
+        <ul style="font-size:0.9em;">
+          <li>AMD の社内意思決定過程を断定するものではない / Internal decision-making processes are asserted.</li>
+          <li><code>llvm-project-private#389</code> の内容を推定で補完するものではない / The content of the private issue has been inferred.</li>
+          <li>本資料の事例が ROCm 全体の一般法則として確定しているとするものではない / A single case is generalized into a universal rule.</li>
+          <li>AMD の support policy 全体を完全に代表するものではない / AMD's support policy as a whole is fully represented.</li>
+          <li>AMD または特定個人への批判を意図するものではない / Any specific organization is being criticized.</li>
+        </ul>
+      </section>
+    </div>
+
     <div class="footer"><span id="footer-label">Slide</span> <span id="current">1</span> / <span id="total">?</span> <span id="footer-hint">(Use Arrow Keys ← → to navigate)</span></div>
   </div>
 
@@ -829,5 +851,6 @@ github.com/ollama/ollama/runner/ollamarunner.(*Server).run.gowrap1()
     langJaBtn.addEventListener('click', () => applyLanguage('ja'));
     updateLanguageUI();
   </script>
+
 </body>
 </html>

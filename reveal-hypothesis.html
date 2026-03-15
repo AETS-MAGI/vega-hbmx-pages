@@ -327,14 +327,21 @@
       </div>
     </section>
 
+    <div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:1em 1.4em;margin:1.2em 0;font-size:0.95em;line-height:1.6;">
+      <strong>Note / 注記</strong><br>
+      This document organizes observations from publicly available sources and local repository clones only.
+      It does not assert the contents of private issues or internal decision-making processes.<br>
+      本文書は、公開一次資料およびローカル clone から観測可能な設計傾向・保守構造を整理することを目的とする。AMD の意思決定を評価・批判するものではなく、非公開 issue や社内意思決定の内容を断定するものでもない。
+    </div>
+
     <h2 class="section-title" data-lang="ja">検証した仮説</h2>
     <h2 class="section-title" data-lang="en">Verified hypotheses</h2>
     <p class="section-lead" data-lang="ja">以下は、内部ノートの仮説を GitHub 側の一次資料でどこまで支持できるかを整理した公開版要約です。</p>
     <p class="section-lead" data-lang="en">This page is a public-facing summary of how far the notebook's broader hypotheses can be supported using GitHub-side primary materials.</p>
 
     <div class="card">
-      <h3 data-lang="ja">仮説1: ROCm は layered / modular stack として自己定義している <span class="conf conf-supported">supported</span></h3>
-      <h3 data-lang="en">Hypothesis 1: ROCm defines itself as a layered / modular stack <span class="conf conf-supported">supported</span></h3>
+      <h3 data-lang="ja">仮説1: ROCm は layered / modular stack として自己定義している <span class="conf conf-supported">supported（公開一次資料の範囲で）</span></h3>
+      <h3 data-lang="en">Hypothesis 1: ROCm defines itself as a layered / modular stack <span class="conf conf-supported">supported (within the scope of public sources)</span></h3>
       <ul>
         <li data-lang="ja"><code>ROCm/README.md</code> は、drivers・development tools・APIs を含む open-source stack と明記している。</li>
         <li data-lang="en"><code>ROCm/README.md</code> explicitly describes ROCm as an open-source stack including drivers, development tools, and APIs.</li>
@@ -344,8 +351,8 @@
     </div>
 
     <div class="card">
-      <h3 data-lang="ja">仮説2: support は binary ではなく、層ごと・component ごとに分離している <span class="conf conf-strong">strongly supported</span></h3>
-      <h3 data-lang="en">Hypothesis 2: support is not binary; it is split by layer and component <span class="conf conf-strong">strongly supported</span></h3>
+      <h3 data-lang="ja">仮説2: support は binary ではなく、層ごと・component ごとに分離している <span class="conf conf-strong">strongly supported（公開一次資料の範囲で）</span></h3>
+      <h3 data-lang="en">Hypothesis 2: support is not binary; it is split by layer and component <span class="conf conf-strong">strongly supported (within the scope of public sources)</span></h3>
       <ul>
         <li data-lang="ja"><code>hipCUB 4.0.0</code> では <code>gfx803/gfx900</code> が default build から外れる。</li>
         <li data-lang="en"><code>hipCUB 4.0.0</code> removes <code>gfx803/gfx900</code> from default build targets.</li>
@@ -361,8 +368,8 @@
     </div>
 
     <div class="card">
-      <h3 data-lang="ja">仮説3: capability-based selection と fallback は ROCm の中心設計である <span class="conf conf-strong">strongly supported</span></h3>
-      <h3 data-lang="en">Hypothesis 3: capability-based selection and fallback are central ROCm design patterns <span class="conf conf-strong">strongly supported</span></h3>
+      <h3 data-lang="ja">仮説3: capability-based selection と fallback は ROCm の中心設計である <span class="conf conf-strong">strongly supported（公開一次資料の範囲で）</span></h3>
+      <h3 data-lang="en">Hypothesis 3: capability-based selection and fallback are central ROCm design patterns <span class="conf conf-strong">strongly supported (within the scope of public sources)</span></h3>
       <ul>
         <li data-lang="ja"><code>Tensile/Component.py</code> は individual architecture IDs より capability ベースで component を選ぶと明記している。</li>
         <li data-lang="en"><code>Tensile/Component.py</code> explicitly says kernel components are specified by capability rather than individual architecture IDs.</li>
@@ -374,8 +381,8 @@
     </div>
 
     <div class="card">
-      <h3 data-lang="ja">仮説4: ROCm は入口や build knob を統合する方向へ進んでいる <span class="conf conf-supported">supported</span></h3>
-      <h3 data-lang="en">Hypothesis 4: ROCm is moving toward unified front doors and build knobs <span class="conf conf-supported">supported</span></h3>
+      <h3 data-lang="ja">仮説4: ROCm は入口や build knob を統合する方向へ進んでいる <span class="conf conf-supported">supported（公開一次資料の範囲で）</span></h3>
+      <h3 data-lang="en">Hypothesis 4: ROCm is moving toward unified front doors and build knobs <span class="conf conf-supported">supported (within the scope of public sources)</span></h3>
       <ul>
         <li data-lang="ja"><code>HIPCC</code> は deprecated とされ、今後 AMD Clang の symbolic link になると予告されている。</li>
         <li data-lang="en"><code>HIPCC</code> is deprecated and scheduled to collapse into AMD Clang.</li>
@@ -389,8 +396,8 @@
     </div>
 
     <div class="card">
-      <h3 data-lang="ja">仮説5: legacy support は staged retreat で進む <span class="conf conf-supported">supported</span></h3>
-      <h3 data-lang="en">Hypothesis 5: legacy support retreats in stages rather than vanishing at once <span class="conf conf-supported">supported</span></h3>
+      <h3 data-lang="ja">仮説5: legacy support は staged retreat で進む <span class="conf conf-supported">supported（公開一次資料の範囲で）</span></h3>
+      <h3 data-lang="en">Hypothesis 5: legacy support retreats in stages rather than vanishing at once <span class="conf conf-supported">supported (within the scope of public sources)</span></h3>
       <ul>
         <li data-lang="ja">新しい arch は default targets に追加される一方、旧 arch は default build から後退し、さらに一部 component で selective exclusion が起きる。</li>
         <li data-lang="en">New architectures are added to default targets, while older ones retreat from default build and may then be selectively excluded in individual components.</li>
@@ -402,14 +409,18 @@
     </div>
 
     <div class="card">
-      <h3 data-lang="ja">仮説6: public product layer が private backend constraint を吸収することがある <span class="conf conf-partial">partially supported</span></h3>
-      <h3 data-lang="en">Hypothesis 6: the public product layer may absorb private backend constraints <span class="conf conf-partial">partially supported</span></h3>
+      <h3 data-lang="ja">仮説6: public product layer が private backend constraint を吸収することがある <span class="conf conf-partial">partially supported（事例1件のみ確認）</span></h3>
+      <h3 data-lang="en">Hypothesis 6: the public product layer may absorb private backend constraints <span class="conf conf-partial">partially supported (one case confirmed)</span></h3>
       <ul>
         <li data-lang="ja"><code>MIOpen</code> の <code>gfx900</code> MLIR disable は public code 側の gating だが、根拠コメントは <code>llvm-project-private#389</code> を参照している。</li>
         <li data-lang="en">The <code>MIOpen</code> <code>gfx900</code> MLIR disable is a public gating change whose comment points to <code>llvm-project-private#389</code>.</li>
         <li data-lang="ja">ただし今のところ、これを ROCm 全体の一般法則と断言するほど事例は集まっていない。</li>
         <li data-lang="en">At the moment, there are not yet enough examples to declare this a general ROCm-wide rule.</li>
       </ul>
+      <div class="note note-warn">
+        <span data-lang="ja">（この issue は非公開であり、本文は外部から確認できない。公開側から確認できるのは参照関係と gating の痕跡のみ。）</span>
+        <span data-lang="en">(This issue is not publicly accessible; its content cannot be verified from outside. What can be observed from the public side is limited to the reference relationship and gating traces in the codebase.)</span>
+      </div>
     </div>
 
     <div class="card">
@@ -510,6 +521,25 @@
       <span data-lang="en"><strong>Publishing note:</strong> This page is a public summary of the internal note <code>reveal_hypothesis.md</code>, which contains a finer-grained breakdown of assumptions and caveats. The goal here is to expose the ROCm-wide model at a reader-friendly level.</span>
     </div>
   </div>
+
+  <section style="background:#fafafa;border:1px solid #ddd;padding:1.2em 1.6em;margin:2em 0;">
+    <h3 style="margin-top:0;" data-lang="ja">本文書が主張しないこと</h3>
+    <h3 style="margin-top:0;" data-lang="en">This document does not claim that...</h3>
+    <ul>
+      <li data-lang="ja">ROCm maintainer がこの設計思想を明示的に意図していたと断定するものではない</li>
+      <li data-lang="en">ROCm maintainers explicitly intended this design.</li>
+      <li data-lang="ja"><code>llvm-project-private#389</code> の内容を推定で補完するものではない</li>
+      <li data-lang="en">The content of the private issue has been inferred.</li>
+      <li data-lang="ja">本文書の仮説が ROCm 全体の一般法則として確定しているとするものではない</li>
+      <li data-lang="en">These hypotheses are confirmed universal rules for all of ROCm.</li>
+      <li data-lang="ja">AMD の support policy 全体を完全に代表するものではない</li>
+      <li data-lang="en">AMD's support policy as a whole is fully represented.</li>
+      <li data-lang="ja">AMD またはコミュニティのいずれかが単独で全体を制御していると断定するものではない</li>
+      <li data-lang="en">Either AMD or the community alone controls everything.</li>
+      <li data-lang="ja">AMD または特定個人への批判を意図するものではない</li>
+      <li data-lang="en">Any specific organization is being criticized.</li>
+    </ul>
+  </section>
 
   <script>
     const html = document.documentElement;
