@@ -99,6 +99,12 @@
       border-left: 3px solid var(--line);
     }
     .term-key strong { color: var(--ink); }
+    .term-easy {
+      font-size: 13px; background: #E8F5E9; border-radius: 6px;
+      padding: 8px 12px; color: #1B5E20; margin: 0 0 10px;
+      border-left: 3px solid #2E7D32; line-height: 1.6;
+    }
+    .term-easy strong { color: #1B5E20; }
     .note {
       border-radius: 8px; padding: 12px 16px; margin: 20px 0;
       font-size: 14px; line-height: 1.6;
@@ -402,6 +408,7 @@ timeline
       <p class="term-name">gfx906</p>
       <p class="term-aka" data-lang="ja">別名: Vega20 / Radeon VII / Instinct MI50</p>
       <p class="term-aka" data-lang="en">Also: Vega20 / Radeon VII / Instinct MI50</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>gfx900 の「弟分」GPU です。gfx900 より小数点の計算（FP16）が速くなり、整数の点積命令（dot4）が新たに追加されました。MIOpen の一部ソルバーは gfx900 と gfx906 を「同じ兄弟」として一緒に許可しています。</div>
       <p class="term-def" data-lang="ja">gfx900 の後継で、FP16 精度が強化され dot4（INT8 内積）命令が追加された。MIOpen の ASM v4r1 ソルバーは gfx900 と gfx906 をペアで明示的に許可している。</p>
       <p class="term-def" data-lang="en">The successor to gfx900, with improved FP16 precision and added dot4 (INT8 dot-product) instructions. MIOpen's ASM v4r1 solver explicitly allows gfx900 and gfx906 as a pair.</p>
       <div class="term-key" data-lang="ja"><strong>追加機能:</strong> dot4 / dp4a (INT8), FP16 強化</div>
