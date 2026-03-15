@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles/mermaid-layout.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$',  right: '$',  display: false}
+      ]
+    })"></script>
   <title>イメージでわかる Attention / Visual Attention for Beginners | vega-hbmx-pages</title>
   <style>
     :root {
@@ -390,10 +399,10 @@
     <div class="step">
       <div class="step-num">2</div>
       <div class="step-body">
-        <strong data-lang="ja">softmax でスコアを注目割合に変換</strong>
-        <strong data-lang="en">softmax converts scores to attention weights</strong>
-        <p data-lang="ja">前のステップのスコアを softmax に通して「合計 1 の注目割合」に変換します。</p>
-        <p data-lang="en">The scores from step 1 are passed through softmax to become proportions that sum to 1.</p>
+        <strong data-lang="ja">softmax でスコアを注目の配分に変える</strong>
+        <strong data-lang="en">softmax turns scores into an attention distribution</strong>
+        <p data-lang="ja">前のステップのスコアを softmax に通して「どこにどれだけ注目するか」の配分に変えます。関係が深い単語ほど大きな値になります。</p>
+        <p data-lang="en">The scores from step 1 go through softmax, which converts them into an attention distribution — more relevant words get a larger share.</p>
       </div>
     </div>
     <div class="step">
@@ -408,39 +417,95 @@
   </div>
 
   <!-- 6. 式 -->
-  <h2 class="section-title" data-lang="ja">⑥ 式で書くと</h2>
-  <h2 class="section-title" data-lang="en">⑥ Written as a formula</h2>
+  <h2 class="section-title" data-lang="ja">⑥ いまの流れを式にすると</h2>
+  <h2 class="section-title" data-lang="en">⑥ Putting the steps into a formula</h2>
 
   <div class="prose">
-    <p data-lang="ja">上の 3 ステップをひとつの式にまとめると、これです：</p>
-    <p data-lang="en">Those three steps collapse into one formula:</p>
+    <p data-lang="ja">ここまでの3ステップを順番に式にしてみます。いきなり全部わかる必要はありません。<strong>「さっきの3ステップがどこに対応しているか」</strong>だけ追えれば十分です。</p>
+    <p data-lang="en">Let's write those three steps as formulas one at a time. You don't need to understand everything at once — just <strong>trace where each of the three steps appears</strong>.</p>
   </div>
 
-  <div class="formula-box">
-    Attention(Q, K, V) = softmax( Q·K<sup>T</sup> / √d ) · V
-    <br>
-    <span class="comment" data-lang="ja">
-      &nbsp;&nbsp;Q·K<sup>T</sup> ← Q と K の内積（スコア計算）<br>
-      &nbsp;&nbsp;/ √d &nbsp;&nbsp;&nbsp;&nbsp;← スケーリング（スコアを安定させる）<br>
-      &nbsp;&nbsp;softmax &nbsp;← スコアを「合計 1 の割合」に変換<br>
-      &nbsp;&nbsp;· V &nbsp;&nbsp;&nbsp;&nbsp;← 割合にしたがって V を加重平均
-    </span>
-    <span class="comment" data-lang="en">
-      &nbsp;&nbsp;Q·K<sup>T</sup> ← dot product of Q and K (score)<br>
-      &nbsp;&nbsp;/ √d &nbsp;&nbsp;&nbsp;&nbsp;← scaling (keeps scores stable)<br>
-      &nbsp;&nbsp;softmax &nbsp;← turns scores into proportions summing to 1<br>
-      &nbsp;&nbsp;· V &nbsp;&nbsp;&nbsp;&nbsp;← weighted average of V by those proportions
-    </span>
+  <div class="callout callout-purple" style="padding:18px 20px;">
+    <div style="display:flex;flex-direction:column;gap:18px;">
+
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="ja">ステップ 1 — 関係の強さを調べる</div>
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="en">Step 1 — measure relevance</div>
+        <div style="text-align:center;padding:8px 0;">$$\text{score} = QK^\top$$</div>
+        <p data-lang="ja" style="margin:4px 0 0;font-size:13px;color:#4A4A4A;">「いま欲しい情報（Q）」と「各単語の目印（K）」を掛け合わせて、<strong>関係の強さスコア</strong>を作ります。</p>
+        <p data-lang="en" style="margin:4px 0 0;font-size:13px;color:#4A4A4A;">Multiply "what I'm looking for (Q)" by "each word's label (K)" to get a <strong>relevance score</strong>.</p>
+      </div>
+
+      <div style="border-top:1px solid #CE93D8;padding-top:18px;">
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="ja">ステップ 2 — 注目の配分を決める</div>
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="en">Step 2 — decide the attention distribution</div>
+        <div style="text-align:center;padding:8px 0;">$$\text{weights} = \text{softmax}(QK^\top)$$</div>
+        <p data-lang="ja" style="margin:4px 0 0;font-size:13px;color:#4A4A4A;">スコアを softmax に通して、<strong>どこにどれだけ注目するかの配分</strong>に変えます。</p>
+        <p data-lang="en" style="margin:4px 0 0;font-size:13px;color:#4A4A4A;">Pass the scores through softmax to get <strong>how much to attend to each word</strong>.</p>
+      </div>
+
+      <div style="border-top:1px solid #CE93D8;padding-top:18px;">
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="ja">ステップ 3 — 情報を集める</div>
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="en">Step 3 — collect the information</div>
+        <div style="text-align:center;padding:8px 0;">$$\text{output} = \text{softmax}(QK^\top)\,V$$</div>
+        <p data-lang="ja" style="margin:4px 0 0;font-size:13px;color:#4A4A4A;">配分にしたがって各単語の中身（V）を集めます。関係が深い単語からはたくさん、浅い単語からは少しだけ受け取ります。</p>
+        <p data-lang="en" style="margin:4px 0 0;font-size:13px;color:#4A4A4A;">Collect each word's content (V) according to the distribution — more from relevant words, less from unrelated ones.</p>
+      </div>
+
+      <div style="border-top:1px solid #CE93D8;padding-top:18px;">
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="ja">3 ステップをまとめると</div>
+        <div style="font-size:12px;font-weight:700;color:#7B1FA2;margin-bottom:6px;" data-lang="en">All three steps combined</div>
+        <div style="text-align:center;padding:8px 0;">$$\text{Attention}(Q,K,V) = \text{softmax}(QK^\top)\,V$$</div>
+        <p data-lang="ja" style="margin:4px 0 0;font-size:13px;color:#777;">この式は新しいことを何も加えていません。ステップ 1〜3 をそのまま 1 行にまとめただけです。</p>
+        <p data-lang="en" style="margin:4px 0 0;font-size:13px;color:#777;">This adds nothing new — it's just steps 1–3 written on one line.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout callout-blue" style="margin-top:14px;">
+    <h4 data-lang="ja">補足：$\sqrt{d}$ で割るのはなに？</h4>
+    <h4 data-lang="en">Note: what is the $\sqrt{d}$ division?</h4>
+    <p data-lang="ja">実際の Transformer では式が少し違い、スコアを $\sqrt{d}$ で割ってから softmax に入れます：</p>
+    <p data-lang="en">In practice, Transformer divides the scores by $\sqrt{d}$ before softmax:</p>
+    <div style="text-align:center;padding:6px 0;">$$\text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d}}\right)V$$</div>
+    <p data-lang="ja" style="margin:6px 0 0;font-size:13px;">$Q$ や $K$ のベクトルが長いほど内積の値が大きくなりやすく、softmax が極端な配分を出してしまうことがあります。$\sqrt{d}$（$d$ はベクトルの長さ）で割ることでスコアを適度な大きさに抑えます。最初の理解では「<strong>スコアが暴れすぎないようにする調整</strong>」くらいで十分です。</p>
+    <p data-lang="en" style="margin:6px 0 0;font-size:13px;">Longer $Q$ and $K$ vectors tend to produce large dot products, pushing softmax toward extreme distributions. Dividing by $\sqrt{d}$ (where $d$ is the vector length) keeps scores in a reasonable range. For now, think of it as "<strong>a tweak to stop scores from getting too large</strong>."</p>
+  </div>
+
+  <!-- 7. Multi-head -->
+  <h2 class="section-title" data-lang="ja">⑦ Multi-head Attention ってなに？</h2>
+  <h2 class="section-title" data-lang="en">⑦ What is Multi-head Attention?</h2>
+
+  <div class="prose">
+    <p data-lang="ja">ここまでの Attention は「1 種類の見方で文全体を参照する」仕組みでした。でも実際の文には、同時に気にすべき関係が複数あります。</p>
+    <p data-lang="en">The Attention we've seen so far uses one "view" of the sequence. But real language has multiple kinds of relationships worth tracking at the same time.</p>
+  </div>
+
+  <div class="analogy">
+    <strong data-lang="ja">たとえるなら：</strong>
+    <strong data-lang="en">Analogy:</strong>
+    <p data-lang="ja" style="margin:8px 0 0;">1 人の先生だけで文を読むのではなく、</p>
+    <p data-lang="en" style="margin:8px 0 0;">Instead of one teacher reading the sentence, imagine:</p>
+    <ul style="margin:6px 0 0;padding-left:20px;font-size:14px;line-height:1.9;">
+      <li data-lang="ja">文法のつながりを見る先生</li>
+      <li data-lang="en">a teacher who looks for grammatical connections</li>
+      <li data-lang="ja">意味が近い単語を見る先生</li>
+      <li data-lang="en">a teacher who spots semantically similar words</li>
+      <li data-lang="ja">代名詞が誰を指すかを見る先生</li>
+      <li data-lang="en">a teacher who tracks what pronouns refer to</li>
+    </ul>
+    <p data-lang="ja" style="margin:6px 0 0;">が同時に文を読んでいる感じです。それぞれの先生が違う視点で関係を見つけ、最後に結果を合わせます。</p>
+    <p data-lang="en" style="margin:6px 0 0;">All reading simultaneously, each from a different angle, then pooling their findings.</p>
   </div>
 
   <div class="prose">
-    <p data-lang="ja"><strong>Multi-head Attention</strong> は、この計算を複数の「頭（head）」で並列に行い、それぞれが異なる種類の関係（構文・意味・照応など）を学習できるようにしたものです。</p>
-    <p data-lang="en"><strong>Multi-head Attention</strong> runs this computation in parallel across multiple "heads," each learning to attend to a different type of relationship (syntax, semantics, coreference, etc.).</p>
+    <p data-lang="ja"><strong>Multi-head Attention</strong> は、Attention の計算を <em>h</em> 個の「head（頭）」で並列に行い、それぞれが異なる関係を学習できるようにした仕組みです。結果を最後に結合することで、1 種類の Attention よりも豊かに文の情報を捉えられます。</p>
+    <p data-lang="en"><strong>Multi-head Attention</strong> runs $h$ Attention computations ("heads") in parallel, each free to learn a different type of relationship. The results are merged at the end, giving a richer picture of the sequence than a single Attention head could provide.</p>
   </div>
 
-  <!-- 7. Transformer -->
-  <h2 class="section-title" data-lang="ja">⑦ Transformer は何をしているの？</h2>
-  <h2 class="section-title" data-lang="en">⑦ What does Transformer do?</h2>
+  <!-- 8. Transformer -->
+  <h2 class="section-title" data-lang="ja">⑧ Transformer は何をしているの？</h2>
+  <h2 class="section-title" data-lang="en">⑧ What does Transformer do?</h2>
 
   <div class="prose">
     <p data-lang="ja"><strong>Transformer</strong> は、Multi-head Attention と小さなフィードフォワードネットワーク（FFN）のブロックを何層も積み重ねたアーキテクチャです。CNN が畳み込み層を積み重ねるように、Transformer は Attention ブロックを積み重ねます。</p>
@@ -468,9 +533,9 @@ flowchart TB
     <p class="diagram-caption" data-lang="en">Transformer = [Multi-head Attention → FFN] repeated N times</p>
   </div>
 
-  <!-- 8. MIOpen との接続 -->
-  <h2 class="section-title" data-lang="ja">⑧ MIOpen・ROCm との接続</h2>
-  <h2 class="section-title" data-lang="en">⑧ Connection to MIOpen and ROCm</h2>
+  <!-- 9. MIOpen との接続 -->
+  <h2 class="section-title" data-lang="ja">⑨ MIOpen・ROCm との接続</h2>
+  <h2 class="section-title" data-lang="en">⑨ Connection to MIOpen and ROCm</h2>
 
   <div class="prose">
     <p data-lang="ja">Attention の核心計算 <code>Q·Kᵀ</code> と <code>· V</code> はどちらも<strong>大きな行列積（GEMM）</strong>です。MIOpen と rocBLAS はまさにこの GEMM を GPU で高速実行するために設計されており、Transformer の学習・推論でも中心的な役割を担います。</p>
@@ -486,10 +551,12 @@ flowchart TB
     <ul>
       <li data-lang="ja">畳み込みは「近くだけ見る」、Attention は「全部見て重みをつける」</li>
       <li data-lang="en">Convolution sees only nearby; Attention sees all and assigns weights</li>
-      <li data-lang="ja">softmax がスコアを「合計 1 の注目割合」に変換する</li>
-      <li data-lang="en">softmax converts raw scores into attention weights summing to 1</li>
-      <li data-lang="ja">Q（何が欲しいか）× K（何を持っているか）でスコアを計算し、V（中身）を加重平均する</li>
-      <li data-lang="en">Q (what I want) × K (what others hold) → score → weight V (the content)</li>
+      <li data-lang="ja">softmax がスコアを「どこにどれだけ注目するかの配分」に変える</li>
+      <li data-lang="en">softmax turns scores into an attention distribution across words</li>
+      <li data-lang="ja">Q（何が欲しいか）と K（各単語の目印）でスコアを計算し、配分にしたがって V（中身）を集める</li>
+      <li data-lang="en">Q (what I want) and K (each word's label) → score → collect V (content) by distribution</li>
+      <li data-lang="ja">Multi-head Attention は複数の見方で同時に文を参照する仕組み</li>
+      <li data-lang="en">Multi-head Attention reads the sequence from multiple perspectives simultaneously</li>
       <li data-lang="ja">Transformer は Attention ブロックを積み重ねたもので、LLM の主要構成要素</li>
       <li data-lang="en">Transformer stacks Attention blocks and is the backbone of modern LLMs</li>
       <li data-lang="ja">核心計算は GEMM — MIOpen / rocBLAS が担う</li>
