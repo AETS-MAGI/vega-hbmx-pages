@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/mermaid-layout.css">
   <title>イメージでわかる深層学習 / Visual Deep Learning | vega-hbmx-pages</title>
   <style>
     :root {
@@ -142,8 +143,6 @@
       overflow-x: auto;
     }
     .diagram-caption { font-size: 13px; color: var(--muted); margin-top: 10px; text-align: center; }
-    .mermaid { display: flex; justify-content: center; }
-    .mermaid svg { width: 100% !important; min-width: 560px; height: auto !important; }
 
     /* prev/next */
     .nav-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 36px; }
@@ -181,13 +180,8 @@
     }
   </style>
   <script type="module">
-    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({
-      startOnLoad: true, useMaxWidth: false,
-      flowchart: { useMaxWidth: false, nodeSpacing: 30, rankSpacing: 40, curve: 'basis' },
-      theme: 'base',
-      themeVariables: { fontFamily: 'Calibri, Arial, sans-serif', fontSize: '14px' }
-    });
+    import { initMermaidPage } from './scripts/mermaid-page.js';
+    initMermaidPage();
   </script>
 </head>
 <body>
