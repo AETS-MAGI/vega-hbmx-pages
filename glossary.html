@@ -432,6 +432,7 @@ timeline
       <p class="term-name">xdlops</p>
       <p class="term-aka" data-lang="ja">別名: MFMA (Matrix Fused Multiply-Accumulate)</p>
       <p class="term-aka" data-lang="en">Also: MFMA (Matrix Fused Multiply-Accumulate)</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>行列の掛け算専用の超高速回路です。普通の計算回路とは別に、AI でよく使う「行列積」をまとめて一気に処理できます。Vega（gfx900）にはこの回路がなく、それが「多くの高速ソルバーが使えない」一番の理由です。</div>
       <p class="term-def" data-lang="ja">行列積演算を1命令で実行できる AMD GPU の特殊命令。深層学習の大規模行列演算を大幅に高速化する。gfx908 (MI100) 以降の CDNA アーキテクチャのみに搭載。</p>
       <p class="term-def" data-lang="en">A specialized AMD GPU instruction that executes matrix multiplication in a single operation, massively accelerating deep learning workloads. Only available on CDNA architectures from gfx908 (MI100) onward.</p>
       <div class="term-key" data-lang="ja"><strong>gfx900 との関係:</strong> gfx900 には非搭載。MIOpen の XDLops 系ソルバーが全て非適用になる主因。</div>
@@ -443,6 +444,7 @@ timeline
       <p class="term-name">dot4 / dp4a</p>
       <p class="term-aka" data-lang="ja">別名: INT8 内積命令</p>
       <p class="term-aka" data-lang="en">Also: INT8 dot-product instruction</p>
+      <div class="term-easy" data-lang="ja"><strong>やさしく言うと：</strong>「小さな整数を4つ、まとめて掛けて足す」専用の命令です。AI の「推論」（学習済みモデルで答えを出す処理）を速くするために使われます。Vega（gfx900）にはこの命令がないため、INT8 推論は常に一番遅い経路しか選ばれません。</div>
       <p class="term-def" data-lang="ja">4つの 8-bit 整数値の内積を1命令で計算する命令。INT8 推論の高速化に使われる。gfx906 (Vega20) 以降に搭載。gfx900 には非搭載のため、INT8 は DirectNaive（最低速）にしか自然選択されない。</p>
       <p class="term-def" data-lang="en">An instruction computing the dot product of four 8-bit integers in one step. Used for accelerating INT8 inference. Available from gfx906 (Vega20) onward. Absent on gfx900, which is why INT8 natural selection always falls to DirectNaive on gfx900.</p>
       <div class="term-key" data-lang="ja"><strong>調査結果:</strong> gfx900 での INT8 自然選択は全件 ConvDirectNaiveConvFwd のみ（runtime_verified）</div>
