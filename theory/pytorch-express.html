@@ -347,19 +347,21 @@ y = model(x)
 		<div class="warn-box">
 			<p data-lang="ja"><strong>インストールで大事な注意:</strong> ROCm 環境なら、<code>pip install torch</code> だけで済ませないほうが安全です。<a href="https://pytorch.org/get-started/locally/" target="_blank" rel="noopener noreferrer">PyTorch 公式の Start Locally</a> で <strong>Linux / Pip / Python / ROCm</strong> を選び、表示された ROCm 用コマンドで入れるのが基本です。</p>
 			<p data-lang="en"><strong>Important install note:</strong> On a ROCm system, it is safer not to stop at <code>pip install torch</code>. Use the command shown by the official <a href="https://pytorch.org/get-started/locally/" target="_blank" rel="noopener noreferrer">PyTorch Start Locally</a> selector with <strong>Linux / Pip / Python / ROCm</strong> chosen.</p>
-			<p data-lang="ja">たとえば ROCm 6.3 系なら、次のように ROCm 用 wheel index を明示します。使っている ROCm の major.minor に合わせて、公式ページが出す index を使うのが基本です。</p>
-			<p data-lang="en">For example, for a ROCm 6.3 build, you explicitly use the ROCm wheel index like this. In general, use the index shown by the official page for your ROCm major.minor version.</p>
+			<p data-lang="ja">このリポジトリの説明や例は ROCm 7.2 系の環境でも読むことを想定しています。ただし、PyTorch の wheel index 名は release によって変わりうるので、このページでは <code>rocm6.3</code> を必須条件としてではなく、<strong>「ROCm 向け index を明示して入れる」形の例</strong>として読んでください。</p>
+			<p data-lang="en">The explanations and examples in this repository are also meant to be readable on ROCm 7.2-class systems. However, the PyTorch wheel index name can change across releases, so do not read <code>rocm6.3</code> here as a hard requirement. Read it as an <strong>example of explicitly choosing a ROCm-targeted index</strong>.</p>
+			<p data-lang="ja">ROCm 7.2 環境でも考え方は同じで、まずは公式ページがその時点で出す ROCm 用コマンドを使うのが安全です。</p>
+			<p data-lang="en">The same idea applies on ROCm 7.2 systems: the safest path is still to use the ROCm command currently shown by the official selector.</p>
 		</div>
 
-		<div class="code-block">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.3</div>
+		<div class="code-block">pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm&lt;official-major.minor&gt;</div>
 
 		<div class="warn-box">
-			<p data-lang="ja"><strong>もし間違えて入れたら:</strong> いったんアンインストールしてから、ROCm 用コマンドで入れ直します。</p>
-			<p data-lang="en"><strong>If you installed the wrong build:</strong> uninstall first, then reinstall with the ROCm command.</p>
+			<p data-lang="ja"><strong>もし間違えて入れたら:</strong> いったんアンインストールしてから、公式 selector が出す ROCm 用コマンドで入れ直します。ここでも <code>major.minor</code> は固定ではなく、ROCm 6.x でも 7.2 系でも、その時点の公式表示に合わせます。</p>
+			<p data-lang="en"><strong>If you installed the wrong build:</strong> uninstall first, then reinstall with the ROCm command shown by the official selector. Here too, <code>major.minor</code> is not fixed: whether you are on ROCm 6.x or a ROCm 7.2-class system, follow the current official output.</p>
 		</div>
 
 		<div class="code-block">pip uninstall -y torch torchvision torchaudio
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.3</div>
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm&lt;official-major.minor&gt;</div>
 
 		<div class="warn-box">
 			<p data-lang="ja"><strong>補足:</strong> ROCm 版 PyTorch でも、歴史的な理由で <code>"cuda"</code> という名前の API が残る場所があります。つまり、画面に <code>"cuda"</code> と出ても、すぐに「ROCm ではない」とは限りません。名前はそうでも、実行経路は HIP/ROCm 側です。</p>
