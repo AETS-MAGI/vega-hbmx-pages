@@ -58,6 +58,9 @@
 		.card h3 { margin: 0; font-size: 17px; font-weight: 700; color: var(--navy); line-height: 1.35; }
 		.card p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.55; }
 		.card .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 10px; margin-bottom: 4px; }
+		.card .tag[data-lang] { display: none; }
+		html[data-language="ja"] .card .tag[data-lang="ja"],
+		html[data-language="en"] .card .tag[data-lang="en"] { display: inline-block; }
 		.tag-first  { background: #E0F2F1; color: #004D40; }
 		.tag-topic  { background: #E8EAF6; color: #283593; }
 		.tag-ref    { background: #FFF3E0; color: #BF360C; }
