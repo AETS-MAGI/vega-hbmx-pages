@@ -508,8 +508,8 @@
 			<!-- ── 2-1 はじめの一歩 ── -->
 			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="ja">▸ はじめの一歩</h4>
 			<h4 style="margin:28px 0 6px;font-size:18px;color:var(--teal);" data-lang="en">▸ First steps</h4>
-			<p class="section-lead" data-lang="ja">この 4 ページを順番に読むと、GPU → 数学の道具 → AI の学習 → ROCm の全体像がつながります。</p>
-			<p class="section-lead" data-lang="en">Read these four pages in order to connect GPU → mathematical tools → AI training → the ROCm stack.</p>
+			<p class="section-lead" data-lang="ja">この 4 ページを順番に読むと、GPU の基本 → メモリ → 世代の違い → ROCm の全体像がつながります。</p>
+			<p class="section-lead" data-lang="en">Read these four pages in order to connect GPU basics → memory → generational differences → the ROCm stack.</p>
 			<div class="card-grid">
 
 				<article class="card">
@@ -529,38 +529,34 @@
 				</article>
 
 				<article class="card">
-					<span class="card-type type-intro">入門</span>
-					<h3 data-lang="ja">イメージでわかる線形代数</h3>
-					<h3 data-lang="en">Visual Linear Algebra</h3>
-					<p class="filename">linear-algebra-for-rocm.html</p>
-					<p data-lang="ja">ベクトル・行列・行列積をやさしく解説し、rocBLAS・GPU・gfx900 へとつなぐ入門ページ。数学が苦手でも読めます。</p>
-					<p data-lang="en">Vectors, matrices, and matrix multiply explained gently — connected to rocBLAS, GPUs, and gfx900. No prior math required.</p>
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる メモリと帯域幅</h3>
+					<h3 data-lang="en">Visual Guide: Memory &amp; Bandwidth</h3>
+					<p class="filename">memory-and-bandwidth.html</p>
+					<p data-lang="ja">「どれだけ持てるか」と「どれだけ速く運べるか」の違いを、水道管やバケツのたとえで解説。HBM2 の強みもわかる。</p>
+					<p data-lang="en">"How much can you hold" vs "how fast can you move it" — water pipe and bucket analogy. Also explains HBM2's strength.</p>
 					<ul>
-						<li data-lang="ja">数式最小限・比喩中心</li>
-						<li data-lang="en">Minimal equations, analogy-driven</li>
-						<li data-lang="ja">rocBLAS が何をしているかわかる</li>
-						<li data-lang="en">Explains what rocBLAS actually does</li>
+						<li data-lang="ja">専門知識不要・HBM2 の強みがわかる</li>
+						<li data-lang="en">No prerequisites — learn why HBM2 matters</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-teal" href="linear-algebra-for-rocm.html">Open</a>
+						<a class="button button-teal" href="memory-and-bandwidth.html">Open</a>
 					</div>
 				</article>
 
 				<article class="card">
-					<span class="card-type type-intro">入門</span>
-					<h3 data-lang="ja">イメージでわかる深層学習</h3>
-					<h3 data-lang="en">Visual Deep Learning</h3>
-					<p class="filename">deep-learning-for-rocm.html</p>
-					<p data-lang="ja">畳み込み・フィルタ・MIOpen solver を比喩で解説。gfx900 でどの solver が動くかも確認できます。</p>
-					<p data-lang="en">Convolution, filters, and MIOpen solvers through analogy — with a per-solver availability table for gfx900.</p>
+					<span class="card-type type-theory">Theory</span>
+					<h3 data-lang="ja">イメージでわかる GPU の世代</h3>
+					<h3 data-lang="en">Visual Guide to GPU Generations</h3>
+					<p class="filename">gpu-generations.html</p>
+					<p data-lang="ja">GPU の世代が変わると何が増え何が減るのか。旅行者の持ち物にたとえた世代比較。</p>
+					<p data-lang="en">What's gained and lost between GPU generations — compared as changes in a traveler's equipment.</p>
 					<ul>
-						<li data-lang="ja">「虫眼鏡でなぞる」畳み込みの比喩</li>
-						<li data-lang="en">The "magnifying-glass" convolution analogy</li>
-						<li data-lang="ja">solver 一覧表（gfx900 可否付き）</li>
-						<li data-lang="en">Solver table with gfx900 availability</li>
+						<li data-lang="ja">Vega → RDNA → CDNA の違いが見える</li>
+						<li data-lang="en">See the differences: Vega → RDNA → CDNA</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-teal" href="deep-learning-for-rocm.html">Open</a>
+						<a class="button button-teal" href="gpu-generations.html">Open</a>
 					</div>
 				</article>
 
@@ -614,6 +610,30 @@
 				</article>
 
 				<article class="card-compact">
+					<span class="card-type type-intro">入門</span>
+					<h3 data-lang="ja">イメージでわかる線形代数</h3>
+					<h3 data-lang="en">Visual Linear Algebra</h3>
+					<p class="filename">linear-algebra-for-rocm.html</p>
+					<p data-lang="ja">ベクトル・行列・行列積をやさしく解説し、rocBLAS・GPU・gfx900 へとつなぐ入門ページ。</p>
+					<p data-lang="en">Vectors, matrices, and matrix multiply explained gently — connected to rocBLAS, GPUs, and gfx900.</p>
+					<div class="actions">
+						<a class="button button-teal" href="linear-algebra-for-rocm.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card-compact">
+					<span class="card-type type-intro">入門</span>
+					<h3 data-lang="ja">イメージでわかる深層学習</h3>
+					<h3 data-lang="en">Visual Deep Learning</h3>
+					<p class="filename">deep-learning-for-rocm.html</p>
+					<p data-lang="ja">畳み込み・フィルタ・MIOpen solver を比喩で解説。gfx900 でどの solver が動くかも確認できます。</p>
+					<p data-lang="en">Convolution, filters, and MIOpen solvers through analogy — with a per-solver availability table for gfx900.</p>
+					<div class="actions">
+						<a class="button button-teal" href="deep-learning-for-rocm.html">Open</a>
+					</div>
+				</article>
+
+				<article class="card-compact">
 					<span class="card-type type-theory">Theory</span>
 					<h3 data-lang="ja">イメージでわかる 推論の流れ</h3>
 					<h3 data-lang="en">Visual Guide to the Inference Flow</h3>
@@ -634,30 +654,6 @@
 					<p data-lang="en">How the size of a number's "container" affects speed and precision. Notebook vs sticky-note analogy.</p>
 					<div class="actions">
 						<a class="button button-teal" href="int8-vs-fp32.html">Open</a>
-					</div>
-				</article>
-
-				<article class="card-compact">
-					<span class="card-type type-theory">Theory</span>
-					<h3 data-lang="ja">イメージでわかる メモリと帯域幅</h3>
-					<h3 data-lang="en">Visual Guide: Memory &amp; Bandwidth</h3>
-					<p class="filename">memory-and-bandwidth.html</p>
-					<p data-lang="ja">「どれだけ持てるか」と「どれだけ速く運べるか」の違いを、水道管やバケツのたとえで解説。HBM2 の強みもわかる。</p>
-					<p data-lang="en">"How much can you hold" vs "how fast can you move it" — water pipe and bucket analogy. Also explains HBM2's strength.</p>
-					<div class="actions">
-						<a class="button button-teal" href="memory-and-bandwidth.html">Open</a>
-					</div>
-				</article>
-
-				<article class="card-compact">
-					<span class="card-type type-theory">Theory</span>
-					<h3 data-lang="ja">イメージでわかる GPU の世代</h3>
-					<h3 data-lang="en">Visual Guide to GPU Generations</h3>
-					<p class="filename">gpu-generations.html</p>
-					<p data-lang="ja">GPU の世代が変わると何が増え何が減るのか。旅行者の持ち物にたとえた世代比較。</p>
-					<p data-lang="en">What's gained and lost between GPU generations — compared as changes in a traveler's equipment.</p>
-					<div class="actions">
-						<a class="button button-teal" href="gpu-generations.html">Open</a>
 					</div>
 				</article>
 
