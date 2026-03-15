@@ -75,10 +75,10 @@
 		<p data-lang="en"><strong>📘 Theory page:</strong> <a href="attention-for-llm.html">Visual Attention</a> — Roles of Q / K / V and how scaling works</p>
 	</div>
 	<div class="fact-box">
-		<p data-lang="ja"><strong>注記:</strong> このページでも GPU 指定は "cuda" 表記ですが、PyTorch ROCm の互換 API 名です。Attention 計算の実行経路は HIP/ROCm です。</p>
-		<p data-lang="en"><strong>Note:</strong> GPU selection still appears as "cuda" here because of PyTorch ROCm compatibility naming. Attention math runs through HIP/ROCm execution paths.</p>
-		<p data-lang="ja"><strong>CUDAとの違い（要点）:</strong> ① QK<sup>T</sup> や weights×V の行列計算は ROCm 側ライブラリ経路で実行 ② 観測は rocprof を使う ③ 実行経路の細部は GPU 世代・ライブラリ実装で差が出ます。</p>
-		<p data-lang="en"><strong>How this differs from CUDA:</strong> 1) Matrix-heavy parts such as QK<sup>T</sup> and weights×V run through ROCm-side library paths 2) rocprof is used for observation 3) Path details vary by GPU generation and library implementation.</p>
+		<p data-lang="ja"><strong>このページの読み方:</strong> 1) まず「スコア」の表を見る 2) 次に「注目度」の表を見る 3) 最後に「出力」の表を見る、の順で読むと入りやすいです。</p>
+		<p data-lang="en"><strong>How to read this page:</strong> 1) First look at the “score” table 2) Then the “attention weight” table 3) Finally the “output” table. That order makes it much easier.</p>
+		<p data-lang="ja"><strong>注記:</strong> このページでも GPU 指定は <code>"cuda"</code> 表記ですが、PyTorch ROCm の互換 API 名です。Attention 計算の実行経路は HIP/ROCm です。</p>
+		<p data-lang="en"><strong>Note:</strong> GPU selection still appears as <code>"cuda"</code> here because of PyTorch ROCm compatibility naming. Attention math still runs through HIP/ROCm execution paths.</p>
 	</div>
 
 	<!-- ── 1 ── -->
@@ -88,6 +88,11 @@
 	<div class="prose">
 		<p data-lang="ja">3 単語 × 4 次元のダミー入力で、Scaled Dot-Product Attention を forward します。注目度（attention weights）がどのように分布するかを見ます。</p>
 		<p data-lang="en">Run Scaled Dot-Product Attention on a dummy input of 3 tokens × 4 dimensions. Observe how attention weights distribute across tokens.</p>
+	</div>
+
+	<div class="fact-box">
+		<p data-lang="ja"><strong>このページでまず見えれば OK:</strong> スコア表は「似ているか」、注目度表は「どれくらい見るか」、出力表は「混ぜた結果」です。</p>
+		<p data-lang="en"><strong>What is enough to see first:</strong> the score table means “how similar,” the attention-weight table means “how much to look,” and the output table is “the mixed result.”</p>
 	</div>
 
 	<!-- ── 2 ── -->
@@ -124,6 +129,19 @@ output = torch.matmul(weights, V)
 <span class="fn">print</span>(<span class="str">"出力:"</span>)
 <span class="fn">print</span>(output.cpu())</div>
 
+	<div class="prose">
+		<p data-lang="ja">コードを全部いっぺんに理解しなくて大丈夫です。最初は次の 4 行だけ追えば十分です。</p>
+		<p data-lang="en">You do not need to understand the whole code at once. At first, these four lines are enough.</p>
+		<p data-lang="ja"><strong><code>Q, K, V = x, x, x</code>:</strong> まずは簡略版として、同じ入力をそのまま Q/K/V に使っています。</p>
+		<p data-lang="en"><strong><code>Q, K, V = x, x, x</code>:</strong> As a simplified version, the same input is reused for Q/K/V.</p>
+		<p data-lang="ja"><strong><code>scores = torch.matmul(Q, K.T) / math.sqrt(d_k)</code>:</strong> 誰と誰がどれくらい似ているかを表にしています。</p>
+		<p data-lang="en"><strong><code>scores = torch.matmul(Q, K.T) / math.sqrt(d_k)</code>:</strong> This makes a table of how similar each pair is.</p>
+		<p data-lang="ja"><strong><code>weights = F.softmax(...)</code>:</strong> 似ている度合いを、注目の割合に変えています。</p>
+		<p data-lang="en"><strong><code>weights = F.softmax(...)</code>:</strong> This turns similarity into attention proportions.</p>
+		<p data-lang="ja"><strong><code>output = torch.matmul(weights, V)</code>:</strong> 注目の割合で情報を混ぜて、最後の出力を作っています。</p>
+		<p data-lang="en"><strong><code>output = torch.matmul(weights, V)</code>:</strong> This mixes information using those attention proportions to make the final output.</p>
+	</div>
+
 	<!-- ── 3 ── -->
 	<h2 class="section-title" data-lang="ja">3. 実行するとどうなるか</h2>
 	<h2 class="section-title" data-lang="en">3. What Happens When You Run It</h2>
@@ -142,8 +160,10 @@ tensor([[0.6780, 0.4114, 0.4219, 0.1553],
         [0.4624, 0.4624, 0.2312, 0.2312]])</div>
 
 	<div class="prose">
-		<p data-lang="ja">注目度の行列は各トークンが他のトークンに「どれくらい注目するか」を示しています。トークン A は自分自身 (0.42) に一番注目し、トークン B (0.16) より トークン C (0.26) に多く注目しています。</p>
-		<p data-lang="en">The attention weight matrix shows how much each token "pays attention" to others. Token A attends most to itself (0.42), more to Token C (0.26) than Token B (0.16).</p>
+		<p data-lang="ja">注目度の行列は、各トークンが他のトークンを「どれくらい見るか」の表です。たとえばトークン A の行では、自分自身を一番強く見ていて、次にトークン C を見ています。</p>
+		<p data-lang="en">The attention-weight matrix is a table of how much each token looks at the others. For example, in token A’s row, it looks most strongly at itself and then at token C.</p>
+		<p data-lang="ja">最初は細かい数値を全部追わなくて大丈夫です。1 行を「1 つのトークンが、誰をどれくらい見るか」と読むだけで十分です。</p>
+		<p data-lang="en">At first, you do not need to chase every number. It is enough to read one row as “who this token looks at, and by how much.”</p>
 	</div>
 
 	<div class="fact-box">
@@ -181,8 +201,10 @@ x_batch = x.unsqueeze(<span class="num">0</span>)
 <span class="fn">print</span>(<span class="str">"MHA 出力 shape:"</span>, out.shape)</div>
 
 	<div class="prose">
-		<p data-lang="ja"><code>nn.MultiheadAttention</code> は内部で Q, K, V へ線形変換してから Scaled Dot-Product を実行します。手計算版と数値は違いますが、構造は同じです。</p>
-		<p data-lang="en"><code>nn.MultiheadAttention</code> applies linear projections to create Q, K, V before the Scaled Dot-Product. Numbers differ from our hand-computed version, but the structure is the same.</p>
+		<p data-lang="ja"><code>nn.MultiheadAttention</code> は、今見た「似ているかを見る → 注目の割合にする → 情報を混ぜる」を、ちゃんとした部品としてまとめたものです。</p>
+		<p data-lang="en"><code>nn.MultiheadAttention</code> packages the process we just saw — “measure similarity → turn it into attention proportions → mix information” — as a proper module.</p>
+		<p data-lang="ja">内部では Q, K, V を作り直してから同じ構造を実行するので、手計算版と数値は違っても、流れは同じです。</p>
+		<p data-lang="en">Inside, it first creates new Q, K, and V values and then runs the same structure, so the numbers differ from the hand version but the flow is the same.</p>
 	</div>
 
 	<!-- ── 5 ── -->
@@ -190,10 +212,12 @@ x_batch = x.unsqueeze(<span class="num">0</span>)
 	<h2 class="section-title" data-lang="en">5. Under the Hood</h2>
 
 	<div class="prose">
-		<p data-lang="ja"><strong>QK<sup>T</sup></strong> の計算は行列積なので <strong>rocBLAS GEMM</strong> が使われます。softmax は専用 kernel。<strong>weights × V</strong> もまた rocBLAS GEMM です。つまり Attention 1 回で rocBLAS GEMM が少なくとも 2 回呼ばれます。</p>
-		<p data-lang="en"><strong>QK<sup>T</sup></strong> is a matrix multiply → <strong>rocBLAS GEMM</strong>. Softmax has a dedicated kernel. <strong>weights × V</strong> is another rocBLAS GEMM. So one Attention call invokes rocBLAS GEMM at least twice.</p>
-		<p data-lang="ja">Transformer の各層にこの Attention が 1 つ以上あり、層数 × ヘッド数の回だけ繰り返されます。これが LLM が大量の行列演算を必要とする理由です。</p>
-		<p data-lang="en">Each Transformer layer has one or more Attention blocks, repeated across layers × heads. This is why LLMs require massive matrix computation.</p>
+		<p data-lang="ja">やさしく言うと、Attention は「表どうしをかける」「softmax で割合にする」「もう一度表をかける」の組み合わせです。</p>
+		<p data-lang="en">In simpler words, Attention is a combination of “multiply tables,” “turn them into proportions with softmax,” and “multiply tables again.”</p>
+		<p data-lang="ja"><strong>QK<sup>T</sup></strong> と <strong>weights × V</strong> は行列積なので、ROCm では主に <strong>rocBLAS</strong> 側の計算へつながります。softmax は専用 kernel です。</p>
+		<p data-lang="en"><strong>QK<sup>T</sup></strong> and <strong>weights × V</strong> are matrix multiplies, so on ROCm they mainly connect to <strong>rocBLAS</strong>. Softmax uses its own kernel.</p>
+		<p data-lang="ja">Transformer ではこの流れが何度も繰り返されるので、LLM は大量の行列計算を必要とします。</p>
+		<p data-lang="en">Transformers repeat this flow many times, which is why LLMs need so much matrix computation.</p>
 	</div>
 
 	<h2 class="section-title" data-lang="ja">6. ROCmで観測するポイント</h2>
