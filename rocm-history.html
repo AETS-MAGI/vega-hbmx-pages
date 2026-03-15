@@ -787,6 +787,69 @@ flowchart LR
       <span data-lang="en"><strong>2026-03-15 addendum — Shipped Artifacts:</strong> Investigation of the ROCm 7.2 package found that gfx900 shipped artifacts exceed RDNA generations on multiple metrics. MIOpen Perf DB: gfx900 total 169,182 lines (gfx1030: 111,296 / gfx1100: <em>none</em>). rocBLAS pre-compiled files: gfx900 = 128 (gfx1100 = 96, gfx1030 = 88). amdgpu firmware: 16× vega10 blobs. This goes beyond "code remaining in tree" and suggests that gfx900 is included in AMD's build, tuning, and packaging pipeline. This finding extended the previous three-layer model (build / selection / fallback) to a four-layer model adding "distribute (shipped artifacts)."</span>
     </div>
 
+    <!-- Shipped Artifacts comparison charts -->
+    <h4 style="text-align:center;margin:1.5em 0 0.3em;">
+      <span data-lang="ja">出荷成果物のアーキテクチャ間比較</span>
+      <span data-lang="en">Shipped Artifacts — Cross-Architecture Comparison</span>
+    </h4>
+
+    <div class="mermaid">
+---
+config:
+  theme: base
+---
+xychart-beta horizontal
+  title "rocBLAS Pre-compiled Files (ROCm 7.2)"
+  x-axis ["gfx942(MI300)", "gfx906(MI50/60)", "gfx900(Vega56/64)", "gfx1100(RX7900)", "gfx1030(RX6800)"]
+  y-axis "File count" 0 --> 260
+  bar [242, 156, 128, 96, 88]
+    </div>
+
+    <div class="mermaid">
+---
+config:
+  theme: base
+---
+xychart-beta horizontal
+  title "MIOpen Perf DB Lines (top variant, ROCm 7.2)"
+  x-axis ["gfx942", "gfx908", "gfx90a", "gfx906", "gfx900_56", "gfx1030", "gfx900_64", "gfx1100", "gfx1200"]
+  y-axis "Lines (×1000)" 0 --> 500
+  bar [470, 372, 328, 235, 108, 111, 61, 0, 0]
+    </div>
+
+    <h4 style="text-align:center;margin:1.5em 0 0.3em;">
+      <span data-lang="ja">4層観察モデル — gfx900 から読みとれる構造</span>
+      <span data-lang="en">Four-Layer Observation Model — Structure Revealed by gfx900</span>
+    </h4>
+    <div class="mermaid">
+graph TB
+  subgraph L1["Layer 1 — Build / Maintain"]
+    style L1 fill:#e3f2fd,stroke:#1565c0
+    A1["LLVM backend<br/>gfx900 target definition"]
+    A2["MIOpen solver source<br/>Winograd / ASM paths"]
+    A3["Tensile logic files<br/>gfx900 entries added by external contributor"]
+  end
+  subgraph L2["Layer 2 — Selection / Manage"]
+    style L2 fill:#fff3e0,stroke:#e65100
+    B1["hipcc GFX target list<br/>gfx900 included / excluded per component"]
+    B2["CMake AMDGPU_TARGETS<br/>varies by library"]
+    B3["MIOpen IsApplicable()<br/>gates per solver"]
+  end
+  subgraph L3["Layer 3 — Fallback / Supplement"]
+    style L3 fill:#fce4ec,stroke:#b71c1c
+    C1["CK fallback to<br/>reference impl"]
+    C2["Tensile HIP source fallback<br/>when ASM path blocked"]
+    C3["MIOpen Naive solver<br/>always applicable"]
+  end
+  subgraph L4["Layer 4 — Distribute / Ship"]
+    style L4 fill:#e8f5e9,stroke:#2e7d32
+    D1["rocBLAS pre-compiled<br/>128 files for gfx900"]
+    D2["MIOpen Perf DB<br/>169K lines for gfx900"]
+    D3["amdgpu firmware<br/>vega10 ×16 blobs"]
+  end
+  L1 --> L2 --> L3 --> L4
+    </div>
+
     <div class="note note-green">
       <span data-lang="ja"><strong>暫定結論:</strong> ROCm の歴史は、単に「古いものを切って新しいものに置き換える」直線ではなく、追加・統合・選択的無効化・fallback 残存・repo 再編・deprecated branch 上での legacy knowledge 温存が層ごとにずれながら進む履歴として読める。</span>
       <span data-lang="en"><strong>Provisional conclusion:</strong> ROCm history is better read not as a straight line of replacing the old with the new, but as a layered record in which expansion, consolidation, selective disable, fallback survival, repository reorganization, and legacy-knowledge preservation on deprecated branches proceed at different speeds.</span>

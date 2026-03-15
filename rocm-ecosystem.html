@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROCm エコシステム図解 / ROCm Ecosystem Map | vega-hbmx-pages</title>
+  <style>
+    :root {
+      --navy: #0B3C5D;
+      --teal: #00796B;
+      --amber: #C56A00;
+      --red: #B71C1C;
+      --purple: #5B4B8A;
+      --ink: #1F2933;
+      --muted: #5F6C7B;
+      --line: #D8E0E8;
+      --bg: #F5F8FB;
+      --card: #FFFFFF;
+      --repo-bg: #EDE7F6;
+      --repo-border: #5B4B8A;
+      --lib-bg: #E3F2FD;
+      --lib-border: #1565C0;
+      --hw-bg: #FFF3E0;
+      --hw-border: #E65100;
+      --tool-bg: #E8F5E9;
+      --tool-border: #2E7D32;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(91,75,138,0.08), transparent 26%),
+        radial-gradient(circle at bottom right, rgba(11,60,93,0.08), transparent 24%),
+        var(--bg);
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px 56px; }
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; margin-bottom: 18px;
+    }
+    .home-link {
+      display: inline-flex; align-items: center; text-decoration: none;
+      color: var(--navy); font-size: 14px; font-weight: 600; gap: 6px;
+    }
+    .home-link:hover { text-decoration: underline; }
+    .lang-btn {
+      padding: 5px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 2px solid var(--navy); background: transparent;
+      color: var(--navy); transition: all 0.2s;
+    }
+    .lang-btn.active { background: var(--navy); color: #fff; }
+    .hero {
+      background: linear-gradient(135deg, #311B92 0%, #5B4B8A 60%, #7B1FA2 100%);
+      color: #fff; border-radius: 16px; padding: 40px 36px 32px;
+      margin-bottom: 32px;
+    }
+    .hero h1 { margin: 0 0 12px; font-size: 32px; font-weight: 700; }
+    .hero p { margin: 0; font-size: 17px; opacity: 0.88; line-height: 1.6; }
+    .section-title {
+      font-size: 22px; font-weight: 700; color: var(--navy);
+      border-left: 5px solid var(--teal); padding-left: 14px;
+      margin: 40px 0 8px;
+    }
+    .section-lead { color: var(--muted); margin: 0 0 20px; font-size: 15px; line-height: 1.5; }
+
+    /* ── diagram container ── */
+    .diagram-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px 20px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+    .diagram-caption {
+      font-size: 13px; color: var(--muted); margin-top: 12px; text-align: center;
+    }
+    .mermaid { text-align: center; }
+
+    /* ── repo topology cards ── */
+    .repo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+    .repo-card {
+      background: var(--card);
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      border-top: 4px solid var(--line);
+      padding: 16px 18px;
+    }
+    .repo-card.repo  { border-top-color: var(--repo-border); background: #fdfcff; }
+    .repo-card.lib   { border-top-color: var(--lib-border);  background: #fafeff; }
+    .repo-card.hw    { border-top-color: var(--hw-border);   background: #fffdf8; }
+    .repo-card.tool  { border-top-color: var(--tool-border); background: #fafffa; }
+    .repo-card h4 { margin: 0 0 6px; font-size: 16px; font-weight: 700; }
+    .repo-card p  { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+    .badge-repo {
+      display: inline-block; padding: 2px 8px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; margin-bottom: 8px;
+    }
+    .badge-repo.repo  { background: var(--repo-bg);  color: var(--repo-border); }
+    .badge-repo.lib   { background: var(--lib-bg);   color: var(--lib-border); }
+    .badge-repo.hw    { background: var(--hw-bg);    color: var(--hw-border); }
+    .badge-repo.tool  { background: var(--tool-bg);  color: var(--tool-border); }
+
+    /* ── gfx900 position highlight ── */
+    .highlight-box {
+      background: #FFF8E1;
+      border-left: 5px solid var(--amber);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .highlight-box strong { color: var(--amber); }
+
+    /* ── layer table ── */
+    .layer-table {
+      width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 8px;
+    }
+    .layer-table th {
+      background: var(--navy); color: #fff; padding: 8px 12px; text-align: left;
+    }
+    .layer-table td { padding: 8px 12px; border-bottom: 1px solid var(--line); }
+    .layer-table tr:last-child td { border-bottom: none; }
+    .layer-table tr:nth-child(even) td { background: #f5f8fb; }
+    .tick { color: #2E7D32; font-weight: 700; }
+    .cross { color: var(--red); font-weight: 700; }
+    .partial { color: var(--amber); font-weight: 700; }
+
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] li[data-lang="en"],
+    html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"],
+    html[data-language="en"] h3[data-lang="en"],
+    html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+    html[data-language="en"] td[data-lang="en"],
+    html[data-language="ja"] td[data-lang="ja"] { display: table-cell; }
+
+    @media (max-width: 680px) {
+      .hero { padding: 26px 20px 22px; }
+      .hero h1 { font-size: 24px; }
+      .hero p  { font-size: 15px; }
+      .section-title { font-size: 18px; }
+      .repo-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ startOnLoad: true, theme: 'base',
+      themeVariables: { primaryColor: '#E3F2FD', primaryTextColor: '#1F2933',
+                        primaryBorderColor: '#1565C0', lineColor: '#607D8B',
+                        secondaryColor: '#EDE7F6', tertiaryColor: '#E8F5E9' } });
+  </script>
+</head>
+<body>
+<div class="page">
+
+  <div class="toolbar">
+    <a class="home-link" href="index.html">&#8592; <span data-lang="ja">トップへ</span><span data-lang="en">Back to index</span></a>
+    <div style="display:flex;gap:6px;">
+      <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+      <button id="btn-en" class="lang-btn" type="button">EN</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <h1 data-lang="ja">ROCm エコシステム図解</h1>
+    <h1 data-lang="en">ROCm Ecosystem Map</h1>
+    <p data-lang="ja">ROCm を構成するリポジトリ群・ライブラリスタック・ハードウェア対応の関係を、図とカードで視覚的に整理したページです。gfx900 (Vega / RX Vega) がどの位置にいるかも確認できます。</p>
+    <p data-lang="en">A visual map of the repositories, library stack, and hardware support relationships that make up ROCm — including where gfx900 (Vega / RX Vega) sits in the ecosystem.</p>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       1. Repository topology
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" data-lang="ja">1. リポジトリ構成図</h2>
+  <h2 class="section-title" data-lang="en">1. Repository topology</h2>
+  <p class="section-lead" data-lang="ja">ROCm は複数の GitHub リポジトリに分散して開発・配布されます。2023〜2024 年頃から <strong>TheRock</strong> や <strong>rocm-libraries</strong> などの統合リポジトリへの再編が進んでいます。</p>
+  <p class="section-lead" data-lang="en">ROCm is developed and distributed across many GitHub repositories. Since roughly 2023–2024, a consolidation into umbrella repos like <strong>TheRock</strong> and <strong>rocm-libraries</strong> has been underway.</p>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart TD
+    MANIFEST["ROCm manifest\namdgpu/rocm-release"] --> THEROCK["TheRock\nmonorepo build system"]
+    MANIFEST --> RSYS["rocm-systems\nruntime + driver"]
+    MANIFEST --> RLIBS["rocm-libraries\nmath + inference"]
+    MANIFEST --> COMPILER["llvm-project\n(AMD fork)\nHIP / LLVM backend"]
+
+    THEROCK --> MIOPEN["MIOpen\nDNN kernel library"]
+    THEROCK --> ROCBLAS["rocBLAS\nBLAS for GPU"]
+    THEROCK --> CK["composable_kernel\ntile-based kernels"]
+
+    RLIBS --> MIOPEN
+    RLIBS --> ROCBLAS
+    RLIBS --> TENSILE["Tensile\nGEMM code-gen"]
+
+    RSYS --> ROCR["ROCr\nruntime / HSA"]
+    RSYS --> HIP_RT["HIP runtime\nhip/include"]
+
+    ROCBLAS --> TENSILE
+    MIOPEN --> CK
+    MIOPEN --> ROCMLIR["rocMLIR\nMLIR-based iGEMM"]
+
+    COMPILER --> HIP_RT
+    HIP_RT --> ROCR
+    ROCR --> GPU["GPU hardware\ngfx900 / 906 / 908 / ..."]
+
+    style THEROCK  fill:#EDE7F6,stroke:#5B4B8A
+    style RLIBS    fill:#EDE7F6,stroke:#5B4B8A
+    style RSYS     fill:#EDE7F6,stroke:#5B4B8A
+    style MANIFEST fill:#EDE7F6,stroke:#5B4B8A
+    style COMPILER fill:#E8F5E9,stroke:#2E7D32
+    style MIOPEN   fill:#E3F2FD,stroke:#1565C0
+    style ROCBLAS  fill:#E3F2FD,stroke:#1565C0
+    style CK       fill:#E3F2FD,stroke:#1565C0
+    style TENSILE  fill:#E3F2FD,stroke:#1565C0
+    style ROCMLIR  fill:#E3F2FD,stroke:#1565C0
+    style ROCR     fill:#FFF3E0,stroke:#E65100
+    style HIP_RT   fill:#FFF3E0,stroke:#E65100
+    style GPU      fill:#FFEBEE,stroke:#B71C1C
+    </div>
+    <p class="diagram-caption" data-lang="ja">矢印は「依存・包含」関係を表す（ビルド依存またはサブモジュール）</p>
+    <p class="diagram-caption" data-lang="en">Arrows indicate dependency or inclusion relationships (build dependencies or submodules)</p>
+  </div>
+
+  <!-- Repo cards -->
+  <div class="repo-grid">
+    <div class="repo-card repo">
+      <span class="badge-repo repo" data-lang="ja">統合リポジトリ</span>
+      <span class="badge-repo repo" data-lang="en">Umbrella repo</span>
+      <h4>TheRock</h4>
+      <p data-lang="ja">AMD が推進するモノリポ方式のビルドシステム。rocBLAS・MIOpen・HIP などを一括ビルドする。2023年以降に整備が本格化。</p>
+      <p data-lang="en">AMD's monorepo-style build system. Builds rocBLAS, MIOpen, HIP, etc. in one pass. Gained momentum post-2023.</p>
+    </div>
+    <div class="repo-card repo">
+      <span class="badge-repo repo" data-lang="ja">統合リポジトリ</span>
+      <span class="badge-repo repo" data-lang="en">Umbrella repo</span>
+      <h4>rocm-libraries</h4>
+      <p data-lang="ja">数学ライブラリ群（rocBLAS, MIOpen, rocFFT 等）のリリース管理を統合する傘リポジトリ。</p>
+      <p data-lang="en">An umbrella repo consolidating release management for math libraries (rocBLAS, MIOpen, rocFFT, etc.).</p>
+    </div>
+    <div class="repo-card lib">
+      <span class="badge-repo lib" data-lang="ja">推論ライブラリ</span>
+      <span class="badge-repo lib" data-lang="en">Inference lib</span>
+      <h4>MIOpen</h4>
+      <p data-lang="ja">畳み込み・行列演算などのDNNカーネルを提供。ソルバ登録制でGPUごとに最適カーネルを選択。</p>
+      <p data-lang="en">Provides DNN kernels (convolution, GEMM, etc.) via a solver registry that selects the optimal kernel per GPU.</p>
+    </div>
+    <div class="repo-card lib">
+      <span class="badge-repo lib" data-lang="ja">数学ライブラリ</span>
+      <span class="badge-repo lib" data-lang="en">Math library</span>
+      <h4>rocBLAS</h4>
+      <p data-lang="ja">GPU向けBLAS実装。行列乗算（GEMM）などを担う。Tensile でGPU世代ごとのアセンブリコードを生成。</p>
+      <p data-lang="en">GPU BLAS implementation. Handles GEMM etc. Uses Tensile to generate per-generation assembly code.</p>
+    </div>
+    <div class="repo-card lib">
+      <span class="badge-repo lib" data-lang="ja">コード生成</span>
+      <span class="badge-repo lib" data-lang="en">Code generation</span>
+      <h4>Tensile</h4>
+      <p data-lang="ja">GEMMカーネルのコード生成ツール。GPU世代ごとに最適なアセンブリを生成し、rocBLAS に同梱される。</p>
+      <p data-lang="en">GEMM kernel code-generation tool. Produces per-GPU-generation optimized assembly bundled into rocBLAS.</p>
+    </div>
+    <div class="repo-card lib">
+      <span class="badge-repo lib" data-lang="ja">カーネルライブラリ</span>
+      <span class="badge-repo lib" data-lang="en">Kernel library</span>
+      <h4>composable_kernel (CK)</h4>
+      <p data-lang="ja">タイルベースのGPUカーネルを汎用テンプレートで表現するライブラリ。MIOpen で利用。</p>
+      <p data-lang="en">A tile-based GPU kernel library using generic templates. Used by MIOpen for efficient solver backends.</p>
+    </div>
+    <div class="repo-card tool">
+      <span class="badge-repo tool" data-lang="ja">コンパイラ</span>
+      <span class="badge-repo tool" data-lang="en">Compiler</span>
+      <h4>llvm-project (AMD fork)</h4>
+      <p data-lang="ja">HIP → LLVM IR → AMD GCN/RDNA/CDNA アセンブリへの変換を担うコンパイラ基盤。</p>
+      <p data-lang="en">The compiler infrastructure translating HIP → LLVM IR → AMD GCN/RDNA/CDNA assembly.</p>
+    </div>
+    <div class="repo-card hw">
+      <span class="badge-repo hw" data-lang="ja">ランタイム</span>
+      <span class="badge-repo hw" data-lang="en">Runtime</span>
+      <h4>ROCr / HIP runtime</h4>
+      <p data-lang="ja">カーネル起動・メモリ管理・GPU検出を担う最下位レイヤ。HSA APIをGPUドライバに橋渡しする。</p>
+      <p data-lang="en">The lowest layer: kernel launch, memory management, GPU detection. Bridges HSA API to the GPU driver.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       2. Software stack execution flow
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" data-lang="ja">2. ソフトウェアスタック実行フロー</h2>
+  <h2 class="section-title" data-lang="en">2. Software stack execution flow</h2>
+  <p class="section-lead" data-lang="ja">ユーザーコード（PyTorch 等）から GPU 実行まで、データがどのレイヤを経由するかを示します。</p>
+  <p class="section-lead" data-lang="en">Shows the layers a computation passes through from user code (e.g. PyTorch) down to GPU execution.</p>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart TD
+    USER["User code\ne.g. PyTorch / TensorFlow"]
+    USER --> FW["Framework layer\nPyTorch ATen / TF XLA"]
+    FW --> MIOPEN_SYM["MIOpen API\nconv / GEMM / pooling"]
+    FW --> ROCBLAS_SYM["rocBLAS API\nSGEMM / DGEMM"]
+
+    MIOPEN_SYM --> SOLVER["Solver registry\nIsApplicable() per GPU"]
+    SOLVER --> MLIR_PATH["rocMLIR path\nMLIR iGEMM"]
+    SOLVER --> ASM_PATH["ASM path\nWinograd / v4r1"]
+    SOLVER --> NAIVE_PATH["Naive fallback\nfor unsupported GPUs"]
+
+    ROCBLAS_SYM --> TENSILE_RT["Tensile kernel\nper-GPU HSACO"]
+    ROCBLAS_SYM --> CK_RT["composable_kernel\ntile backend"]
+
+    MLIR_PATH --> HIP_API["HIP API\nhipLaunchKernel"]
+    ASM_PATH --> HIP_API
+    NAIVE_PATH --> HIP_API
+    TENSILE_RT --> HIP_API
+    CK_RT --> HIP_API
+
+    HIP_API --> ROCR_RT["ROCr runtime\nHSA queue / signals"]
+    ROCR_RT --> DRIVER["amdgpu kernel driver"]
+    DRIVER --> GPU_HW["GPU hardware"]
+
+    style USER fill:#E8F5E9,stroke:#2E7D32
+    style FW fill:#E8F5E9,stroke:#2E7D32
+    style MIOPEN_SYM fill:#E3F2FD,stroke:#1565C0
+    style ROCBLAS_SYM fill:#E3F2FD,stroke:#1565C0
+    style SOLVER fill:#EDE7F6,stroke:#5B4B8A
+    style MLIR_PATH fill:#FFEBEE,stroke:#B71C1C
+    style ASM_PATH fill:#E3F2FD,stroke:#1565C0
+    style NAIVE_PATH fill:#FFF3E0,stroke:#E65100
+    style TENSILE_RT fill:#E3F2FD,stroke:#1565C0
+    style CK_RT fill:#E3F2FD,stroke:#1565C0
+    style HIP_API fill:#FFF3E0,stroke:#E65100
+    style ROCR_RT fill:#FFF3E0,stroke:#E65100
+    style DRIVER fill:#FFEBEE,stroke:#B71C1C
+    style GPU_HW fill:#FFEBEE,stroke:#B71C1C
+    </div>
+    <p class="diagram-caption" data-lang="ja">solver registry で GPU の能力を確認し、最適なカーネルパスが選択される</p>
+    <p class="diagram-caption" data-lang="en">The solver registry checks GPU capabilities and selects the optimal kernel path</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       3. gfx900 position in the ecosystem
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" data-lang="ja">3. gfx900 のエコシステム上の位置</h2>
+  <h2 class="section-title" data-lang="en">3. Where gfx900 sits in the ecosystem</h2>
+  <p class="section-lead" data-lang="ja">gfx900 (Vega / RX Vega / Radeon VII 相当世代) は、ROCm スタックの各レイヤで異なる扱いを受けます。</p>
+  <p class="section-lead" data-lang="en">gfx900 (the Vega / RX Vega generation) is handled differently at each layer of the ROCm stack.</p>
+
+  <div class="highlight-box">
+    <span data-lang="ja"><strong>ポイント：</strong> gfx900 は「公式にサポートされていない」GPUですが、コードベース上では能力ベースのフォールバック設計によりほとんどのパスが機能し続けています。完全削除ではなく、<strong>段階的な後退 (staged retreat)</strong> がとられています。</span>
+    <span data-lang="en"><strong>Key point:</strong> gfx900 is not "officially supported," yet capability-based fallback design in the codebase means most paths keep working. Rather than full removal, a <strong>staged retreat</strong> is in place.</span>
+  </div>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+%%{init: { 'theme': 'base', 'themeVariables': { 'primaryColor': '#E3F2FD', 'primaryBorderColor': '#1565C0' } } }%%
+flowchart LR
+    subgraph GFX900["gfx900 access map"]
+      direction TB
+      G_HIP["HIP compilation\ngfx900 target"]
+      G_ROCR["ROCr runtime\nkernel launch"]
+      G_MIOPEN["MIOpen solvers\ncapability check"]
+      G_ROCBLAS["rocBLAS\ngeneric GEMM path"]
+      G_PERF["Perf DB\n169,182 entries"]
+    end
+
+    G_HIP --> |"pass — arch supported"| OK1["Compile OK"]
+    G_ROCR --> |"pass — HSA queue works"| OK2["Runtime OK"]
+    G_MIOPEN --> |"MLIR iGEMM: BLOCKED\n(commit 2407d2f)"| BLOCKED["gfx900 excluded"]
+    G_MIOPEN --> |"ASM v4r1 / Winograd: pass"| OK3["Solvers OK"]
+    G_MIOPEN --> |"INT8 naive: fallback only"| PARTIAL["Limited"]
+    G_ROCBLAS --> |"gfx900 GEMM files: 128 files"| OK4["Generic GEMM OK"]
+    G_PERF --> |"entries ship with ROCm 7.2"| OK5["Perf DB OK"]
+
+    style BLOCKED fill:#FFEBEE,stroke:#B71C1C,color:#B71C1C
+    style PARTIAL fill:#FFF3E0,stroke:#E65100,color:#E65100
+    style OK1 fill:#E8F5E9,stroke:#2E7D32,color:#2E7D32
+    style OK2 fill:#E8F5E9,stroke:#2E7D32,color:#2E7D32
+    style OK3 fill:#E8F5E9,stroke:#2E7D32,color:#2E7D32
+    style OK4 fill:#E8F5E9,stroke:#2E7D32,color:#2E7D32
+    style OK5 fill:#E8F5E9,stroke:#2E7D32,color:#2E7D32
+    style GFX900 fill:#E3F2FD,stroke:#1565C0
+    </div>
+    <p class="diagram-caption" data-lang="ja">緑 = 機能する、赤 = 除外済み、橙 = 部分対応</p>
+    <p class="diagram-caption" data-lang="en">Green = working, Red = explicitly excluded, Orange = partial/fallback only</p>
+  </div>
+
+  <!-- layer support table -->
+  <table class="layer-table">
+    <thead>
+      <tr>
+        <th data-lang="ja">レイヤ</th>
+        <th data-lang="ja">コンポーネント</th>
+        <th data-lang="ja">gfx900 状況</th>
+        <th data-lang="ja">根拠</th>
+        <th data-lang="en">Layer</th>
+        <th data-lang="en">Component</th>
+        <th data-lang="en">gfx900 status</th>
+        <th data-lang="en">Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-lang="ja">コンパイラ</td>
+        <td data-lang="ja">LLVM / HIP</td>
+        <td data-lang="ja"><span class="tick">✓ 動作</span></td>
+        <td data-lang="ja">gfx900 アーキ定義が残存</td>
+        <td data-lang="en">Compiler</td>
+        <td data-lang="en">LLVM / HIP</td>
+        <td data-lang="en"><span class="tick">✓ Works</span></td>
+        <td data-lang="en">gfx900 arch definition present</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">ランタイム</td>
+        <td data-lang="ja">ROCr / HIP RT</td>
+        <td data-lang="ja"><span class="tick">✓ 動作</span></td>
+        <td data-lang="ja">HSA キュー機構は世代共通</td>
+        <td data-lang="en">Runtime</td>
+        <td data-lang="en">ROCr / HIP RT</td>
+        <td data-lang="en"><span class="tick">✓ Works</span></td>
+        <td data-lang="en">HSA queue mechanism is arch-agnostic</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">畳み込み</td>
+        <td data-lang="ja">MIOpen MLIR iGEMM</td>
+        <td data-lang="ja"><span class="cross">✗ 除外</span></td>
+        <td data-lang="ja">commit 2407d2f で明示除外</td>
+        <td data-lang="en">Convolution</td>
+        <td data-lang="en">MIOpen MLIR iGEMM</td>
+        <td data-lang="en"><span class="cross">✗ Excluded</span></td>
+        <td data-lang="en">Explicitly disabled in commit 2407d2f</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">畳み込み</td>
+        <td data-lang="ja">MIOpen ASM v4r1 / Winograd</td>
+        <td data-lang="ja"><span class="tick">✓ 動作</span></td>
+        <td data-lang="ja">IsApplicable() を通過</td>
+        <td data-lang="en">Convolution</td>
+        <td data-lang="en">MIOpen ASM v4r1 / Winograd</td>
+        <td data-lang="en"><span class="tick">✓ Works</span></td>
+        <td data-lang="en">Passes IsApplicable() check</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">畳み込み</td>
+        <td data-lang="ja">MIOpen INT8</td>
+        <td data-lang="ja"><span class="partial">△ naive のみ</span></td>
+        <td data-lang="ja">dot4 命令なし → naive fallback</td>
+        <td data-lang="en">Convolution</td>
+        <td data-lang="en">MIOpen INT8</td>
+        <td data-lang="en"><span class="partial">△ naive only</span></td>
+        <td data-lang="en">No dot4 instruction → naive fallback</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">行列演算</td>
+        <td data-lang="ja">rocBLAS GEMM</td>
+        <td data-lang="ja"><span class="tick">✓ 動作</span></td>
+        <td data-lang="ja">gfx900 用ファイル 128 本</td>
+        <td data-lang="en">Matrix ops</td>
+        <td data-lang="en">rocBLAS GEMM</td>
+        <td data-lang="en"><span class="tick">✓ Works</span></td>
+        <td data-lang="en">128 gfx900-specific files present</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">性能DB</td>
+        <td data-lang="ja">Perf DB</td>
+        <td data-lang="ja"><span class="tick">✓ 収録</span></td>
+        <td data-lang="ja">ROCm 7.2 で 169,182 エントリ</td>
+        <td data-lang="en">Perf tuning</td>
+        <td data-lang="en">Perf DB</td>
+        <td data-lang="en"><span class="tick">✓ Included</span></td>
+        <td data-lang="en">169,182 entries in ROCm 7.2</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">xdlops 行列演算</td>
+        <td data-lang="ja">rocBLAS / MIOpen xdlops</td>
+        <td data-lang="ja"><span class="cross">✗ 非対応</span></td>
+        <td data-lang="ja">xdlops は gfx908 以降の命令</td>
+        <td data-lang="en">xdlops matrix</td>
+        <td data-lang="en">rocBLAS / MIOpen xdlops</td>
+        <td data-lang="en"><span class="cross">✗ N/A</span></td>
+        <td data-lang="en">xdlops instruction requires gfx908+</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ══════════════════════════════════════════
+       4. GPU generations in the ROCm context
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" data-lang="ja">4. GPU 世代と ROCm サポート範囲</h2>
+  <h2 class="section-title" data-lang="en">4. GPU generations and ROCm support scope</h2>
+  <p class="section-lead" data-lang="ja">ROCm が対象とする GPU 世代を、命令セットの追加と共に整理します。世代ごとに使えるカーネルパスが変わります。</p>
+  <p class="section-lead" data-lang="en">A map of GPU generations ROCm targets, alongside the instruction set additions that unlock new kernel paths.</p>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+%%{init: { 'theme': 'base' } }%%
+timeline
+    title GPU generations and key instruction sets
+    section GCN era (legacy)
+        gfx900 (Vega10) : 2017 — no xdlops, no dot4
+                        : ASM / Winograd paths only
+        gfx906 (Vega20) : 2018 — adds dot4 (INT8)
+                        : Radeon VII / Instinct MI50
+    section CDNA era (data center)
+        gfx908 (Arcturus): 2020 — adds xdlops matrix
+                         : Instinct MI100
+        gfx90a (Aldebaran): 2021 — xdlops + FP64 matrix
+                          : Instinct MI200
+        gfx942 (Antares) : 2024 — xdlops gen4
+                         : Instinct MI300
+    section RDNA era (gaming / consumer)
+        gfx1030 (Navi21) : 2020 — new ISA branch
+                         : Radeon RX 6000 series
+        gfx1100 (Navi31) : 2022 — RDNA 3
+                         : Radeon RX 7000 series
+    </div>
+    <p class="diagram-caption" data-lang="ja">gfx900 は GCN 時代の最初期世代。xdlops も dot4 も持たないため、後続世代向けの高速パスは使えない。</p>
+    <p class="diagram-caption" data-lang="en">gfx900 is the earliest GCN-era target. Without xdlops or dot4, it cannot reach the fast paths built for later generations.</p>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       5. Provenance overview
+  ══════════════════════════════════════════ -->
+  <h2 class="section-title" data-lang="ja">5. gfx900 が「消えない」仕組み</h2>
+  <h2 class="section-title" data-lang="en">5. Why gfx900 has not disappeared</h2>
+  <p class="section-lead" data-lang="ja">公式サポート終了後も gfx900 向けコードが残り続けるのは、ROCm の <strong>capability-based 設計</strong> と <strong>削除コスト</strong> の組み合わせによります。</p>
+  <p class="section-lead" data-lang="en">Code for gfx900 persists after official support ends due to a combination of ROCm's <strong>capability-based design</strong> and the <strong>cost of active deletion</strong>.</p>
+
+  <div class="diagram-box">
+    <div class="mermaid">
+flowchart LR
+    subgraph WHY["Why gfx900 code persists"]
+      CB["Capability-based design\nIsApplicable() checks at runtime\nno hard gfx900 blocklist"]
+      COST["Deletion cost\nbreaking fallback chains\nrisks regressions on other GPUs"]
+      COMM["Community maintenance\nWinograd / ASM v4r1 authors\nstill accept patches"]
+      PERF_DB_NODE["Perf DB entries\nshipped with ROCm releases\nno active removal"]
+    end
+    CB --> RESULT["gfx900 keeps working\nvia fallback paths"]
+    COST --> RESULT
+    COMM --> RESULT
+    PERF_DB_NODE --> RESULT
+
+    style CB fill:#E3F2FD,stroke:#1565C0
+    style COST fill:#FFF3E0,stroke:#E65100
+    style COMM fill:#E8F5E9,stroke:#2E7D32
+    style PERF_DB_NODE fill:#EDE7F6,stroke:#5B4B8A
+    style RESULT fill:#FFEBEE,stroke:#B71C1C
+    style WHY fill:#F5F8FB,stroke:#D8E0E8
+    </div>
+    <p class="diagram-caption" data-lang="ja">4 つの要因が重なって、gfx900 は「段階的に後退しながらも動き続ける」状態を維持している</p>
+    <p class="diagram-caption" data-lang="en">Four overlapping factors keep gfx900 in a "staged retreat but still functional" state</p>
+  </div>
+
+  <div class="highlight-box">
+    <span data-lang="ja"><strong>まとめ：</strong> ROCm のエコシステムは、「公式サポート」と「実際に動くかどうか」が一致しない設計になっています。gfx900 は公式サポート外ですが、capability-based フォールバックと削除コストの重さにより、コードベース上は機能するパスが維持されています。これは「放置」ではなく、設計原則の副産物です。</span>
+    <span data-lang="en"><strong>Summary:</strong> ROCm's ecosystem is designed such that "officially supported" and "actually works" do not always align. gfx900 is outside official support, yet capability-based fallback and the cost of active removal keep functional paths alive in the codebase. This is not neglect — it is a side-effect of the design principles.</span>
+  </div>
+
+  <div style="margin-top:32px;color:var(--muted);font-size:13px;text-align:center;">
+    <span data-lang="ja">vega-hbmx-pages — ROCm エコシステム図解 | 2026-03-15</span>
+    <span data-lang="en">vega-hbmx-pages — ROCm Ecosystem Map | 2026-03-15</span>
+  </div>
+</div>
+
+<script>
+  const html = document.documentElement;
+  const btnJa = document.getElementById('btn-ja');
+  const btnEn = document.getElementById('btn-en');
+  function setLanguage(lang) {
+    html.setAttribute('data-language', lang);
+    html.setAttribute('lang', lang);
+    btnJa.classList.toggle('active', lang === 'ja');
+    btnEn.classList.toggle('active', lang === 'en');
+    localStorage.setItem('vega-hbmx-pages-lang', lang);
+  }
+  btnJa.addEventListener('click', () => setLanguage('ja'));
+  btnEn.addEventListener('click', () => setLanguage('en'));
+  setLanguage(localStorage.getItem('vega-hbmx-pages-lang') === 'en' ? 'en' : 'ja');
+</script>
+</body>
+</html>
