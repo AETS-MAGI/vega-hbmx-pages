@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -6,7 +7,11 @@ from pathlib import Path
 
 def run_one(py: str, script: Path) -> bool:
     print(f"\n=== RUN {script.name} ===")
-    proc = subprocess.run([py, str(script)], capture_output=True, text=True)
+    env = os.environ.copy()
+    asic_ids = Path("/usr/share/libdrm/amdgpu.ids")
+    if asic_ids.exists() and "AMDGPU_ASIC_ID_TABLE_PATHS" not in env:
+        env["AMDGPU_ASIC_ID_TABLE_PATHS"] = str(asic_ids)
+    proc = subprocess.run([py, str(script)], capture_output=True, text=True, env=env)
     if proc.stdout:
         print(proc.stdout.strip())
     if proc.stderr:
