@@ -403,8 +403,8 @@
 		</section>
 
 		<div class="summary">
-			<span data-lang="ja">上から順に読むと「なぜこれを調べているか → 仕組みの基礎 → 発表資料 → 詳細根拠」という流れで全体像が見渡せます。</span>
-			<span data-lang="en">Reading top to bottom follows the arc: why this matters → foundational concepts → presentation materials → detailed evidence.</span>
+			<span data-lang="ja">上から順に読むと「なぜこれを調べているか → ROCm 入門への入口 → 発表資料 → 詳細根拠」という流れで全体像が見渡せます。</span>
+			<span data-lang="en">Reading top to bottom follows the arc: why this matters → where to start learning ROCm → presentation materials → detailed evidence.</span>
 		</div>
 
 		<!-- ═══════════════════════════════════════════════════
@@ -494,37 +494,37 @@
 		<hr class="section-divider">
 
 		<!-- ═══════════════════════════════════════════════════
-		     Section 2: 理論を学ぶ
+		     Section 2: ROCm 入門への入口
 		═══════════════════════════════════════════════════ -->
 		<section class="section-block">
 			<div class="section-header">
 				<span class="section-num s2">2</span>
-				<h2 class="c2" data-lang="ja">理論を学ぶ</h2>
-				<h2 class="c2" data-lang="en">Learn the concepts</h2>
+				<h2 class="c2" data-lang="ja">ROCm 入門への入口</h2>
+				<h2 class="c2" data-lang="en">Start Learning ROCm</h2>
 			</div>
-			<p class="section-lead" data-lang="ja">GPU・ROCm・深層学習の基礎を「イメージでわかる」形式で解説した入門ページ群です。<br>全 20 ページを 3 ステップ（はじめの一歩 → 気になるテーマ → 全体を見渡す資料）で整理しています。おすすめ順路つき。<br>一部のテーマには「ROCmで見る」実コード例ページ（5 ページ）もあります。</p>
-			<p class="section-lead" data-lang="en">Analogy-driven introductions covering GPU basics, ROCm, and deep learning.<br>20 pages organized in three tiers — First steps → Pick a topic → Reference maps — with a recommended reading path.<br>Selected topics also include "See in ROCm" code example pages (5 pages).</p>
+			<p class="section-lead" data-lang="ja">GPU・ROCm・NumPy・PyTorch をこれから学ぶ人向けの入口は、別サイト <strong>ROCm-docs</strong> に分離しました。初心者向けの理論ページと Python 講座は、そちらから読めます。</p>
+			<p class="section-lead" data-lang="en">The beginner-friendly learning path for GPU, ROCm, NumPy, and PyTorch now lives on the separate site <strong>ROCm-docs</strong>. Start there for the theory pages and the Python course.</p>
 
 			<div class="card-grid">
 				<article class="card" style="border-left:4px solid var(--teal);">
-					<span class="card-type type-theory">Theory</span>
-					<h3 data-lang="ja">理論ページ 総合案内</h3>
-					<h3 data-lang="en">Theory Page Hub</h3>
-					<p class="filename">theory/index.html</p>
-					<p data-lang="ja">全 20 の理論解説ページへのナビゲーション。「はじめの一歩」から順に読むか、気になるテーマだけ拾い読みできます。</p>
-					<p data-lang="en">Navigation hub for all 20 theory pages. Follow the recommended path or jump to any topic.</p>
+					<span class="card-type type-theory">ROCm-docs</span>
+					<h3 data-lang="ja">初心者向け ROCm 学習サイト</h3>
+					<h3 data-lang="en">Beginner ROCm Learning Site</h3>
+					<p class="filename">https://aets-magi.github.io/ROCm-docs/</p>
+					<p data-lang="ja">GPU の基本、ROCm の全体像、NumPy / PyTorch のつながり、そして「やりたいこと」から入る Python and ROCm 教室をまとめた公開サイトです。</p>
+					<p data-lang="en">A public learning site covering GPU basics, the ROCm stack, NumPy / PyTorch connections, and a goal-based Python and ROCm course.</p>
 					<ul>
-						<li data-lang="ja">はじめの一歩（4 ページ）— GPU・メモリ・世代・ROCm 入門</li>
-						<li data-lang="en">First steps (4 pages) — GPU, memory, generations, ROCm intro</li>
-						<li data-lang="ja">気になるテーマ（14 ページ）— NumPy特急便・PyTorch特急便・数式・畳み込み・Attention・線形代数・学習vs推論 ほか</li>
-						<li data-lang="en">Pick a topic (14 pages) — NumPy Express, PyTorch Express, math notation, convolution, attention, linear algebra, training vs inference, …</li>
-						<li data-lang="ja">全体を見渡す資料（2 ページ）— 用語集・エコシステム全体図</li>
-						<li data-lang="en">Reference maps (2 pages) — glossary, ecosystem overview</li>
+						<li data-lang="ja">理論ページで ROCm と GPU の全体像をつかめます</li>
+						<li data-lang="en">Use the theory pages to get the big picture of GPUs and ROCm</li>
+						<li data-lang="ja">Python and ROCm 教室で、13 章の学習コースを順に進められます</li>
+						<li data-lang="en">Follow the 13-chapter Python and ROCm course in reading order</li>
+						<li data-lang="ja">研究ページではなく、入門と学習 UX を主役にした構成です</li>
+						<li data-lang="en">Designed as a beginner entry point rather than a research archive</li>
 					</ul>
 					<div class="actions">
-						<a class="button button-teal" href="theory/index.html">
-							<span data-lang="ja">理論ページ一覧を開く</span>
-							<span data-lang="en">Open Theory Hub</span>
+						<a class="button button-teal" href="https://aets-magi.github.io/ROCm-docs/" target="_blank" rel="noopener noreferrer">
+							<span data-lang="ja">ROCm-docs を開く</span>
+							<span data-lang="en">Open ROCm-docs</span>
 						</a>
 					</div>
 				</article>
