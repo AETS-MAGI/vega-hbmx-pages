@@ -410,12 +410,12 @@
 
     <article class="entry">
       <div class="entry-head">
-        <h2 data-lang="ja">INT8 MIOpen direct solution query の境界を public 側へ同期</h2>
-        <h2 data-lang="en">Synced the INT8 MIOpen direct solution-query boundary into the public pages</h2>
+        <h2 data-lang="ja">INT8 MIOpen direct immediate 成功を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the INT8 MIOpen direct immediate success into the public pages</h2>
         <span class="entry-date">2026-03-18</span>
       </div>
-      <p class="entry-lead" data-lang="ja">`convint8` tested case の `not applicable` をそのまま終点にせず、same installed MIOpen library へ direct query-only probe を当てた結果も public wording に反映した。新しい境界は、「`y=int32` なら `solution_id = 89` は visible だが、tested `convint8` route ではそこに乗っていない」である。</p>
-      <p class="entry-lead" data-lang="en">Rather than stopping at the `not applicable` result from the tested `convint8` case, the public wording now also reflects a direct query-only probe against the same installed MIOpen library. The new boundary is: `solution_id = 89` is visible when `y=int32`, but the tested `convint8` route does not reach it.</p>
+      <p class="entry-lead" data-lang="ja">`convint8` tested case の `not applicable` と direct query の可視化だけで止めず、same installed MIOpen library への direct immediate probe まで public wording に反映した。新しい境界は、「`y=int32` なら `solution_id = 89` は visible で、compile / execute まで通るが、tested `convint8` route ではそこに乗っていない」である。</p>
+      <p class="entry-lead" data-lang="en">Rather than stopping at the `not applicable` result from the tested `convint8` case or the query-level visibility alone, the public wording now also reflects a direct immediate probe against the same installed MIOpen library. The new boundary is: `solution_id = 89` is visible when `y=int32`, and it compiles and executes there, but the tested `convint8` route does not reach it.</p>
       <div class="file-list">
         <span class="file-tag">solver-trace.html</span>
         <span class="file-tag">README.md</span>
@@ -427,14 +427,14 @@
           <div class="delta-box delta-old">
             <h4 data-lang="ja">旧記述</h4>
             <h4 data-lang="en">Old</h4>
-            <p data-lang="ja">INT8 section は `GemmFwd1x1_0_1_int8` の forced / only-solver 実行が `not applicable` に留まるところまでを public 境界としていた。</p>
-            <p data-lang="en">The INT8 section stopped at the point where forced / only-solver runs for `GemmFwd1x1_0_1_int8` remained `not applicable`.</p>
+            <p data-lang="ja">INT8 section は direct query で `y=int32` 条件なら `solution_id = 89` が visible だが、tested `convint8` route では `not applicable` に留まるところまでを public 境界としていた。</p>
+            <p data-lang="en">The INT8 section stopped at the point where direct query made `solution_id = 89` visible for `y=int32`, while the tested `convint8` route still remained `not applicable`.</p>
           </div>
           <div class="delta-box delta-new">
             <h4 data-lang="ja">新記述</h4>
             <h4 data-lang="en">New</h4>
-            <p data-lang="ja">same installed MIOpen library への direct solution query では、`y=int32` 条件にすると `solution_id = 89` と非ゼロ workspace が見える一方、`y=int8` では見えないことを追加し、閉塞点を driver/output-type path 側まで狭めた。</p>
-            <p data-lang="en">The page now adds that a direct solution query against the same installed MIOpen library exposes `solution_id = 89` with non-zero workspace when `y=int32`, while `y=int8` does not, narrowing the blocked point toward the driver/output-type path.</p>
+            <p data-lang="ja">same installed MIOpen library への direct immediate probe では、`y=int32` 条件にすると `solution_id = 89` が visible になるだけでなく、`CompileSolution + ForwardImmediate` まで成功することを追加し、閉塞点を driver/output-type path 側までさらに狭めた。</p>
+            <p data-lang="en">The page now adds that a direct immediate probe against the same installed MIOpen library not only exposes `solution_id = 89` when `y=int32`, but also succeeds through `CompileSolution + ForwardImmediate`, narrowing the blocked point further toward the driver/output-type path.</p>
           </div>
         </div>
       </div>
