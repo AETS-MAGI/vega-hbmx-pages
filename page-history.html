@@ -410,6 +410,38 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">INT8 の standard Find/Forward 成功を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the standard INT8 Find/Forward success into the public pages</h2>
+        <span class="entry-date">2026-03-18</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">direct immediate だけが通る特殊経路なのか、それとも explicit `y=int32` descriptor を与えれば standard の higher-level C API でも通るのか、という境界が残っていた。今回の更新では、`FindConvolutionForwardAlgorithm + ConvolutionForward` でも GEMM が返って実行まで成功することを反映し、現在の閉塞点をさらに driver-side descriptor assembly 側へ寄せた。</p>
+      <p class="entry-lead" data-lang="en">One remaining boundary was whether the successful `y=int32` path was an immediate-only special case or whether the standard higher-level C API could also reach it when the INT32 output descriptor was explicit. This update reflects that `FindConvolutionForwardAlgorithm + ConvolutionForward` also reaches GEMM and runs successfully, pushing the current blocked point further toward the driver-side descriptor assembly.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">INT8 section は、direct `y=int32` probe は通るが、driver cast-flag path は別 problem だ、というところまでを public 境界としていた。</p>
+            <p data-lang="en">The INT8 section stopped at the point where direct `y=int32` probes worked, while the driver cast-flag path was shown to be a different problem.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">standard `FindConvolutionForwardAlgorithm + ConvolutionForward` でも、explicit `y=int32` descriptor を与えれば GEMM が返って実行まで成功することを追記し、現在の閉塞点を driver/output-type path 側へさらに狭めた。</p>
+            <p data-lang="en">The page now adds that standard `FindConvolutionForwardAlgorithm + ConvolutionForward` also returns GEMM and runs successfully when the `y=int32` descriptor is explicit, narrowing the blocked point further toward the driver/output-type path.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">INT8 cast-flag driver 境界を public 側へ同期</h2>
         <h2 data-lang="en">Synced the INT8 cast-flag driver boundary into the public pages</h2>
         <span class="entry-date">2026-03-18</span>
