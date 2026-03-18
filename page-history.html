@@ -410,6 +410,38 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">INT8 の source-level descriptor 分岐を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the INT8 source-level descriptor split into the public pages</h2>
+        <span class="entry-date">2026-03-18</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">direct `y=int32` probe、driver cast-flag retry、standard Find/Forward success までは public 側に出ていたが、`...INT8INT8INT32-F` と `...INT8-F_coFP32` が source-level にも別 problem として分かれている点はまだ明文化していなかった。今回の更新では、current / legacy source の比較を短く反映し、閉塞点が solver/backend 不在ではなく driver-side descriptor assembly / path provenance に寄ることを public wording でも明示した。</p>
+      <p class="entry-lead" data-lang="en">The public pages already reflected the direct `y=int32` probes, the driver cast-flag retry, and the standard Find/Forward success, but they had not yet stated that `...INT8INT8INT32-F` and `...INT8-F_coFP32` are also separate problems at the source level. This update adds a short current-vs-legacy source comparison and makes it explicit in the public wording that the blocked point is closer to driver-side descriptor assembly / path provenance than to solver/backend absence.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">INT8 section は、direct `y=int32` path が higher-level C API からも通る一方、driver cast-flag path は別 problem だ、というところまでを public 境界としていた。</p>
+            <p data-lang="en">The INT8 section stopped at the point where the direct `y=int32` path also worked through the higher-level C API, while the driver cast-flag path was already known to be a different problem.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">current standalone source では INT8 route を output descriptor 自体の `miopenInt32` 化で表現し、legacy cast-aware path では INT8 tensor に cast metadata を後付けするため、`...INT8INT8INT32-F` と `...INT8-F_coFP32` は同じ route の別表記ではなく source-level にも別 problem だと追記した。</p>
+            <p data-lang="en">The page now adds that current standalone MIOpen expresses the INT8 route by making the output descriptor itself `miopenInt32`, while the legacy cast-aware path keeps an INT8 tensor and adds cast metadata. Therefore `...INT8INT8INT32-F` and `...INT8-F_coFP32` are not alternate spellings of the same route but separate problems at the source level as well.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">INT8 の standard Find/Forward 成功を public 側へ同期</h2>
         <h2 data-lang="en">Synced the standard INT8 Find/Forward success into the public pages</h2>
         <span class="entry-date">2026-03-18</span>
