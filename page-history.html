@@ -373,7 +373,7 @@
       <div class="hero-meta">
         <span class="badge">vega-hbmx-pages</span>
         <span class="badge">Public update audit log</span>
-        <span class="badge">Updated: 2026-03-15</span>
+        <span class="badge">Updated: 2026-03-18</span>
       </div>
     </section>
 
@@ -407,6 +407,60 @@
 
     <h2 class="section-title" data-lang="ja">更新ログ</h2>
     <h2 class="section-title" data-lang="en">Update log</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h2 data-lang="ja">INT8 alternative candidate の静的整理を `solver-trace.html` へ同期</h2>
+        <h2 data-lang="en">Synced the static INT8 alternative-candidate notes into `solver-trace.html`</h2>
+        <span class="entry-date">2026-03-18</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">内部ノート <code>dp4a_alternative_path.md</code> と <code>solver_selection_graph.md</code> により、INT8 まわりは「なさそう」で止めるより、「どこが candidate で、どこが fragment / gate なのか」を public 側でも書き分けられるようになった。今回は既存ページへの追記で同期し、新規ページはまだ作成していない。</p>
+      <p class="entry-lead" data-lang="en">After <code>dp4a_alternative_path.md</code> and <code>solver_selection_graph.md</code>, the INT8 story could be stated more precisely in public: not just “nothing was found,” but which route is the concrete candidate and which pieces remain fragments or gates. This was synced as an update to existing pages rather than a new standalone page.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">INT8 まわりは「自然選択では naive のみ」「dot4 命令は逆アセンブルで未検出」という説明が中心で、current public tree に見えるより狭い GEMM 系 candidate までは public 側に出していなかった。</p>
+            <p data-lang="en">The INT8 story centered on “natural selection yields naive only” and “no dot4 instructions were found in the disassembly,” without yet exposing the narrower GEMM-shaped candidate visible in the current public tree.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja"><code>dp4a</code> は current public tree の canonical naming ではないことを明記し、最も具体的な INT8 candidate を <code>GemmFwd1x1_0_1_int8 -> CallGemm -> CallGemmMIOpenTensile / rocBLAS</code> として追加した。あわせて、これは <code>code_verified</code> の静的 candidate に留まり、MLIR/CK/Tensile は依然 fragment / gate の段階だと書き分けた。</p>
+            <p data-lang="en">The page now states that <code>dp4a</code> is not the canonical naming in the current public tree and adds the most concrete INT8 candidate as <code>GemmFwd1x1_0_1_int8 -> CallGemm -> CallGemmMIOpenTensile / rocBLAS</code>. It also makes the boundary explicit: this remains a <code>code_verified</code> static candidate, while MLIR/CK/Tensile still appear only as fragments or gates.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> <code>dp4a_alternative_path.md</code>、<code>solver_selection_graph.md</code>、および public source の <code>solver/gemm.cpp</code> / <code>gemm_v2.cpp</code> / <code>conv_mlir_igemm_fwd.cpp</code> / CK / Tensile capability table。</span>
+          <span data-lang="en"><strong>Rationale:</strong> <code>dp4a_alternative_path.md</code>, <code>solver_selection_graph.md</code>, and the public sources in <code>solver/gemm.cpp</code>, <code>gemm_v2.cpp</code>, <code>conv_mlir_igemm_fwd.cpp</code>, CK, and the Tensile capability table.</span>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>README.md</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja"><code>solver-trace.html</code> は 2026-03-15 更新のままで、INT8 については naive disassembly / dot4 不在の観測が主な案内だった。</p>
+            <p data-lang="en"><code>solver-trace.html</code> was still marked as updated on 2026-03-15, and the README mainly advertised the naive disassembly / dot4-absent observation for INT8.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">README を 2026-03-18 更新に合わせ、INT8 部分は「runtime verified な naive-only 観測」と「source 上で見える狭い GEMM 系 candidate」を分けて案内するようにした。</p>
+            <p data-lang="en">The README is now aligned with the 2026-03-18 update and separates the runtime-verified naive-only observation from the narrower GEMM-shaped candidate visible in source.</p>
+          </div>
+        </div>
+      </div>
+    </article>
 
     <article class="entry">
       <div class="entry-head">

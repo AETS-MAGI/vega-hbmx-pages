@@ -126,11 +126,11 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - 「`num_gpu` は GPU 枚数ではなく offload 層数である」という点を、ソースコードから順に確認できます。
 - 発表中の質疑や、実装上の意味を厳密に確認したい場合に向いています。
 
-### `solver-trace.html` ★ 2026-03-15 更新
+### `solver-trace.html` ★ 2026-03-18 更新
 
 - MIOpen・rocBLAS・CK・Tensile における gfx900（Vega10）計算経路を、ソース行番号と実機ログで対応づけた技術参照資料です。
-- 静的コード監査（code_verified）と実機 Vega64 での動的検証（runtime_verified）の両方を収録。
-- 2026-03-15 追記として、shipped artifact 比較の棒グラフを共通デザインへ置き換え、gfx900 注目行・比較対象・ゼロ値が視覚的に区別しやすい形へ整理しました。
+- 静的コード監査（code_verified）と実機 Vega64 での動的検証（runtime_verified）を収録し、runtime 未確認の静的補足はその旨を明示して追記しています。
+- 2026-03-18 追記として、INT8 alternative candidate を current public tree の語彙に寄せて整理し、`dp4a` は convenience label に過ぎず、最も具体的な候補は `GemmFwd1x1_0_1_int8 -> CallGemm -> CallGemmMIOpenTensile / rocBLAS` だと書き分けました。
 - 主な内容:
   - MLIR iGEMM の gfx900 除外コミット（2407d2f, 2021-12-22）とソースコード証跡
   - ASM implicit GEMM v4r1 dynamic の gfx900/gfx906 ホワイトリスト
@@ -140,6 +140,8 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
   - Tensile AsmCaps での (9,0,0) の dot4 全 False
   - rocBLAS getLazyLoadingArch の gfx900 明示マップ + 多段フォールバック
   - 実機逆アセンブルで INT8 naive カーネルに dot4 命令が存在しないことを確認
+  - `dp4a` は current public tree の canonical naming ではなく、`miopenInt8x4` / `v_dot4_i32_i8` / `sdot4` 系に散っていること
+  - `GemmFwd1x1_0_1_int8 -> CallGemm -> CallGemmMIOpenTensile / rocBLAS` が最も具体的な static INT8 candidate であること
   - `IsMlirSupportedHardware()` と `ConvMlirIgemm*::IsApplicable()` の二重構造
   - 強制 MLIR 実行で露出した `Perf Db: record not found` / `boost::optional::get()` 系の下流失敗
   - 「維持（build）・管理（selection）・補充（fallback）」3 層構造の説明
@@ -169,7 +171,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `code-tracing.html`
   - Standalone supplementary deck for the exact meaning of `num_gpu`.
 - `solver-trace.html`
-  - Technical reference: gfx900 computation paths in MIOpen / rocBLAS / CK / Tensile — code-verified and runtime-verified.
+  - Technical reference: gfx900 computation paths in MIOpen / rocBLAS / CK / Tensile — mainly code-verified and runtime-verified, with clearly marked static-only INT8 addenda.
 - `theory/index.html`
   - Theory page navigation hub with card grid and recommended reading path.
 - `theory/gpu-basics.html` — What is a GPU?
