@@ -410,6 +410,38 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">INT8 MIOpen direct solution query の境界を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the INT8 MIOpen direct solution-query boundary into the public pages</h2>
+        <span class="entry-date">2026-03-18</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">`convint8` tested case の `not applicable` をそのまま終点にせず、same installed MIOpen library へ direct query-only probe を当てた結果も public wording に反映した。新しい境界は、「`y=int32` なら `solution_id = 89` は visible だが、tested `convint8` route ではそこに乗っていない」である。</p>
+      <p class="entry-lead" data-lang="en">Rather than stopping at the `not applicable` result from the tested `convint8` case, the public wording now also reflects a direct query-only probe against the same installed MIOpen library. The new boundary is: `solution_id = 89` is visible when `y=int32`, but the tested `convint8` route does not reach it.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">INT8 section は `GemmFwd1x1_0_1_int8` の forced / only-solver 実行が `not applicable` に留まるところまでを public 境界としていた。</p>
+            <p data-lang="en">The INT8 section stopped at the point where forced / only-solver runs for `GemmFwd1x1_0_1_int8` remained `not applicable`.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">same installed MIOpen library への direct solution query では、`y=int32` 条件にすると `solution_id = 89` と非ゼロ workspace が見える一方、`y=int8` では見えないことを追加し、閉塞点を driver/output-type path 側まで狭めた。</p>
+            <p data-lang="en">The page now adds that a direct solution query against the same installed MIOpen library exposes `solution_id = 89` with non-zero workspace when `y=int32`, while `y=int8` does not, narrowing the blocked point toward the driver/output-type path.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">gfx900 で standalone rocBLAS INT8 GEMM が動くことを public 側へ同期</h2>
         <h2 data-lang="en">Synced the standalone rocBLAS INT8 GEMM success on gfx900 into the public pages</h2>
         <span class="entry-date">2026-03-18</span>

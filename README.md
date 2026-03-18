@@ -130,7 +130,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 
 - MIOpen・rocBLAS・CK・Tensile における gfx900（Vega10）計算経路を、ソース行番号と実機ログで対応づけた技術参照資料です。
 - 静的コード監査（code_verified）と実機 Vega64 での動的検証（runtime_verified）を収録し、runtime 未確認の静的補足はその旨を明示して追記しています。
-- 2026-03-18 追記として、INT8 alternative candidate を current public tree の語彙に寄せて整理し、`dp4a` は convenience label に過ぎず、最も具体的な候補は `GemmFwd1x1_0_1_int8 -> CallGemm -> CallGemmMIOpenTensile / rocBLAS` だと書き分けたうえで、Vega64 の 1x1 INT8 条件ではこの solver が `not applicable` に留まること、ただし standalone `rocblas-bench gemm_ex` は gfx900 で成功することも追記しました。
+- 2026-03-18 追記として、INT8 alternative candidate を current public tree の語彙に寄せて整理し、`dp4a` は convenience label に過ぎず、最も具体的な候補は `GemmFwd1x1_0_1_int8 -> CallGemm -> CallGemmMIOpenTensile / rocBLAS` だと書き分けたうえで、Vega64 の 1x1 INT8 条件ではこの solver が `not applicable` に留まること、ただし standalone `rocblas-bench gemm_ex` は gfx900 で成功することも追記しました。さらに same library への direct MIOpen solution query では、`y=int32` descriptor なら `solution_id = 89` と非ゼロ workspace が見え、`y=int8` では見えないことも public 境界として追加しました。
 - 主な内容:
   - MLIR iGEMM の gfx900 除外コミット（2407d2f, 2021-12-22）とソースコード証跡
   - ASM implicit GEMM v4r1 dynamic の gfx900/gfx906 ホワイトリスト
@@ -143,6 +143,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
   - `dp4a` は current public tree の canonical naming ではなく、`miopenInt8x4` / `v_dot4_i32_i8` / `sdot4` 系に散っていること
   - `GemmFwd1x1_0_1_int8 -> CallGemm -> CallGemmMIOpenTensile / rocBLAS` が最も具体的な static INT8 candidate であること
   - ただし Vega64 の `NCHW + INT8 + 1x1 + group=1` 条件では、自然選択は `ConvDirectNaiveConvFwd` に留まり、`GemmFwd1x1_0_1_int8` は forced / only-solver search の両方で `not applicable` だったこと
+  - same installed MIOpen library への direct solution query では、`y=int32` 条件なら `solution_id = 89` が見え、`y=int8` 条件では見えないこと
   - 一方で standalone `rocblas-bench gemm_ex` の `i8_r -> i32_r` case は gfx900 で成功し、backend 単体の INT8 GEMM 自体は成立すること
   - `IsMlirSupportedHardware()` と `ConvMlirIgemm*::IsApplicable()` の二重構造
   - 強制 MLIR 実行で露出した `Perf Db: record not found` / `boost::optional::get()` 系の下流失敗
