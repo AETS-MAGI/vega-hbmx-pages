@@ -410,6 +410,38 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">INT8 cast-flag driver 境界を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the INT8 cast-flag driver boundary into the public pages</h2>
+        <span class="entry-date">2026-03-18</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">same library への direct `y=int32` probe が通るなら、installed `MIOpenDriver convint8` の legacy-style `--out_cast_type` で近い route を踏めるかも、という残りの曖昧さがあった。今回の更新では、その曖昧さを切り落とし、cast flag は direct `y=int32` path の代替ではないことを public wording に反映した。</p>
+      <p class="entry-lead" data-lang="en">After the direct `y=int32` probes succeeded on the same library, one ambiguity remained: perhaps the installed legacy-style `--out_cast_type` flag in `MIOpenDriver convint8` could approximate that route. This update removes that ambiguity and reflects publicly that the cast flag is not an equivalent substitute for the direct `y=int32` path.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">INT8 section は、「tested `convint8` route は閉じているが、same library への direct `y=int32` probe は通る」までを public 境界としていた。</p>
+            <p data-lang="en">The INT8 section stopped at: the tested `convint8` route is blocked, while direct `y=int32` probes on the same library do work.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">installed `MIOpenDriver convint8` の `--out_cast_type` は direct `y=int32` route の代替ではなく、`int32` token は reject され、`fp32` は別の `...INT8-F_coFP32` casted-tensor path になって GEMM family を拒否する、と public 側に追記した。</p>
+            <p data-lang="en">The page now states that installed `MIOpenDriver convint8 --out_cast_type` is not a substitute for the direct `y=int32` route: the `int32` token is rejected, while `fp32` becomes a separate `...INT8-F_coFP32` casted-tensor path that still rejects the GEMM family.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">INT8 MIOpen direct immediate 成功を public 側へ同期</h2>
         <h2 data-lang="en">Synced the INT8 MIOpen direct immediate success into the public pages</h2>
         <span class="entry-date">2026-03-18</span>
