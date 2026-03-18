@@ -410,6 +410,42 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">`GemmFwd1x1_0_1_int8` の Vega64 runtime follow-up を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the Vega64 runtime follow-up for `GemmFwd1x1_0_1_int8` into the public pages</h2>
+        <span class="entry-date">2026-03-18</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">static candidate の段階で止めず、Vega64 の 1x1 INT8 条件で自然選択・search・forced・only-solver search を見た結果を public wording に反映した。新しい結論は「candidate は source に見えるが、今回の tested case では practical route になっていない」である。</p>
+      <p class="entry-lead" data-lang="en">Rather than stopping at the static candidate, the public wording was updated with the Vega64 1x1 INT8 runtime follow-up covering natural selection, search, forced execution, and only-solver search. The new boundary is: the candidate is visible in source, but it does not become a practical route on the tested case.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">INT8 alternative candidate は static candidate として紹介されていたが、runtime の扱いは未確認のままだった。</p>
+            <p data-lang="en">The INT8 alternative candidate was introduced as a static candidate, while its runtime status was still left unconfirmed.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">Vega64 の `NCHW + INT8 + 1x1 + group=1` 条件では、自然選択と `-s 1` は `ConvDirectNaiveConvFwd` に留まり、`-S GemmFwd1x1_0_1_int8` と only-solver search はいずれも `not applicable` で止まることを追記した。</p>
+            <p data-lang="en">For the Vega64 `NCHW + INT8 + 1x1 + group=1` case, the page now states that natural selection and `-s 1` stay on `ConvDirectNaiveConvFwd`, while both `-S GemmFwd1x1_0_1_int8` and the only-solver search stop as `not applicable`.</p>
+          </div>
+        </div>
+        <div class="why-box">
+          <span data-lang="ja"><strong>根拠:</strong> `vega64_int8_gemmcand_nat_1x1_n32_c64_k64_20260318.log`、`vega64_int8_gemmcand_force_1x1_n32_c64_k64_20260318.log`、`vega64_int8_gemmcand_onlysolver_search_1x1_n32_c64_k64_20260318.log` と対応する investigation ノート。</span>
+          <span data-lang="en"><strong>Rationale:</strong> `vega64_int8_gemmcand_nat_1x1_n32_c64_k64_20260318.log`, `vega64_int8_gemmcand_force_1x1_n32_c64_k64_20260318.log`, `vega64_int8_gemmcand_onlysolver_search_1x1_n32_c64_k64_20260318.log`, plus the corresponding investigation notes.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">INT8 alternative candidate の静的整理を `solver-trace.html` へ同期</h2>
         <h2 data-lang="en">Synced the static INT8 alternative-candidate notes into `solver-trace.html`</h2>
         <span class="entry-date">2026-03-18</span>
