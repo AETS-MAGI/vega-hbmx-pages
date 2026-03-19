@@ -410,6 +410,38 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">INT8 local debug build provenance を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the INT8 local debug-build provenance into the public pages</h2>
+        <span class="entry-date">2026-03-19</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">INT8 section は、current public standalone source と local debug `MIOpenDriver` の不一致を「driver-side descriptor assembly に寄る境界」として扱っていたが、cross-check に使った debug binary 自体の provenance はまだ public 側で触れていなかった。今回の更新では、local Debug `MIOpenDriver` が `ROCm-repos/MIOpen` ではなく別 checkout `miopen-src@f842c61d` からビルドされていたことを短く反映し、不一致の一部が build provenance でも説明できると明記した。</p>
+      <p class="entry-lead" data-lang="en">The INT8 section had already framed the mismatch as a boundary closer to driver-side descriptor assembly, but the provenance of the local debug binary used for cross-checking had not yet been stated publicly. This update adds that the local Debug `MIOpenDriver` was built not from `ROCm-repos/MIOpen` but from a separate checkout, `miopen-src@f842c61d`, making it explicit that part of the mismatch is also explained by build provenance.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">INT8 section は、current public source 上の direct `y=int32` route と、local / installed driver 側の cast-aware path が別 problem だ、というところまでを public 境界としていた。</p>
+            <p data-lang="en">The INT8 section stopped at the point where the current public direct `y=int32` route and the local/installed driver-side cast-aware path were shown to be different problems.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">cross-check に使った local Debug `MIOpenDriver` は current public clone ではなく別 checkout `miopen-src@f842c61d` からビルドされており、その checkout 自体が cast-aware `convint8` driver path を保持していたことを追記した。これにより current source と local debug binary の不一致は、少なくとも build provenance の差でも一段説明できると明記した。</p>
+            <p data-lang="en">The page now adds that the local Debug `MIOpenDriver` used for cross-checking was built not from the current public clone but from a separate checkout, `miopen-src@f842c61d`, which itself still retains the cast-aware `convint8` driver path. This makes it explicit that the mismatch between the current source and the local debug binary is at least partly explained by build provenance as well.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">INT8 の source-level descriptor 分岐を public 側へ同期</h2>
         <h2 data-lang="en">Synced the INT8 source-level descriptor split into the public pages</h2>
         <span class="entry-date">2026-03-18</span>
