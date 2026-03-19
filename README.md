@@ -38,6 +38,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 
 - 調査がどう進んだかを時系列で追えるページです。
 - runtime / code tracing だけでなく、2026-03-15 時点の GitHub chronology / PR-context synthesis まで含みます。
+- 2026-03-19 時点では、さらに INT8 route の切り分け、cast-aware driver path の別問題化、local Debug `MIOpenDriver` の provenance narrowing まで反映しています。
 - 非専門向けの説明や凡例も入っています。
 
 ### 5. `page-history.html`
@@ -59,6 +60,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 
 - これまでに確定した commit、release block、issue trail をもとに、ROCm の変遷を public 向けの年表として整理したページです。
 - `gfx900` を入口にしつつ、component ごとの追加・後退・統合・fallback に加えて、retired/deprecated repo の再編と late-phase layout/docs 再編も時間軸で読めるようにしています。
+- 2026-03-19 時点では、INT8 provenance follow-up が「年表 anchor の追加ではなく、investigation artifact の読み方を狭める注記」であることも明記しています。
 
 ## 理論解説ページ（`theory/`）
 
@@ -166,7 +168,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `presentation_advanced_en-jp.html`
   - Main bilingual slide deck (English/Japanese toggle).
 - `experiment-history.html`
-  - Timeline-style summary of the investigation flow (Steps 1–12 as of 2026-03-15), including the GitHub chronology / PR-context synthesis phase.
+  - Timeline-style summary of the investigation flow (now Steps 1–13), including the GitHub chronology / PR-context synthesis phase and the later INT8 route / driver-provenance narrowing.
 - `page-history.html`
   - Audit-log page for public-site wording changes, including old wording, new wording, rationale, and affected pages.
 - `reveal-hypothesis.html`
@@ -174,7 +176,7 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - `rocm-structure.html`
   - Standalone public page that reads ROCm-wide structure and contribution layers from GitHub-side primary evidence, including layered stack boundaries, support splitting, repository consolidation, and AMD/community role layering.
 - `rocm-history.html`
-  - Public-facing ROCm chronology built from the already-confirmed GitHub-side timeline anchors, including retired/deprecated-repo reorganization and late layout/docs migration signals.
+  - Public-facing ROCm chronology built from the already-confirmed GitHub-side timeline anchors, including retired/deprecated-repo reorganization and late layout/docs migration signals, with a note that the later INT8 local-driver provenance follow-up changes artifact interpretation rather than the chronology itself.
 - `code-tracing.html`
   - Standalone supplementary deck for the exact meaning of `num_gpu`.
 - `solver-trace.html`
@@ -225,10 +227,10 @@ GitHub Pages repository for the public HTML materials of the Vega HBM / gfx900 i
 - Start with `index.html` for navigation.
 - Open `general-audience.html` for the vision and philosophy — why this work matters.
 - Use `media.html` for the audio commentary and poster PDF.
-- Read `experiment-history.html` for the investigation timeline (Steps 1–12, including the GitHub chronology / PR-context synthesis phase).
+- Read `experiment-history.html` for the investigation timeline (Steps 1–13, including the later INT8 route / driver-provenance narrowing).
 - Open `reveal-hypothesis.html` for the ROCm-wide design-model interpretation revealed by the gfx900 investigation, including repo-level consolidation and legacy knowledge left in deprecated branches.
 - Open `rocm-structure.html` for a GitHub-grounded reading of ROCm-wide structure and contribution layers beyond the gfx900-specific case.
-- Open `rocm-history.html` for the public GitHub-side chronology of ROCm itself, including retired/deprecated-repo reorganization and late layout/docs migration.
+- Open `rocm-history.html` for the public GitHub-side chronology of ROCm itself, including retired/deprecated-repo reorganization, late layout/docs migration, and a note on why the 2026-03-19 INT8 provenance follow-up did not become a new timeline anchor.
 - Open `presentation_advanced_en-jp.html` for the main bilingual slide deck.
 - Use `code-tracing.html` for the most technical evidence on `num_gpu` semantics.
 - Use `solver-trace.html` for gfx900 computation path tracing through the ROCm library stack (code + runtime verified).

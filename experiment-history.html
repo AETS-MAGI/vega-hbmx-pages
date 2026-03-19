@@ -363,8 +363,8 @@
 
 	<!-- ── Summary ── -->
 	<div class="summary">
-		<span data-lang="en">Starting from uncertainty about legacy Vega56/64 executability, the workflow progressed step-by-step: environment isolation → build-gate analysis → API semantic verification → matched backend comparison → failure localization → reproducibility confirmation → model-dependency probe → ROCm library-stack audit → GitHub chronology synthesis. Every claim is grounded in logged evidence or repository-side sources.</span>
-		<span data-lang="ja">Vega56/64 の実行可否が不明な状態から出発し、環境統制→ビルドゲート解析→API意味検証→バックエンド比較実験→故障局在化→再現性確認→モデル依存性の探索→ROCm ライブラリスタック監査→GitHub 側年表整理、という段階を踏んだ。各主張はログまたは repository 側の根拠に基づく。</span>
+		<span data-lang="en">Starting from uncertainty about legacy Vega56/64 executability, the workflow progressed step-by-step: environment isolation → build-gate analysis → API semantic verification → matched backend comparison → failure localization → reproducibility confirmation → model-dependency probe → ROCm library-stack audit → GitHub chronology synthesis → INT8 route disambiguation and driver-provenance narrowing. Every claim is grounded in logged evidence or repository-side sources.</span>
+		<span data-lang="ja">Vega56/64 の実行可否が不明な状態から出発し、環境統制→ビルドゲート解析→API意味検証→バックエンド比較実験→故障局在化→再現性確認→モデル依存性の探索→ROCm ライブラリスタック監査→GitHub 側年表整理→INT8 経路の切り分けと driver provenance の絞り込み、という段階を踏んだ。各主張はログまたは repository 側の根拠に基づく。</span>
 	</div>
 
 	<div style="background:#f0f4f8;border-left:4px solid #4a6fa5;padding:1em 1.4em;margin:1.2em 0;font-size:0.95em;line-height:1.6;">
@@ -1109,12 +1109,63 @@ MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Asse
 			</div>
 		</article>
 
+		<!-- ── STEP 13 ── -->
+		<article class="step">
+			<h2>
+				<span data-lang="en">13) 2026-03-18 to 2026-03-19 follow-up — INT8 route disambiguation and local driver provenance <span class="step-date">2026-03-18-19</span></span>
+				<span data-lang="ja">13) 2026-03-18〜2026-03-19 追補 — INT8 経路の切り分けと local driver provenance <span class="step-date">2026-03-18-19</span></span>
+			</h2>
+			<ul>
+				<li>
+					<span class="do" data-lang="en">Did:</span><span class="do" data-lang="ja">実施:</span>
+					<span data-lang="en">Continued the INT8 investigation beyond the 2026-03-13 forced-solver taxonomy. Added direct MIOpen probes with explicit <code>y=int32</code> output descriptors, standard <code>FindConvolutionForwardAlgorithm + ConvolutionForward</code> checks, standalone <code>rocblas-bench gemm_ex</code> backend probes, and a later build-provenance check for the local Debug <code>MIOpenDriver</code>.</span>
+					<span data-lang="ja">2026-03-13 時点の「強制 solver 実行と失敗分類」で止めず、INT8 調査をさらに継続した。明示的な <code>y=int32</code> 出力 descriptor を与える direct MIOpen probe、standard の <code>FindConvolutionForwardAlgorithm + ConvolutionForward</code>、standalone <code>rocblas-bench gemm_ex</code> backend probe、さらに local Debug <code>MIOpenDriver</code> の build provenance 確認を追加した。</span>
+				</li>
+			</ul>
+
+			<div class="log-quote"><span class="hi-gray"># INT8 route narrowing, 2026-03-18 to 2026-03-19</span>
+direct query / immediate      →  <span class="hi-green">id=89 visible when y=int32</span>
+standard Find/Forward         →  <span class="hi-green">GEMM runs successfully when y=int32 is explicit</span>
+MIOpenDriver --out_cast_type  →  <span class="hi-red">not equivalent</span>  <span class="hi-gray">(...INT8-F_coFP32, casted-tensor path)</span>
+rocblas-bench gemm_ex         →  <span class="hi-green">INT8→INT32 backend success on gfx900</span>
+local Debug MIOpenDriver      →  <span class="hi-yellow">built from miopen-src@f842c61d</span>  <span class="hi-gray">not from current public standalone clone</span></div>
+
+			<div class="hbox green">
+				<span data-lang="en"><strong>Key findings:</strong>
+				<ul style="margin:6px 0 0;">
+					<li>The practical INT8 route is narrower than the 2026-03-13 picture suggested, but it is not absent: with explicit <code>x=int8, w=int8, y=int32</code> descriptors, the same installed MIOpen library exposes <code>solution_id = 89</code>, and both direct immediate execution and the standard higher-level C API succeed.</li>
+					<li>The legacy-looking <code>MIOpenDriver convint8 --out_cast_type</code> flags do <strong>not</strong> recreate that route. <code>int32</code> is rejected as a token, while <code>fp32</code> becomes a separate cast-aware problem (<code>...INT8-F_coFP32</code>) that still rejects the GEMM family.</li>
+					<li>Standalone <code>rocblas-bench gemm_ex</code> INT8 probes on gfx900 also succeed, so the blocked point is not the same thing as “no INT8 GEMM backend exists.”</li>
+					<li>A later provenance check narrowed one apparent source/runtime mismatch: the local Debug <code>MIOpenDriver</code> used for cross-checking was built from a separate checkout, <code>miopen-src@f842c61d</code>, which still retains the cast-aware driver path.</li>
+				</ul>
+				</span>
+				<span data-lang="ja"><strong>主要知見:</strong>
+				<ul style="margin:6px 0 0;">
+					<li>INT8 の practical route は 2026-03-13 時点の像より狭いが、不在ではない。明示的に <code>x=int8, w=int8, y=int32</code> descriptor を与えると、同じ installed MIOpen library でも <code>solution_id = 89</code> が見え、direct immediate だけでなく standard の higher-level C API からも成功する。</li>
+					<li>legacy 風の <code>MIOpenDriver convint8 --out_cast_type</code> は、この route を<strong>再現しない</strong>。<code>int32</code> は token として reject され、<code>fp32</code> は別の cast-aware problem（<code>...INT8-F_coFP32</code>）になって GEMM family をなお拒否する。</li>
+					<li>standalone の <code>rocblas-bench gemm_ex</code> INT8 probe も gfx900 で成功し、閉じている点は「INT8 GEMM backend が存在しない」ことそのものではないと確認できた。</li>
+					<li>さらに provenance check により、cross-check に使った local Debug <code>MIOpenDriver</code> は別 checkout の <code>miopen-src@f842c61d</code> からビルドされており、この checkout が cast-aware driver path を保持していたことも分かった。</li>
+				</ul>
+				</span>
+			</div>
+
+			<div class="hbox orange">
+				<span data-lang="en"><strong>Interpretation:</strong> The investigation moved from “INT8 looks absent on gfx900” to a more precise layered reading: the direct <code>y=int32</code> route exists, the cast-aware driver path is a different problem, the backend itself can run, and one part of the source/runtime mismatch was explained by local build provenance rather than by a contradiction inside a single public tree.</span>
+				<span data-lang="ja"><strong>解釈:</strong> 調査は「gfx900 では INT8 が無いように見える」から、より層別の読みへ進んだ。すなわち direct <code>y=int32</code> route 自体は存在し、cast-aware driver path は別 problem であり、backend 単体も実行でき、さらに source/runtime の食い違いの一部は単一 public tree 内の矛盾ではなく local build provenance の差で説明できる。</span>
+			</div>
+
+			<div class="hbox orange">
+				<span data-lang="en"><strong>Scope note:</strong> This step narrows the interpretation of the INT8 boundary, but it still does not fully establish the provenance of the installed <code>/opt/rocm/bin/MIOpenDriver</code> or reconstruct private-side intent.</span>
+				<span data-lang="ja"><strong>範囲注記:</strong> この段階で INT8 境界の読みはかなり狭まったが、installed <code>/opt/rocm/bin/MIOpenDriver</code> の provenance 全体や private 側の意図まではまだ確定していない。</span>
+			</div>
+		</article>
+
 		</section>
 
 	<!-- ── Footer ── -->
 	<div class="footer-note">
 		<span data-lang="en">
-			<strong>Six-point verdict (based on collected evidence):</strong>
+			<strong>Seven-point verdict (based on collected evidence):</strong>
 			(1) gfx900 is absent from the ROCm 7.2 official support matrix and the default CMake HIP filter —
 			<em>not officially supported</em>.
 			(2) Under override-assisted configuration (<code>HSA_OVERRIDE_GFX_VERSION=9.0.0</code>) and with a pre-built <code>libggml-hip.so</code>, ROCm/HIP executed all tested conditions —
@@ -1124,9 +1175,10 @@ MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Asse
 			(4) Static code audit and real-hardware solver tracing confirm that a three-layer structure (maintain / manage / supplement) keeps gfx900 computation paths alive through MIOpen, rocBLAS, and Tensile — with FP32 paths runtime-verified and INT8 paths confirmed to operate via element-wise fallback arithmetic rather than dot-product instructions.
 			(5) The 2026-03-14 follow-up further showed that the biggest rebuild blocker was CIFS storage placement, not a blanket impossibility of building for Vega, and that forced MLIR can fall into missing-tuning states after bypassing the normal applicability guard.
 			(6) The 2026-03-15 GitHub chronology and PR-context follow-up showed that public issue-driven workarounds, private-rooted release gating, retired-repo consolidation, and legacy-knowledge preservation can coexist in the same historical record.
+			(7) The 2026-03-18 to 2026-03-19 INT8 follow-up narrowed the blocked point further: direct <code>y=int32</code> MIOpen routes do work, cast-aware driver flags are a different path, standalone INT8 GEMM backend execution also works, and one apparent source/runtime mismatch was partly explained by the local Debug driver's separate build provenance.
 		</span>
 		<span data-lang="ja">
-			<strong>6 項目評価（収集した証拠に基づく）:</strong>
+			<strong>7 項目評価（収集した証拠に基づく）:</strong>
 			(1) gfx900 は ROCm 7.2 公式サポート表および CMake デフォルト HIP フィルタに含まれない —
 			<em>公式サポート外</em>。
 			(2) override-assisted 構成（<code>HSA_OVERRIDE_GFX_VERSION=9.0.0</code>）と事前ビルド済み <code>libggml-hip.so</code> のもとで、ROCm/HIP は全テスト条件を完走 —
@@ -1136,6 +1188,7 @@ MIOpen(HIP): Warning ... <span class="hi-red">boost::optional::get()</span> Asse
 			(4) 静的コード監査と実機 solver トレースにより、「維持・管理・補充」の 3 層構造が MIOpen・rocBLAS・Tensile にわたって gfx900 計算経路を存続させていることをコードと実機の両面で確認 — FP32 経路は runtime_verified、INT8 経路は dot 系命令なしの逐次積和フォールバックで動作することが逆アセンブルで確認済み。
 			(5) 2026-03-14 の追試により、再ビルド最大の障害は Vega 一般論ではなく CIFS 上のソース配置だったこと、また MLIR 強制実行は通常ガードをバイパスした先で tuning 不在に落ちうることが分かった。
 			(6) 2026-03-15 の GitHub 年表・PR 文脈追補により、public issue-driven workaround、private root cause を伴う release gating、retired repo の再編、legacy knowledge の残存が同じ履歴の中で併存しうることが見えてきた。
+			(7) 2026-03-18〜2026-03-19 の INT8 追補により、direct <code>y=int32</code> MIOpen route は実際に通り、cast-aware driver flag は別 path であり、standalone INT8 GEMM backend も動作し、さらに source/runtime の食い違いの一部は local Debug driver の別 build provenance で説明できることが分かった。
 		</span>
 	</div>
 

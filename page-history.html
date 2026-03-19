@@ -410,6 +410,57 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">experiment-history / rocm-history を 2026-03-19 時点へ同期</h2>
+        <h2 data-lang="en">Synced experiment-history / rocm-history to the 2026-03-19 state</h2>
+        <span class="entry-date">2026-03-19</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">`solver-trace.html` には INT8 の direct `y=int32` route、cast-aware driver path、local Debug driver provenance の追補が入っていた一方、`experiment-history.html` はまだ 2026-03-15 で止まり、`rocm-history.html` も 2026-03-19 時点の注記を持っていなかった。今回の更新では、前者に INT8 route disambiguation の step 13 を追加し、後者には「これは chronology anchor の追加ではなく artifact の読み方の narrowing である」という注記を足した。</p>
+      <p class="entry-lead" data-lang="en">While `solver-trace.html` already carried the later INT8 addenda about the direct `y=int32` route, the cast-aware driver path, and the local Debug driver provenance, `experiment-history.html` still stopped at 2026-03-15 and `rocm-history.html` did not yet state the 2026-03-19 interpretation note. This update adds an INT8 route-disambiguation Step 13 to the former and a note to the latter explaining that the provenance follow-up narrows artifact interpretation rather than adding a new chronology anchor.</p>
+      <div class="file-list">
+        <span class="file-tag">experiment-history.html</span>
+        <span class="file-tag">rocm-history.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>experiment-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">実験ページは Step 12（2026-03-15 の GitHub chronology / PR-context synthesis）で止まっており、その後の INT8 route narrowing は反映していなかった。</p>
+            <p data-lang="en">The experiment page stopped at Step 12 (the 2026-03-15 GitHub chronology / PR-context synthesis) and did not yet reflect the later INT8 route narrowing.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">Step 13 を追加し、direct `y=int32` route、cast-aware driver path が別 problem であること、standalone INT8 GEMM backend success、local Debug `MIOpenDriver` の provenance narrowing を時系列として統合した。</p>
+            <p data-lang="en">Step 13 now integrates the direct `y=int32` route, the fact that the cast-aware driver path is a different problem, the standalone INT8 GEMM backend success, and the later local Debug `MIOpenDriver` provenance narrowing into the timeline.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="update-block">
+        <h3><code>rocm-history.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">ROCm 年表ページは 2026-03-15 時点の chronology anchor までを示していたが、2026-03-19 の INT8 provenance follow-up が chronology 追加ではないことは明記していなかった。</p>
+            <p data-lang="en">The ROCm history page showed chronology anchors through 2026-03-15, but it did not yet explicitly state that the 2026-03-19 INT8 provenance follow-up was not a new chronology addition.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">更新日を 2026-03-19 に上げ、local Debug driver provenance follow-up は chronology anchor ではなく investigation artifact の読み方を狭める注記だと追記した。これにより、年表本体を不用意に膨らませずに最新の読みを反映した。</p>
+            <p data-lang="en">The page now marks itself updated on 2026-03-19 and adds that the local Debug driver provenance follow-up is not a chronology anchor but a narrowing note on how investigation artifacts should be read. This reflects the latest interpretation without artificially inflating the timeline itself.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">INT8 local debug build provenance を public 側へ同期</h2>
         <h2 data-lang="en">Synced the INT8 local debug-build provenance into the public pages</h2>
         <span class="entry-date">2026-03-19</span>

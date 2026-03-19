@@ -391,7 +391,7 @@
       <div class="hero-meta">
         <span class="badge">GitHub archaeology</span>
         <span class="badge">Working chronology</span>
-        <span class="badge">Updated: 2026-03-15</span>
+        <span class="badge">Updated: 2026-03-19</span>
       </div>
       <div class="summary">
         <span data-lang="ja"><strong>要点:</strong> いま見えている範囲だけでも、ROCm の歴史は「対応 / 非対応」の単純な二値ではなく、component ごとの追加・後退・統合・fallback、さらに retired/deprecated repo の再編と legacy knowledge の残存がずれながら積み重なる履歴として読むほうが自然です。</span>
@@ -774,6 +774,11 @@ flowchart LR
     <div class="note note-green">
       <span data-lang="ja"><strong>2026-03-15 追記 — Shipped Artifacts:</strong> ROCm 7.2 パッケージの調査で、gfx900 向けの出荷成果物が RDNA 世代を上回る複数の指標で確認された。MIOpen Perf DB: gfx900 合計 169,182 行（gfx1030: 111,296 / gfx1100: <em>なし</em>）。rocBLAS プリコンパイル済みファイル: gfx900 = 128（gfx1100 = 96, gfx1030 = 88）。amdgpu firmware: vega10 ×16 blob。これらは「コードが残っている」レベルではなく、AMD のビルド・チューニング・パッケージングのパイプラインに gfx900 が含まれていることを示唆する。これにより、従来の「維持 / 管理 / 補充」の3層モデルは「配布（shipped artifacts）」を加えた4層モデルに拡張された。</span>
       <span data-lang="en"><strong>2026-03-15 addendum — Shipped Artifacts:</strong> Investigation of the ROCm 7.2 package found that gfx900 shipped artifacts exceed RDNA generations on multiple metrics. MIOpen Perf DB: gfx900 total 169,182 lines (gfx1030: 111,296 / gfx1100: <em>none</em>). rocBLAS pre-compiled files: gfx900 = 128 (gfx1100 = 96, gfx1030 = 88). amdgpu firmware: 16× vega10 blobs. This goes beyond "code remaining in tree" and suggests that gfx900 is included in AMD's build, tuning, and packaging pipeline. This finding extended the previous three-layer model (build / selection / fallback) to a four-layer model adding "distribute (shipped artifacts)."</span>
+    </div>
+
+    <div class="note note-info">
+      <span data-lang="ja"><strong>2026-03-19 注記 — local Debug driver provenance:</strong> 後続の INT8 調査では、cross-check に使っていた local Debug <code>MIOpenDriver</code> が current public clone ではなく別 checkout <code>miopen-src@f842c61d</code> からビルドされていたことが確認された。これは investigation artifact の読みを狭める重要な補足だが、新しい public chronology anchor を 1 件追加したわけではない。したがってこのページでは、主要年表そのものは据え置き、年表の読み方に関する注記としてのみ反映する。</span>
+      <span data-lang="en"><strong>2026-03-19 note — local Debug driver provenance:</strong> A later INT8 follow-up confirmed that the local Debug <code>MIOpenDriver</code> used for cross-checking had been built not from the current public clone but from a separate checkout, <code>miopen-src@f842c61d</code>. This is an important narrowing of how investigation artifacts should be read, but it does not add a new public chronology anchor of its own. For that reason, this page keeps the main timeline unchanged and records the point only as a note on how the timeline should be interpreted.</span>
     </div>
 
     <!-- Shipped Artifacts comparison charts -->
