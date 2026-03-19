@@ -373,7 +373,7 @@
       <div class="hero-meta">
         <span class="badge">vega-hbmx-pages</span>
         <span class="badge">Public update audit log</span>
-        <span class="badge">Updated: 2026-03-18</span>
+        <span class="badge">Updated: 2026-03-20</span>
       </div>
     </section>
 
@@ -407,6 +407,38 @@
 
     <h2 class="section-title" data-lang="ja">更新ログ</h2>
     <h2 class="section-title" data-lang="en">Update log</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h2 data-lang="ja">convint8 CLI surface の narrowing を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the convint8 CLI-surface narrowing into the public pages</h2>
+        <span class="entry-date">2026-03-20</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">INT8 section は、direct `y=int32` route が API レベルでは通る一方で、installed `MIOpenDriver convint8` の cast-aware path は別 problem だと整理できていた。ただ、CLI 自体が direct route をどう見せているかは public 側でまだ曖昧だった。今回の更新では、installed `convint8` が cast-type flag を見せる一方で direct output-dtype option は obvious には expose しておらず、`--out_data_type int32` は unknown option、`--out_cast_type int32` は parse 段階で reject されることを追記した。</p>
+      <p class="entry-lead" data-lang="en">The INT8 section had already established that the direct `y=int32` route does work at the API level while the installed `MIOpenDriver convint8` cast-aware path is a different problem. What was still fuzzy publicly was how the CLI itself exposes that route. This update adds that the installed `convint8` shows cast-type flags but does not obviously expose a direct output-dtype option; `--out_data_type int32` is an unknown option and `--out_cast_type int32` is rejected at parse time.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">public 側では、installed driver の cast-aware path が direct `y=int32` route の代替ではないことまでは書かれていたが、CLI surface に direct output-dtype option が visible かどうかまでは明記していなかった。</p>
+            <p data-lang="en">Public wording already stated that the installed driver-side cast-aware path is not an equivalent shortcut for the direct `y=int32` route, but it did not yet say whether the CLI surface visibly exposes a direct output-dtype option.</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">`convint8` は cast-type flag を見せる一方で direct output-dtype option を obvious には expose しておらず、`--out_data_type int32` は unknown option、`--out_cast_type int32` は parse 段階で reject される、と追記した。これにより、current host で閉じて見える境界が solver/backend 不在だけでなく CLI surface にも寄ると public 側でも明示した。</p>
+            <p data-lang="en">The page now states that `convint8` exposes cast-type flags but not an obvious direct output-dtype option, that `--out_data_type int32` is an unknown option, and that `--out_cast_type int32` is rejected at parse time. This makes it explicit publicly that the blocked point on the current host is closer not only to solver/backend boundaries but also to the CLI surface itself.</p>
+          </div>
+        </div>
+      </div>
+    </article>
 
     <article class="entry">
       <div class="entry-head">
