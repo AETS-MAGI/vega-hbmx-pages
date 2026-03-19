@@ -410,6 +410,38 @@
 
     <article class="entry">
       <div class="entry-head">
+        <h2 data-lang="ja">installed MIOpenDriver provenance の narrowing を public 側へ同期</h2>
+        <h2 data-lang="en">Synced the installed MIOpenDriver provenance narrowing into the public pages</h2>
+        <span class="entry-date">2026-03-20</span>
+      </div>
+      <p class="entry-lead" data-lang="ja">INT8 section は、current public standalone source と local debug `MIOpenDriver` の食い違いを build provenance の差までで説明できるようになっていたが、普段使っている installed `/opt/rocm/bin/MIOpenDriver` 自体の provenance はまだ public 側で「未確定」のままだった。今回の更新では、この host 上の installed binary が Arch package `miopen-hip 7.2.0-1` に属し、embedded path も `/usr/src/debug/miopen-hip/rocm-libraries/projects/miopen/...` を指していることを追記し、current standalone clone と 1:1 に重ねるのは安全でないと明記した。</p>
+      <p class="entry-lead" data-lang="en">The INT8 section had already explained that the mismatch between the current public standalone source and the local Debug `MIOpenDriver` can be narrowed by build provenance, but the provenance of the everyday installed `/opt/rocm/bin/MIOpenDriver` was still left publicly as fully unresolved. This update adds that, on this host, the installed binary belongs to the Arch package `miopen-hip 7.2.0-1` and also embeds `/usr/src/debug/miopen-hip/rocm-libraries/projects/miopen/...` paths, making it explicit that it should not be read 1:1 as the current standalone clone.</p>
+      <div class="file-list">
+        <span class="file-tag">solver-trace.html</span>
+        <span class="file-tag">README.md</span>
+      </div>
+
+      <div class="update-block">
+        <h3><code>solver-trace.html</code></h3>
+        <div class="delta-grid">
+          <div class="delta-box delta-old">
+            <h4 data-lang="ja">旧記述</h4>
+            <h4 data-lang="en">Old</h4>
+            <p data-lang="ja">local Debug `MIOpenDriver` が別 checkout `miopen-src@f842c61d` 由来であることまでは public 側に書かれていたが、installed `/opt/rocm/bin/MIOpenDriver` 自体の provenance は「ここからは断定できない」で止まっていた。</p>
+            <p data-lang="en">The public page already stated that the local Debug `MIOpenDriver` came from the separate checkout `miopen-src@f842c61d`, but the provenance of the installed `/opt/rocm/bin/MIOpenDriver` itself still stopped at “cannot be established from this alone.”</p>
+          </div>
+          <div class="delta-box delta-new">
+            <h4 data-lang="ja">新記述</h4>
+            <h4 data-lang="en">New</h4>
+            <p data-lang="ja">この host 上の installed binary は Arch package `miopen-hip 7.2.0-1` に属し、binary / library には `rocm-libraries/projects/miopen` 系の embedded path が残っていることを追加した。これにより、installed driver も current standalone clone の直接 build と読むより、cast-aware な `rocm-libraries/projects/miopen` family に近い packaged binary として読む方が自然だと public 側でも明記した。</p>
+            <p data-lang="en">The page now adds that the installed binary on this host belongs to Arch package `miopen-hip 7.2.0-1` and that both the binary and library retain `rocm-libraries/projects/miopen`-style embedded paths. This makes it explicit publicly that the installed driver is more naturally read as a packaged binary closer to a cast-aware `rocm-libraries/projects/miopen` family than as a direct build of the current standalone clone.</p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
         <h2 data-lang="ja">experiment-history / rocm-history を 2026-03-19 時点へ同期</h2>
         <h2 data-lang="en">Synced experiment-history / rocm-history to the 2026-03-19 state</h2>
         <span class="entry-date">2026-03-19</span>
