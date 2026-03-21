@@ -302,23 +302,8 @@
 			line-height: 1.7;
 		}
 
-		[data-lang] { display: none; }
-		html[data-language="en"] [data-lang="en"] { display: initial; }
-		html[data-language="ja"] [data-lang="ja"] { display: initial; }
-		html[data-language="en"] div[data-lang="en"],
-		html[data-language="ja"] div[data-lang="ja"] { display: block; }
-		html[data-language="en"] span[data-lang="en"],
-		html[data-language="ja"] span[data-lang="ja"] { display: inline; }
-		html[data-language="en"] p[data-lang="en"],
-		html[data-language="ja"] p[data-lang="ja"] { display: block; }
-		html[data-language="en"] li[data-lang="en"],
-		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
-		html[data-language="en"] h1[data-lang="en"],
-		html[data-language="ja"] h1[data-lang="ja"],
-		html[data-language="en"] h2[data-lang="en"],
-		html[data-language="ja"] h2[data-lang="ja"],
-		html[data-language="en"] h3[data-lang="en"],
-		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+		html[data-language="en"] [data-lang="ja"] { display: none !important; }
+		html[data-language="ja"] [data-lang="en"] { display: none !important; }
 
 		@media (max-width: 760px) {
 			.page { padding: 20px 16px 42px; }
