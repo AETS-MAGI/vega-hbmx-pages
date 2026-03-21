@@ -231,6 +231,7 @@
 		.type-trace    { background: var(--orange); }
 		.type-general  { background: var(--blue); }
 		.type-story    { background: #9B72CF; }
+		.type-case     { background: #00695C; }
 		.type-hypothesis { background: #4A148C; }
 		.type-glossary { background: #00796B; }
 		.type-ecosystem{ background: #5B4B8A; }
@@ -589,10 +590,28 @@
 					</div>
 				</article>
 
-				<article class="card">
-					<span class="card-type type-history">Timeline</span>
-					<h3 data-lang="ja">実験の流れ</h3>
-					<h3 data-lang="en">Experiment history</h3>
+					<article class="card">
+						<span class="card-type type-case">Case Study</span>
+						<h3 data-lang="ja">GPU ケーススタディ集</h3>
+						<h3 data-lang="en">GPU case studies</h3>
+						<p class="filename">case-study/case-study-index.html</p>
+						<p data-lang="ja">各 GPU ごとに、実機ログ・再現条件・解釈・未解決点を分けて整理するページ群です。最初のケースとして MI25 / gfx900 を追加しました。</p>
+						<p data-lang="en">A per-GPU collection that separates observed logs, reproducible setup details, interpretation, and open questions. The first case now covers MI25 / gfx900.</p>
+						<ul>
+							<li data-lang="ja">Fact / Interpretation / Open Question の3層で整理</li>
+							<li data-lang="en">Organized into Fact / Interpretation / Open Question layers</li>
+							<li data-lang="ja">個別 GPU の話を ROCm 全体の一般論と混ぜない構成</li>
+							<li data-lang="en">Keeps per-GPU observations separate from broader ROCm generalization</li>
+						</ul>
+						<div class="actions">
+							<a class="button button-primary" href="case-study/case-study-index.html">Open</a>
+						</div>
+					</article>
+
+					<article class="card">
+						<span class="card-type type-history">Timeline</span>
+						<h3 data-lang="ja">実験の流れ</h3>
+						<h3 data-lang="en">Experiment history</h3>
 					<p class="filename">experiment-history.html</p>
 					<p data-lang="ja">問題設定から再現確認、モデル依存性の追試、GitHub chronology / PR-context synthesis まで、調査の流れを時系列で整理したページ。</p>
 					<p data-lang="en">A timeline from problem framing through reproducibility, model-dependency follow-up, and the GitHub chronology / PR-context synthesis phase.</p>

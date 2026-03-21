@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>GPU Case Studies | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--red: #B71C1C;
+			--blue: #0D47A1;
+			--green: #1B5E20;
+			--orange: #E65100;
+			--teal: #00695C;
+			--purple: #4A148C;
+			--text: #212121;
+			--muted: #607D8B;
+			--line: #D7DEE8;
+			--bg: #F6F8FB;
+			--card: #FFFFFF;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(circle at top left, rgba(13,71,161,0.09), transparent 25%),
+				radial-gradient(circle at bottom right, rgba(0,105,92,0.09), transparent 24%),
+				var(--bg);
+		}
+
+		.page {
+			max-width: 1180px;
+			margin: 0 auto;
+			padding: 28px 22px 56px;
+		}
+
+		.toolbar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 16px;
+		}
+
+		.back-link {
+			display: inline-flex;
+			align-items: center;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: bold;
+			color: var(--blue);
+			background: rgba(255,255,255,0.92);
+			border: 1px solid var(--line);
+			border-radius: 999px;
+			padding: 8px 14px;
+		}
+
+		.lang-toggle {
+			display: inline-flex;
+			gap: 6px;
+			padding: 6px;
+			border-radius: 999px;
+			border: 1px solid var(--line);
+			background: rgba(255,255,255,0.92);
+			box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+		}
+
+		.lang-btn {
+			border: none;
+			border-radius: 999px;
+			padding: 8px 14px;
+			font-size: 14px;
+			font-weight: bold;
+			background: transparent;
+			color: #455A64;
+			cursor: pointer;
+		}
+
+		.lang-btn.active {
+			background: var(--blue);
+			color: #FFFFFF;
+		}
+
+		.hero {
+			background: linear-gradient(135deg, #00695C 0%, #00897B 58%, #26A69A 100%);
+			color: #FFFFFF;
+			border-radius: 20px;
+			padding: 30px 30px 24px;
+			box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+		}
+
+		.hero h1 {
+			margin: 0 0 10px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 40px;
+			line-height: 1.1;
+		}
+
+		.hero p {
+			margin: 0;
+			font-size: 20px;
+			line-height: 1.5;
+			color: #E0F2F1;
+		}
+
+		.hero-meta {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 12px;
+			border-radius: 999px;
+			font-size: 14px;
+			font-weight: bold;
+			background: rgba(255,255,255,0.14);
+			color: #FFFFFF;
+			border: 1px solid rgba(255,255,255,0.18);
+		}
+
+		.summary {
+			margin-top: 22px;
+			background: #FFFFFF;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 19px;
+			line-height: 1.55;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+		}
+
+		.section-block {
+			margin-top: 36px;
+		}
+
+		.section-header {
+			display: flex;
+			align-items: baseline;
+			gap: 12px;
+			margin-bottom: 8px;
+		}
+
+		.section-num {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 15px;
+			color: #FFFFFF;
+			flex-shrink: 0;
+		}
+
+		.s1 { background: var(--blue); }
+		.s2 { background: var(--teal); }
+		.s3 { background: var(--purple); }
+
+		.section-header h2 {
+			margin: 0;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 24px;
+		}
+
+		.c1 { color: var(--blue); }
+		.c2 { color: var(--teal); }
+		.c3 { color: var(--purple); }
+
+		.section-lead {
+			margin: 0 0 16px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #546E7A;
+		}
+
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+			gap: 18px;
+		}
+
+		.card {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			padding: 18px 18px 16px;
+			box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+			display: flex;
+			flex-direction: column;
+		}
+
+		.card-type {
+			display: inline-block;
+			align-self: flex-start;
+			padding: 5px 10px;
+			border-radius: 999px;
+			font-size: 12px;
+			font-weight: bold;
+			color: #FFFFFF;
+			margin-bottom: 10px;
+		}
+
+		.type-fact { background: var(--blue); }
+		.type-view { background: var(--teal); }
+		.type-limit { background: var(--orange); }
+		.type-case { background: var(--purple); }
+		.type-link { background: var(--green); }
+
+		.card h3 {
+			margin: 0 0 8px;
+			font-size: 22px;
+			line-height: 1.25;
+		}
+
+		.filename {
+			margin: 0 0 10px;
+			font-family: 'Consolas', monospace;
+			font-size: 13px;
+			color: #546E7A;
+			word-break: break-all;
+		}
+
+		.card p {
+			margin: 0 0 10px;
+			font-size: 16px;
+			line-height: 1.5;
+			color: #37474F;
+		}
+
+		.card ul {
+			margin: 0 0 14px;
+			padding-left: 18px;
+			color: #455A64;
+			font-size: 14px;
+			line-height: 1.45;
+		}
+
+		.actions {
+			margin-top: auto;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			padding: 10px 14px;
+			border-radius: 10px;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		.button-primary { background: var(--blue); color: #FFFFFF; }
+		.button-teal { background: var(--teal); color: #FFFFFF; }
+		.button-secondary { background: #ECEFF1; color: #37474F; }
+
+		.note {
+			margin-top: 24px;
+			background: #FFF8E1;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #5D4037;
+		}
+
+		.footer {
+			margin-top: 28px;
+			color: var(--muted);
+			font-size: 14px;
+			text-align: center;
+			line-height: 1.7;
+		}
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] span[data-lang="en"],
+		html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+		html[data-language="en"] p[data-lang="en"],
+		html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"],
+		html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],
+		html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],
+		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+		@media (max-width: 760px) {
+			.page { padding: 20px 16px 42px; }
+			.toolbar {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			.hero { padding: 24px 20px 20px; }
+			.hero h1 { font-size: 32px; }
+			.hero p { font-size: 18px; }
+			.card-grid { grid-template-columns: 1fr; }
+			.actions { flex-direction: column; }
+			.button { width: 100%; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<a class="back-link" href="../index.html" data-lang="ja">&larr; トップへ戻る</a>
+			<a class="back-link" href="../index.html" data-lang="en">&larr; Back to top</a>
+			<div class="lang-toggle" aria-label="Language switch">
+				<button id="btn-ja" class="lang-btn active" type="button">JP</button>
+				<button id="btn-en" class="lang-btn" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">GPU ケーススタディ</h1>
+			<h1 data-lang="en">GPU Case Studies</h1>
+			<p data-lang="ja">実機・実ログ・再現手順に寄り添って、各 GPU で何が観測されたかを整理するページ群です。ROCm の一般論ではなく、個別のセットアップを丁寧に読むための入口として設計しています。</p>
+			<p data-lang="en">A collection of pages that organize what was observed on specific GPUs using real machines, runtime logs, and reproducible setups. These pages focus on concrete setups rather than broad ROCm generalizations.</p>
+			<div class="hero-meta">
+				<span class="badge" data-lang="ja">Per-GPU observation pages</span>
+				<span class="badge" data-lang="en">Per-GPU observation pages</span>
+				<span class="badge" data-lang="ja">Fact / Interpretation / Open Question</span>
+				<span class="badge" data-lang="en">Fact / Interpretation / Open Question</span>
+				<span class="badge" data-lang="ja">実機ログベース</span>
+				<span class="badge" data-lang="en">Grounded in local runtime logs</span>
+			</div>
+		</section>
+
+		<div class="summary">
+			<span data-lang="ja">ここでは「その GPU が ROCm 全体でどう扱われるべきか」を断定するのではなく、観測できた事実、そこから読めること、まだ未確定な点を分けて記録します。</span>
+			<span data-lang="en">The goal here is not to declare what a GPU means for ROCm as a whole, but to separate observed facts, interpretations grounded in those facts, and the remaining open questions.</span>
+		</div>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s1">1</span>
+				<h2 class="c1" data-lang="ja">読み方</h2>
+				<h2 class="c1" data-lang="en">How to read these pages</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">各ケーススタディは、観測と解釈を混ぜないために、同じ3つの層で整理します。</p>
+			<p class="section-lead" data-lang="en">Each case study uses the same three-layer structure so that observation and interpretation do not get mixed together.</p>
+			<div class="card-grid">
+				<article class="card">
+					<span class="card-type type-fact">Fact</span>
+					<h3 data-lang="ja">確認できた事実</h3>
+					<h3 data-lang="en">Observed facts</h3>
+					<p data-lang="ja">実機ログ、生成結果、`rocm-smi`、journal、設定ファイルなど、実際に確認できたものだけを置きます。</p>
+					<p data-lang="en">Only things that were actually observed on the machine: runtime logs, generation output, `rocm-smi`, journals, and concrete configuration details.</p>
+				</article>
+				<article class="card">
+					<span class="card-type type-view">Interpretation</span>
+					<h3 data-lang="ja">そこから読めること</h3>
+					<h3 data-lang="en">What the facts suggest</h3>
+					<p data-lang="ja">事実から自然に読める範囲で、どこがボトルネックだったか、何が支配的に見えたかを整理します。</p>
+					<p data-lang="en">Keeps interpretation within the range that the evidence can support, such as likely bottlenecks or the dominant reliability risk in that setup.</p>
+				</article>
+				<article class="card">
+					<span class="card-type type-limit">Open Question</span>
+					<h3 data-lang="ja">まだ言えないこと</h3>
+					<h3 data-lang="en">What remains open</h3>
+					<p data-lang="ja">他環境で再現するか、一般法則と言えるか、設定依存かどうかなど、未確定な点も明示します。</p>
+					<p data-lang="en">Explicitly marks what is still unknown, such as cross-system reproducibility, generality, and setup-specific behavior.</p>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s2">2</span>
+				<h2 class="c2" data-lang="ja">公開中のケース</h2>
+				<h2 class="c2" data-lang="en">Available case studies</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">まずは MI25 / gfx900 の推論経路ケースから始めます。今後、GPU ごとのページをここに追加していく前提です。</p>
+			<p class="section-lead" data-lang="en">The first published case focuses on MI25 / gfx900 inference behavior. Additional per-GPU pages can be added here later.</p>
+			<div class="card-grid">
+				<article class="card">
+					<span class="card-type type-case">Case Study</span>
+					<h3 data-lang="ja">MI25 / gfx900 で GPU inference はどこまで通るか</h3>
+					<h3 data-lang="en">How far GPU inference runs on MI25 / gfx900</h3>
+					<p class="filename">mi25-inference-case-study.html</p>
+					<p data-lang="ja">ROCm 7.2 と Ollama source build を使ったローカル観測。`tinyllama` と `deepseek-r1:14b` を例に、GPU path がどのように observed されたかを整理します。</p>
+					<p data-lang="en">A local observation page for ROCm 7.2 plus an Ollama source build, using `tinyllama` and `deepseek-r1:14b` as concrete examples of the GPU path being observed.</p>
+					<ul>
+						<li data-lang="ja">環境・失敗状態・修正点・証跡を分離</li>
+						<li data-lang="en">Separates environment, failure state, fix path, and evidence</li>
+						<li data-lang="ja">MI25 全般への一般化は避ける</li>
+						<li data-lang="en">Avoids over-generalizing to all MI25 setups</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="mi25-inference-case-study.html">Open</a>
+					</div>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s3">3</span>
+				<h2 class="c3" data-lang="ja">関連ページ</h2>
+				<h2 class="c3" data-lang="en">Related pages</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">ケーススタディは単独で読むこともできますが、研究全体の流れや ROCm 側の構造とあわせると、位置づけがつかみやすくなります。</p>
+			<p class="section-lead" data-lang="en">Each case study can be read on its own, but it becomes easier to place when combined with the broader investigation timeline and ROCm-wide structure pages.</p>
+			<div class="card-grid">
+				<article class="card">
+					<span class="card-type type-link">Timeline</span>
+					<h3 data-lang="ja">実験の流れ</h3>
+					<h3 data-lang="en">Experiment history</h3>
+					<p class="filename">../experiment-history.html</p>
+					<p data-lang="ja">調査全体の流れを時系列で追うページです。ケーススタディを全体の中でどこに置くかを確認できます。</p>
+					<p data-lang="en">A timeline view of the overall investigation, useful for placing each case study in the broader chronology.</p>
+					<div class="actions">
+						<a class="button button-secondary" href="../experiment-history.html">Open</a>
+					</div>
+				</article>
+				<article class="card">
+					<span class="card-type type-link">Structure</span>
+					<h3 data-lang="ja">ROCm の構造と貢献レイヤ</h3>
+					<h3 data-lang="en">ROCm Structure and Contribution Layers</h3>
+					<p class="filename">../rocm-structure.html</p>
+					<p data-lang="ja">個別 GPU の挙動を、ROCm 全体の stack や support の層分解と結びつけて考えるための背景ページです。</p>
+					<p data-lang="en">Background reading for connecting individual GPU behavior to the broader ROCm stack and the layered meanings of support.</p>
+					<div class="actions">
+						<a class="button button-secondary" href="../rocm-structure.html">Open</a>
+					</div>
+				</article>
+			</div>
+		</section>
+
+		<div class="note">
+			<span data-lang="ja"><strong>注記:</strong> 各ページは、公開一次資料とローカル clone 上の観測可能なログに基づいて構成しています。特定 GPU 全般の一般法則や、非公開な意思決定の中身を断定するものではありません。</span>
+			<span data-lang="en"><strong>Note:</strong> These pages are built from publicly available material and locally observed logs only. They do not claim a universal rule for a GPU family, nor do they reconstruct non-public decisions.</span>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">vega-hbmx-pages case-study index</span>
+			<span data-lang="en">vega-hbmx-pages case-study index</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+
+		function setLanguage(lang) {
+			html.setAttribute('data-language', lang);
+			html.setAttribute('lang', lang);
+			btnJa.classList.toggle('active', lang === 'ja');
+			btnEn.classList.toggle('active', lang === 'en');
+			localStorage.setItem('vega-hbmx-pages-case-study-lang', lang);
+		}
+
+		btnJa.addEventListener('click', () => setLanguage('ja'));
+		btnEn.addEventListener('click', () => setLanguage('en'));
+
+		setLanguage(localStorage.getItem('vega-hbmx-pages-case-study-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>MI25 / gfx900 Inference Case Study | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--red: #B71C1C;
+			--blue: #0D47A1;
+			--green: #1B5E20;
+			--orange: #E65100;
+			--teal: #00695C;
+			--purple: #4A148C;
+			--text: #212121;
+			--muted: #607D8B;
+			--line: #D7DEE8;
+			--bg: #F6F8FB;
+			--card: #FFFFFF;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(circle at top right, rgba(13,71,161,0.08), transparent 26%),
+				radial-gradient(circle at bottom left, rgba(183,28,28,0.08), transparent 23%),
+				var(--bg);
+		}
+
+		.page {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 28px 22px 60px;
+		}
+
+		.toolbar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 16px;
+		}
+
+		.back-links {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.back-link {
+			display: inline-flex;
+			align-items: center;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: bold;
+			color: var(--blue);
+			background: rgba(255,255,255,0.92);
+			border: 1px solid var(--line);
+			border-radius: 999px;
+			padding: 8px 14px;
+		}
+
+		.lang-toggle {
+			display: inline-flex;
+			gap: 6px;
+			padding: 6px;
+			border-radius: 999px;
+			border: 1px solid var(--line);
+			background: rgba(255,255,255,0.92);
+			box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+		}
+
+		.lang-btn {
+			border: none;
+			border-radius: 999px;
+			padding: 8px 14px;
+			font-size: 14px;
+			font-weight: bold;
+			background: transparent;
+			color: #455A64;
+			cursor: pointer;
+		}
+
+		.lang-btn.active {
+			background: var(--blue);
+			color: #FFFFFF;
+		}
+
+		.hero {
+			background: linear-gradient(135deg, #0D47A1 0%, #1565C0 55%, #1E88E5 100%);
+			color: #FFFFFF;
+			border-radius: 20px;
+			padding: 30px 30px 24px;
+			box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+		}
+
+		.hero h1 {
+			margin: 0 0 10px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 40px;
+			line-height: 1.1;
+		}
+
+		.hero p {
+			margin: 0;
+			font-size: 20px;
+			line-height: 1.5;
+			color: #E3F2FD;
+		}
+
+		.hero-meta {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 12px;
+			border-radius: 999px;
+			font-size: 14px;
+			font-weight: bold;
+			background: rgba(255,255,255,0.14);
+			color: #FFFFFF;
+			border: 1px solid rgba(255,255,255,0.18);
+		}
+
+		.summary {
+			margin-top: 22px;
+			background: #FFFFFF;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 19px;
+			line-height: 1.55;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+		}
+
+		.alert {
+			margin-top: 18px;
+			background: #FFF8E1;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 14px 18px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #5D4037;
+		}
+
+		.section-block {
+			margin-top: 34px;
+		}
+
+		.section-header {
+			display: flex;
+			align-items: baseline;
+			gap: 12px;
+			margin-bottom: 8px;
+		}
+
+		.section-num {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 15px;
+			color: #FFFFFF;
+			flex-shrink: 0;
+		}
+
+		.s1 { background: var(--blue); }
+		.s2 { background: var(--red); }
+		.s3 { background: var(--teal); }
+		.s4 { background: var(--purple); }
+		.s5 { background: var(--green); }
+		.s6 { background: var(--orange); }
+
+		.section-header h2 {
+			margin: 0;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 24px;
+		}
+
+		.c1 { color: var(--blue); }
+		.c2 { color: var(--red); }
+		.c3 { color: var(--teal); }
+		.c4 { color: var(--purple); }
+		.c5 { color: var(--green); }
+		.c6 { color: var(--orange); }
+
+		.section-lead {
+			margin: 0 0 16px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #546E7A;
+		}
+
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+			gap: 18px;
+		}
+
+		.card {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			padding: 18px 18px 16px;
+			box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+		}
+
+		.card h3 {
+			margin: 0 0 8px;
+			font-size: 20px;
+			line-height: 1.25;
+		}
+
+		.card p,
+		.card li {
+			font-size: 15px;
+			line-height: 1.5;
+			color: #37474F;
+		}
+
+		.card ul {
+			margin: 0;
+			padding-left: 18px;
+		}
+
+		.data-table {
+			width: 100%;
+			border-collapse: collapse;
+			background: #FFFFFF;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 1px 2px 10px rgba(0,0,0,0.04);
+			font-size: 15px;
+		}
+
+		.data-table th {
+			background: #37474F;
+			color: #FFFFFF;
+			padding: 10px 12px;
+			text-align: left;
+		}
+
+		.data-table td {
+			padding: 10px 12px;
+			border-bottom: 1px solid #E0E0E0;
+			vertical-align: top;
+		}
+
+		.data-table tr:nth-child(even) td { background: #F8FAFC; }
+
+		.code-list {
+			background: #FAFAFA;
+			border: 1px solid var(--line);
+			border-radius: 12px;
+			padding: 14px 16px;
+			font-family: 'Consolas', 'Courier New', monospace;
+			font-size: 13px;
+			line-height: 1.65;
+			overflow-x: auto;
+		}
+
+		.actions {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			padding: 10px 14px;
+			border-radius: 10px;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		.button-primary { background: var(--blue); color: #FFFFFF; }
+		.button-secondary { background: #ECEFF1; color: #37474F; }
+		.button-teal { background: var(--teal); color: #FFFFFF; }
+
+		.footer {
+			margin-top: 30px;
+			color: var(--muted);
+			font-size: 14px;
+			text-align: center;
+			line-height: 1.7;
+		}
+
+		[data-lang] { display: none; }
+		html[data-language="en"] [data-lang="en"] { display: initial; }
+		html[data-language="ja"] [data-lang="ja"] { display: initial; }
+		html[data-language="en"] div[data-lang="en"],
+		html[data-language="ja"] div[data-lang="ja"] { display: block; }
+		html[data-language="en"] span[data-lang="en"],
+		html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+		html[data-language="en"] p[data-lang="en"],
+		html[data-language="ja"] p[data-lang="ja"] { display: block; }
+		html[data-language="en"] li[data-lang="en"],
+		html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+		html[data-language="en"] h1[data-lang="en"],
+		html[data-language="ja"] h1[data-lang="ja"],
+		html[data-language="en"] h2[data-lang="en"],
+		html[data-language="ja"] h2[data-lang="ja"],
+		html[data-language="en"] h3[data-lang="en"],
+		html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+		@media (max-width: 760px) {
+			.page { padding: 20px 16px 42px; }
+			.toolbar {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			.hero { padding: 24px 20px 20px; }
+			.hero h1 { font-size: 31px; }
+			.hero p { font-size: 18px; }
+			.card-grid { grid-template-columns: 1fr; }
+			.actions { flex-direction: column; }
+			.button { width: 100%; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<div class="back-links">
+				<a class="back-link" href="case-study-index.html" data-lang="ja">&larr; ケース一覧へ</a>
+				<a class="back-link" href="case-study-index.html" data-lang="en">&larr; Back to case-study index</a>
+				<a class="back-link" href="../index.html" data-lang="ja">&larr; トップへ戻る</a>
+				<a class="back-link" href="../index.html" data-lang="en">&larr; Back to top</a>
+			</div>
+			<div class="lang-toggle" aria-label="Language switch">
+				<button id="btn-ja" class="lang-btn active" type="button">JP</button>
+				<button id="btn-en" class="lang-btn" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">MI25 / gfx900 で GPU inference はどこまで通るか</h1>
+			<h1 data-lang="en">How far GPU inference runs on MI25 / gfx900</h1>
+			<p data-lang="ja">ROCm 7.2 と Ollama source build のローカル観測をもとに、MI25 / gfx900 上で GPU inference path がどのように observed されたかを整理するケーススタディです。</p>
+			<p data-lang="en">A case study organizing how the GPU inference path was observed on MI25 / gfx900, based on local observations with ROCm 7.2 and an Ollama source build.</p>
+			<div class="hero-meta">
+				<span class="badge">MI25</span>
+				<span class="badge">gfx900</span>
+				<span class="badge">ROCm 7.2</span>
+				<span class="badge">Ollama source build</span>
+				<span class="badge" data-lang="ja">local observation</span>
+				<span class="badge" data-lang="en">local observation</span>
+			</div>
+		</section>
+
+		<div class="summary">
+			<span data-lang="ja">このセットアップでは、MI25 / gfx900 上で GPU inference path が observed された。今回の主要な不安定要因は、GPU 能力そのものよりも backend library の配置整合性にあったと読める。</span>
+			<span data-lang="en">In this setup, a GPU inference path was observed on MI25 / gfx900. The dominant reliability risk appears to have been backend-library placement integrity rather than intrinsic GPU capability itself.</span>
+		</div>
+
+		<div class="alert">
+			<span data-lang="ja"><strong>注意:</strong> このページは 1 つのローカルセットアップから観測された事実を整理したものであり、MI25 全般や gfx900 全般にそのまま一般化するものではありません。</span>
+			<span data-lang="en"><strong>Caution:</strong> This page organizes observations from one local setup only. It should not be read as a universal claim about all MI25 or all gfx900 deployments.</span>
+		</div>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s1">1</span>
+				<h2 class="c1" data-lang="ja">Fact: 確認できた環境</h2>
+				<h2 class="c1" data-lang="en">Fact: Environment confirmed</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">まず、今回の観測がどの条件の上で行われたかを切り分けておきます。</p>
+			<p class="section-lead" data-lang="en">First, separate the conditions under which these observations were made.</p>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th data-lang="ja">項目</th>
+						<th data-lang="en">Item</th>
+						<th data-lang="ja">内容</th>
+						<th data-lang="en">Observed value</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>GPU</td>
+						<td>Radeon Instinct MI25 (gfx900)</td>
+					</tr>
+					<tr>
+						<td>Runtime</td>
+						<td>ROCm 7.2</td>
+					</tr>
+					<tr>
+						<td>Serving path</td>
+						<td>Ollama user service (source build)</td>
+					</tr>
+					<tr>
+						<td>Key runtime path</td>
+						<td><code>OLLAMA_LIBRARY_PATH=/home/limonene/ROCm-project/ollama-src/build/lib/ollama</code></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s2">2</span>
+				<h2 class="c2" data-lang="ja">Fact: 以前は何が失敗していたか</h2>
+				<h2 class="c2" data-lang="en">Fact: What had been failing before</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">今回の観測では「MI25 が絶対に無理だった」のではなく、再起動後に CPU fallback が見えやすい状態が先にあった。</p>
+			<p class="section-lead" data-lang="en">The earlier state was not simply “MI25 cannot do this,” but a setup where CPU fallback tended to appear after restarts.</p>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">観測された失敗像</h3>
+					<h3 data-lang="en">Observed failure mode</h3>
+					<ul>
+						<li data-lang="ja">再起動後に CPU path が現れることがあった</li>
+						<li data-lang="en">A CPU path sometimes appeared after restart</li>
+						<li data-lang="ja">journal では <code>library=cpu</code> や <code>GPULayers:[]</code> が見えることがあった</li>
+						<li data-lang="en">Journals sometimes showed <code>library=cpu</code> and <code>GPULayers:[]</code></li>
+					</ul>
+				</article>
+				<article class="card">
+					<h3 data-lang="ja">原因候補として見えたもの</h3>
+					<h3 data-lang="en">What appeared to matter</h3>
+					<ul>
+						<li data-lang="ja">backend directory の参照はあっても、実ファイルが欠けたり揃っていなかったりする状態</li>
+						<li data-lang="en">A state where backend directories were referenced but the actual runtime files were missing or inconsistent</li>
+						<li data-lang="ja">その状態では GPU 自体より runtime library の整合性が支配的に見えた</li>
+						<li data-lang="en">In that state, runtime-library integrity appeared more decisive than the GPU itself</li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s3">3</span>
+				<h2 class="c3" data-lang="ja">Fact: 何を直したか</h2>
+				<h2 class="c3" data-lang="en">Fact: What was changed</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">修正の中心は「MI25 向け backend library をちゃんと runtime path に揃える」ことだった。</p>
+			<p class="section-lead" data-lang="en">The fix path centered on making sure the MI25-targeted backend libraries were actually present and aligned in the runtime path.</p>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">適用した修正</h3>
+					<h3 data-lang="en">Fixes applied</h3>
+					<ul>
+						<li data-lang="ja"><code>build-ollama-gfx900.sh</code> で backend libraries を再ビルド</li>
+						<li data-lang="en">Rebuilt backend libraries with <code>build-ollama-gfx900.sh</code></li>
+						<li data-lang="ja"><code>libggml-hip.so</code> などが runtime path に揃っていることを確認</li>
+						<li data-lang="en">Confirmed that <code>libggml-hip.so</code> and related files existed at the runtime path</li>
+						<li data-lang="ja">不足時に早めに止まる preflight check を追加</li>
+						<li data-lang="en">Added preflight checks so the setup fails early when backend files are missing</li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s4">4</span>
+				<h2 class="c4" data-lang="ja">Fact: どんな証跡が取れたか</h2>
+				<h2 class="c4" data-lang="en">Fact: What evidence was observed</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">今回の公開ページでは、代表例として tinyllama の A/B 実行と <code>deepseek-r1:14b</code> の実行結果を置く。</p>
+			<p class="section-lead" data-lang="en">This page highlights two representative observations: the tinyllama A/B runs and a <code>deepseek-r1:14b</code> run.</p>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th data-lang="ja">ケース</th>
+						<th data-lang="en">Case</th>
+						<th data-lang="ja">観測</th>
+						<th data-lang="en">Observation</th>
+						<th data-lang="ja">読めること</th>
+						<th data-lang="en">Immediate reading</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>tinyllama A/B</td>
+						<td data-lang="ja">8条件マトリクス、16 phase 合計で <code>GPU=15</code>、<code>UNSURE=1</code>。その UNSURE も後の rerun では GPU へ寄った。</td>
+						<td data-lang="en">Across an 8-case matrix and 16 phases total, <code>GPU=15</code> and <code>UNSURE=1</code> were observed. The unsure case later moved toward GPU on rerun.</td>
+						<td data-lang="ja">少なくともこのセットアップでは、再現性のある GPU path がかなりの割合で見えていた。</td>
+						<td data-lang="en">At least in this setup, a repeatable GPU path appeared for the large majority of phases.</td>
+					</tr>
+					<tr>
+						<td><code>deepseek-r1:14b</code></td>
+						<td data-lang="ja"><code>done=true</code>、<code>done_reason=length</code>。journal では <code>library=ROCm</code>、<code>compute=gfx900</code>、<code>GPULayers:49</code>。<code>rocm-smi</code> では GPU use 最大 99%、power 最大 217W、VRAM 約 58%。</td>
+						<td data-lang="en"><code>done=true</code> with <code>done_reason=length</code>. Journals showed <code>library=ROCm</code>, <code>compute=gfx900</code>, and <code>GPULayers:49</code>. <code>rocm-smi</code> showed GPU use up to 99%, power up to 217W, and roughly 58% VRAM use.</td>
+						<td data-lang="ja">少なくともこの実行では、かなり明確な GPU offload の観測がある。</td>
+						<td data-lang="en">This run provides a fairly clear observation of GPU offload in the tested setup.</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s5">5</span>
+				<h2 class="c5" data-lang="ja">Interpretation: ここから何が読めるか</h2>
+				<h2 class="c5" data-lang="en">Interpretation: What these facts suggest</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">今回のセットアップから少なくとも言えそうなことを、観測に引きつけた範囲で整理する。</p>
+			<p class="section-lead" data-lang="en">This section keeps interpretation close to the observed evidence and avoids stronger claims than the setup can support.</p>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">主な示唆</h3>
+					<h3 data-lang="en">Main suggestion</h3>
+					<ul>
+						<li data-lang="ja">今回の信頼性リスクは、MI25 の intrinsic capability より backend deployment integrity に強く依存していたように見える</li>
+						<li data-lang="en">The main reliability risk appears more tied to backend-deployment integrity than to intrinsic MI25 capability itself</li>
+						<li data-lang="ja">少なくともこの観測範囲では、「MI25 だから必ず CPU fallback する」とは読めない</li>
+						<li data-lang="en">Within the observed range, the results do not read as “MI25 necessarily falls back to CPU”</li>
+					</ul>
+				</article>
+				<article class="card">
+					<h3 data-lang="ja">速度メモ</h3>
+					<h3 data-lang="en">Performance note</h3>
+					<ul>
+						<li data-lang="ja"><code>deepseek-r1:14b</code>: 約 14.20 s / 140 eval、推定約 9.9 tokens/sec</li>
+						<li data-lang="en"><code>deepseek-r1:14b</code>: about 14.20 s / 140 eval, roughly 9.9 tokens/sec</li>
+						<li data-lang="ja">tinyllama の代表例: 約 1.56 s / 96 eval、推定約 61.4 tokens/sec</li>
+						<li data-lang="en">Representative tinyllama case: about 1.56 s / 96 eval, roughly 61.4 tokens/sec</li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s6">6</span>
+				<h2 class="c6" data-lang="ja">Open Question / Limitation</h2>
+				<h2 class="c6" data-lang="en">Open Question / Limitation</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">このページからはまだ断定しないことも明示しておく。</p>
+			<p class="section-lead" data-lang="en">This page also states clearly what it does not yet claim.</p>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">まだ言えないこと</h3>
+					<h3 data-lang="en">What remains open</h3>
+					<ul>
+						<li data-lang="ja">他の MI25 環境でも同様に再現するかは未確認</li>
+						<li data-lang="en">It is still unverified whether the same pattern reproduces on other MI25 systems</li>
+						<li data-lang="ja">gfx900 全般の一般法則として読めるかは別問題</li>
+						<li data-lang="en">Whether this should be generalized to gfx900 as a whole is a separate question</li>
+						<li data-lang="ja">ROCm 公式 support policy の解釈と 1 対 1 に対応づけるものではない</li>
+						<li data-lang="en">This page does not map one-to-one onto ROCm's official support policy</li>
+					</ul>
+				</article>
+				<article class="card">
+					<h3 data-lang="ja">今回の証跡セット</h3>
+					<h3 data-lang="en">Evidence set used here</h3>
+					<div class="code-list">MI25_gfx900_inference-success-summary_20260320.md
+MI25_logging-and-benchmark-notes.md
+deepseek14b_generate_20260320_212146.json
+deepseek14b_journal_20260320_212146.log
+deepseek14b_rocm_smi_20260320_212146.log
+tinyllama_path_index_20260320_195741.tsv
+tinyllama_path_index_20260320_200424.tsv</div>
+				</article>
+			</div>
+		</section>
+
+		<div class="actions">
+			<a class="button button-primary" href="case-study-index.html" data-lang="ja">ケース一覧へ戻る</a>
+			<a class="button button-primary" href="case-study-index.html" data-lang="en">Back to the case-study index</a>
+			<a class="button button-secondary" href="../experiment-history.html" data-lang="ja">実験の流れを見る</a>
+			<a class="button button-secondary" href="../experiment-history.html" data-lang="en">Open the experiment history</a>
+			<a class="button button-teal" href="../rocm-structure.html" data-lang="ja">ROCm 全体構造へ</a>
+			<a class="button button-teal" href="../rocm-structure.html" data-lang="en">Open the ROCm structure page</a>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">MI25 / gfx900 inference case study for vega-hbmx-pages</span>
+			<span data-lang="en">MI25 / gfx900 inference case study for vega-hbmx-pages</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+
+		function setLanguage(lang) {
+			html.setAttribute('data-language', lang);
+			html.setAttribute('lang', lang);
+			btnJa.classList.toggle('active', lang === 'ja');
+			btnEn.classList.toggle('active', lang === 'en');
+			localStorage.setItem('vega-hbmx-pages-mi25-case-lang', lang);
+		}
+
+		btnJa.addEventListener('click', () => setLanguage('ja'));
+		btnEn.addEventListener('click', () => setLanguage('en'));
+
+		setLanguage(localStorage.getItem('vega-hbmx-pages-mi25-case-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
