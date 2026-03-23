@@ -372,8 +372,8 @@
 				<h2 class="c2" data-lang="ja">公開中のケース</h2>
 				<h2 class="c2" data-lang="en">Available case studies</h2>
 			</div>
-			<p class="section-lead" data-lang="ja">まずは MI25 / gfx900 の推論経路ケースから始めます。今後、GPU ごとのページをここに追加していく前提です。</p>
-			<p class="section-lead" data-lang="en">The first published case focuses on MI25 / gfx900 inference behavior. Additional per-GPU pages can be added here later.</p>
+			<p class="section-lead" data-lang="ja">現在は、MI25 単体ケースに加えて、MI25 vs Vega64 比較ケースを公開しています。今後、GPU ごとのページをここに追加していく前提です。</p>
+			<p class="section-lead" data-lang="en">Now available: the MI25 standalone case and a MI25 vs Vega64 comparison case. Additional per-GPU pages can be added here later.</p>
 			<div class="card-grid">
 				<article class="card">
 					<span class="card-type type-case">Case Study</span>
@@ -395,6 +395,23 @@
 							<a class="button button-secondary" href="https://github.com/AETS-MAGI/ROCm-MI25-build" target="_blank" rel="noopener noreferrer">GitHub</a>
 						</div>
 					</article>
+				<article class="card">
+					<span class="card-type type-case">Comparison</span>
+					<h3 data-lang="ja">MI25 vs Vega64 比較ケース</h3>
+					<h3 data-lang="en">MI25 vs Vega64 comparison case</h3>
+					<p class="filename">mi25-vega64-comparison-case-study.html</p>
+					<p data-lang="ja">同一 tinyllama 条件で、ROCm 同士の比較を段階的に揃えて観測したページです。`1.266x -> 1.098x -> 1.111x` の推移と、Vega64 内経路差分（distro vs fork）を分けて整理しています。</p>
+					<p data-lang="en">A staged ROCm-vs-ROCm comparison under the same tinyllama condition. It separates the `1.266x -> 1.098x -> 1.111x` progression from Vega64 internal path deltas (distro vs fork).</p>
+					<ul>
+						<li data-lang="ja">`eval_tps` と `total_duration` を分離して解釈</li>
+						<li data-lang="en">Separates `eval_tps` from `total_duration` interpretation</li>
+						<li data-lang="ja">設定差・経路差・未解決点を明示</li>
+						<li data-lang="en">Explicitly marks setup deltas, path deltas, and open questions</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="mi25-vega64-comparison-case-study.html">Open</a>
+					</div>
+				</article>
 			</div>
 		</section>
 

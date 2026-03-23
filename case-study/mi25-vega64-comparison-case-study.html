@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>MI25 vs Vega64 ROCm Comparison | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--red: #B71C1C;
+			--blue: #0D47A1;
+			--green: #1B5E20;
+			--orange: #E65100;
+			--teal: #00695C;
+			--purple: #4A148C;
+			--text: #212121;
+			--muted: #607D8B;
+			--line: #D7DEE8;
+			--bg: #F6F8FB;
+			--card: #FFFFFF;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(circle at top right, rgba(13,71,161,0.08), transparent 26%),
+				radial-gradient(circle at bottom left, rgba(0,105,92,0.08), transparent 24%),
+				var(--bg);
+		}
+
+		.page {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 28px 22px 60px;
+		}
+
+		.toolbar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 16px;
+		}
+
+		.back-links {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.back-link {
+			display: inline-flex;
+			align-items: center;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: bold;
+			color: var(--blue);
+			background: rgba(255,255,255,0.92);
+			border: 1px solid var(--line);
+			border-radius: 999px;
+			padding: 8px 14px;
+		}
+
+		.lang-toggle {
+			display: inline-flex;
+			gap: 6px;
+			padding: 6px;
+			border-radius: 999px;
+			border: 1px solid var(--line);
+			background: rgba(255,255,255,0.92);
+			box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+		}
+
+		.lang-btn {
+			border: none;
+			border-radius: 999px;
+			padding: 8px 14px;
+			font-size: 14px;
+			font-weight: bold;
+			background: transparent;
+			color: #455A64;
+			cursor: pointer;
+		}
+
+		.lang-btn.active {
+			background: var(--blue);
+			color: #FFFFFF;
+		}
+
+		.hero {
+			background: linear-gradient(135deg, #00695C 0%, #00897B 58%, #26A69A 100%);
+			color: #FFFFFF;
+			border-radius: 20px;
+			padding: 30px 30px 24px;
+			box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+		}
+
+		.hero h1 {
+			margin: 0 0 10px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 40px;
+			line-height: 1.1;
+		}
+
+		.hero p {
+			margin: 0;
+			font-size: 20px;
+			line-height: 1.5;
+			color: #E0F2F1;
+		}
+
+		.hero-meta {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 12px;
+			border-radius: 999px;
+			font-size: 14px;
+			font-weight: bold;
+			background: rgba(255,255,255,0.14);
+			color: #FFFFFF;
+			border: 1px solid rgba(255,255,255,0.18);
+		}
+
+		.summary {
+			margin-top: 22px;
+			background: #FFFFFF;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 19px;
+			line-height: 1.55;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+		}
+
+		.alert {
+			margin-top: 18px;
+			background: #FFF8E1;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 14px 18px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #5D4037;
+		}
+
+		.section-block {
+			margin-top: 34px;
+		}
+
+		.section-header {
+			display: flex;
+			align-items: baseline;
+			gap: 12px;
+			margin-bottom: 8px;
+		}
+
+		.section-num {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 15px;
+			color: #FFFFFF;
+			flex-shrink: 0;
+		}
+
+		.s1 { background: var(--blue); }
+		.s2 { background: var(--teal); }
+		.s3 { background: var(--red); }
+		.s4 { background: var(--purple); }
+		.s5 { background: var(--green); }
+		.s6 { background: var(--orange); }
+
+		.section-header h2 {
+			margin: 0;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 24px;
+		}
+
+		.c1 { color: var(--blue); }
+		.c2 { color: var(--teal); }
+		.c3 { color: var(--red); }
+		.c4 { color: var(--purple); }
+		.c5 { color: var(--green); }
+		.c6 { color: var(--orange); }
+
+		.section-lead {
+			margin: 0 0 16px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #546E7A;
+		}
+
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+			gap: 18px;
+		}
+
+		.card {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			padding: 18px 18px 16px;
+			box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+		}
+
+		.card h3 {
+			margin: 0 0 8px;
+			font-size: 20px;
+			line-height: 1.25;
+		}
+
+		.card p,
+		.card li {
+			font-size: 15px;
+			line-height: 1.5;
+			color: #37474F;
+		}
+
+		.card ul {
+			margin: 0;
+			padding-left: 18px;
+		}
+
+		.data-table {
+			width: 100%;
+			border-collapse: collapse;
+			background: #FFFFFF;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 1px 2px 10px rgba(0,0,0,0.04);
+			font-size: 15px;
+		}
+
+		.data-table th {
+			background: #37474F;
+			color: #FFFFFF;
+			padding: 10px 12px;
+			text-align: left;
+		}
+
+		.data-table td {
+			padding: 10px 12px;
+			border-bottom: 1px solid #E0E0E0;
+			vertical-align: top;
+		}
+
+		.data-table tr:nth-child(even) td { background: #F8FAFC; }
+
+		.code-list {
+			background: #FAFAFA;
+			border: 1px solid var(--line);
+			border-radius: 12px;
+			padding: 14px 16px;
+			font-family: 'Consolas', 'Courier New', monospace;
+			font-size: 13px;
+			line-height: 1.65;
+			overflow-x: auto;
+		}
+
+		.actions {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			padding: 10px 14px;
+			border-radius: 10px;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		.button-primary { background: var(--blue); color: #FFFFFF; }
+		.button-secondary { background: #ECEFF1; color: #37474F; }
+		.button-teal { background: var(--teal); color: #FFFFFF; }
+
+		.footer {
+			margin-top: 30px;
+			color: var(--muted);
+			font-size: 14px;
+			text-align: center;
+			line-height: 1.7;
+		}
+
+		html[data-language="en"] [data-lang="ja"] { display: none !important; }
+		html[data-language="ja"] [data-lang="en"] { display: none !important; }
+
+		@media (max-width: 760px) {
+			.page { padding: 20px 16px 42px; }
+			.toolbar {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			.hero { padding: 24px 20px 20px; }
+			.hero h1 { font-size: 31px; }
+			.hero p { font-size: 18px; }
+			.card-grid { grid-template-columns: 1fr; }
+			.actions { flex-direction: column; }
+			.button { width: 100%; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<div class="back-links">
+				<a class="back-link" href="case-study-index.html" data-lang="ja">&larr; ケース一覧へ</a>
+				<a class="back-link" href="case-study-index.html" data-lang="en">&larr; Back to case-study index</a>
+				<a class="back-link" href="../index.html" data-lang="ja">&larr; トップへ戻る</a>
+				<a class="back-link" href="../index.html" data-lang="en">&larr; Back to top</a>
+			</div>
+			<div class="lang-toggle" aria-label="Language switch">
+				<button id="btn-ja" class="lang-btn active" type="button">JP</button>
+				<button id="btn-en" class="lang-btn" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">MI25 vs Vega64 比較ケース</h1>
+			<h1 data-lang="en">MI25 vs Vega64 comparison case</h1>
+			<p data-lang="ja">同じ tinyllama 条件で、MI25 と Vega64 の ROCm 推論を比較し、差分を「GPU性能そのもの」と「実行経路・設定差」に分けて整理したケーススタディです。</p>
+			<p data-lang="en">A case study that compares ROCm inference on MI25 and Vega64 under the same tinyllama conditions, separating intrinsic GPU behavior from runtime-path and setup differences.</p>
+			<div class="hero-meta">
+				<span class="badge">MI25</span>
+				<span class="badge">Vega64</span>
+				<span class="badge">gfx900</span>
+				<span class="badge">ROCm</span>
+				<span class="badge">tinyllama</span>
+			</div>
+		</section>
+
+		<div class="summary">
+			<span data-lang="ja">主要観測として、ROCm同士比較では Vega64 優位が継続したが、`NumThreads=16` と `keep_alive=10m` で条件を揃えると差は縮小した。さらに Vega64 内の経路比較では `eval_tps` はほぼ同等で、差の中心は `total_duration` 側のオーバーヘッドに見える。</span>
+			<span data-lang="en">Key observation: Vega64 stayed ahead in ROCm-vs-ROCm runs, but the gap narrowed after aligning `NumThreads=16` and `keep_alive=10m`. In Vega64-only path comparison, `eval_tps` became nearly identical, suggesting the main difference sits in `total_duration` overhead rather than token-generation core speed.</span>
+		</div>
+
+		<div class="alert">
+			<span data-lang="ja"><strong>注意:</strong> このページは、特定ホスト・特定時点でのローカル観測をまとめたものです。すべての MI25/Vega64 環境へ一般化することは意図していません。</span>
+			<span data-lang="en"><strong>Caution:</strong> This page summarizes local observations from specific hosts at a specific time. It is not intended as a universal rule for all MI25/Vega64 deployments.</span>
+		</div>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s1">1</span>
+				<h2 class="c1" data-lang="ja">比較の設計</h2>
+				<h2 class="c1" data-lang="en">Comparison design</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">比較は「同一モデル・同一プロンプト」を固定しつつ、条件の揃い方を段階的に上げていく方式で進めました。</p>
+			<p class="section-lead" data-lang="en">The runs were staged from loosely aligned to tightly aligned conditions while keeping model and prompt fixed.</p>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th data-lang="ja">項目</th>
+						<th data-lang="en">Item</th>
+						<th data-lang="ja">固定した条件</th>
+						<th data-lang="en">Fixed condition</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td data-lang="ja">モデル</td>
+						<td data-lang="en">Model</td>
+						<td><code>tinyllama:latest</code></td>
+						<td><code>tinyllama:latest</code></td>
+					</tr>
+					<tr>
+						<td data-lang="ja">推論長</td>
+						<td data-lang="en">Output length</td>
+						<td><code>num_predict=128</code></td>
+						<td><code>num_predict=128</code></td>
+					</tr>
+					<tr>
+						<td data-lang="ja">主比較指標</td>
+						<td data-lang="en">Primary metrics</td>
+						<td><code>eval_tps</code>, <code>total_duration</code></td>
+						<td><code>eval_tps</code>, <code>total_duration</code></td>
+					</tr>
+					<tr>
+						<td data-lang="ja">観測方針</td>
+						<td data-lang="en">Observation policy</td>
+						<td data-lang="ja">Fact / Interpretation / Open Question を分離</td>
+						<td data-lang="en">Separate Fact / Interpretation / Open Question</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s2">2</span>
+				<h2 class="c2" data-lang="ja">主比較（MI25 vs Vega64）</h2>
+				<h2 class="c2" data-lang="en">Main comparison (MI25 vs Vega64)</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">同一モデルでの代表比較を、条件ごとの中央値比（Vega64/MI25）で整理します。</p>
+			<p class="section-lead" data-lang="en">Representative runs are shown as median ratios (Vega64/MI25) under each condition set.</p>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th data-lang="ja">比較条件</th>
+						<th data-lang="en">Condition</th>
+						<th data-lang="ja">中央値比 (Vega64/MI25)</th>
+						<th data-lang="en">Median ratio (Vega64/MI25)</th>
+						<th data-lang="ja">読み方</th>
+						<th data-lang="en">Reading</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td data-lang="ja">ROCm vs ROCm 5-run（初期）</td>
+						<td data-lang="en">ROCm vs ROCm 5-run (initial)</td>
+						<td><strong>1.266x</strong></td>
+						<td><strong>1.266x</strong></td>
+						<td data-lang="ja">`NumThreads` 不一致の影響が残る段階</td>
+						<td data-lang="en">Still confounded by `NumThreads` mismatch</td>
+					</tr>
+					<tr>
+						<td data-lang="ja">`NumThreads=16` + `keep_alive=10m`（5-run）</td>
+						<td data-lang="en">`NumThreads=16` + `keep_alive=10m` (5-run)</td>
+						<td><strong>1.098x</strong></td>
+						<td><strong>1.098x</strong></td>
+						<td data-lang="ja">明白なCPU側コンファウンダを除去後</td>
+						<td data-lang="en">After removing an obvious CPU-side confounder</td>
+					</tr>
+					<tr>
+						<td data-lang="ja">`fork/fork` 同系統（20-run）</td>
+						<td data-lang="en">`fork/fork` aligned family (20-run)</td>
+						<td><strong>1.111x</strong></td>
+						<td><strong>1.111x</strong></td>
+						<td data-lang="ja">系統を寄せても約1.1x差は残る</td>
+						<td data-lang="en">About 1.1x remains after family alignment</td>
+					</tr>
+					<tr>
+						<td data-lang="ja">`fork/fork` + cold-start（10-run）</td>
+						<td data-lang="en">`fork/fork` + cold-start (10-run)</td>
+						<td><strong>1.197x</strong></td>
+						<td><strong>1.197x</strong></td>
+						<td data-lang="ja">ロード影響を含めると差が拡大</td>
+						<td data-lang="en">Gap grows when load effects are included</td>
+					</tr>
+					<tr>
+						<td data-lang="ja">`fork/fork` + smi検証（5-run）</td>
+						<td data-lang="en">`fork/fork` + smi-verified (5-run)</td>
+						<td><strong>1.097x</strong></td>
+						<td><strong>1.097x</strong></td>
+						<td data-lang="ja">warm条件では約1.1xが再確認</td>
+						<td data-lang="en">Warm-path confirms around 1.1x again</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s3">3</span>
+				<h2 class="c3" data-lang="ja">Vega64内の経路差分（初期運用 vs fork運用）</h2>
+				<h2 class="c3" data-lang="en">Vega64 path delta (initial distro path vs fork path)</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">「最初の Vega64 運用のほうが速かったのでは」という疑問に対し、Vega64 単独で経路差を測り直した結果です。</p>
+			<p class="section-lead" data-lang="en">To test whether the initial Vega64 operation path was faster, Vega64-only path comparison was repeated under aligned settings.</p>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th data-lang="ja">項目</th>
+						<th data-lang="en">Item</th>
+						<th data-lang="ja">distro ROCm (11435)</th>
+						<th data-lang="en">distro ROCm (11435)</th>
+						<th data-lang="ja">fork ROCm (21445)</th>
+						<th data-lang="en">fork ROCm (21445)</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td data-lang="ja">serve binary</td>
+						<td data-lang="en">serve binary</td>
+						<td><code>/usr/bin/ollama</code></td>
+						<td><code>/usr/bin/ollama</code></td>
+						<td><code>/tmp/ollama-fork-compare/ollama</code></td>
+						<td><code>/tmp/ollama-fork-compare/ollama</code></td>
+					</tr>
+					<tr>
+						<td data-lang="ja">runner library path</td>
+						<td data-lang="en">runner library path</td>
+						<td><code>/usr/lib/ollama</code></td>
+						<td><code>/usr/lib/ollama</code></td>
+						<td><code>/tmp/ollama-fork-compare/build-gfx900/lib/ollama</code></td>
+						<td><code>/tmp/ollama-fork-compare/build-gfx900/lib/ollama</code></td>
+					</tr>
+					<tr>
+						<td data-lang="ja">pooled eval_tps median (80-run)</td>
+						<td data-lang="en">pooled eval_tps median (80-run)</td>
+						<td>242.094</td>
+						<td>242.094</td>
+						<td>241.923</td>
+						<td>241.923</td>
+					</tr>
+					<tr>
+						<td data-lang="ja">pooled total_duration median (80-run)</td>
+						<td data-lang="en">pooled total_duration median (80-run)</td>
+						<td>0.641294s</td>
+						<td>0.641294s</td>
+						<td>0.680165s</td>
+						<td>0.680165s</td>
+					</tr>
+					<tr>
+						<td data-lang="ja">読み方</td>
+						<td data-lang="en">Reading</td>
+						<td colspan="4" data-lang="ja">`eval_tps` はほぼ同等だが、`total_duration` は fork 側が約 6.06% 長い。差の中心は生成カーネル速度より周辺オーバーヘッド側と読める。</td>
+						<td colspan="4" data-lang="en">`eval_tps` is nearly identical, while `total_duration` is about 6.06% longer on the fork path. The dominant delta appears to be overhead outside token-generation core speed.</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s4">4</span>
+				<h2 class="c4" data-lang="ja">Fact / Interpretation / Open Question</h2>
+				<h2 class="c4" data-lang="en">Fact / Interpretation / Open Question</h2>
+			</div>
+			<div class="card-grid">
+				<article class="card">
+					<h3>Fact</h3>
+					<ul>
+						<li data-lang="ja">主比較では Vega64 優位が継続し、条件を揃えるほど差は縮小した。</li>
+						<li data-lang="en">Vega64 remained ahead in the main comparison, and the gap shrank as conditions were aligned.</li>
+						<li data-lang="ja">Vega64内比較では `eval_tps` ほぼ同等、`total_duration` は fork 側が一貫して長い。</li>
+						<li data-lang="en">Inside Vega64, `eval_tps` was near-parity while fork-path `total_duration` stayed consistently longer.</li>
+					</ul>
+				</article>
+				<article class="card">
+					<h3>Interpretation</h3>
+					<ul>
+						<li data-lang="ja">「Vega64が速い」の内訳には、GPU演算差だけでなく経路と運用設定差が混ざる。</li>
+						<li data-lang="en">The observed Vega64 advantage mixes intrinsic compute behavior with runtime-path and operational differences.</li>
+						<li data-lang="ja">最適化の主戦場は `eval_tps` だけでなく `total_duration` の余剰オーバーヘッド削減。</li>
+						<li data-lang="en">A practical optimization target is reducing excess `total_duration` overhead, not only chasing `eval_tps`.</li>
+					</ul>
+				</article>
+				<article class="card">
+					<h3>Open Question</h3>
+					<ul>
+						<li data-lang="ja">MI25 側で残る約1.1x差のうち、どこまでが host / scheduler / runtime overhead か。</li>
+						<li data-lang="en">How much of the remaining ~1.1x is host, scheduler, or runtime overhead on the MI25 side.</li>
+						<li data-lang="ja">完全同一stack比較（OS/driver/packaging）で比率がどう変化するか。</li>
+						<li data-lang="en">How this ratio changes under truly identical stack conditions (OS/driver/packaging).</li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s5">5</span>
+				<h2 class="c5" data-lang="ja">再現時の最小チェックリスト</h2>
+				<h2 class="c5" data-lang="en">Minimal reproducibility checklist</h2>
+			</div>
+			<div class="code-list">
+				<span data-lang="ja">1) backend 確認: `library=ROCm` と `compute=gfx900` をログで確認</span><br data-lang="ja">
+				<span data-lang="en">1) Backend check: verify `library=ROCm` and `compute=gfx900` in logs</span><br data-lang="en">
+				<span data-lang="ja">2) 条件固定: `num_thread`, `keep_alive`, `num_predict` を明示</span><br data-lang="ja">
+				<span data-lang="en">2) Fix conditions: explicitly set `num_thread`, `keep_alive`, and `num_predict`</span><br data-lang="en">
+				<span data-lang="ja">3) 指標分離: `eval_tps` と `total_duration` を分けて読む</span><br data-lang="ja">
+				<span data-lang="en">3) Split metrics: read `eval_tps` and `total_duration` separately</span><br data-lang="en">
+				<span data-lang="ja">4) 最低2セット: warm後に20-run以上を複数セット</span><br data-lang="ja">
+				<span data-lang="en">4) At least two sets: multiple 20-run warm sets</span><br data-lang="en">
+				<span data-lang="ja">5) 実ロード先: runner の `libggml-hip.so` 実体パスを確認</span>
+				<span data-lang="en">5) Actual load path: verify runner `libggml-hip.so` mapped path</span>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s6">6</span>
+				<h2 class="c6" data-lang="ja">関連ページ</h2>
+				<h2 class="c6" data-lang="en">Related pages</h2>
+			</div>
+			<div class="actions">
+				<a class="button button-primary" href="case-study-index.html">Case-study Index</a>
+				<a class="button button-teal" href="mi25-inference-case-study.html">MI25 / gfx900 Case</a>
+				<a class="button button-secondary" href="../experiment-history.html">Experiment History</a>
+			</div>
+		</section>
+
+		<div class="footer">
+			<span data-lang="ja">このページは、公開一次資料およびローカル実測ログから観測可能な範囲のみを整理したものです。</span>
+			<span data-lang="en">This page organizes only what was observable from primary public material and local runtime logs.</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+
+		function setLanguage(lang) {
+			html.setAttribute('data-language', lang);
+			html.setAttribute('lang', lang);
+			btnJa.classList.toggle('active', lang === 'ja');
+			btnEn.classList.toggle('active', lang === 'en');
+			localStorage.setItem('vega-hbmx-pages-mi25-vega64-compare-lang', lang);
+		}
+
+		btnJa.addEventListener('click', () => setLanguage('ja'));
+		btnEn.addEventListener('click', () => setLanguage('en'));
+
+		setLanguage(localStorage.getItem('vega-hbmx-pages-mi25-vega64-compare-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>
