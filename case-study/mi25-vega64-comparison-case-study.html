@@ -272,6 +272,82 @@
 			overflow-x: auto;
 		}
 
+		.chart-card {
+			margin-top: 14px;
+			background: #FFFFFF;
+			border: 1px solid var(--line);
+			border-radius: 14px;
+			padding: 14px 14px 12px;
+			box-shadow: 1px 2px 10px rgba(0,0,0,0.04);
+		}
+
+		.chart-title {
+			margin: 0 0 10px;
+			font-size: 16px;
+			font-weight: bold;
+			color: #37474F;
+		}
+
+		.chart-note {
+			margin: 10px 0 0;
+			font-size: 13px;
+			line-height: 1.5;
+			color: #546E7A;
+		}
+
+		.hbar-chart {
+			display: grid;
+			gap: 10px;
+		}
+
+		.hbar-row {
+			display: grid;
+			grid-template-columns: minmax(130px, 260px) 1fr minmax(80px, 110px);
+			gap: 10px;
+			align-items: center;
+		}
+
+		.hbar-label {
+			font-size: 13px;
+			line-height: 1.35;
+			color: #37474F;
+		}
+
+		.hbar-track {
+			position: relative;
+			height: 22px;
+			border-radius: 999px;
+			background: #E8EEF7;
+			overflow: hidden;
+		}
+
+		.hbar-fill {
+			height: 100%;
+			border-radius: 999px;
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			padding-right: 8px;
+			color: #FFFFFF;
+			font-size: 11px;
+			font-weight: bold;
+			letter-spacing: 0.2px;
+		}
+
+		.hbar-fill.teal { background: linear-gradient(90deg, #00796B, #009688); }
+		.hbar-fill.blue { background: linear-gradient(90deg, #1565C0, #1E88E5); }
+		.hbar-fill.red { background: linear-gradient(90deg, #B71C1C, #D32F2F); }
+		.hbar-fill.purple { background: linear-gradient(90deg, #6A1B9A, #8E24AA); }
+		.hbar-fill.orange { background: linear-gradient(90deg, #E65100, #FB8C00); }
+
+		.hbar-value {
+			text-align: right;
+			font-family: 'Consolas', 'Courier New', monospace;
+			font-size: 13px;
+			color: #37474F;
+			white-space: nowrap;
+		}
+
 		.actions {
 			margin-top: 18px;
 			display: flex;
@@ -315,6 +391,11 @@
 			.hero h1 { font-size: 31px; }
 			.hero p { font-size: 18px; }
 			.card-grid { grid-template-columns: 1fr; }
+			.hbar-row {
+				grid-template-columns: 1fr;
+				gap: 6px;
+			}
+			.hbar-value { text-align: left; }
 			.actions { flex-direction: column; }
 			.button { width: 100%; }
 		}
@@ -467,6 +548,44 @@
 					</tr>
 				</tbody>
 			</table>
+			<div class="chart-card">
+				<p class="chart-title" data-lang="ja">チャート: 主比較の中央値比（Vega64 / MI25）</p>
+				<p class="chart-title" data-lang="en">Chart: Median ratio trend (Vega64 / MI25)</p>
+				<div class="hbar-chart">
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">ROCm vs ROCm 5-run（初期）</div>
+						<div class="hbar-label" data-lang="en">ROCm vs ROCm 5-run (initial)</div>
+						<div class="hbar-track"><div class="hbar-fill red" style="width:97.4%;">1.266x</div></div>
+						<div class="hbar-value">1.266x</div>
+					</div>
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">`NumThreads=16` + `keep_alive=10m`</div>
+						<div class="hbar-label" data-lang="en">`NumThreads=16` + `keep_alive=10m`</div>
+						<div class="hbar-track"><div class="hbar-fill teal" style="width:84.5%;">1.098x</div></div>
+						<div class="hbar-value">1.098x</div>
+					</div>
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">`fork/fork` 20-run</div>
+						<div class="hbar-label" data-lang="en">`fork/fork` 20-run</div>
+						<div class="hbar-track"><div class="hbar-fill blue" style="width:85.5%;">1.111x</div></div>
+						<div class="hbar-value">1.111x</div>
+					</div>
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">`fork/fork` + cold-start 10-run</div>
+						<div class="hbar-label" data-lang="en">`fork/fork` + cold-start 10-run</div>
+						<div class="hbar-track"><div class="hbar-fill orange" style="width:92.1%;">1.197x</div></div>
+						<div class="hbar-value">1.197x</div>
+					</div>
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">`fork/fork` + smi検証 5-run</div>
+						<div class="hbar-label" data-lang="en">`fork/fork` + smi-verified 5-run</div>
+						<div class="hbar-track"><div class="hbar-fill purple" style="width:84.4%;">1.097x</div></div>
+						<div class="hbar-value">1.097x</div>
+					</div>
+				</div>
+				<p class="chart-note" data-lang="ja">注: バー長は 1.30x を100%として正規化。比率が1.0を超えるほど Vega64 優位。</p>
+				<p class="chart-note" data-lang="en">Note: Bar width is normalized with 1.30x = 100%. A ratio above 1.0 indicates Vega64 is ahead.</p>
+			</div>
 		</section>
 
 		<section class="section-block">
@@ -529,6 +648,40 @@
 					</tr>
 				</tbody>
 			</table>
+			<div class="chart-card">
+				<p class="chart-title" data-lang="ja">チャート: Vega64内の経路差分（pooled 80-run）</p>
+				<p class="chart-title" data-lang="en">Chart: Vega64 path delta (pooled 80-run)</p>
+				<div class="hbar-chart">
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">eval_tps median (distro)</div>
+						<div class="hbar-label" data-lang="en">eval_tps median (distro)</div>
+						<div class="hbar-track"><div class="hbar-fill teal" style="width:100%;">242.094</div></div>
+						<div class="hbar-value">242.094</div>
+					</div>
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">eval_tps median (fork)</div>
+						<div class="hbar-label" data-lang="en">eval_tps median (fork)</div>
+						<div class="hbar-track"><div class="hbar-fill blue" style="width:99.9%;">241.923</div></div>
+						<div class="hbar-value">241.923</div>
+					</div>
+				</div>
+				<div class="hbar-chart" style="margin-top:14px;">
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">total_duration median (distro)</div>
+						<div class="hbar-label" data-lang="en">total_duration median (distro)</div>
+						<div class="hbar-track"><div class="hbar-fill teal" style="width:94.3%;">0.641s</div></div>
+						<div class="hbar-value">0.641294s</div>
+					</div>
+					<div class="hbar-row">
+						<div class="hbar-label" data-lang="ja">total_duration median (fork)</div>
+						<div class="hbar-label" data-lang="en">total_duration median (fork)</div>
+						<div class="hbar-track"><div class="hbar-fill red" style="width:100%;">0.680s</div></div>
+						<div class="hbar-value">0.680165s</div>
+					</div>
+				</div>
+				<p class="chart-note" data-lang="ja">読み方: `eval_tps` はほぼ同等だが、`total_duration` は fork 側が長い。</p>
+				<p class="chart-note" data-lang="en">Reading: `eval_tps` is near-parity, while `total_duration` is longer on the fork path.</p>
+			</div>
 		</section>
 
 		<section class="section-block">
