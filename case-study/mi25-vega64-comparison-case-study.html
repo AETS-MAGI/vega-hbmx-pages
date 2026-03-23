@@ -451,36 +451,47 @@
 			<table class="data-table">
 				<thead>
 					<tr>
-						<th data-lang="ja">項目</th>
-						<th data-lang="en">Item</th>
-						<th data-lang="ja">固定した条件</th>
-						<th data-lang="en">Fixed condition</th>
+						<th>
+							<span data-lang="ja">項目</span>
+							<span data-lang="en">Item</span>
+						</th>
+						<th>
+							<span data-lang="ja">固定した条件</span>
+							<span data-lang="en">Fixed condition</span>
+						</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td data-lang="ja">モデル</td>
-						<td data-lang="en">Model</td>
+						<td>
+							<span data-lang="ja">モデル</span>
+							<span data-lang="en">Model</span>
+						</td>
 						<td><code>tinyllama:latest</code></td>
-						<td><code>tinyllama:latest</code></td>
 					</tr>
 					<tr>
-						<td data-lang="ja">推論長</td>
-						<td data-lang="en">Output length</td>
+						<td>
+							<span data-lang="ja">推論長</span>
+							<span data-lang="en">Output length</span>
+						</td>
 						<td><code>num_predict=128</code></td>
-						<td><code>num_predict=128</code></td>
 					</tr>
 					<tr>
-						<td data-lang="ja">主比較指標</td>
-						<td data-lang="en">Primary metrics</td>
-						<td><code>eval_tps</code>, <code>total_duration</code></td>
+						<td>
+							<span data-lang="ja">主比較指標</span>
+							<span data-lang="en">Primary metrics</span>
+						</td>
 						<td><code>eval_tps</code>, <code>total_duration</code></td>
 					</tr>
 					<tr>
-						<td data-lang="ja">観測方針</td>
-						<td data-lang="en">Observation policy</td>
-						<td data-lang="ja">Fact / Interpretation / Open Question を分離</td>
-						<td data-lang="en">Separate Fact / Interpretation / Open Question</td>
+						<td>
+							<span data-lang="ja">観測方針</span>
+							<span data-lang="en">Observation policy</span>
+						</td>
+						<td>
+							<span data-lang="ja">Fact / Interpretation / Open Question を分離</span>
+							<span data-lang="en">Separate Fact / Interpretation / Open Question</span>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -497,54 +508,75 @@
 			<table class="data-table">
 				<thead>
 					<tr>
-						<th data-lang="ja">比較条件</th>
-						<th data-lang="en">Condition</th>
-						<th data-lang="ja">中央値比 (Vega64/MI25)</th>
-						<th data-lang="en">Median ratio (Vega64/MI25)</th>
-						<th data-lang="ja">読み方</th>
-						<th data-lang="en">Reading</th>
+						<th>
+							<span data-lang="ja">比較条件</span>
+							<span data-lang="en">Condition</span>
+						</th>
+						<th>
+							<span data-lang="ja">中央値比 (Vega64/MI25)</span>
+							<span data-lang="en">Median ratio (Vega64/MI25)</span>
+						</th>
+						<th>
+							<span data-lang="ja">読み方</span>
+							<span data-lang="en">Reading</span>
+						</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td data-lang="ja">ROCm vs ROCm 5-run（初期）</td>
-						<td data-lang="en">ROCm vs ROCm 5-run (initial)</td>
+						<td>
+							<span data-lang="ja">ROCm vs ROCm 5-run（初期）</span>
+							<span data-lang="en">ROCm vs ROCm 5-run (initial)</span>
+						</td>
 						<td><strong>1.266x</strong></td>
-						<td><strong>1.266x</strong></td>
-						<td data-lang="ja">`NumThreads` 不一致の影響が残る段階</td>
-						<td data-lang="en">Still confounded by `NumThreads` mismatch</td>
+						<td>
+							<span data-lang="ja">`NumThreads` 不一致の影響が残る段階</span>
+							<span data-lang="en">Still confounded by `NumThreads` mismatch</span>
+						</td>
 					</tr>
 					<tr>
-						<td data-lang="ja">`NumThreads=16` + `keep_alive=10m`（5-run）</td>
-						<td data-lang="en">`NumThreads=16` + `keep_alive=10m` (5-run)</td>
+						<td>
+							<span data-lang="ja">`NumThreads=16` + `keep_alive=10m`（5-run）</span>
+							<span data-lang="en">`NumThreads=16` + `keep_alive=10m` (5-run)</span>
+						</td>
 						<td><strong>1.098x</strong></td>
-						<td><strong>1.098x</strong></td>
-						<td data-lang="ja">明白なCPU側コンファウンダを除去後</td>
-						<td data-lang="en">After removing an obvious CPU-side confounder</td>
+						<td>
+							<span data-lang="ja">明白なCPU側コンファウンダを除去後</span>
+							<span data-lang="en">After removing an obvious CPU-side confounder</span>
+						</td>
 					</tr>
 					<tr>
-						<td data-lang="ja">`fork/fork` 同系統（20-run）</td>
-						<td data-lang="en">`fork/fork` aligned family (20-run)</td>
+						<td>
+							<span data-lang="ja">`fork/fork` 同系統（20-run）</span>
+							<span data-lang="en">`fork/fork` aligned family (20-run)</span>
+						</td>
 						<td><strong>1.111x</strong></td>
-						<td><strong>1.111x</strong></td>
-						<td data-lang="ja">系統を寄せても約1.1x差は残る</td>
-						<td data-lang="en">About 1.1x remains after family alignment</td>
+						<td>
+							<span data-lang="ja">系統を寄せても約1.1x差は残る</span>
+							<span data-lang="en">About 1.1x remains after family alignment</span>
+						</td>
 					</tr>
 					<tr>
-						<td data-lang="ja">`fork/fork` + cold-start（10-run）</td>
-						<td data-lang="en">`fork/fork` + cold-start (10-run)</td>
+						<td>
+							<span data-lang="ja">`fork/fork` + cold-start（10-run）</span>
+							<span data-lang="en">`fork/fork` + cold-start (10-run)</span>
+						</td>
 						<td><strong>1.197x</strong></td>
-						<td><strong>1.197x</strong></td>
-						<td data-lang="ja">ロード影響を含めると差が拡大</td>
-						<td data-lang="en">Gap grows when load effects are included</td>
+						<td>
+							<span data-lang="ja">ロード影響を含めると差が拡大</span>
+							<span data-lang="en">Gap grows when load effects are included</span>
+						</td>
 					</tr>
 					<tr>
-						<td data-lang="ja">`fork/fork` + smi検証（5-run）</td>
-						<td data-lang="en">`fork/fork` + smi-verified (5-run)</td>
+						<td>
+							<span data-lang="ja">`fork/fork` + smi検証（5-run）</span>
+							<span data-lang="en">`fork/fork` + smi-verified (5-run)</span>
+						</td>
 						<td><strong>1.097x</strong></td>
-						<td><strong>1.097x</strong></td>
-						<td data-lang="ja">warm条件では約1.1xが再確認</td>
-						<td data-lang="en">Warm-path confirms around 1.1x again</td>
+						<td>
+							<span data-lang="ja">warm条件では約1.1xが再確認</span>
+							<span data-lang="en">Warm-path confirms around 1.1x again</span>
+						</td>
 					</tr>
 				</tbody>
 			</table>
@@ -599,52 +631,44 @@
 			<table class="data-table">
 				<thead>
 					<tr>
-						<th data-lang="ja">項目</th>
-						<th data-lang="en">Item</th>
-						<th data-lang="ja">distro ROCm (11435)</th>
-						<th data-lang="en">distro ROCm (11435)</th>
-						<th data-lang="ja">fork ROCm (21445)</th>
-						<th data-lang="en">fork ROCm (21445)</th>
+						<th>
+							<span data-lang="ja">項目</span>
+							<span data-lang="en">Item</span>
+						</th>
+						<th>distro ROCm (11435)</th>
+						<th>fork ROCm (21445)</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td data-lang="ja">serve binary</td>
-						<td data-lang="en">serve binary</td>
-						<td><code>/usr/bin/ollama</code></td>
+						<td>serve binary</td>
 						<td><code>/usr/bin/ollama</code></td>
 						<td><code>/tmp/ollama-fork-compare/ollama</code></td>
-						<td><code>/tmp/ollama-fork-compare/ollama</code></td>
 					</tr>
 					<tr>
-						<td data-lang="ja">runner library path</td>
-						<td data-lang="en">runner library path</td>
-						<td><code>/usr/lib/ollama</code></td>
+						<td>runner library path</td>
 						<td><code>/usr/lib/ollama</code></td>
 						<td><code>/tmp/ollama-fork-compare/build-gfx900/lib/ollama</code></td>
-						<td><code>/tmp/ollama-fork-compare/build-gfx900/lib/ollama</code></td>
 					</tr>
 					<tr>
-						<td data-lang="ja">pooled eval_tps median (80-run)</td>
-						<td data-lang="en">pooled eval_tps median (80-run)</td>
-						<td>242.094</td>
+						<td>pooled eval_tps median (80-run)</td>
 						<td>242.094</td>
 						<td>241.923</td>
-						<td>241.923</td>
 					</tr>
 					<tr>
-						<td data-lang="ja">pooled total_duration median (80-run)</td>
-						<td data-lang="en">pooled total_duration median (80-run)</td>
+						<td>pooled total_duration median (80-run)</td>
 						<td>0.641294s</td>
-						<td>0.641294s</td>
-						<td>0.680165s</td>
 						<td>0.680165s</td>
 					</tr>
 					<tr>
-						<td data-lang="ja">読み方</td>
-						<td data-lang="en">Reading</td>
-						<td colspan="4" data-lang="ja">`eval_tps` はほぼ同等だが、`total_duration` は fork 側が約 6.06% 長い。差の中心は生成カーネル速度より周辺オーバーヘッド側と読める。</td>
-						<td colspan="4" data-lang="en">`eval_tps` is nearly identical, while `total_duration` is about 6.06% longer on the fork path. The dominant delta appears to be overhead outside token-generation core speed.</td>
+						<td>
+							<span data-lang="ja">読み方</span>
+							<span data-lang="en">Reading</span>
+						</td>
+						<td colspan="2">
+							<span data-lang="ja">`eval_tps` はほぼ同等だが、`total_duration` は fork 側が約 6.06% 長い。差の中心は生成カーネル速度より周辺オーバーヘッド側と読める。</span>
+							<span data-lang="en">`eval_tps` is nearly identical, while `total_duration` is about 6.06% longer on the fork path. The dominant delta appears to be overhead outside token-generation core speed.</span>
+						</td>
 					</tr>
 				</tbody>
 			</table>
