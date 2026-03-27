@@ -360,6 +360,11 @@
 			<span data-lang="en"><strong>Caution:</strong> This page organizes observations from one local setup only. It should not be read as a universal claim about all MI25 or all gfx900 deployments.</span>
 		</div>
 
+		<div class="alert">
+			<span data-lang="ja"><strong>更新:</strong> 2026-03-25 の K1 lane control 追試では、anchor 条件で同一run内 <code>tok/s</code> 比が最大約 <code>9.42x</code>（3-run 平均 <code>9.2476x</code>）を観測しています。詳細は更新ページを参照してください。</span>
+			<span data-lang="en"><strong>Update:</strong> In the 2026-03-25 K1 lane-control follow-up, the same-run <code>tok/s</code> ratio reached about <code>9.42x</code> (3-run average <code>9.2476x</code>) under the anchor condition. See the update page for details.</span>
+		</div>
+
 		<section class="section-block">
 			<div class="section-header">
 				<span class="section-num s1">1</span>
@@ -519,6 +524,8 @@
 						<li data-lang="en"><code>deepseek-r1:14b</code>: about 14.20 s / 140 eval, roughly 9.9 tokens/sec</li>
 						<li data-lang="ja">tinyllama の代表例: 約 1.56 s / 96 eval、推定約 61.4 tokens/sec</li>
 						<li data-lang="en">Representative tinyllama case: about 1.56 s / 96 eval, roughly 61.4 tokens/sec</li>
+						<li data-lang="ja">K1 lane control 追試: 同一run内 <code>tok/s</code> 比は <code>8.95x〜9.42x</code>（3-run 平均比 <code>9.2476x</code>）</li>
+						<li data-lang="en">K1 lane-control follow-up: same-run <code>tok/s</code> ratios were <code>8.95x to 9.42x</code> (3-run average ratio <code>9.2476x</code>)</li>
 					</ul>
 				</article>
 			</div>
@@ -564,6 +571,8 @@ tinyllama_path_index_20260320_200424.tsv</div>
 			<div class="actions">
 			<a class="button button-primary" href="case-study-index.html" data-lang="ja">ケース一覧へ戻る</a>
 				<a class="button button-primary" href="case-study-index.html" data-lang="en">Back to the case-study index</a>
+				<a class="button button-teal" href="mi25-k1-lane-speedup-case-study.html" data-lang="ja">MI25 K1 更新ページ</a>
+				<a class="button button-teal" href="mi25-k1-lane-speedup-case-study.html" data-lang="en">MI25 K1 update page</a>
 				<a class="button button-secondary" href="../experiment-history.html" data-lang="ja">実験の流れを見る</a>
 				<a class="button button-secondary" href="../experiment-history.html" data-lang="en">Open the experiment history</a>
 				<a class="button button-teal" href="../rocm-structure.html" data-lang="ja">ROCm 全体構造へ</a>

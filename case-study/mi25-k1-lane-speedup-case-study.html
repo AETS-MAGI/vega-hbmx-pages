@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>MI25 K1 Lane Control Case Study | vega-hbmx-pages</title>
+	<style>
+		:root {
+			--red: #B71C1C;
+			--blue: #0D47A1;
+			--green: #1B5E20;
+			--orange: #E65100;
+			--teal: #00695C;
+			--purple: #4A148C;
+			--text: #212121;
+			--muted: #607D8B;
+			--line: #D7DEE8;
+			--bg: #F6F8FB;
+			--card: #FFFFFF;
+		}
+
+		* { box-sizing: border-box; }
+
+		body {
+			margin: 0;
+			font-family: 'Calibri', 'Arial', sans-serif;
+			color: var(--text);
+			background:
+				radial-gradient(circle at top right, rgba(13,71,161,0.08), transparent 26%),
+				radial-gradient(circle at bottom left, rgba(0,105,92,0.08), transparent 23%),
+				var(--bg);
+		}
+
+		.page {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 28px 22px 60px;
+		}
+
+		.toolbar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			margin-bottom: 16px;
+		}
+
+		.back-links {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.back-link {
+			display: inline-flex;
+			align-items: center;
+			text-decoration: none;
+			font-size: 14px;
+			font-weight: bold;
+			color: var(--blue);
+			background: rgba(255,255,255,0.92);
+			border: 1px solid var(--line);
+			border-radius: 999px;
+			padding: 8px 14px;
+		}
+
+		.lang-toggle {
+			display: inline-flex;
+			gap: 6px;
+			padding: 6px;
+			border-radius: 999px;
+			border: 1px solid var(--line);
+			background: rgba(255,255,255,0.92);
+			box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+		}
+
+		.lang-btn {
+			border: none;
+			border-radius: 999px;
+			padding: 8px 14px;
+			font-size: 14px;
+			font-weight: bold;
+			background: transparent;
+			color: #455A64;
+			cursor: pointer;
+		}
+
+		.lang-btn.active {
+			background: var(--blue);
+			color: #FFFFFF;
+		}
+
+		.hero {
+			background: linear-gradient(135deg, #00695C 0%, #00897B 58%, #26A69A 100%);
+			color: #FFFFFF;
+			border-radius: 20px;
+			padding: 30px 30px 24px;
+			box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+		}
+
+		.hero h1 {
+			margin: 0 0 10px;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 39px;
+			line-height: 1.1;
+		}
+
+		.hero p {
+			margin: 0;
+			font-size: 20px;
+			line-height: 1.5;
+			color: #E0F2F1;
+		}
+
+		.hero-meta {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+
+		.badge {
+			display: inline-flex;
+			align-items: center;
+			padding: 8px 12px;
+			border-radius: 999px;
+			font-size: 14px;
+			font-weight: bold;
+			background: rgba(255,255,255,0.14);
+			color: #FFFFFF;
+			border: 1px solid rgba(255,255,255,0.18);
+		}
+
+		.summary {
+			margin-top: 22px;
+			background: #FFFFFF;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 16px 18px;
+			font-size: 19px;
+			line-height: 1.55;
+			box-shadow: 1px 1px 10px rgba(0,0,0,0.05);
+		}
+
+		.alert {
+			margin-top: 18px;
+			background: #FFF8E1;
+			border-left: 6px solid var(--orange);
+			border-radius: 12px;
+			padding: 14px 18px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #5D4037;
+		}
+
+		.section-block {
+			margin-top: 34px;
+		}
+
+		.section-header {
+			display: flex;
+			align-items: baseline;
+			gap: 12px;
+			margin-bottom: 8px;
+		}
+
+		.section-num {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 15px;
+			color: #FFFFFF;
+			flex-shrink: 0;
+		}
+
+		.s1 { background: var(--blue); }
+		.s2 { background: var(--teal); }
+		.s3 { background: var(--purple); }
+		.s4 { background: var(--green); }
+		.s5 { background: var(--orange); }
+		.s6 { background: var(--red); }
+
+		.section-header h2 {
+			margin: 0;
+			font-family: 'Arial Black', sans-serif;
+			font-size: 24px;
+		}
+
+		.c1 { color: var(--blue); }
+		.c2 { color: var(--teal); }
+		.c3 { color: var(--purple); }
+		.c4 { color: var(--green); }
+		.c5 { color: var(--orange); }
+		.c6 { color: var(--red); }
+
+		.section-lead {
+			margin: 0 0 16px;
+			font-size: 16px;
+			line-height: 1.55;
+			color: #546E7A;
+		}
+
+		.card-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+			gap: 18px;
+		}
+
+		.card {
+			background: var(--card);
+			border: 1px solid var(--line);
+			border-radius: 16px;
+			padding: 18px 18px 16px;
+			box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+		}
+
+		.card h3 {
+			margin: 0 0 8px;
+			font-size: 20px;
+			line-height: 1.25;
+		}
+
+		.card p,
+		.card li {
+			font-size: 15px;
+			line-height: 1.5;
+			color: #37474F;
+		}
+
+		.card ul {
+			margin: 0;
+			padding-left: 18px;
+		}
+
+		.data-table {
+			width: 100%;
+			border-collapse: collapse;
+			background: #FFFFFF;
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 1px 2px 10px rgba(0,0,0,0.04);
+			font-size: 15px;
+		}
+
+		.data-table th {
+			background: #37474F;
+			color: #FFFFFF;
+			padding: 10px 12px;
+			text-align: left;
+		}
+
+		.data-table td {
+			padding: 10px 12px;
+			border-bottom: 1px solid #E0E0E0;
+			vertical-align: top;
+		}
+
+		.data-table tr:nth-child(even) td { background: #F8FAFC; }
+
+		.code-list {
+			background: #FAFAFA;
+			border: 1px solid var(--line);
+			border-radius: 12px;
+			padding: 14px 16px;
+			font-family: 'Consolas', 'Courier New', monospace;
+			font-size: 13px;
+			line-height: 1.65;
+			overflow-x: auto;
+		}
+
+		.actions {
+			margin-top: 18px;
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+
+		.button {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			text-decoration: none;
+			padding: 10px 14px;
+			border-radius: 10px;
+			font-weight: bold;
+			font-size: 14px;
+		}
+
+		.button-primary { background: var(--blue); color: #FFFFFF; }
+		.button-secondary { background: #ECEFF1; color: #37474F; }
+		.button-teal { background: var(--teal); color: #FFFFFF; }
+
+		.footer {
+			margin-top: 30px;
+			color: var(--muted);
+			font-size: 14px;
+			text-align: center;
+			line-height: 1.7;
+		}
+
+		html[data-language="en"] [data-lang="ja"] { display: none !important; }
+		html[data-language="ja"] [data-lang="en"] { display: none !important; }
+
+		@media (max-width: 760px) {
+			.page { padding: 20px 16px 42px; }
+			.toolbar {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			.hero { padding: 24px 20px 20px; }
+			.hero h1 { font-size: 31px; }
+			.hero p { font-size: 18px; }
+			.card-grid { grid-template-columns: 1fr; }
+			.actions { flex-direction: column; }
+			.button { width: 100%; }
+		}
+	</style>
+</head>
+<body>
+	<div class="page">
+		<div class="toolbar">
+			<div class="back-links">
+				<a class="back-link" href="case-study-index.html" data-lang="ja">&larr; ケース一覧へ</a>
+				<a class="back-link" href="case-study-index.html" data-lang="en">&larr; Back to case-study index</a>
+				<a class="back-link" href="../index.html" data-lang="ja">&larr; トップへ戻る</a>
+				<a class="back-link" href="../index.html" data-lang="en">&larr; Back to top</a>
+			</div>
+			<div class="lang-toggle" aria-label="Language switch">
+				<button id="btn-ja" class="lang-btn active" type="button">JP</button>
+				<button id="btn-en" class="lang-btn" type="button">EN</button>
+			</div>
+		</div>
+
+		<section class="hero">
+			<h1 data-lang="ja">MI25 K1 lane control ケース</h1>
+			<h1 data-lang="en">MI25 K1 lane-control case</h1>
+			<p data-lang="ja">gpt-oss anchor 条件で lane 差分を1点（`ROCBLAS_TENSILE_LIBPATH`）に固定し、1shape 反復で throughput 差を観測したケースです。</p>
+			<p data-lang="en">A case where lane difference was reduced to one point (`ROCBLAS_TENSILE_LIBPATH`) under the gpt-oss anchor condition, then observed through repeated one-shape runs.</p>
+			<div class="hero-meta">
+				<span class="badge">MI25</span>
+				<span class="badge">gfx900</span>
+				<span class="badge">gpt-oss:latest</span>
+				<span class="badge">K1 one-shape</span>
+				<span class="badge" data-lang="ja">最大約 9.4x（条件限定）</span>
+				<span class="badge" data-lang="en">up to ~9.4x (condition-limited)</span>
+			</div>
+		</section>
+
+		<div class="summary">
+			<span data-lang="ja">同一 run-tag ペアでの `tok/s` 比（AETS lane / system lane）は、`8.95x〜9.42x` を観測。3-run 平均比は `9.2476x`。この値は「anchor 条件で lane 差分を1点化した実験」の観測事実として記録する。</span>
+			<span data-lang="en">Observed same-run `tok/s` ratios (AETS lane / system lane) ranged from `8.95x` to `9.42x`, with a 3-run average ratio of `9.2476x`. This is recorded as an observed fact under the one-point lane-delta anchor condition.</span>
+		</div>
+
+		<div class="alert">
+			<span data-lang="ja"><strong>注意:</strong> ここでの「9.4倍」は MI25 全般の普遍値ではなく、`MODEL=gpt-oss:latest / NUM_BATCH=512 / TARGET=512x512x2880` などの anchor 条件に限定された観測値です。</span>
+			<span data-lang="en"><strong>Caution:</strong> The “~9.4x” figure is not a universal MI25 claim. It is a condition-limited observation under the specified anchor setup (`MODEL=gpt-oss:latest`, `NUM_BATCH=512`, `TARGET=512x512x2880`, etc.).</span>
+		</div>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s1">1</span>
+				<h2 class="c1" data-lang="ja">Fact: 実験枠組み（固定条件）</h2>
+				<h2 class="c1" data-lang="en">Fact: Experimental frame (fixed conditions)</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">K1 では 1shape を固定し、lane 間の差分は `ROCBLAS_TENSILE_LIBPATH` のみとした。</p>
+			<p class="section-lead" data-lang="en">In K1, one shape was fixed, and lane difference was limited to `ROCBLAS_TENSILE_LIBPATH` only.</p>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th>
+							<span data-lang="ja">項目</span>
+							<span data-lang="en">Field</span>
+						</th>
+						<th>
+							<span data-lang="ja">値</span>
+							<span data-lang="en">Value</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Model</td>
+						<td><code>gpt-oss:latest</code></td>
+					</tr>
+					<tr>
+						<td>Batch / Context / Predict</td>
+						<td><code>NUM_BATCH=512</code>, <code>NUM_CTX=8192</code>, <code>NUM_PREDICT=128</code></td>
+					</tr>
+					<tr>
+						<td>Runtime knobs</td>
+						<td><code>KEEP_ALIVE=5m</code>, <code>STREAM=1</code>, <code>ROCBLAS_LAYER=9</code></td>
+					</tr>
+					<tr>
+						<td>Target shape</td>
+						<td><code>512x512x2880</code></td>
+					</tr>
+					<tr>
+						<td>
+							<span data-lang="ja">lane 差分</span>
+							<span data-lang="en">Lane delta</span>
+						</td>
+						<td>
+							<span data-lang="ja"><code>ROCBLAS_TENSILE_LIBPATH</code> のみ（AETS vs system）</span>
+							<span data-lang="en"><code>ROCBLAS_TENSILE_LIBPATH</code> only (AETS vs system)</span>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s2">2</span>
+				<h2 class="c2" data-lang="ja">Fact: throughput 比（tok/s）</h2>
+				<h2 class="c2" data-lang="en">Fact: Throughput ratio (`tok/s`)</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">同一 run-tag の AETS/system を 1:1 対応させて `tok/s` 比を算出した。</p>
+			<p class="section-lead" data-lang="en">`tok/s` ratios were computed by pairing AETS/system rows within the same run tag.</p>
+			<table class="data-table">
+				<thead>
+					<tr>
+						<th>run_tag</th>
+						<th>AETS tok/s</th>
+						<th>system tok/s</th>
+						<th>
+							<span data-lang="ja">比 (AETS/system)</span>
+							<span data-lang="en">Ratio (AETS/system)</span>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>k1_entry_20260325_1shape</code></td>
+						<td>49.8367</td>
+						<td>5.2899</td>
+						<td><strong>9.4211x</strong></td>
+					</tr>
+					<tr>
+						<td><code>k1_entry_20260325_1shape_rerun1</code></td>
+						<td>49.8963</td>
+						<td>5.5733</td>
+						<td>8.9527x</td>
+					</tr>
+					<tr>
+						<td><code>k1_entry_20260325_1shape_rerun2</code></td>
+						<td>49.7468</td>
+						<td>5.3009</td>
+						<td>9.3846x</td>
+					</tr>
+					<tr>
+						<td><strong><span data-lang="ja">3-run 平均（summary）</span><span data-lang="en">3-run average (summary)</span></strong></td>
+						<td>49.8266</td>
+						<td>5.3880</td>
+						<td><strong>9.2476x</strong></td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s3">3</span>
+				<h2 class="c3" data-lang="ja">Fact: 観測クラスの状態</h2>
+				<h2 class="c3" data-lang="en">Fact: Observation-class status</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">throughput 差を読む前提として、観測クラス（fallback / dispatch / direct / shape hits）を同時に確認した。</p>
+			<p class="section-lead" data-lang="en">Alongside throughput, observation classes (fallback / dispatch / direct / shape hits) were checked in parallel.</p>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">AETS lane（3-run mode）</h3>
+					<h3 data-lang="en">AETS lane (3-run mode)</h3>
+					<ul>
+						<li><code>phase_set=decode_signature_detected</code></li>
+						<li><code>fallback_mode=1</code>, <code>dispatch_mode=1</code>, <code>direct_mode=1</code></li>
+						<li><code>shape_hits_mode=192</code>（target: <code>512x512x2880</code>）</li>
+					</ul>
+				</article>
+				<article class="card">
+					<h3 data-lang="ja">system lane（3-run mode）</h3>
+					<h3 data-lang="en">System lane (3-run mode)</h3>
+					<ul>
+						<li><code>phase_set=unavailable</code></li>
+						<li><code>fallback_mode=0</code>, <code>dispatch_mode=0</code>, <code>direct_mode=0</code></li>
+						<li><code>shape_hits_mode=0</code></li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s4">4</span>
+				<h2 class="c4" data-lang="ja">Fact: 改善できた点（運用・方法）</h2>
+				<h2 class="c4" data-lang="en">Fact: Improvements achieved (workflow/method)</h2>
+			</div>
+			<p class="section-lead" data-lang="ja">本ページの主眼は「速度勝利宣言」ではなく、再現可能な比較手順の定着です。</p>
+			<p class="section-lead" data-lang="en">The focus here is not a blanket speed claim, but a reproducible comparison method.</p>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">定着した手順</h3>
+					<h3 data-lang="en">Stabilized procedure</h3>
+					<ul>
+						<li data-lang="ja">1shape 固定（`512x512x2880`）で lane 比較を反復</li>
+						<li data-lang="en">Repeated lane comparison on a fixed one-shape target (`512x512x2880`)</li>
+						<li data-lang="ja">lane 差分を `ROCBLAS_TENSILE_LIBPATH` の1点に限定</li>
+						<li data-lang="en">Lane delta constrained to one point: `ROCBLAS_TENSILE_LIBPATH`</li>
+						<li data-lang="ja">`detail.tsv` と `summary.tsv/.txt` を併用して算出根拠を明確化</li>
+						<li data-lang="en">Used `detail.tsv` + `summary.tsv/.txt` together to keep derivation auditable</li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s5">5</span>
+				<h2 class="c5" data-lang="ja">Interpretation: ここから読めること</h2>
+				<h2 class="c5" data-lang="en">Interpretation: What these facts suggest</h2>
+			</div>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">限定付きの解釈</h3>
+					<h3 data-lang="en">Condition-bounded reading</h3>
+					<ul>
+						<li data-lang="ja">この anchor 条件では、lane 差分（AETS vs system）が大きな throughput 差として観測された</li>
+						<li data-lang="en">Under this anchor condition, lane split (AETS vs system) was observed as a large throughput delta</li>
+						<li data-lang="ja">最大約9.4倍は、同一 run-tag の `tok/s` 比で観測された事実として記録できる</li>
+						<li data-lang="en">“Up to ~9.4x” is recordable as an observed same-run `tok/s` ratio fact</li>
+						<li data-lang="ja">ただし、これは MI25 全体・gfx900 全体の一般法則を意味しない</li>
+						<li data-lang="en">However, this does not imply a universal rule for all MI25/gfx900 deployments</li>
+					</ul>
+				</article>
+			</div>
+		</section>
+
+		<section class="section-block">
+			<div class="section-header">
+				<span class="section-num s6">6</span>
+				<h2 class="c6" data-lang="ja">Open Question / Limitation</h2>
+				<h2 class="c6" data-lang="en">Open Question / Limitation</h2>
+			</div>
+			<div class="card-grid">
+				<article class="card">
+					<h3 data-lang="ja">まだ言えないこと</h3>
+					<h3 data-lang="en">What remains open</h3>
+					<ul>
+						<li data-lang="ja">workload を変えた場合に同程度の倍率が再現するかは未確定</li>
+						<li data-lang="en">It remains open whether similar ratios reproduce across different workloads</li>
+						<li data-lang="ja">catalog read / dispatch 観測と kernel-level 因果の 1:1 対応は未確定</li>
+						<li data-lang="en">A strict 1:1 mapping between catalog-read/dispatch evidence and kernel-level causality remains unconfirmed</li>
+						<li data-lang="ja">本ページは速度最適化の最終結論ではなく、観測事実の中間整理</li>
+						<li data-lang="en">This page is an intermediate evidence organization, not a final optimization conclusion</li>
+					</ul>
+				</article>
+				<article class="card">
+					<h3 data-lang="ja">証跡セット（主要）</h3>
+					<h3 data-lang="en">Evidence set (primary)</h3>
+					<div class="code-list">ROCm-MI25-build/ROCm-MI25-tips/MI25_environment-setup-worklog.md
+vega_path_check_logs_raw/summaries/g4_k1_single_shape_repeat_detail_k1_entry_20260325_1shape_20260325_143343.tsv
+vega_path_check_logs_raw/summaries/g4_k1_single_shape_repeat_summary_k1_entry_20260325_1shape_20260325_143343.txt
+vega_path_check_logs_raw/summaries/g4_k1_single_shape_repeat_summary_k1_entry_20260325_1shape_20260325_143343.tsv</div>
+				</article>
+			</div>
+		</section>
+
+		<div class="actions">
+			<a class="button button-primary" href="case-study-index.html" data-lang="ja">ケース一覧へ戻る</a>
+			<a class="button button-primary" href="case-study-index.html" data-lang="en">Back to the case-study index</a>
+			<a class="button button-secondary" href="mi25-inference-case-study.html" data-lang="ja">MI25 基本ケースへ</a>
+			<a class="button button-secondary" href="mi25-inference-case-study.html" data-lang="en">Open MI25 base case</a>
+			<a class="button button-teal" href="https://github.com/AETS-MAGI/ROCm-MI25-build" target="_blank" rel="noopener noreferrer">GitHub: ROCm-MI25-build</a>
+		</div>
+
+		<div class="footer">
+			<span data-lang="ja">MI25 K1 lane-control case study for vega-hbmx-pages</span>
+			<span data-lang="en">MI25 K1 lane-control case study for vega-hbmx-pages</span>
+		</div>
+	</div>
+
+	<script>
+		const html = document.documentElement;
+		const btnJa = document.getElementById('btn-ja');
+		const btnEn = document.getElementById('btn-en');
+
+		function setLanguage(lang) {
+			html.setAttribute('data-language', lang);
+			html.setAttribute('lang', lang);
+			btnJa.classList.toggle('active', lang === 'ja');
+			btnEn.classList.toggle('active', lang === 'en');
+			localStorage.setItem('vega-hbmx-pages-mi25-k1-case-lang', lang);
+		}
+
+		btnJa.addEventListener('click', () => setLanguage('ja'));
+		btnEn.addEventListener('click', () => setLanguage('en'));
+
+		setLanguage(localStorage.getItem('vega-hbmx-pages-mi25-k1-case-lang') === 'en' ? 'en' : 'ja');
+	</script>
+</body>
+</html>

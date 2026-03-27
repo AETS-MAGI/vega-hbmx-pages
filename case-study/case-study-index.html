@@ -372,8 +372,8 @@
 				<h2 class="c2" data-lang="ja">公開中のケース</h2>
 				<h2 class="c2" data-lang="en">Available case studies</h2>
 			</div>
-			<p class="section-lead" data-lang="ja">現在は、MI25 単体ケースに加えて、MI25 vs Vega64 比較ケースを公開しています。今後、GPU ごとのページをここに追加していく前提です。</p>
-			<p class="section-lead" data-lang="en">Now available: the MI25 standalone case and a MI25 vs Vega64 comparison case. Additional per-GPU pages can be added here later.</p>
+			<p class="section-lead" data-lang="ja">現在は、MI25 単体ケース、MI25 K1 lane control 更新ケース、MI25 vs Vega64 比較ケースを公開しています。今後、GPU ごとのページをここに追加していく前提です。</p>
+			<p class="section-lead" data-lang="en">Now available: the MI25 standalone case, the MI25 K1 lane-control update case, and a MI25 vs Vega64 comparison case. Additional per-GPU pages can be added here later.</p>
 			<div class="card-grid">
 				<article class="card">
 					<span class="card-type type-case">Case Study</span>
@@ -395,6 +395,23 @@
 							<a class="button button-secondary" href="https://github.com/AETS-MAGI/ROCm-MI25-build" target="_blank" rel="noopener noreferrer">GitHub</a>
 						</div>
 					</article>
+				<article class="card">
+					<span class="card-type type-case">MI25 Update</span>
+					<h3 data-lang="ja">MI25 K1 lane control（最大約9.4x）</h3>
+					<h3 data-lang="en">MI25 K1 lane-control (~9.4x max)</h3>
+					<p class="filename">mi25-k1-lane-speedup-case-study.html</p>
+					<p data-lang="ja">`gpt-oss` anchor / 1shape 固定 / lane差分1点（`ROCBLAS_TENSILE_LIBPATH`）で、同一run内の`tok/s`比を観測した更新ページです。最大約9.4xは条件限定の観測事実として扱います。</p>
+					<p data-lang="en">An update page for same-run `tok/s` ratio under a `gpt-oss` anchor with one-shape control and a one-point lane delta (`ROCBLAS_TENSILE_LIBPATH`). The ~9.4x value is treated as a condition-limited observation.</p>
+					<ul>
+						<li data-lang="ja">同一 run-tag 対応で `8.95x〜9.42x` を記録</li>
+						<li data-lang="en">Recorded `8.95x to 9.42x` with same run-tag pairing</li>
+						<li data-lang="ja">一般化せず Fact / Interpretation / Limitation を分離</li>
+						<li data-lang="en">Keeps Fact / Interpretation / Limitation separated without over-generalization</li>
+					</ul>
+					<div class="actions">
+						<a class="button button-primary" href="mi25-k1-lane-speedup-case-study.html">Open</a>
+					</div>
+				</article>
 				<article class="card">
 					<span class="card-type type-case">Comparison</span>
 					<h3 data-lang="ja">MI25 vs Vega64 比較ケース</h3>
