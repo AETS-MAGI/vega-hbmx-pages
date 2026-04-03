@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MJTFTSQ43F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MJTFTSQ43F');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paper B — Stack Depth as Code Defense: Behavioral Reconstruction in Layered Software Stacks</title>
+  <style>
+    :root {
+      --red: #B71C1C;
+      --blue: #0D47A1;
+      --green: #1B5E20;
+      --orange: #E65100;
+      --teal: #00695C;
+      --purple: #4A148C;
+      --text: #212121;
+      --muted: #616161;
+      --line: #D7DEE8;
+      --bg: #F6F8FB;
+      --card: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(74,20,140,0.08), transparent 26%),
+        radial-gradient(circle at bottom left, rgba(13,71,161,0.07), transparent 22%),
+        var(--bg);
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .breadcrumb {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .breadcrumb a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      background: transparent;
+      color: #455A64;
+      cursor: pointer;
+    }
+    .lang-btn.active {
+      background: var(--purple);
+      color: #FFFFFF;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #4A148C 0%, #6A1B9A 60%, #7B1FA2 100%);
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 34px 34px 28px;
+      box-shadow: 2px 4px 18px rgba(0,0,0,0.12);
+    }
+
+    .hero-label {
+      display: inline-block;
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 14px;
+      letter-spacing: 0.04em;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-family: 'Arial', sans-serif;
+      font-size: 26px;
+      line-height: 1.3;
+      font-style: italic;
+    }
+
+    .hero-meta-line {
+      margin: 6px 0 0;
+      font-size: 15px;
+      color: #E1BEE7;
+      line-height: 1.5;
+    }
+
+    .hero-actions {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 14px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 1px 3px 10px rgba(0,0,0,0.12);
+    }
+    .button-back     { background: rgba(255,255,255,0.18); color: #FFFFFF; border: 1px solid rgba(255,255,255,0.3); }
+    .button-papera   { background: var(--green); color: #FFFFFF; }
+    .button-disabled { background: #ECEFF1; color: #90A4AE; cursor: default; pointer-events: none; }
+
+    .status-banner {
+      margin-top: 22px;
+      background: #FFF8E1;
+      border-left: 5px solid var(--orange);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #5D4037;
+    }
+
+    .section {
+      margin-top: 36px;
+    }
+
+    .section-title {
+      font-family: 'Arial Black', sans-serif;
+      font-size: 18px;
+      color: var(--purple);
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 6px;
+      margin: 0 0 16px;
+    }
+
+    .abstract-box {
+      background: #FFFFFF;
+      border-left: 5px solid var(--purple);
+      border-radius: 12px;
+      padding: 20px 22px;
+      box-shadow: 1px 2px 10px rgba(0,0,0,0.05);
+      font-size: 15px;
+      line-height: 1.7;
+      color: #37474F;
+    }
+
+    .meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+    .meta-table td {
+      padding: 8px 10px;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+    }
+    .meta-table td:first-child {
+      font-weight: bold;
+      color: var(--muted);
+      white-space: nowrap;
+      width: 130px;
+    }
+    .meta-table tr:last-child td { border-bottom: none; }
+
+    /* Framework claim cards */
+    .claim-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--purple);
+      border-radius: 12px;
+      padding: 16px 18px;
+      box-shadow: 1px 2px 8px rgba(0,0,0,0.04);
+      margin-bottom: 12px;
+    }
+    .claim-card h3 {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-family: 'Arial', sans-serif;
+      color: var(--purple);
+    }
+    .claim-card p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #455A64;
+    }
+
+    /* Section overview table */
+    .toc-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 1px 2px 10px rgba(0,0,0,0.04);
+    }
+    .toc-table th {
+      background: #F3E5F5;
+      color: var(--purple);
+      font-weight: bold;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+    .toc-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      color: #37474F;
+      line-height: 1.5;
+    }
+    .toc-table td:first-child {
+      color: var(--muted);
+      white-space: nowrap;
+      width: 80px;
+      font-weight: bold;
+    }
+    .toc-table tr:last-child td { border-bottom: none; }
+
+    /* Keywords chips */
+    .kw-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .kw-chip {
+      background: #F3E5F5;
+      color: var(--purple);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .note {
+      margin-top: 28px;
+      background: #FFF8E1;
+      border-left: 5px solid var(--orange);
+      border-radius: 12px;
+      padding: 16px 18px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #5D4037;
+    }
+
+    .companion-box {
+      background: #F1F8E9;
+      border-left: 5px solid var(--green);
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #37474F;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .companion-box p {
+      margin: 0;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.7;
+    }
+    .footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .footer a:hover { text-decoration: underline; }
+
+    /* Language switching */
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] li[data-lang="en"],
+    html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+    html[data-language="en"] h1[data-lang="en"],
+    html[data-language="ja"] h1[data-lang="ja"],
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"],
+    html[data-language="en"] h3[data-lang="en"],
+    html[data-language="ja"] h3[data-lang="ja"] { display: block; }
+
+    @media (max-width: 640px) {
+      .page { padding: 20px 14px 40px; }
+      .hero { padding: 24px 18px 20px; }
+      .hero h1 { font-size: 20px; }
+      .toolbar { flex-direction: column; align-items: flex-start; }
+      .companion-box { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="toolbar">
+    <nav class="breadcrumb">
+      <a href="../index.html">Top</a> &rsaquo;
+      <a href="paper-index.html">
+        <span data-lang="ja">論文一覧</span>
+        <span data-lang="en">Papers</span>
+      </a> &rsaquo;
+      <span data-lang="ja">論文 B</span>
+      <span data-lang="en">Paper B</span>
+    </nav>
+    <div class="lang-toggle" aria-label="Language switch">
+      <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+      <button id="btn-en" class="lang-btn" type="button">EN</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-label">
+      <span data-lang="ja">論文 B — 執筆中</span>
+      <span data-lang="en">Paper B — In Preparation</span>
+    </div>
+    <h1 data-lang="ja">コード防御としてのスタック深度：<br>階層化されたソフトウェアスタックにおける動作の再構築</h1>
+    <h1 data-lang="en">Stack Depth as Code Defense:<br>Behavioral Reconstruction in Layered Software Stacks</h1>
+    <p class="hero-meta-line">
+      <span data-lang="ja">伊藤あきら（AETS — Akatsuki Enterprise Technology Solutions、広島）&ensp;|&ensp;2026（予定）</span>
+      <span data-lang="en">Akira Ito (AETS — Akatsuki Enterprise Technology Solutions, Hiroshima)&ensp;|&ensp;2026 (forthcoming)</span>
+    </p>
+    <div class="hero-actions">
+      <span class="button button-disabled">
+        <span data-lang="ja">&#128196; Zenodo（準備中）</span>
+        <span data-lang="en">&#128196; Zenodo (coming soon)</span>
+      </span>
+      <a class="button button-back" href="paper-index.html">
+        <span data-lang="ja">&larr; 論文一覧</span>
+        <span data-lang="en">&larr; All papers</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Status note -->
+  <div class="status-banner">
+    <span data-lang="ja">
+      <strong>現在のステータス:</strong> 本論文は執筆中です。草稿は完成しており、内容は随時更新される可能性があります。Zenodo への登録は最終化後に行われます。
+    </span>
+    <span data-lang="en">
+      <strong>Current status:</strong> This paper is in preparation. A working draft exists and content may be updated. Registration on Zenodo will follow finalization.
+    </span>
+  </div>
+
+  <!-- Abstract -->
+  <section class="section">
+    <h2 class="section-title" data-lang="ja">要旨</h2>
+    <h2 class="section-title" data-lang="en">Abstract</h2>
+    <div class="abstract-box">
+      <p data-lang="ja">
+        ソフトウェアの防御可能性は深度に依存する。AI支援によるコード解析・再実装能力の進展に伴い、ソースコードの秘匿がソフトウェア資産を強固に保護するという従来の前提は再検討を要する——特に、ソース構造が可読かつ容易に変換可能な浅いオーケストレーション層においては。本稿は、現代のAI支援型再実装圧力のもとでソフトウェアの防御可能性を推論するための概念的フレームワークを提案する。その核心は、表層オーケストレーション層と深いランタイム結合スタックの区別にある。3つの入力——2026年のトリガーケース・AI支援コード変換・マイグレーション研究の先行成果・ROCm/HIP GPUスタック研究に基づく限定的実証——から、本稿はソフトウェア資産の防御特性がスタック深度に大きく依存することを論じる。浅いスクリプト層オーケストレーションは可視ロジックから容易に再構成される一方、ハードウェア結合・ランタイム経路選択・多層依存を特徴とする深い実行層は、広範なソース可視性のもとでも依然として実質的な再構成コストを課し続ける。さらに、深いスタックに内在する構造的緊張——再実装の障壁を高める同じ複雑性が、コミュニティ主導の最適化と保守をも妨げる——を指摘する。本稿が提案するフレームワークは法的分析を構成しない。その目的は、どのソフトウェア知識が容易に再現可能で、どの知識の回復が高コストであり、なぜその非対称性が防御的設計において重要なのかを推論するための概念的語彙を提供することにある。
+      </p>
+      <p data-lang="en">
+        Software defensibility is depth-sensitive. As AI-assisted code analysis and reimplementation capabilities advance, the traditional assumption that source secrecy provides robust protection for software assets requires reexamination — particularly for shallow orchestration layers where source structure is both readable and readily translatable. This paper proposes a conceptual framework for reasoning about software defensibility under contemporary AI-assisted reimplementation pressure, organized around the distinction between surface orchestration layers and deep runtime-coupled stacks. Drawing on three inputs — a 2026 trigger case, prior research on AI-assisted code translation and migration, and a bounded empirical counterpoint from ROCm/HIP GPU stack research — this paper argues that the defensive properties of software assets depend substantially on stack depth: shallow scripting-layer orchestration is readily reconstituted from visible logic, whereas deep execution layers — characterized by hardware coupling, runtime path selection, and multi-layer dependency — continue to impose substantial reconstruction costs even under broad source visibility. We further identify a structural tension within deep stacks: the same complexity that raises reimplementation barriers also impedes community-driven optimization and maintenance. The framework proposed here does not constitute a legal analysis; its purpose is to offer a conceptual vocabulary for open-source practitioners and AI tool developers who must now reason more carefully about which software knowledge is easily reproduced, which remains costly to recover, and why that asymmetry matters for defensive design.
+      </p>
+    </div>
+  </section>
+
+  <!-- Keywords -->
+  <section class="section">
+    <h2 class="section-title" data-lang="ja">キーワード</h2>
+    <h2 class="section-title" data-lang="en">Keywords</h2>
+    <div class="kw-list">
+      <span class="kw-chip" data-lang="ja">ソフトウェア防御可能性</span>
+      <span class="kw-chip" data-lang="en">software defensibility</span>
+      <span class="kw-chip" data-lang="ja">スタック深度</span>
+      <span class="kw-chip" data-lang="en">stack depth</span>
+      <span class="kw-chip" data-lang="ja">振る舞いの再実装</span>
+      <span class="kw-chip" data-lang="en">behavioral reimplementation</span>
+      <span class="kw-chip" data-lang="ja">AI支援コード変換</span>
+      <span class="kw-chip" data-lang="en">AI-assisted code translation</span>
+      <span class="kw-chip" data-lang="ja">オーケストレーション層</span>
+      <span class="kw-chip" data-lang="en">orchestration layer</span>
+      <span class="kw-chip" data-lang="ja">GPUソフトウェアスタック</span>
+      <span class="kw-chip" data-lang="en">GPU software stack</span>
+    </div>
+  </section>
+
+  <!-- Core claims -->
+  <section class="section">
+    <h2 class="section-title" data-lang="ja">核心的主張</h2>
+    <h2 class="section-title" data-lang="en">Core Claims</h2>
+
+    <div class="claim-card">
+      <h3 data-lang="ja">主張 1：防御可能性は深度に依存する</h3>
+      <h3 data-lang="en">Claim 1: Defensibility is depth-sensitive</h3>
+      <p data-lang="ja">ソフトウェア資産のAI支援再実装への耐性は、そのシステムがスタック上のどの層に位置するかによって質的に異なる。浅いスクリプト層の協調ロジックと、深いランタイム結合実行層は、同一のソース可視性を持っていても再構成コストが根本的に異なる。</p>
+      <p data-lang="en">The resistance of a software asset to AI-assisted reimplementation differs qualitatively depending on which layer of the stack it occupies. Shallow scripting-layer coordination logic and deep runtime-coupled execution layers differ fundamentally in reconstruction cost, even at identical source visibility.</p>
+    </div>
+
+    <div class="claim-card">
+      <h3 data-lang="ja">主張 2：スタック深度は両刃の剣</h3>
+      <h3 data-lang="en">Claim 2: Stack depth is double-edged</h3>
+      <p data-lang="ja">再実装圧力を高める同じ多層結合とハードウェア依存性が、システム自身の開発者・コミュニティ貢献者の最適化コストをも高める。防御的深度は受動的な守備資産であり、適切な観測インフラなしには能動的にコスト高となる。</p>
+      <p data-lang="en">The same multi-layer coupling and hardware dependency that raises reconstruction costs for would-be replicators also raises optimization and maintenance costs for the system's own developers and community. Defensive depth is a passive asset that becomes actively costly without appropriate observational infrastructure.</p>
+    </div>
+
+    <div class="claim-card">
+      <h3 data-lang="ja">主張 3：ソース秘匿は浅い層の主要防御として脆弱</h3>
+      <h3 data-lang="en">Claim 3: Source secrecy is a fragile primary defense at shallow layers</h3>
+      <p data-lang="ja">TypeScript 等で実装された浅いオーケストレーション層は、AI支援型解析に対して構造的に露出している。同層でのソース秘匿維持は、トリガーケースが示す通り、脆弱な姿勢である可能性が高い。適切な防御は、不可約な振る舞い複雑性がどの層に宿るかを理解することから始まる。</p>
+      <p data-lang="en">Shallow orchestration layers implemented in scripting languages such as TypeScript are structurally exposed to AI-assisted analysis. Maintaining source secrecy at that layer is likely a fragile posture, as the trigger case suggests. Appropriate defense begins by understanding at which layer irreducible behavioral complexity actually resides.</p>
+    </div>
+  </section>
+
+  <!-- Structure overview -->
+  <section class="section">
+    <h2 class="section-title" data-lang="ja">論文構成</h2>
+    <h2 class="section-title" data-lang="en">Paper Structure</h2>
+    <table class="toc-table">
+      <thead>
+        <tr>
+          <th data-lang="ja">節</th>
+          <th data-lang="en">Section</th>
+          <th data-lang="ja">内容</th>
+          <th data-lang="en">Content</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>§1</td>
+          <td data-lang="ja">はじめに</td>
+          <td data-lang="en">Introduction</td>
+          <td data-lang="ja">研究動機と構成。ROCm 実証経験とトリガーケースからの出発点。</td>
+          <td data-lang="en">Motivation and structure. Starting point from ROCm empirical experience and the trigger case.</td>
+        </tr>
+        <tr>
+          <td>§2</td>
+          <td data-lang="ja">背景：トリガーケース</td>
+          <td data-lang="en">Background: Trigger case</td>
+          <td data-lang="ja">Claude Code ソース公開事案を動機づけの実例として提示（総合的証拠としてではなく）。約8時間での再実装圧力と PARITY.md ギャップ。</td>
+          <td data-lang="en">The Claude Code source exposure incident as a motivating illustration (not as total proof). ~8-hour reimplementation pressure and the PARITY.md gap.</td>
+        </tr>
+        <tr>
+          <td>§3</td>
+          <td data-lang="ja">AI支援型再実装圧力</td>
+          <td data-lang="en">AI-assisted reimplementation pressure</td>
+          <td data-lang="ja">コード理解・変換・マイグレーション研究のレビュー。環境結合が再構成難度を決定的に左右することを確認。</td>
+          <td data-lang="en">Review of code understanding, translation, and migration research. Environment coupling as the decisive factor in reconstruction difficulty.</td>
+        </tr>
+        <tr>
+          <td>§4</td>
+          <td data-lang="ja">ライセンスの文脈</td>
+          <td data-lang="en">Licensing context</td>
+          <td data-lang="ja">技術実践者の視点からの執行圧力の考察。法的判断を下さず、防御的設計の実際的関連性を論じる。</td>
+          <td data-lang="en">Practical enforcement pressure from a technical practitioner's perspective. No legal determinations; focuses on the practical relevance of defensive design.</td>
+        </tr>
+        <tr>
+          <td>§5</td>
+          <td data-lang="ja">対抗事例：オープンだが深いスタック</td>
+          <td data-lang="en">Counterpoint: Open yet deep stacks</td>
+          <td data-lang="ja">3アーキタイプ比較・ROCm 実証対抗事例・深度の両刃性・層位置タクソノミー。</td>
+          <td data-lang="en">Three-archetype comparison, ROCm empirical counterpoint, double-edged depth, and layer-position taxonomy.</td>
+        </tr>
+        <tr>
+          <td>§6</td>
+          <td data-lang="ja">フレームワーク</td>
+          <td data-lang="en">Framework</td>
+          <td data-lang="ja">定義（表層オーケストレーション・振る舞いの再実装・防御的深度）・リスク表面マッピング・実践的ヒューリスティック。</td>
+          <td data-lang="en">Definitions (surface orchestration, behavioral reimplementation, defensive depth), risk surface mapping, and practical heuristic.</td>
+        </tr>
+        <tr>
+          <td>§7</td>
+          <td data-lang="ja">含意</td>
+          <td data-lang="en">Implications</td>
+          <td data-lang="ja">オープンソースメンテナ・AIツール開発者・セキュリティ/リリースエンジニアへの示唆。</td>
+          <td data-lang="en">Implications for open-source maintainers, AI tool developers, and security/release engineers.</td>
+        </tr>
+        <tr>
+          <td>§8</td>
+          <td data-lang="ja">限界</td>
+          <td data-lang="en">Limitations</td>
+          <td data-lang="ja">7項目の限界（法的分析ではない・トリガーケースは例示的・スタック深度は質的フレーム、等）。</td>
+          <td data-lang="en">Seven stated limitations (not a legal analysis, trigger case is illustrative, stack depth is a qualitative frame, etc.).</td>
+        </tr>
+        <tr>
+          <td>§9</td>
+          <td data-lang="ja">結論</td>
+          <td data-lang="en">Conclusion</td>
+          <td data-lang="ja">3つの独立した証拠の収束と、深層実行経路を可読にするための研究アジェンダ。</td>
+          <td data-lang="en">Convergence of three independent evidence lines and a research agenda for making deep execution paths legible.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Paper metadata -->
+  <section class="section">
+    <h2 class="section-title" data-lang="ja">論文情報</h2>
+    <h2 class="section-title" data-lang="en">Publication Details</h2>
+    <table class="meta-table">
+      <tr>
+        <td data-lang="ja">著者</td>
+        <td data-lang="en">Author</td>
+        <td>
+          <span data-lang="ja">伊藤あきら</span>
+          <span data-lang="en">Akira Ito</span>
+        </td>
+      </tr>
+      <tr>
+        <td data-lang="ja">所属</td>
+        <td data-lang="en">Affiliation</td>
+        <td>AETS (Akatsuki Enterprise Technology Solutions, Hiroshima, Japan)</td>
+      </tr>
+      <tr>
+        <td data-lang="ja">ステータス</td>
+        <td data-lang="en">Status</td>
+        <td>
+          <span data-lang="ja">執筆中（草稿完成）</span>
+          <span data-lang="en">In preparation (working draft complete)</span>
+        </td>
+      </tr>
+      <tr>
+        <td data-lang="ja">掲載予定</td>
+        <td data-lang="en">Planned venue</td>
+        <td>Zenodo</td>
+      </tr>
+      <tr>
+        <td>DOI</td>
+        <td>DOI</td>
+        <td>
+          <span data-lang="ja">最終化後に付与予定</span>
+          <span data-lang="en">To be assigned upon finalization</span>
+        </td>
+      </tr>
+      <tr>
+        <td data-lang="ja">利益相反</td>
+        <td data-lang="en">Conflict of interest</td>
+        <td>
+          <span data-lang="ja">なし。著者は Anthropic・AMD・本稿で論じる組織のいずれとも関係を持たない。</span>
+          <span data-lang="en">None declared. The author has no affiliation with Anthropic, AMD, or any of the organizations discussed in this paper.</span>
+        </td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- Companion Paper A -->
+  <section class="section">
+    <h2 class="section-title" data-lang="ja">実証的伴研究：論文 A</h2>
+    <h2 class="section-title" data-lang="en">Companion Empirical Study: Paper A</h2>
+    <div class="companion-box">
+      <p data-lang="ja">
+        本論文（論文 B）は、論文 A「ROCm 7.2 下の AMD Instinct MI25 における有界観測性とレーン制御最適化」（Zenodo: <a href="https://doi.org/10.5281/zenodo.19388994" target="_blank" rel="noopener noreferrer" style="color:var(--green);">10.5281/zenodo.19388994</a>）を実証的伴研究として引用している。論文 A の中心的方法論的観察——深く結合したGPUスタックではソース可視性単独では実行経路理解が得られない——が、本フレームワークの経験的根拠の一つを担っている。
+      </p>
+      <p data-lang="en">
+        This paper (Paper B) cites Paper A, "Bounded Observability and Lane-Control Optimization on AMD Instinct MI25 under ROCm 7.2" (Zenodo: <a href="https://doi.org/10.5281/zenodo.19388994" target="_blank" rel="noopener noreferrer" style="color:var(--green);">10.5281/zenodo.19388994</a>), as its companion empirical study. Paper A's central methodological observation — that source visibility alone is insufficient for execution-path understanding in a deeply coupled GPU stack — provides one of the empirical grounding points for this framework.
+      </p>
+      <a class="button button-papera" href="paper-a.html">
+        <span data-lang="ja">論文 A を見る</span>
+        <span data-lang="en">View Paper A</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="note">
+    <span data-lang="ja">
+      <strong>証拠分類について:</strong> 本稿の記述は <code>observed</code>（著者が公開資料から直接確認）、<code>reported</code>（報道またはパブリックリポジトリ文書から）、<code>inferred</code>（入手可能な証拠から導出）、<code>condition-limited</code>（論文 A に規定された特定の実験条件下でのみ適用可能）に分類されます。いかなる記述も法的確定として提示されません。本稿は特定の企業・製品・個人に対する批判を意図しません。
+    </span>
+    <span data-lang="en">
+      <strong>Evidence classification:</strong> Statements in this paper are classified as <code>observed</code> (directly noted by the author from public materials), <code>reported</code> (from press coverage or public repository documentation), <code>inferred</code> (derived from available evidence), or <code>condition-limited</code> (applicable only under the specific experimental conditions stated in Paper A). No statement is presented as legally determinative. This paper does not intend criticism of any specific company, product, or individual.
+    </span>
+  </div>
+
+  <div class="footer">
+    <a href="../index.html" data-lang="ja">← トップページへ戻る</a>
+    <a href="../index.html" data-lang="en">← Back to top page</a>
+    &ensp;|&ensp;
+    <a href="paper-index.html" data-lang="ja">論文一覧</a>
+    <a href="paper-index.html" data-lang="en">All papers</a>
+    <br>
+    AETS-MAGI &mdash; vega-hbmx-pages
+  </div>
+
+</div>
+
+<script>
+  const html = document.documentElement;
+  const btnJa = document.getElementById('btn-ja');
+  const btnEn = document.getElementById('btn-en');
+
+  function setLanguage(lang) {
+    html.setAttribute('data-language', lang);
+    btnJa.classList.toggle('active', lang === 'ja');
+    btnEn.classList.toggle('active', lang === 'en');
+    try { localStorage.setItem('lang', lang); } catch(e) {}
+  }
+
+  btnJa.addEventListener('click', () => setLanguage('ja'));
+  btnEn.addEventListener('click', () => setLanguage('en'));
+
+  try {
+    const saved = localStorage.getItem('lang');
+    if (saved === 'en') setLanguage('en');
+  } catch(e) {}
+</script>
+</body>
+</html>
