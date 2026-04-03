@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="ja" data-language="ja">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MJTFTSQ43F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-MJTFTSQ43F');
+</script>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ROCm study | Legacy HBM GPU Investigation</title>
@@ -237,6 +246,7 @@
 		.type-ecosystem{ background: #5B4B8A; }
 		.type-intro    { background: var(--teal); }
 		.type-theory   { background: #00695C; }
+		.type-paper    { background: var(--green); }
 
 		.card h3 {
 			margin: 0 0 6px;
@@ -610,6 +620,28 @@
 							<a class="button button-teal" href="case-study/mi25-k1-lane-speedup-case-study.html">MI25 K1 Update</a>
 							<a class="button button-teal" href="case-study/mi25-vega64-comparison-case-study.html">MI25 vs Vega64</a>
 							<a class="button button-secondary" href="https://github.com/AETS-MAGI/ROCm-MI25-build" target="_blank" rel="noopener noreferrer">GitHub</a>
+						</div>
+					</article>
+
+					<article class="card">
+						<span class="card-type type-paper">Paper</span>
+						<h3 data-lang="ja">論文一覧 — Zenodo 公開論文</h3>
+						<h3 data-lang="en">Papers — Published &amp; Forthcoming</h3>
+						<p class="filename">paper/paper-index.html</p>
+						<p data-lang="ja">本プロジェクトから発表された研究論文の一覧。論文 A（MI25 有界観測性・レーン制御最適化、Zenodo DOI: 10.5281/zenodo.19388994）を公開中。論文 B（スタック深度と再実装防御）準備中。</p>
+						<p data-lang="en">Index of research papers from this project. Paper A (MI25 bounded observability &amp; lane-control optimization, Zenodo DOI: 10.5281/zenodo.19388994) is published. Paper B (stack depth as code defense) is in preparation.</p>
+						<ul>
+							<li data-lang="ja">論文 A: Zenodo 公開済み・OpenAIRE インデックス済み</li>
+							<li data-lang="en">Paper A: Published on Zenodo, indexed in OpenAIRE</li>
+							<li data-lang="ja">論文 B: 執筆中</li>
+							<li data-lang="en">Paper B: In preparation</li>
+						</ul>
+						<div class="actions">
+							<a class="button button-primary" href="paper/paper-index.html">
+								<span data-lang="ja">論文一覧を見る</span>
+								<span data-lang="en">View papers</span>
+							</a>
+							<a class="button button-teal" href="https://zenodo.org/records/19388994" target="_blank" rel="noopener noreferrer">Zenodo</a>
 						</div>
 					</article>
 

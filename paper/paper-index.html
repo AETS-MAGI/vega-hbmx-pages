@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja" data-language="ja">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-MJTFTSQ43F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-MJTFTSQ43F');
+</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>論文一覧 | Papers — ROCm study / AETS-MAGI</title>
+  <style>
+    :root {
+      --red: #B71C1C;
+      --blue: #0D47A1;
+      --green: #1B5E20;
+      --orange: #E65100;
+      --teal: #00695C;
+      --purple: #4A148C;
+      --text: #212121;
+      --muted: #616161;
+      --line: #D7DEE8;
+      --bg: #F6F8FB;
+      --card: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Calibri', 'Arial', sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(13,71,161,0.09), transparent 26%),
+        radial-gradient(circle at bottom left, rgba(183,28,28,0.08), transparent 22%),
+        var(--bg);
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .breadcrumb {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .breadcrumb a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover { text-decoration: underline; }
+
+    .lang-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 1px 1px 8px rgba(0,0,0,0.05);
+    }
+
+    .lang-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      background: transparent;
+      color: #455A64;
+      cursor: pointer;
+    }
+    .lang-btn.active {
+      background: var(--blue);
+      color: #FFFFFF;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #0D47A1 0%, #1565C0 58%, #1976D2 100%);
+      color: #FFFFFF;
+      border-radius: 20px;
+      padding: 30px 34px 24px;
+      box-shadow: 2px 4px 18px rgba(0,0,0,0.10);
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 32px;
+      line-height: 1.2;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.5;
+      color: #BBDEFB;
+    }
+
+    /* Paper entry card */
+    .paper-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 24px 20px;
+      box-shadow: 1px 2px 12px rgba(0,0,0,0.05);
+      margin-top: 24px;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .paper-num {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 22px;
+      font-weight: bold;
+      color: #FFFFFF;
+    }
+
+    .paper-num.a { background: var(--green); }
+    .paper-num.b { background: var(--purple); }
+
+    .paper-body { flex: 1; min-width: 0; }
+
+    .paper-label {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+    .label-published { background: var(--green); }
+    .label-inprep    { background: #78909C; }
+
+    .paper-title {
+      margin: 0 0 6px;
+      font-size: 19px;
+      line-height: 1.3;
+      font-family: 'Arial', sans-serif;
+    }
+    .paper-title em { font-style: italic; }
+
+    .paper-title-ja {
+      margin: 0 0 10px;
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .paper-meta {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .paper-desc {
+      margin: 0 0 14px;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #37474F;
+    }
+
+    .paper-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      padding: 9px 16px;
+      border-radius: 9px;
+      font-weight: bold;
+      font-size: 13px;
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 1px 3px 10px rgba(0,0,0,0.08);
+    }
+    .button-green    { background: var(--green);   color: #FFFFFF; }
+    .button-zenodo   { background: #1565C0;         color: #FFFFFF; }
+    .button-disabled { background: #ECEFF1; color: #90A4AE; cursor: default; pointer-events: none; }
+
+    .note {
+      margin-top: 32px;
+      background: #FFF8E1;
+      border-left: 5px solid var(--orange);
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #5D4037;
+    }
+
+    .footer {
+      margin-top: 36px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.7;
+    }
+    .footer a {
+      color: var(--muted);
+      text-decoration: none;
+    }
+    .footer a:hover { text-decoration: underline; }
+
+    /* Language switching */
+    [data-lang] { display: none; }
+    html[data-language="en"] [data-lang="en"] { display: initial; }
+    html[data-language="ja"] [data-lang="ja"] { display: initial; }
+    html[data-language="en"] div[data-lang="en"],
+    html[data-language="ja"] div[data-lang="ja"] { display: block; }
+    html[data-language="en"] span[data-lang="en"],
+    html[data-language="ja"] span[data-lang="ja"] { display: inline; }
+    html[data-language="en"] p[data-lang="en"],
+    html[data-language="ja"] p[data-lang="ja"] { display: block; }
+    html[data-language="en"] li[data-lang="en"],
+    html[data-language="ja"] li[data-lang="ja"] { display: list-item; }
+    html[data-language="en"] h1[data-lang="en"],
+    html[data-language="ja"] h1[data-lang="ja"],
+    html[data-language="en"] h2[data-lang="en"],
+    html[data-language="ja"] h2[data-lang="ja"] { display: block; }
+
+    @media (max-width: 640px) {
+      .page { padding: 20px 14px 40px; }
+      .hero { padding: 22px 18px 18px; }
+      .hero h1 { font-size: 26px; }
+      .paper-card { flex-direction: column; gap: 12px; }
+      .paper-num { width: 40px; height: 40px; font-size: 18px; border-radius: 10px; }
+      .toolbar { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="toolbar">
+    <nav class="breadcrumb">
+      <a href="../index.html">Top</a> &rsaquo;
+      <span data-lang="ja">論文一覧</span>
+      <span data-lang="en">Papers</span>
+    </nav>
+    <div class="lang-toggle" aria-label="Language switch">
+      <button id="btn-ja" class="lang-btn active" type="button">JP</button>
+      <button id="btn-en" class="lang-btn" type="button">EN</button>
+    </div>
+  </div>
+
+  <section class="hero">
+    <h1 data-lang="ja">論文一覧</h1>
+    <h1 data-lang="en">Papers</h1>
+    <p data-lang="ja">AETS-MAGI ROCm study プロジェクトから発表された・発表予定の研究論文の一覧です。</p>
+    <p data-lang="en">Research papers published or forthcoming from the AETS-MAGI ROCm study project.</p>
+  </section>
+
+  <!-- Paper A -->
+  <article class="paper-card">
+    <div class="paper-num a">A</div>
+    <div class="paper-body">
+      <span class="paper-label label-published" data-lang="ja">公開済み — Zenodo</span>
+      <span class="paper-label label-published" data-lang="en">Published — Zenodo</span>
+
+      <h2 class="paper-title">
+        <em data-lang="ja">ROCm 7.2 下の AMD Instinct MI25 における有界観測性とレーン制御最適化</em>
+        <em data-lang="en">Bounded Observability and Lane-Control Optimization on AMD Instinct MI25 under ROCm 7.2</em>
+      </h2>
+
+      <p class="paper-meta">
+        <span data-lang="ja">伊藤あきら &mdash; AETS, Hiroshima &mdash; 2026 &mdash; Zenodo &mdash; DOI: 10.5281/zenodo.19388994</span>
+        <span data-lang="en">Akira Ito &mdash; AETS, Hiroshima &mdash; 2026 &mdash; Zenodo &mdash; DOI: 10.5281/zenodo.19388994</span>
+      </p>
+
+      <p class="paper-desc" data-lang="ja">
+        MI25/gfx900 を対象に、ROCm 7.2 スタック上でのランタイム経路観測と推論スループット最適化を報告する実験論文。中心的な方法論的知見は「ソース可視性単独では深く結合した GPU スタックの実行経路挙動を推論できない」という実証的観察にある。1 パラメータ変更による条件限定約 9.4 倍のスループット比を観測したが、比較ベースは抑制設定であることに留意。論文 B の実証的伴研究として位置づけられる。
+      </p>
+      <p class="paper-desc" data-lang="en">
+        An experimental paper reporting runtime-path observation and inference-throughput optimization on MI25/gfx900 under the ROCm 7.2 stack. The central methodological finding is an empirical observation: source visibility alone is insufficient to infer execution-path behavior in a deeply coupled GPU stack. A condition-limited ~9.4× throughput ratio from a single parameter change was observed, but the comparison baseline is a suppressed anchor rather than a standard operational setting. Serves as the companion empirical study for Paper B.
+      </p>
+
+      <div class="paper-actions">
+        <a class="button button-green" href="paper-a.html">
+          <span data-lang="ja">詳細ページ</span>
+          <span data-lang="en">Paper page</span>
+        </a>
+        <a class="button button-zenodo" href="https://zenodo.org/records/19388994" target="_blank" rel="noopener noreferrer">
+          &#128196; Zenodo
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <!-- Paper B -->
+  <article class="paper-card">
+    <div class="paper-num b">B</div>
+    <div class="paper-body">
+      <span class="paper-label label-inprep" data-lang="ja">執筆中</span>
+      <span class="paper-label label-inprep" data-lang="en">In preparation</span>
+
+      <h2 class="paper-title">
+        <em data-lang="ja">コード防御としてのスタック深度：階層化されたソフトウェアスタックにおける動作の再構築</em>
+        <em data-lang="en">Stack Depth as Code Defense: Behavioral Reconstruction in Layered Software Stacks</em>
+      </h2>
+
+      <p class="paper-meta">
+        <span data-lang="ja">伊藤あきら &mdash; AETS, Hiroshima &mdash; 2026（予定）</span>
+        <span data-lang="en">Akira Ito &mdash; AETS, Hiroshima &mdash; 2026 (forthcoming)</span>
+      </p>
+
+      <p class="paper-desc" data-lang="ja">
+        ソフトウェアの防御可能性がスタック深度に依存するという概念フレームワークを提案する論文。浅いオーケストレーション層と深いランタイム結合層では、AI 支援型再実装圧力への耐性が質的に異なることを論じる。論文 A の実証的観察を基盤の一つとして参照する。
+      </p>
+      <p class="paper-desc" data-lang="en">
+        A conceptual framework paper arguing that software defensibility is depth-sensitive. Shallow orchestration layers and deep runtime-coupled layers differ qualitatively in their resistance to AI-assisted reimplementation pressure. Cites Paper A's empirical observation as one of its grounding points.
+      </p>
+
+      <div class="paper-actions">
+        <span class="button button-disabled" data-lang="ja">準備中</span>
+        <span class="button button-disabled" data-lang="en">Coming soon</span>
+      </div>
+    </div>
+  </article>
+
+  <div class="note">
+    <span data-lang="ja">
+      <strong>注:</strong> 本プロジェクトの発表は、個人研究者として公開一次資料・実機観測の範囲内で行われています。いかなる記述も法的確定を意図しておらず、非公開情報の推定を含みません。
+    </span>
+    <span data-lang="en">
+      <strong>Note:</strong> Publications from this project are conducted as independent research within the scope of publicly available primary sources and hardware observation. No statement is presented as legally determinative, and no inference from non-public information is made.
+    </span>
+  </div>
+
+  <div class="footer">
+    <a href="../index.html" data-lang="ja">← トップページへ戻る</a>
+    <a href="../index.html" data-lang="en">← Back to top page</a>
+    <br>
+    AETS-MAGI &mdash; vega-hbmx-pages
+  </div>
+
+</div>
+
+<script>
+  const html = document.documentElement;
+  const btnJa = document.getElementById('btn-ja');
+  const btnEn = document.getElementById('btn-en');
+
+  function setLanguage(lang) {
+    html.setAttribute('data-language', lang);
+    btnJa.classList.toggle('active', lang === 'ja');
+    btnEn.classList.toggle('active', lang === 'en');
+    try { localStorage.setItem('lang', lang); } catch(e) {}
+  }
+
+  btnJa.addEventListener('click', () => setLanguage('ja'));
+  btnEn.addEventListener('click', () => setLanguage('en'));
+
+  try {
+    const saved = localStorage.getItem('lang');
+    if (saved === 'en') setLanguage('en');
+  } catch(e) {}
+</script>
+</body>
+</html>
